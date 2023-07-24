@@ -24,14 +24,12 @@ const Content = styled.button`
     border-color: #f5f5f5;
 `;
 
-function Select({ text1, text2 }) {
+function Select({ props }) {
     return (
         <Container>
             <Head>제시어 카테고리</Head>
             <Line>
-                <Content>{text1}</Content>
-                <Content>{text2}</Content>
-                <Content>{text1}</Content>
+                <Content>{ props.name}</Content>
             </Line>
             <Line>
                 <Content>스포츠</Content>

@@ -1,11 +1,10 @@
 import React from "react";
+import Select from "../components/Select";
 
 const Home = () => {
-    return (
-        <div>
-            <h1>홈페이지</h1>
-        </div>
-    );
+    const names = ["드라마", "영화", "스포츠"];
+    const nameList = names.map((name) => <Select name={name} />);
+    return <div>{nameList}</div>;
 };
 
 export default Home;
