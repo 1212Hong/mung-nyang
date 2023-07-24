@@ -5,14 +5,16 @@
 
 :white_large_square:, :white_check_mark:
 
-|To Do List | 노트북 | 컴퓨터|
-|------|---|---|
-|도커 설치 |:white_check_mark:|:white_check_mark:|
-|nodejs (vue 사용)|:white_check_mark:|:white_check_mark:|
-|jdk 11버전 설치|:white_check_mark:|:white_check_mark:|
-|maven 설정|:white_check_mark:|:white_check_mark:|
-|환경변수 설정|:white_check_mark:|:white_check_mark:|
-|ubuntu 설치|:white_large_square:|:white_check_mark:|
+|To Do List | 노트북 | 컴퓨터|비고|
+|------|---|---|---|
+|도커 설치 |:white_check_mark:|:white_check_mark:||
+|nodejs (vue 사용)|:white_check_mark:|:white_check_mark:||
+|jdk 11버전 설치|:white_check_mark:|:white_check_mark:||
+|maven 설정|:white_check_mark:|:white_check_mark:||
+|환경변수 설정|:white_check_mark:|:white_check_mark:||
+|ubuntu 설치|:white_large_square:|:white_check_mark:||
+|Hyper-V(가상환경 On)|:white_large_square:|:white_check_mark:|Home버전은 다른 방법|
+
 
 ### 시도한 방법
 
