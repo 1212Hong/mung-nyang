@@ -1,0 +1,18 @@
+@font-face {
+    font-family: "gugi";
+    src: url(../assets/fonts/Gugi-Regular.ttf);
+}
+
+@font-face {
+    font-family: "BagelFatOne";
+    src: url(../assets/fonts/BagelFatOne-Regular.ttf);
+}
+
+@font-face {
+    font-family: "BlackHanSans";
+    src: url(../assets/fonts/BlackHanSans-Regular.ttf);
+}
+
+.App {
+    font-family: "BlackHanSans";
+}
