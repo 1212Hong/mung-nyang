@@ -6,7 +6,6 @@ const Button = (props) => {
     const {
         width,
         height,
-        text,
         hoverColor,
         hoverBgColor,
         background,
@@ -15,11 +14,13 @@ const Button = (props) => {
         weight,
         border,
         onClick,
+        children,
+        type,
     } = props;
 
     const StyledButton = styled.button`
-        width: ${width ?? "200px"};
-        height: ${height ?? "50px"};
+        width: ${type !== "icon" && !width ? "200px" : width};
+        height: ${type !== "icon" && !height ? "50px" : height};
         background: ${background ?? "#F4D7C5"};
         font-size: ${fontSize ?? "16px"};
         color: ${fontColor ?? "#F5F5F5"};
@@ -27,9 +28,10 @@ const Button = (props) => {
         border-radius: ${border ?? "30px"};
         cursor: pointer;
         align-items: center;
+        object-fit: ${type === "icon" ? "fill" : "none"};
         border: none;
         &:hover {
-            transition: 0.8s;
+            transition: all 0.8s;
             color: ${hoverColor ? fontColor : "#000"};
             background-color: ${hoverBgColor ? background : "#D08A5F"};
         }
@@ -45,7 +47,8 @@ const Button = (props) => {
             border={border}
             onClick={onClick}
         >
-            {text}
+            {/* {text} */}
+            {children}
         </StyledButton>
     );
 };
