@@ -1,16 +1,18 @@
+import React from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
     padding-top: 10px;
     padding-left: 20px;
     padding-right: 20px;
+    padding-bottom: 10px;
     width: 200px;
     height: 200px;
     background: #f2ead3;
     text-align: center;
 `;
 const Head = styled.div`
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 `;
 const Line = styled.div`
     margin-bottom: 5px;
@@ -22,47 +24,23 @@ const Content = styled.button`
     font-size: 8px;
     background-color: #f5f5f5;
     border-color: #f5f5f5;
+    margin-bottom: 10px;
+    border-radius: 5px;
 `;
 
-function Select({ props }) {
+const Select = (props) => {
+    const { list, maxButtons } = props;
+    const buttonList = list.slice(0, maxButtons);
     return (
         <Container>
             <Head>제시어 카테고리</Head>
             <Line>
-                <Content>{ props.name}</Content>
-            </Line>
-            <Line>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-            </Line>
-            <Line>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-            </Line>
-            <Line>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-            </Line>
-            <Line>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-            </Line>
-            <Line>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-            </Line>
-            <Line>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
-                <Content>스포츠</Content>
+                {buttonList.map((item, index) => (
+                    <Content key={index}>{item}</Content>
+                ))}
             </Line>
         </Container>
     );
-}
+};
 
 export default Select;
