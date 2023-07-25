@@ -1,22 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import PuppyRun from "../assets/img/Puppy-run.gif";
 import ProgressTimer from "react-progress-bar-timer";
-
-const Timer = () => {
+import "../css/timer.css";
+const Timer = (props) => {
+    const time = props;
     return (
         <>
             <ProgressTimer
                 barRounded
-                buttonText="타이머"
                 direction="left"
-                duration={10}
+                duration={typeof time === "number" ? time : 10}
                 fontSize={16}
-                label="남은 시간"
                 onFinish={function noRefCheck() {}}
                 rootRounded
                 started={{}}
                 variant="empty"
-                classes={{ progress: "height:10%" }}
+                classes={{
+                    progressContainer: "progressContainer",
+                    textContainer: "textContainer",
+                    progress: "progress",
+                }}
             />
             <img src={PuppyRun} alt="" width="40px" />
         </>
