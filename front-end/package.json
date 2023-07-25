@@ -7,8 +7,11 @@
         "@reduxjs/toolkit": "^1.9.5",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-progress-bar-timer": "^0.3.4",
+        "react-redux": "^8.1.1",
         "react-router-dom": "^6.14.2",
         "react-scripts": "5.0.1",
+        "redux": "^4.2.1",
         "styled-components": "^6.0.5",
         "styled-reset": "^4.5.1",
         "web-vitals": "^2.1.4"
