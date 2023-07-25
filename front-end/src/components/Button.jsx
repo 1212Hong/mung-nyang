@@ -1,7 +1,33 @@
 import React from "react";
 import { styled } from "styled-components";
+import { motion } from "framer-motion";
+const StyledButton = styled(motion.button)`
+    width: ${(props) =>
+        props.type !== "icon" && !props.width ? "200px" : props.width};
+    height: ${(props) =>
+        props.type !== "icon" && !props.height ? "50px" : props.height};
+    background: ${(props) => props.background ?? "#F4D7C5"};
+    font-size: ${(props) => props.fontSize ?? "16px"};
+    color: ${(props) => props.fontColor ?? "#F5F5F5"};
+    font-weight: ${(props) => props.weight ?? "normal"};
+    border-radius: ${(props) => props.border ?? "30px"};
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    object-fit: ${(props) => (props.type === "icon" ? "fill" : "none")};
+    padding: 10px 20px;
+    border: none;
+    &:hover {
+        transition: all 0.8s;
+        color: ${(props) => (props.hoverColor ? props.fontColor : "#000")};
+        background-color: ${(props) =>
+            props.hoverBgColor ? props.hoverBgColor : "#D08A5F"};
+    }
+    /* whiletab: ${(props) => props.whileTab}; */
+`;
 
-// 방만들기 버튼, 캡쳐버튼, url복사 버튼 리롤 버튼, 도움말 버튼, 정답 버튼, pass or fail
 const Button = (props) => {
     const {
         width,
@@ -13,29 +39,13 @@ const Button = (props) => {
         fontColor,
         weight,
         border,
-        onClick,
+        text,
         children,
         type,
+        onClick,
+        whileTab,
     } = props;
 
-    const StyledButton = styled.button`
-        width: ${type !== "icon" && !width ? "200px" : width};
-        height: ${type !== "icon" && !height ? "50px" : height};
-        background: ${background ?? "#F4D7C5"};
-        font-size: ${fontSize ?? "16px"};
-        color: ${fontColor ?? "#F5F5F5"};
-        font-weight: ${weight ?? "normal"};
-        border-radius: ${border ?? "30px"};
-        cursor: pointer;
-        align-items: center;
-        object-fit: ${type === "icon" ? "fill" : "none"};
-        border: none;
-        &:hover {
-            transition: all 0.8s;
-            color: ${hoverColor ? fontColor : "#000"};
-            background-color: ${hoverBgColor ? background : "#D08A5F"};
-        }
-    `;
     return (
         <StyledButton
             width={width}
@@ -46,8 +56,12 @@ const Button = (props) => {
             weight={weight}
             border={border}
             onClick={onClick}
+            type={type}
+            whileTab={whileTab}
+            hoverColor={hoverColor}
+            hoverBgColor={hoverBgColor}
         >
-            {/* {text} */}
+            {text}
             {children}
         </StyledButton>
     );

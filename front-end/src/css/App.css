@@ -1,18 +1,19 @@
-@font-face {
-    font-family: "gugi";
-    src: url(../assets/fonts/Gugi-Regular.ttf);
+ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--accent);
 }
 
-@font-face {
-    font-family: "BagelFatOne";
-    src: url(../assets/fonts/BagelFatOne-Regular.ttf);
+li {
+    color: var(--background);
+    display: block;
+    transform-origin: -20px 50%;
 }
 
-@font-face {
-    font-family: "BlackHanSans";
-    src: url(../assets/fonts/BlackHanSans-Regular.ttf);
-}
-
-.App {
-    font-family: "BlackHanSans";
+ul,
+li {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
 }
