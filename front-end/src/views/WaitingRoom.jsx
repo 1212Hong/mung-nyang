@@ -1,5 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import Button from "../components/Button";
+// import StyledButton from "../components/Button";
+import { ReactComponent as LinkIcon } from "../assets/img/link_image.svg";
+import { ReactComponent as CaptureIcon } from "../assets/img/capture_image.svg";
+import { ReactComponent as DogFootIcon } from "../assets/img/dog_foot.svg";
+import { ReactComponent as QuestionIcon } from "../assets/img/question_mark.svg";
 
 function WaitingRoom() {
     const Container = styled.div`
@@ -84,12 +90,21 @@ function WaitingRoom() {
         background-color: white;
         margin: 5px;
         border-radius: 20px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
     `;
     const MenuBox = styled.div`
         height: 50px;
         background-color: #ded7be;
         margin: 15px;
         border-radius: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 10px;
+        padding-right: 10px;
     `;
 
     const StartnSetBox = styled.div`
@@ -104,7 +119,7 @@ function WaitingRoom() {
         height: 50px;
         border-radius: 20px;
         width: 130px;
-        background-color: #ded7be;
+        background-color: #f1ead2;
         margin-right: 20px;
     `;
 
@@ -139,11 +154,44 @@ function WaitingRoom() {
                     <ParticipantBox></ParticipantBox>
                     <ChattingBox>
                         <ChatBox></ChatBox>
-                        <ChattingInputBox></ChattingInputBox>
+                        <ChattingInputBox>
+                            <Button type="icon" background="#FFFFFF">
+                                <DogFootIcon width="23" height="23" />
+                            </Button>
+                        </ChattingInputBox>
                     </ChattingBox>
-                    <MenuBox></MenuBox>
+                    <MenuBox>
+                        <Button
+                            type="icon"
+                            width="50"
+                            height="30"
+                            background="#ded7be"
+                        >
+                            <QuestionIcon />
+                        </Button>
+                        <Button
+                            type="icon"
+                            width="50"
+                            height="30"
+                            background="#ded7be"
+                        >
+                            <LinkIcon />
+                        </Button>
+                        <Button
+                            type="icon"
+                            width="50"
+                            height="30"
+                            background="#ded7be"
+                        >
+                            <CaptureIcon />
+                        </Button>
+                    </MenuBox>
                     <StartnSetBox>
-                        <StartBox>START</StartBox>
+                        <StartBox>
+                            <Button width="130px" height="50px">
+                                START
+                            </Button>
+                        </StartBox>
                         <SetBox>SET</SetBox>
                     </StartnSetBox>
                 </Rightbox>
