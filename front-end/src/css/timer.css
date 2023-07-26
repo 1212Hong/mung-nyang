@@ -1,9 +1,0 @@
-.progressContainer,
-.progress {
-    height: 40px;
-    overflow: hidden;
-}
-.textContainer {
-    height: 25px;
-    justify-content: flex-start !important;
-}
