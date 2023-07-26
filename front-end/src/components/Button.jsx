@@ -60,7 +60,7 @@ const Button = (props) => {
             hoverColor={hoverColor}
             hoverBgColor={hoverBgColor}
         >
-            {/* {text} */}
+            {text}
             {children}
         </StyledButton>
     );
