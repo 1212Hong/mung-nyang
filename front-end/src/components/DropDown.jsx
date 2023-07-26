@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { stagger, useAnimate } from "framer-motion";
 import Button from "./Button";
+import { styled } from "styled-components";
+
+const Menu = styled.nav`
+    filter: drop-shadow(1px 1px 1px var(--beige));
+    width: 200px;
+    /* ref: ${(props) => props.scope}; */
+`;
+
+const BtnList = styled.li`
+    display: inline-block;
+`;
 
 const DropDown = () => {
     const [isOpen, setIsOpen] = useState(false);
     const scope = useMenuAnimation(isOpen);
+    const [setCnt, setSetCnt] = useState(3);
+
+    const setArr = [3, 6, 9];
 
     const staggerMenuItems = stagger(0.1, { startDelay: 0.15 });
 
@@ -19,7 +33,7 @@ const DropDown = () => {
                 {
                     clipPath: isOpen
                         ? "inset(0% 0% 0% 0% round 10px)"
-                        : "inset(10% 50% 90% 50% round 10px)",
+                        : "inset(50% 90% 10% 50% round 10px)",
                 },
                 {
                     type: "spring",
@@ -42,19 +56,28 @@ const DropDown = () => {
 
         return scope;
     }
+
+    function selectSet(idx) {
+        console.log(setCnt);
+        setSetCnt(setArr[idx]);
+    }
     return (
-        <nav className="menu" ref={scope}>
+        <Menu ref={scope}>
             <ul
                 style={{
                     pointerEvents: isOpen ? "auto" : "none",
-                    clipPath: "inset(10% 50% 90% 50% round 10px)",
+                    clipPath: "inset(50% 90% 10% 50% round 10px)",
                 }}
             >
-                <li>Item 1 </li>
-                <li>Item 2 </li>
-                <li>Item 3 </li>
-                <li>Item 4 </li>
-                <li>Item 5 </li>
+                {setArr.map((item, idx) => {
+                    return (
+                        <BtnList key={idx}>
+                            <Button onClick={() => selectSet(idx)}>
+                                {item}
+                            </Button>
+                        </BtnList>
+                    );
+                })}
             </ul>
             <Button whileTap={0.8} onClick={() => setIsOpen(!isOpen)}>
                 Menu
@@ -64,7 +87,7 @@ const DropDown = () => {
                     </svg>
                 </div>
             </Button>
-        </nav>
+        </Menu>
     );
 };
 

@@ -76,11 +76,6 @@ p {
     font-size: 16px;
 }
 
-.menu {
-    filter: drop-shadow(1px 1px 1px var(--beige));
-    width: 300px;
-}
-
 ul {
     display: flex;
     flex-direction: column;
