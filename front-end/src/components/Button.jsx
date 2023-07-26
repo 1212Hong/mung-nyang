@@ -44,6 +44,7 @@ const Button = (props) => {
         onClick,
         children,
         type,
+        text,
     } = props;
 
     return (
