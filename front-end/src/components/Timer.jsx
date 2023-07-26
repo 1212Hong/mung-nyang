@@ -1,7 +1,7 @@
 import React from "react";
 import PuppyRun from "../assets/img/Puppy-run.gif";
 import ProgressTimer from "react-progress-bar-timer";
-import "../css/timer.css";
+import "../css/style//timer.css";
 const Timer = (props) => {
     const time = props;
     return (
@@ -10,17 +10,17 @@ const Timer = (props) => {
                 barRounded
                 direction="left"
                 duration={typeof time === "number" ? time : 10}
-                fontSize={16}
-                onFinish={function noRefCheck() {}}
+                fontSize={4}
                 rootRounded
-                started={{}}
+                started={true}
                 variant="empty"
                 classes={{
                     progressContainer: "progressContainer",
                     textContainer: "textContainer",
                     progress: "progress",
                 }}
-            />
+            ></ProgressTimer>
+
             <img src={PuppyRun} alt="" width="40px" />
         </>
     );
