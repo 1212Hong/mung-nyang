@@ -29,6 +29,14 @@ const Content = styled.button`
     margin-bottom: 30px;
     border-radius: 10px;
     color: ${`var(--brown-dark)`};
+    transition: all 0.2s ease-in-out; /* 확대 효과를 위한 transition 속성 추가 */
+
+    &:hover {
+        transform: scale(
+            1.5
+        ); /* 마우스 커서를 올렸을 때 버튼 크기를 1.1배로 확대 */
+        cursor: pointer;
+    }
 `;
 
 const PonitedPersonAnswer = (props) => {
