@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 const Box = styled.div`
-    background-color: #f2ead3;
+    background-color: ${`var(--beige)`};
     width: 400px;
     height: 500px;
-    border: 1px solid #ccc;
+    border: 1px solid ${`var(--black)`};
     border-radius: 8px;
     padding: 16px;
     margin: 16px;
@@ -33,7 +33,7 @@ const Icon = styled.div`
 `;
 const Text = styled.div`
     font-size: 32px;
-    color: #3d2302;
+    color: ${`var(--black)`};
     margin-left: 70px;
     margin-right: 70px;
 `;
