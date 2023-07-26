@@ -1,14 +1,15 @@
 import React from "react";
 import { styled } from "styled-components";
 import { motion } from "framer-motion";
+
 const StyledButton = styled(motion.button)`
     width: ${(props) =>
         props.type !== "icon" && !props.width ? "200px" : props.width};
     height: ${(props) =>
         props.type !== "icon" && !props.height ? "50px" : props.height};
-    background: ${(props) => props.background ?? "#F4D7C5"};
+    background: ${(props) => props.background ?? `var(--vanilla-cream)`};
     font-size: ${(props) => props.fontSize ?? "16px"};
-    color: ${(props) => props.fontColor ?? "#F5F5F5"};
+    color: ${(props) => props.fontColor ?? `var(--white)`};
     font-weight: ${(props) => props.weight ?? "normal"};
     border-radius: ${(props) => props.border ?? "30px"};
     cursor: pointer;
@@ -21,9 +22,10 @@ const StyledButton = styled(motion.button)`
     border: none;
     &:hover {
         transition: all 0.8s;
-        color: ${(props) => (props.hoverColor ? props.fontColor : "#000")};
+        color: ${(props) =>
+            props.hoverColor ? props.fontColor : `var(--black)`};
         background-color: ${(props) =>
-            props.hoverBgColor ? props.hoverBgColor : "#D08A5F"};
+            props.hoverBgColor ? props.hoverBgColor : `var(--macciato)`};
     }
     /* whiletab: ${(props) => props.whileTab}; */
 `;
@@ -39,11 +41,9 @@ const Button = (props) => {
         fontColor,
         weight,
         border,
-        text,
+        onClick,
         children,
         type,
-        onClick,
-        whileTab,
     } = props;
 
     return (
@@ -57,11 +57,10 @@ const Button = (props) => {
             border={border}
             onClick={onClick}
             type={type}
-            whileTab={whileTab}
             hoverColor={hoverColor}
             hoverBgColor={hoverBgColor}
         >
-            {text}
+            {/* {text} */}
             {children}
         </StyledButton>
     );
