@@ -5,7 +5,7 @@ const Container = styled.div`
     padding-bottom: 40px;
     width: 600px;
     height: 300px;
-    background: #f2ead3;
+    background: ${`var(--beige)`};
     text-align: center;
     border-radius: 5px;
 `;
@@ -16,21 +16,21 @@ const Head = styled.div`
     padding-right: 10px;
     font-size: 64px;
     text-align: left;
-    color: #ded7be;
-    background-color: #3d2302;
+    color: ${`var(--beige-dark)`};
+    background-color: ${`var(--brown-dark)`};
 `;
 const Title = styled.div`
     padding: 20px;
     margin-bottom: 20px;
     text-align: center;
     font-size: 32px;
-    color: #847070;
+    color: ${`var(--dusty-pink-dark)`};
 `;
 const Box = styled.div`
     display: flex;
 `;
 const Content = styled.button`
-    background-color: #f5f5f5;
+    background-color: ${`var(--white)`};
     margin-right: 10px;
     margin-left: 10px;
     width: 350px;
