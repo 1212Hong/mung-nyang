@@ -4,9 +4,10 @@ import styled from "styled-components";
 const Container = styled.div`
     padding: 20px;
     width: 600px;
-    height: 600px;
+    height: 300px;
     background: #f2ead3;
     text-align: center;
+    border-radius: 5px;
 `;
 const Head = styled.div`
     padding-bottom: 30px;
@@ -26,16 +27,16 @@ const Content = styled.button`
     border-color: #f5f5f5;
     margin-bottom: 30px;
     border-radius: 5px;
+    color: #3d2302;
 `;
 
 const Select = (props) => {
-    const { list, maxButtons, title } = props;
-    const buttonList = list.slice(0, maxButtons);
+    const { list, title } = props;
     return (
         <Container>
             <Head>{title}</Head>
             <Line>
-                {buttonList.map((item, index) => (
+                {list.map((item, index) => (
                     <Content key={index}>{item}</Content>
                 ))}
             </Line>
