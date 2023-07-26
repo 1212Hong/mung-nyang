@@ -1,7 +1,8 @@
 import React from "react";
 import { styled } from "styled-components";
+import { motion } from "framer-motion";
 
-const StyledButton = styled.button`
+const StyledButton = styled(motion.button)`
     width: ${(props) =>
         props.type !== "icon" && !props.width ? "200px" : props.width};
     height: ${(props) =>
@@ -12,16 +13,21 @@ const StyledButton = styled.button`
     font-weight: ${(props) => props.weight ?? "normal"};
     border-radius: ${(props) => props.border ?? "30px"};
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    text-align: center;
     object-fit: ${(props) => (props.type === "icon" ? "fill" : "none")};
+    padding: 10px 20px;
     border: none;
     &:hover {
         transition: all 0.8s;
         color: ${(props) =>
             props.hoverColor ? props.fontColor : `var(--black)`};
         background-color: ${(props) =>
-            props.hoverBgColor ? props.background : `var(--macciato)`};
+            props.hoverBgColor ? props.hoverBgColor : `var(--macciato)`};
     }
+    /* whiletab: ${(props) => props.whileTab}; */
 `;
 
 const Button = (props) => {
@@ -38,6 +44,7 @@ const Button = (props) => {
         onClick,
         children,
         type,
+        text,
     } = props;
 
     return (
@@ -54,7 +61,7 @@ const Button = (props) => {
             hoverColor={hoverColor}
             hoverBgColor={hoverBgColor}
         >
-            {/* {text} */}
+            {text}
             {children}
         </StyledButton>
     );
