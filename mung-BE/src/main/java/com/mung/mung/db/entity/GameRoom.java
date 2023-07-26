@@ -22,9 +22,9 @@ public class GameRoom {
 
     private String roomTitle;
 
-    private LocalDateTime roomPw;
+    private String roomPw;
 
-    private LocalDateTime roomUrl;
+    private String roomUrl;
 
     private LocalDateTime startTime;
 
