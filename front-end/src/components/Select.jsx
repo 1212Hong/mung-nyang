@@ -5,7 +5,7 @@ const Container = styled.div`
     padding: 20px;
     width: 600px;
     height: 300px;
-    background: #f2ead3;
+    background: ${`var(--beige)`};
     text-align: center;
     border-radius: 5px;
 `;
@@ -23,11 +23,11 @@ const Content = styled.button`
     width: 150px;
     height: 50px;
     font-size: 16px;
-    background-color: #f5f5f5;
-    border-color: #f5f5f5;
+    background-color: ${`var(--white)`};
+    border-color: ${`var(--white)`};
     margin-bottom: 30px;
     border-radius: 5px;
-    color: #3d2302;
+    color: ${`var(--brown-dark)`};
 `;
 
 const Select = (props) => {
