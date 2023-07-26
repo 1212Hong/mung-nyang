@@ -21,9 +21,9 @@ const Button = (props) => {
     const StyledButton = styled.button`
         width: ${type !== "icon" && !width ? "200px" : width};
         height: ${type !== "icon" && !height ? "50px" : height};
-        background: ${background ?? "#F4D7C5"};
+        background: ${background ?? `var(--vanilla-cream)`};
         font-size: ${fontSize ?? "16px"};
-        color: ${fontColor ?? "#F5F5F5"};
+        color: ${fontColor ?? `var(--white)`};
         font-weight: ${weight ?? "normal"};
         border-radius: ${border ?? "30px"};
         cursor: pointer;
@@ -32,8 +32,8 @@ const Button = (props) => {
         border: none;
         &:hover {
             transition: all 0.8s;
-            color: ${hoverColor ? fontColor : "#000"};
-            background-color: ${hoverBgColor ? background : "#D08A5F"};
+            color: ${hoverColor ? fontColor : `var(--black)`};
+            background-color: ${hoverBgColor ? background : `var(--macciato)`};
         }
     `;
     return (
