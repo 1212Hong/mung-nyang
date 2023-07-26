@@ -4,7 +4,6 @@ import Router from "./router/Router";
 import App from "./App";
 import "./css/index.css";
 import "./assets/fonts/font.css";
-
 import { Provider } from "react-redux";
 import store from "./store/store";
 
@@ -16,6 +15,5 @@ root.render(
         </Provider>
 
         <Router />
-        <App />
     </React.StrictMode>,
 );
