@@ -1,7 +1,7 @@
 import React from "react";
 import PuppyRun from "../assets/img/Puppy-run.gif";
 import ProgressTimer from "react-progress-bar-timer";
-import "../css/style//timer.css";
+import "../css/style/timer.css";
 const Timer = (props) => {
     const time = props;
     return (
