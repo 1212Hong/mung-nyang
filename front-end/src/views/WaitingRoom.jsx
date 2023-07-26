@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "../components/Button";
-// import StyledButton from "../components/Button";
 import { ReactComponent as LinkIcon } from "../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../assets/img/capture_image.svg";
 import { ReactComponent as DogFootIcon } from "../assets/img/dog_foot.svg";
@@ -130,7 +129,15 @@ const SetBox = styled.div`
     background-color: #ded7be;
 `;
 const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
+
 function WaitingRoom() {
+    const [setCnt, setSetCnt] = useState(3);
+
+    function selectSet(idx) {
+        console.log(setCnt);
+        // setSetCnt(setArr[idx]);
+    }
+
     return (
         <Container>
             <ContainerBody>
@@ -144,7 +151,9 @@ function WaitingRoom() {
                     </VideoboxGrid>
                 </Leftbox>
                 <Rightbox>
-                    <ParticipantBox></ParticipantBox>
+                    <ParticipantBox>
+                        <DropDown />
+                    </ParticipantBox>
                     <ChattingBox>
                         <ChatBox></ChatBox>
                         <ChattingInputBox>
@@ -170,9 +179,7 @@ function WaitingRoom() {
                                 START
                             </Button>
                         </StartBox>
-                        <SetBox>
-                            <DropDown />
-                        </SetBox>
+                        <DropDown />
                     </StartnSetBox>
                 </Rightbox>
             </ContainerBody>
