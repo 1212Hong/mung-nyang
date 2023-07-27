@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import VideoBoxing from "../components/VideoBoxing";
-import Button from "../components/Button";
-import CameraIcon from "../assets/img/camera.png";
-
+import VideoBoxing from "../../components/VideoBoxing";
+import Button from "../../components/Button";
+import CameraIcon from "../../assets/img/camera.png";
 const Container = styled.div`
     margin: 0;
 `;
@@ -29,10 +28,13 @@ const CurSubFunction = styled.div`
     height: ${(props) => (props.height ? props.height : "45%")};
     margin: ${(props) => (props.margin ? props.margin : "5px")};
     box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
 `;
 const CurSubBtn = styled.div`
-    width: ${(props) => (props.width ? props.width : "60%")};
     height: 90%;
+
+    box-sizing: border-box;
     margin: ${(props) => (props.margin ? props.margin : "3px")};
 `;
 const WaitingParticipants = styled.div`
@@ -46,11 +48,11 @@ function WordDescription() {
         <Container>
             <Participants>
                 <CurParticipants width={"60%"}>
-                    <VideoBoxing width={"100%"} height={"100%"}></VideoBoxing>
+                    <VideoBoxing width={"80%"} height={"80%"}></VideoBoxing>
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
                     <CurFunction>
-                        <VideoBoxing width={"100%"}></VideoBoxing>
+                        <VideoBoxing width={"80%"} height={"60%"}></VideoBoxing>
                     </CurFunction>
                     <CurFunction height={"36%"}>
                         <CurSubFunction>
@@ -64,14 +66,14 @@ function WordDescription() {
                         <CurSubFunction>
                             <CurSubBtn>
                                 <Button
-                                    width={"70%"}
-                                    height={"100%"}
                                     text={"정답"}
                                     fontSize={"32px"}
                                 ></Button>
                             </CurSubBtn>
-                            <CurSubBtn width={"40%"}>
-                                <img alt="camera" src={CameraIcon}></img>
+                            <CurSubBtn>
+                                <Button>
+                                    <img alt="camera" src={CameraIcon}></img>
+                                </Button>
                             </CurSubBtn>
                         </CurSubFunction>
                     </CurFunction>
