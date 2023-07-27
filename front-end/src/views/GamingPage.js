@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState } from "react";
 import { apiInstance } from "../api/index";
 
@@ -8,9 +7,14 @@ function App() {
 
     async function CallPhase() {
         await api
-            .get(`http://localhost:8080/gamerooms/phase`)
+            .get(`/gamerooms/curPhase`, {
+                withCredentials: true,
+            })
             .then((response) => setCurPhase(response.data))
-            .error(setCurPhase(-1));
+            .catch((response) => {
+                setCurPhase(-1);
+                console.log(response.data);
+            });
     }
     return (
         <div>
