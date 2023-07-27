@@ -10,7 +10,6 @@ import static com.mung.mung.db.entity.QGameRoom.gameRoom;
 import java.util.List;
 @RequiredArgsConstructor
 public class GameRoomRepositoryImpl implements GameRoomRepositoryCustom{
-
     private final JPAQueryFactory queryFactory;
 //    QGameRoom qGameRoom = QGameRoom.gameRoom;
     @Override
