@@ -1,11 +1,10 @@
 import React from "react";
-import Timer from "../components/Timer";
+import SelectLiar from "./components/SelectLiar";
 
 const Home = () => {
     return (
         <div>
-            <h1>홈페이지</h1>
-            <Timer />
+            <SelectLiar></SelectLiar>
         </div>
     );
 };
