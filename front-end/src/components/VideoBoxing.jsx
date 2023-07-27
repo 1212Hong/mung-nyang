@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { styled } from "styled-components";
 
 const StyledVideo = styled.video`
@@ -6,7 +6,9 @@ const StyledVideo = styled.video`
     height: ${(props) => props.height ?? "150px"};
     border: ${(props) => props.border ?? "0px"};
     object-fit: ${(props) => props.objectfit ?? "fill"};
+    border-radius: 20px;
 `;
+
 const VideoComponent = (props) => {
     // styled-components settings
     const { width, height, border, objectfit } = props;
@@ -17,17 +19,38 @@ const VideoComponent = (props) => {
         audio: true,
         video: true,
     };
+
     // video on
     const startVideo = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        if (videoRef && videoRef.current && !videoRef.current.srcObject) {
-            videoRef.current.srcObject = stream;
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia(
+                constraints,
+            );
+            if (videoRef.current && !videoRef.current.srcObject) {
+                videoRef.current.srcObject = stream;
+            }
+        } catch (error) {
+            console.error("Error accessing media devices:", error);
         }
     };
+
     // video off
-    const endVideo = async () => {
-        videoRef.current.srcObject = null;
+    const endVideo = () => {
+        if (videoRef.current && videoRef.current.srcObject) {
+            const tracks = videoRef.current.srcObject.getTracks();
+            tracks.forEach((track) => track.stop());
+            videoRef.current.srcObject = null;
+        }
     };
+
+    // Automatically start video on component mount
+    useEffect(() => {
+        startVideo();
+        return () => {
+            endVideo(); // Clean up by stopping the video stream when the component unmounts
+        };
+    }, []);
+
     return (
         <div>
             <StyledVideo
@@ -35,11 +58,10 @@ const VideoComponent = (props) => {
                 height={height}
                 border={border}
                 ref={videoRef}
-                object-fit={objectfit}
+                objectfit={objectfit}
                 autoPlay
             />
-            <button onClick={startVideo}>start</button>
-            <button onClick={endVideo}>end</button>
+            {/* <button onClick={endVideo}>End Video</button> */}
         </div>
     );
 };
