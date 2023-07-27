@@ -2,7 +2,7 @@ import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 
 const GlobalStyle = createGlobalStyle`
-    ${reset}
+    ${reset};
     html {
         --black: #000000;
         --ash-black: #222;
@@ -19,6 +19,11 @@ const GlobalStyle = createGlobalStyle`
         --vanilla-cream: #F4D7C5;
         --macciato: #AC8367;
         --orange: #f98e11;
+    }
+    .WordDescription{
+        width: 1280px;
+        height: 750px;
+        margin: 0 150px;
     }
 `;
 
