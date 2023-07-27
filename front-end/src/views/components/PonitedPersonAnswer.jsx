@@ -8,7 +8,7 @@ const Container = styled.div`
 const Head = styled.div`
     background-color: ${`var(--brown-dark)`};
     padding: 30px;
-    margin-left: 400px;
+    margin-left: 375px;
     margin-right: 400px;
     font-size: 32px;
     border-radius: 10px;
