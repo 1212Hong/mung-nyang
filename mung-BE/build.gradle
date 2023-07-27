@@ -54,6 +54,11 @@ dependencies {
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
+	// https://mvnrepository.com/artifact/io.openvidu/openvidu-java-client
+	//OpenVidu
+	implementation group: 'io.openvidu', name: 'openvidu-java-client', version: '2.28.0'
+
+
 }
 
 //// Querydsl 설정부
