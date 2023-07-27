@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
         --macciato: #AC8367;
         --orange: #f98e11;
     }
-    .WordDescription{
+    .App{
         width: 1280px;
         height: 750px;
         margin: 0 150px;
