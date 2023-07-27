@@ -7,6 +7,7 @@
         "@reduxjs/toolkit": "^1.9.5",
         "axios": "^1.4.0",
         "framer-motion": "^10.13.1",
+        "http-proxy-middleware": "^2.0.6",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-progress-bar-timer": "^0.3.4",
@@ -50,5 +51,6 @@
         "eslint-plugin-prettier": "^5.0.0",
         "eslint-plugin-react": "^7.28.0",
         "eslint-plugin-react-hooks": "^4.3.0"
-    }
+    },
+    "proxy": "http://localhost:8080"
 }
