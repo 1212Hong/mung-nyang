@@ -14,7 +14,7 @@ const StyledButton = styled(motion.button)`
     border-radius: ${(props) => props.border ?? "30px"};
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     text-align: center;
     object-fit: ${(props) => (props.type === "icon" ? "fill" : "none")};
