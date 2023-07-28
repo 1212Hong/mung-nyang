@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
 
 //@CrossOrigin(origins = "*")
+@Slf4j
 @RestController
 public class OVController {
 
@@ -45,8 +47,12 @@ public class OVController {
     @PostMapping("/api/sessions")
     public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException {
+        System.out.println(params);
+//        log.info("params : ", params);
         SessionProperties properties = SessionProperties.fromJson(params).build();
+//        log.info("properties : ", String.valueOf(properties));
         Session session = openvidu.createSession(properties);
+//        log.info("session : ",String.valueOf(session));
         return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
     }
 
