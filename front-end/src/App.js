@@ -6,8 +6,8 @@ function App() {
     return (
         <div className="App">
             <GlobalStyle />
+            test
             <span>도(그)라이(어 게임)</span>
-            <Timer />
         </div>
     );
 }

@@ -1,7 +1,17 @@
+// (1) queryDSL 추가
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.14'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+
+	// (2) queryDSL 추가
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.mung'
@@ -33,32 +43,73 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	//Querydsl
-	implementation "com.querydsl:querydsl-jpa"
+//	implementation "com.querydsl:querydsl-jpa"
 	implementation "com.querydsl:querydsl-core"
 	implementation "com.querydsl:querydsl-collections"
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
+//	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+
+	//querydsl 추가
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+	// https://mvnrepository.com/artifact/io.openvidu/openvidu-java-client
+	//OpenVidu
+	implementation group: 'io.openvidu', name: 'openvidu-java-client', version: '2.28.0'
+
+
 }
 
-// Querydsl 설정부
-def generated = 'src/main/generated'
+//// Querydsl 설정부
+//def generated = 'src/main/generated'
+//
+//// querydsl QClass 파일 생성 위치를 지정
+//tasks.withType(JavaCompile) {
+//	options.getGeneratedSourceOutputDirectory().set(file(generated))
+//}
+//
+//// java source set 에 querydsl QClass 위치 추가
+//sourceSets {
+//	main.java.srcDirs += [ generated ]
+//}
+//
+//// gradle clean 시에 querydsl QClass 디렉토리 삭제
+//clean {
+//	delete file(generated)
+//}
+//
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
 
-// querydsl QClass 파일 생성 위치를 지정
-tasks.withType(JavaCompile) {
-	options.getGeneratedSourceOutputDirectory().set(file(generated))
-}
-
-// java source set 에 querydsl QClass 위치 추가
-sourceSets {
-	main.java.srcDirs += [ generated ]
-}
-
-// gradle clean 시에 querydsl QClass 디렉토리 삭제
-clean {
-	delete file(generated)
-}
-
-tasks.named('test') {
+test {
 	useJUnitPlatform()
 }
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+	main.java.srcDir querydslDir
+}
+
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
+}
+
+/**
+ * comileQuerydsl.doFirst 추가
+ */
+//compileQuerydsl.doFirst {
+//if(file(querydslDir).exists() )
+//delete(file(querydslDir))
+//}
