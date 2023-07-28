@@ -11,7 +11,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class GameRoomRepositoryImpl implements GameRoomRepositoryCustom{
-
     private final JPAQueryFactory queryFactory;
     // queryFactory 내부 메서드 들을 사용하기 위함
 //    QGameRoom qGameRoom = QGameRoom.gameRoom;
