@@ -6,14 +6,15 @@ import Timer from "../../components/Timer";
 
 const Container = styled.div``;
 const Line = styled.div`
-    margin-top: 20px;
     display: grid;
     grid-template-columns: 430px 430px 430px;
     margin-bottom: 20px;
     margin-left: 50px;
 `;
 const Box = styled.div`
+    margin-top: 10px;
     transition: all 0.2s ease-in-out;
+    position: relative;
 
     &:hover {
         transform: scale(1.1);
@@ -59,52 +60,53 @@ const SelectLiar = () => {
 
     const handleBoxClick = (boxIndex) => {
         setActiveBox(boxIndex === activeBox ? null : boxIndex);
+
+        // 클릭한 Box 정보를 JSON 형태로 변환
+        const clickedBoxData = JSON.stringify({ boxIndex });
+
+        // 백앤드 서버 URL 설정 (예시)
+        const serverURL = "/api/clickedBoxes";
+
+        // 백앤드 서버로 클릭한 Box 정보 전송
+        fetch(serverURL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: clickedBoxData,
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error("Error sending data to the server:", error);
+            });
     };
+
+    const user_list = [0, 1, 2, 3, 4, 5];
 
     return (
         <Container>
             <Timer></Timer>
             <Line>
-                <Box onClick={() => handleBoxClick(0)}>
-                    <ImageOverlay active={activeBox === 0}>
-                        <img src={imgSrc} alt="사진" width="100%" />
-                    </ImageOverlay>
-                    <VideoComponent width="300px" height="300px" />
-                </Box>
-                <Box onClick={() => handleBoxClick(1)}>
-                    <ImageOverlay active={activeBox === 1}>
-                        <img src={imgSrc} alt="사진" width="100%" />
-                    </ImageOverlay>
-                    <VideoComponent width="300px" height="300px" />
-                </Box>
-                <Box onClick={() => handleBoxClick(2)}>
-                    <ImageOverlay active={activeBox === 2}>
-                        <img src={imgSrc} alt="사진" width="100%" />
-                    </ImageOverlay>
-                    <VideoComponent width="300px" height="300px" />
-                </Box>
+                {user_list.map((boxIndex) => (
+                    <Box
+                        key={boxIndex}
+                        onClick={() => handleBoxClick(boxIndex)}
+                    >
+                        <ImageOverlay active={activeBox === boxIndex}>
+                            <img src={imgSrc} alt="사진" width="100%" />
+                        </ImageOverlay>
+                        <VideoComponent width="300px" height="320px" />
+                    </Box>
+                ))}
             </Line>
-            <Line>
-                <Box onClick={() => handleBoxClick(3)}>
-                    <ImageOverlay active={activeBox === 3}>
-                        <img src={imgSrc} alt="사진" width="100%" />
-                    </ImageOverlay>
-                    <VideoComponent width="300px" height="300px" />
-                </Box>
-                <Box onClick={() => handleBoxClick(4)}>
-                    <ImageOverlay active={activeBox === 4}>
-                        <img src={imgSrc} alt="사진" width="100%" />
-                    </ImageOverlay>
-                    <VideoComponent width="300px" height="300px" />
-                </Box>
-                <Box onClick={() => handleBoxClick(5)}>
-                    <ImageOverlay active={activeBox === 5}>
-                        <img src={imgSrc} alt="사진" width="100%" />
-                    </ImageOverlay>
-                    <VideoComponent width="300px" height="300px" />
-                </Box>
-            </Line>
-            ''
             <NotificationContainer show={showNotification}>
                 라이어를 선택하세요.
             </NotificationContainer>
