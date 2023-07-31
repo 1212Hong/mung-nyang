@@ -4,6 +4,7 @@ import VideoComponent from "../../components/VideoBoxing";
 import Card from "../../components/Card";
 import imageSrc from "../../assets/img/clock.png";
 import Timer from "../../components/Timer";
+
 const Container = styled.div`
     padding-left: 20px;
 `;
@@ -31,39 +32,28 @@ const Answer = styled.div`
     border-radius: 10px;
     font-size: 32px;
 `;
+
 const OtherViewAnswer = (props) => {
-    const { text } = props;
+    const { text, user_list } = props;
     const width = "200px";
     const height = "200px";
+
     return (
         <Container>
-            <Timer></Timer>
+            <Timer />
             <Head>
                 <Answer>
-                    <VideoComponent
-                        width="500px"
-                        height="400px"
-                    ></VideoComponent>
+                    <VideoComponent width="500px" height="400px" />
                 </Answer>
-
-                <Card imageSrc={imageSrc} description={text}></Card>
+                <Card imageSrc={imageSrc} description={text} />
             </Head>
-            <Box>
-                <VideoComponent width={width} height={height}></VideoComponent>
-            </Box>
-            <Box>
-                <VideoComponent width={width} height={height}></VideoComponent>
-            </Box>
-            <Box>
-                <VideoComponent width={width} height={height}></VideoComponent>
-            </Box>
-            <Box>
-                <VideoComponent width={width} height={height}></VideoComponent>
-            </Box>
-            <Box>
-                <VideoComponent width={width} height={height}></VideoComponent>
-            </Box>
+            {user_list.map((user, index) => (
+                <Box key={index}>
+                    <VideoComponent width={width} height={height} />
+                </Box>
+            ))}
         </Container>
     );
 };
+
 export default OtherViewAnswer;
