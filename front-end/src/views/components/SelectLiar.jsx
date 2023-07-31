@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import VideoComponent from "../../components/VideoBoxing";
 import foot from "../../assets/img/foot.png";
+import Timer from "../../components/Timer";
 
 const Container = styled.div`
     margin: 10px;
 `;
 const Line = styled.div`
     display: grid;
-    grid-template-columns: 500px 500px 200px;
+    grid-template-columns: 430px 430px 430px;
     margin-bottom: 20px;
     margin-left: 50px;
 `;
@@ -16,7 +17,7 @@ const Box = styled.div`
     transition: all 0.2s ease-in-out;
 
     &:hover {
-        transform: scale(1.3);
+        transform: scale(1.1);
         cursor: pointer;
     }
 `;
@@ -38,12 +39,13 @@ const ImageOverlay = styled.div`
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-80%, -50%);
     color: #fff;
     font-size: 20px;
     font-weight: bold;
     display: ${(props) => (props.active ? "block" : "none")};
 `;
+const imgSrc = foot;
 const SelectLiar = () => {
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
@@ -64,71 +66,48 @@ const SelectLiar = () => {
 
     return (
         <Container>
+            <Timer></Timer>
             <Line>
                 <Box onClick={() => handleBoxClick(0)}>
                     <ImageOverlay active={activeBox === 0}>
-                        <img
-                            src="../../assets/img/foot.png"
-                            alt="사진"
-                            width="100%"
-                        />
+                        <img src={imgSrc} alt="사진" width="100%" />
                     </ImageOverlay>
-                    <VideoComponent width="400px" height="300px" />
+                    <VideoComponent width="300px" height="300px" />
                 </Box>
                 <Box onClick={() => handleBoxClick(1)}>
                     <ImageOverlay active={activeBox === 1}>
-                        <img
-                            src="path_to_your_image.jpg"
-                            alt="사진"
-                            width="100%"
-                        />
+                        <img src={imgSrc} alt="사진" width="100%" />
                     </ImageOverlay>
-                    <VideoComponent width="400px" height="300px" />
+                    <VideoComponent width="300px" height="300px" />
                 </Box>
                 <Box onClick={() => handleBoxClick(2)}>
                     <ImageOverlay active={activeBox === 2}>
-                        <img
-                            src="path_to_your_image.jpg"
-                            alt="사진"
-                            width="100%"
-                        />
+                        <img src={imgSrc} alt="사진" width="100%" />
                     </ImageOverlay>
-                    <VideoComponent width="400px" height="300px" />
+                    <VideoComponent width="300px" height="300px" />
                 </Box>
             </Line>
             <Line>
                 <Box onClick={() => handleBoxClick(3)}>
                     <ImageOverlay active={activeBox === 3}>
-                        <img
-                            src="path_to_your_image.jpg"
-                            alt="사진"
-                            width="100%"
-                        />
+                        <img src={imgSrc} alt="사진" width="100%" />
                     </ImageOverlay>
-                    <VideoComponent width="400px" height="300px" />
+                    <VideoComponent width="300px" height="300px" />
                 </Box>
                 <Box onClick={() => handleBoxClick(4)}>
                     <ImageOverlay active={activeBox === 4}>
-                        <img
-                            src="path_to_your_image.jpg"
-                            alt="사진"
-                            width="100%"
-                        />
+                        <img src={imgSrc} alt="사진" width="100%" />
                     </ImageOverlay>
-                    <VideoComponent width="400px" height="300px" />
+                    <VideoComponent width="300px" height="300px" />
                 </Box>
                 <Box onClick={() => handleBoxClick(5)}>
                     <ImageOverlay active={activeBox === 5}>
-                        <img
-                            src="path_to_your_image.jpg"
-                            alt="사진"
-                            width="100%"
-                        />
+                        <img src={imgSrc} alt="사진" width="100%" />
                     </ImageOverlay>
-                    <VideoComponent width="400px" height="300px" />
+                    <VideoComponent width="300px" height="300px" />
                 </Box>
             </Line>
-
+            ''
             <NotificationContainer show={showNotification}>
                 라이어를 선택하세요.
             </NotificationContainer>
