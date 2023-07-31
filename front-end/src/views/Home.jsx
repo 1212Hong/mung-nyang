@@ -5,7 +5,7 @@ const Home = () => {
     return (
         <div>
             <h1>홈페이지</h1>
-            <Timer />
+            <Timer time={10} />
         </div>
     );
 };
