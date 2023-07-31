@@ -12,3 +12,8 @@
     font-family: "BlackHanSans";
     src: url(BlackHanSans-Regular.ttf);
 }
+
+@font-face {
+    font-family: "Jua";
+    src: url(Jua-Regular.ttf);
+}

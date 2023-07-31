@@ -13,7 +13,9 @@ const Timer = (props) => {
                 rootRounded
                 started={true}
                 variant="empty"
+                disabled={"true"}
                 classes={{
+                    root: "root",
                     progressContainer: "progressContainer",
                     textContainer: "textContainer",
                     progress: "progress",
