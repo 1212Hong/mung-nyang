@@ -23,7 +23,8 @@ public class GameRoomController {
 
     @ResponseBody
     @PostMapping(value="/create/{room-title}")
-    public GameRoomDto createTest(@PathVariable("room-title") String roomTitle, @RequestBody GameRoomDto requestDto){
+    public GameRoomDto createTest(@PathVariable("room-title") String roomTitle,
+                                  @RequestBody GameRoomDto requestDto){
         // DAO를 만들 필요가 없음...... repository에서 이미 save등의 메소드가 구현되어 있기 때문에 controller에서 구현해도 됨;
         String pw = requestDto.getRoomPw();
         String url = requestDto.getRoomUrl();
