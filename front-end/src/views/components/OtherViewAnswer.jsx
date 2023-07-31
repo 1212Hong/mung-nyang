@@ -5,7 +5,6 @@ import Card from "../../components/Card";
 import imageSrc from "../../assets/img/clock.png";
 import Timer from "../../components/Timer";
 const Container = styled.div`
-    margin: 5px;
     padding-left: 20px;
 `;
 const Box = styled.div`
@@ -13,12 +12,13 @@ const Box = styled.div`
     float: left;
 `;
 const Head = styled.div`
+    margin-top: 40px;
     display: grid;
-    grid-template-columns: 700px 800px;
+    grid-template-columns: 650px 650px;
 `;
 const Answer = styled.div`
     background-color: ${`var(--beige-dark)`};
-    width: 500px;
+    width: 400px;
     height: 400px;
     margin-left: 150px;
     margin-right: 150px;
