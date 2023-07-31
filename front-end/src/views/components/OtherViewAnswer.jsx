@@ -3,7 +3,7 @@ import styled from "styled-components";
 import VideoComponent from "../../components/VideoBoxing";
 import Card from "../../components/Card";
 import imageSrc from "../../assets/img/clock.png";
-
+import Timer from "../../components/Timer";
 const Container = styled.div`
     margin: 5px;
     padding-left: 20px;
@@ -14,7 +14,7 @@ const Box = styled.div`
 `;
 const Head = styled.div`
     display: grid;
-    grid-template-columns: 830px 800px;
+    grid-template-columns: 700px 800px;
 `;
 const Answer = styled.div`
     background-color: ${`var(--beige-dark)`};
@@ -33,10 +33,11 @@ const Answer = styled.div`
 `;
 const OtherViewAnswer = (props) => {
     const { text } = props;
-    const width = "250px";
+    const width = "200px";
     const height = "200px";
     return (
         <Container>
+            <Timer></Timer>
             <Head>
                 <Answer>
                     <VideoComponent
