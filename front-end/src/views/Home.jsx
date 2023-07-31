@@ -2,6 +2,7 @@ import React from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { styled } from "styled-components";
+import Modal from "../components/Modal";
 
 const HomeContainer = styled.div`
     display: flex;
@@ -31,6 +32,10 @@ const Home = () => {
                 <Button text={"입장"} />
             </LeftBox>
             <RightBox>메인화면</RightBox>
+            <Modal>
+                hihi
+                <Button>확인</Button>
+            </Modal>
         </HomeContainer>
     );
 };
