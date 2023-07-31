@@ -1,22 +1,23 @@
 import React from "react";
 import { styled } from "styled-components";
 
-const Input = (props) => {
-    const { type, width, height, fontSize } = props;
+const StyledInput = styled.input`
+    width: ${(props) => props.width};
+    height: ${(props) => props.height};
+    border: none;
+    background-color: var(--white);
+    color: var(--black);
+    font-size: ${(props) => props.fontSize};
+    padding: 10px;
+    border-radius: 10px;
+    placeholder: ${(props) => props.placeholder};
+    &:focus {
+        outline: none;
+    }
+`;
 
-    const StyledInput = styled.input`
-        width: ${width ?? "100px"};
-        height: ${height ?? "30px"};
-        border: none;
-        background-color: var(--white);
-        color: var(--black);
-        font-size: ${fontSize ?? "12px"};
-        padding: 10px;
-        border-radius: 10px;
-        &:focus {
-            outline: none;
-        }
-    `;
+const Input = (props) => {
+    const { type, width, height, fontSize, placeholder } = props;
 
     return <StyledInput type={type} />;
 };
