@@ -8,8 +8,8 @@ const Input = (props) => {
         width: ${width ?? "100px"};
         height: ${height ?? "30px"};
         border: none;
-        background-color: #d9d9d9;
-        color: #868686;
+        background-color: var(--white);
+        color: var(--black);
         font-size: ${fontSize ?? "12px"};
         padding: 10px;
         border-radius: 10px;
