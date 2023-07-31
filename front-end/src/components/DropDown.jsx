@@ -5,7 +5,8 @@ import { styled } from "styled-components";
 
 const Menu = styled.nav`
     filter: drop-shadow(1px 1px 1px var(--beige));
-    width: 200px;
+    width: 100px;
+    z-index: 1;
     /* ref: ${(props) => props.scope}; */
 `;
 
@@ -72,14 +73,23 @@ const DropDown = () => {
                 {setArr.map((item, idx) => {
                     return (
                         <BtnList key={idx}>
-                            <Button onClick={() => selectSet(idx)}>
+                            <Button
+                                onClick={() => selectSet(idx)}
+                                width="100px"
+                                height="30px"
+                            >
                                 {item}
                             </Button>
                         </BtnList>
                     );
                 })}
             </ul>
-            <Button whileTap={0.8} onClick={() => setIsOpen(!isOpen)}>
+            <Button
+                width="100px"
+                height="30px"
+                whileTap={0.8}
+                onClick={() => setIsOpen(!isOpen)}
+            >
                 Menu
                 <div className="arrow" style={{ transformOrigin: "50% 55%" }}>
                     <svg width="15" height="15" viewBox="0 0 20 20">
