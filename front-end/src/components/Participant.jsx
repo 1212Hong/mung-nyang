@@ -5,7 +5,7 @@ function Participant({ user_list, host }) {
     const Container = styled.div`
         width: 300px;
         height: 300px;
-        background-color: #f1ead2;
+        background-color: ${`var(--beige)`};
         font-size: 32px;
         border-radius: 20px;
         padding-left: 10px;
