@@ -23,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
     .App{
         width: 1280px;
         height: 750px;
-        margin: 0 150px;
+        margin: 0 auto;
     }
 `;
 
