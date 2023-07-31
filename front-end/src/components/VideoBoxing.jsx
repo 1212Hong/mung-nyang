@@ -1,16 +1,16 @@
 import React, { useRef } from "react";
 import { styled } from "styled-components";
 
+const StyledVideo = styled.video`
+    width: ${(props) => props.width ?? "20%"};
+    height: ${(props) => props.height ?? "150px"};
+    border: ${(props) => props.border ?? "0px"};
+    object-fit: ${(props) => props.objectfit ?? "fill"};
+`;
 const VideoComponent = (props) => {
     // styled-components settings
     const { width, height, border, objectfit } = props;
 
-    const StyledVideo = styled.video`
-        width: ${width ?? "100px"};
-        height: ${height ?? "100px"};
-        border: ${border ?? "0px"};
-        object-fit: ${objectfit ?? "fill"};
-    `;
     // video calls
     const videoRef = useRef(null);
     const constraints = {

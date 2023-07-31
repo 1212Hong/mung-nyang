@@ -1,14 +1,16 @@
-import Button from "./components/Button";
 import GlobalStyle from "./components/style/GlobalStyle";
 import "./css/App.css";
+import Router from "./router/Router";
+import { Provider } from "react-redux";
+import store from "./store/store";
+import "./assets/fonts/font.css";
 
 function App() {
     return (
-        <div className="App">
+        <Provider store={store}>
             <GlobalStyle />
-            <span>도(그)라이(어 게임)</span>
-            <Button>hi</Button>
-        </div>
+            <Router />
+        </Provider>
     );
 }
 

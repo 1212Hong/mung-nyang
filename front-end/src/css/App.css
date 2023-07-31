@@ -1,20 +1,19 @@
-@font-face {
-    font-family: "gugi";
-    src: url(../assets/fonts/Gugi-Regular.ttf);
-}
-
-@font-face {
-    font-family: "BagelFatOne";
-    src: url(../assets/fonts/BagelFatOne-Regular.ttf);
-}
-
-@font-face {
-    font-family: "BlackHanSans";
-    src: url(../assets/fonts/BlackHanSans-Regular.ttf);
-}
-
-.App {
-    font-family: "BlackHanSans";
+html {
+    --black: #000000;
+    --ash-black: #222;
+    --white: #f5f5f5;
+    --beige: #f2ead3;
+    --beige-dark: #ded7be;
+    --brown: #603808;
+    --brown-dark: #3d2302;
+    --beige-pink: #d8bab1;
+    --dusty-pink: #dbbebb;
+    --dusty-pink-dark: #847070;
+    --dusty-pink-light: #e2d0d0;
+    --dusty-pink-white: #f4ebeb;
+    --vanilla-cream: #f4d7c5;
+    --macciato: #ac8367;
+    --orange: #f98e11;
 }
 
 body {
@@ -34,9 +33,9 @@ body {
     left: 0;
     bottom: 0;
     right: 0;
-    /* display: flex;
-    align-items: center;
-    justify-content: center; */
+    width: 1280px;
+    height: 750px;
+    margin: 0 auto;
 }
 
 * {
@@ -53,7 +52,7 @@ h3 {
 }
 
 h1 {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 700;
     letter-spacing: -1px;
     line-height: 1.2;
@@ -73,31 +72,6 @@ h3 {
 
 p {
     font-size: 16px;
-}
-
-.menu {
-    filter: drop-shadow(1px 1px 1px var(--beige));
-    width: 300px;
-}
-
-ul {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: var(--dusty-pink);
-}
-
-li {
-    color: var(--white);
-    display: block;
-    transform-origin: -20px 50%;
-}
-
-ul,
-li {
-    list-style: none;
-    margin: 0;
-    padding: 10px;
 }
 
 input {
