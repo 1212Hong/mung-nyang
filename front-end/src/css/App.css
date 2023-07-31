@@ -1,5 +1,5 @@
 html {
-    --black: #000000;
+    --black: #111;
     --ash-black: #222;
     --white: #f5f5f5;
     --beige: #f2ead3;
@@ -39,7 +39,7 @@ body {
 }
 
 * {
-    font-family: "BlackHanSans", sans-serif;
+    font-family: "Jua", sans-serif;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
 }
@@ -47,17 +47,8 @@ body {
 h1,
 h2,
 h3 {
-    font-family: sofia-pro, sans-serif;
+    font-family: "BlackHanSans", sans-serif;
     font-style: normal;
-}
-
-h1 {
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    line-height: 1.2;
-    text-align: center;
-    margin: 100px 0 30px;
 }
 
 h2 {
