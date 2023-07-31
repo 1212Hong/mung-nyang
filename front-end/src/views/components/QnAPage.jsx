@@ -24,9 +24,12 @@ const VideoBox = styled.div`
     width: 30%;
     height: 80%;
     box-sizing: border-box;
-    border: 1px solid black;
     border-radius: 5px;
     color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
 `;
 const DescBox = styled.div`
     border: 1px solid rgba(0, 0, 0, 0.2);
