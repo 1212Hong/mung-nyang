@@ -1,12 +1,10 @@
 package com.mung.mung.db.repository;
 
 import com.mung.mung.api.dto.GameRoomDto;
-import com.mung.mung.api.dto.QGameRoomDto;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
-import static com.mung.mung.db.entity.QGameRoom.gameRoom;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,6 +20,13 @@ public class GameRoomRepositoryImpl implements GameRoomRepositoryCustom{
                 .where(gameRoom.roomTitle.eq(roomTitle))
                 .fetchOne();
     }
+
+    @Override
+    public GameRoomDto createRoom(){
+        GameRoomDto a;
+        //집에서 구현할 것
+        return a;
+    };
 
     // @Override
     // public GameRoomDto findByPk(long roomPw){
