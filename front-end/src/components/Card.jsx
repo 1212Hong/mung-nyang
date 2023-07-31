@@ -2,17 +2,16 @@ import styled from "styled-components";
 
 const Box = styled.div`
     background-color: ${`var(--beige)`};
-    width: 400px;
-    height: 500px;
+    width: 460px;
+    height: 370px;
     border: 1px solid ${`var(--black)`};
-    border-radius: 8px;
+    border-radius: 20px;
     padding: 16px;
-    margin: 16px;
     text-align: center;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 `;
 const Icon = styled.div`
-    margin-top: 100px;
+    margin-top: 50px;
     margin-bottom: 50px;
     position: relative;
     padding: 10px;
