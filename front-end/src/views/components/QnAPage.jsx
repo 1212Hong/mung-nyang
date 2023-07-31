@@ -5,13 +5,13 @@ const Container = styled.div`
     height: 100%;
     margin: 0;
 `;
-const StyledDiv = styled.div`
+const DescContainer = styled.div`
     width: 100%;
     height: 20%;
     display: flex;
     justify-content: center;
 `;
-const VideoBoxes = styled.div`
+const VideoContainer = styled.div`
     width: 100%;
     height: 38%;
     box-sizing: border-box;
@@ -62,25 +62,25 @@ function QnAPage() {
     return (
         <Container>
             <Timer />
-            <VideoBoxes>
+            <VideoContainer>
                 {upside_list.map((user, index) => (
                     <VideoBox key={index}>
                         <VideoBoxing width={"100%"} height={"180px"} />
                         {user}
                     </VideoBox>
                 ))}
-            </VideoBoxes>
-            <StyledDiv>
+            </VideoContainer>
+            <DescContainer>
                 <DescBox>정답자의 질문에 답해주세요. </DescBox>
-            </StyledDiv>
-            <VideoBoxes>
+            </DescContainer>
+            <VideoContainer>
                 {downside_list.map((user, index) => (
                     <VideoBox key={index}>
                         <VideoBoxing width={"100%"} height={"180px"} />
                         {user}
                     </VideoBox>
                 ))}
-            </VideoBoxes>
+            </VideoContainer>
         </Container>
     );
 }
