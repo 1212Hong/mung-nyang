@@ -7,8 +7,8 @@ const GlobalStyle = createGlobalStyle`
     ul {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    background: var(--accent);
+    gap: 5px;
+    background: var(--beige);
     }
 
     li {
@@ -21,7 +21,6 @@ const GlobalStyle = createGlobalStyle`
     li {
         list-style: none;
         margin: 0;
-        padding: 10px;
     }
 
     input {
