@@ -34,11 +34,12 @@ const Leftbox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 10px;
 `;
 
 const Rightbox = styled.div`
     width: 300px;
-    height: 700px;
+    height: 720px;
     background-color: ${`var(--beige)`};
     border-radius: 20px;
 `;
@@ -58,7 +59,7 @@ const VideoboxGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    grid-gap: 50px;
+    grid-gap: 30px;
     grid-auto-flow: row;
     align-items: center;
     justify-content: center;
