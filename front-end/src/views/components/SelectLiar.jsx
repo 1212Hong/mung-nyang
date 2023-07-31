@@ -4,10 +4,9 @@ import VideoComponent from "../../components/VideoBoxing";
 import foot from "../../assets/img/foot.png";
 import Timer from "../../components/Timer";
 
-const Container = styled.div`
-    margin: 10px;
-`;
+const Container = styled.div``;
 const Line = styled.div`
+    margin-top: 20px;
     display: grid;
     grid-template-columns: 430px 430px 430px;
     margin-bottom: 20px;
@@ -28,7 +27,6 @@ const NotificationContainer = styled.div`
     transform: translate(-50%, -50%);
     z-index: 9999;
     background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
     padding: 10px 20px;
     border-radius: 5px;
     display: ${(props) => (props.show ? "block" : "none")};
@@ -40,7 +38,6 @@ const ImageOverlay = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-80%, -50%);
-    color: #fff;
     font-size: 20px;
     font-weight: bold;
     display: ${(props) => (props.active ? "block" : "none")};

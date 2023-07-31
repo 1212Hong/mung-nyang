@@ -1,16 +1,13 @@
 import GlobalStyle from "./components/style/GlobalStyle";
 import "./css/App.css";
-import Router from "./router/Router";
-import { Provider } from "react-redux";
-import store from "./store/store";
-import "./assets/fonts/font.css";
+import SelectLiar from "./views/components/SelectLiar";
 
 function App() {
     return (
-        <Provider store={store}>
+        <div className="App">
             <GlobalStyle />
-            <Router />
-        </Provider>
+            <SelectLiar></SelectLiar>
+        </div>
     );
 }
 
