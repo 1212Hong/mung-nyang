@@ -28,6 +28,13 @@ const GlobalStyle = createGlobalStyle`
         min-width: 200px;
         min-height: 30px;
     }
+
+    button {
+        background: var(--vanilla-cream);
+        font-size: 16px;
+        color: var(--white);
+        border-radius: 30px;
+    }
 `;
 
 export default GlobalStyle;
