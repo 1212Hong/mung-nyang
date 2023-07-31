@@ -1,9 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 
-function Participant({ user_list }) {
-    const host = "권영재";
-
+function Participant({ user_list, host }) {
     const Container = styled.div`
         width: 300px;
         height: 300px;
