@@ -23,6 +23,11 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 10px;
     }
+
+    input {
+        min-width: 200px;
+        min-height: 30px;
+    }
 `;
 
 export default GlobalStyle;
