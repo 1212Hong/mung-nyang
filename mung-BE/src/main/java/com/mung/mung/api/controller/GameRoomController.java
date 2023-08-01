@@ -39,6 +39,7 @@
 
 package com.mung.mung.api.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,8 +47,10 @@ import javax.annotation.PostConstruct;
 
 import com.google.gson.Gson;
 import com.mung.mung.api.request.GameRoomCreateReq;
+import com.mung.mung.api.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +68,7 @@ import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
 import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
+import org.springframework.web.servlet.view.groovy.GroovyMarkupConfig;
 
 //@CrossOrigin(origins = "*")
 @Slf4j
@@ -72,6 +76,8 @@ import io.openvidu.java.client.SessionProperties;
 public class GameRoomController {
 
     private final int LIMIT = 6;
+    private final RoomService roomService;
+
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
 
@@ -82,89 +88,73 @@ public class GameRoomController {
 
     // 방 관리
     private Map<String, Integer> mapSessions = new ConcurrentHashMap<>();
+
+    @Autowired
+    public GameRoomController(RoomService roomService){
+        this.roomService=roomService;
+    }
+
     @PostConstruct
     public void init() {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
-    // 수정한 내용들 저장
 
 
-    //    @PostMapping("/api/game-sessions")
-//    public ResponseEntity<GameRoomCreateRes> CreateRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
-//            throws OpenViduJavaClientException, OpenViduHttpException {
-
-    //-=======================================
-
-    /**
-     * @param params The Session properties
-     * @return The Session ID
-     */
     @PostMapping("/api/game-sessions")
     public ResponseEntity<String> CreateRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
-        System.out.println("params");
-        this.mapSessions.put(gameRoomCreateReq.getCustomSessionId(),1);
 
-        String roomPw=gameRoomCreateReq.getRoomPw();
-        System.out.println(roomPw);
-        // pw일치여부만 구현하면 됨
+
+        boolean createSuccess = roomService.makeRoom(gameRoomCreateReq.getRoomId(), gameRoomCreateReq);
+        if (createSuccess) {
+            this.mapSessions.put(gameRoomCreateReq.getRoomId(), 1);
+
+            // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
+            Map<String, Object> gameInfoMap = new HashMap<>();
+            gameInfoMap.put("customSessionId", gameRoomCreateReq.getRoomId());
+            gameInfoMap.put("roomPw", gameRoomCreateReq.getRoomPw());
+
+            System.out.println(gameInfoMap);
+            // DB에 있으면 return Fail 반환하는것 구현해야함?
+
+            // 방 만드는 과정에서 DB에서 중복된게 있는지 확인
+
+            // front에서 Token만 받아서 통신할 수 있는지 테스트 해본 결과 createToken만 통과해도 연결 됨을 확인.
+            // pw일치여부만 구현하면 됨
 //        log.info("params : ", params);
 
-        String GameRoomString = new Gson().toJson(gameRoomCreateReq);
-//        SessionProperties properties = SessionProperties.fromJson(GameRoomString).build();
-//        System.out.println("내가만든 println");
-//        System.out.println(properties);
-//        System.out.println(properties);
-//
-////        log.info("properties : ", String.valueOf(properties));
-//        Session session = openvidu.createSession(properties);
-////        log.info("session : ",String.valueOf(session));
-//        System.out.println("session.getSessionId() 입니당");
-//        System.out.println(session);
-//        System.out.println(session.getSessionId());
-//        return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
-        return new ResponseEntity<>(gameRoomCreateReq.getCustomSessionId(),HttpStatus.OK);
-    }
-//    @PostMapping("/api/game-sessions")
-//    public ResponseEntity<String> CreateRoom(@RequestBody(required = false) Map<String, String> params)
-//            throws OpenViduJavaClientException, OpenViduHttpException {
-//        System.out.println("params");
-//        System.out.println(params);
-//        System.out.println();
-//        Class<?> whatClass = params.getClass();
-//        System.out.println(whatClass.getName());
-//        this.mapSessions.put(params.get("customSessionId"),1);
-//        String roomPw=params.get("roomPw");
-//        // pw일치여부만 구현하면 됨
-////        log.info("params : ", params);
-//        SessionProperties properties = SessionProperties.fromJson(params).build();
-//        System.out.println("내가만든 println");
-//        System.out.println(properties);
-//        System.out.println(properties);
-//
-////        log.info("properties : ", String.valueOf(properties));
-//        Session session = openvidu.createSession(properties);
-////        log.info("session : ",String.valueOf(session));
-//        System.out.println("session.getSessionId() 입니당");
-//        System.out.println(session);
-//        System.out.println(session.getSessionId());
-//        return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
-//    }
+            SessionProperties properties = SessionProperties.fromJson(gameInfoMap).build();
+            System.out.println("내가만든 println");
+            System.out.println(properties);
 
-    /**
-     * @param sessionId The Session in which to create the Connection
-     * @param params    The Connection properties
-     * @return The Token associated to the Connection
-     */
+//        log.info("properties : ", String.valueOf(properties));
+            Session session = openvidu.createSession(properties);
+//        log.info("session : ",String.valueOf(session));
+            System.out.println("session.getSessionId() 입니당");
+            System.out.println(session.getSessionId());
+            return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("방 생성에 실패했습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+
     @PostMapping("/api/game-sessions/{sessionId}/connections")
-    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
-                                                   @RequestBody(required = false) Map<String, Object> params)
+    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId, // react의 create token method임
+                                                   @RequestBody GameRoomCreateReq gameRoomCreateReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
         Session session = openvidu.getActiveSession(sessionId);
         if (session == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
+        System.out.println("첫 방 개설자도 확인해보기");
+        System.out.println("Connection test");
+        Map<String, Object> gameConnectionInfoMap = new HashMap<>();
+        gameConnectionInfoMap.put("customSessionId", gameRoomCreateReq.getRoomId());
+        gameConnectionInfoMap.put("roomPw", gameRoomCreateReq.getRoomPw());
+        System.out.println(gameConnectionInfoMap);
+
+        ConnectionProperties properties = ConnectionProperties.fromJson(gameConnectionInfoMap).build();
         Connection connection = session.createConnection(properties);
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }

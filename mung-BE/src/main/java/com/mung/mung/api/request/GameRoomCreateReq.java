@@ -12,7 +12,7 @@ import lombok.ToString;
 public class GameRoomCreateReq {
 
     // customSessionId => roomId
-    private String customSessionId;
+    private String roomId;
     private String roomPw;
 
 }
