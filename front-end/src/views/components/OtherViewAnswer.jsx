@@ -6,26 +6,20 @@ import imageSrc from "../../assets/img/clock.png";
 import Timer from "../../components/Timer";
 import { Box } from "../../components/layout";
 
+const Container = styled.div``;
 const Head = styled.div`
     margin-top: 40px;
     display: grid;
-    grid-template-columns: 700px 600px;
+    grid-template-columns: 690px 600px;
 `;
 const Answer = styled.div`
-    background-color: ${`var(--beige-dark)`};
-    width: 400px;
-    height: 400px;
     margin-left: 150px;
     margin-right: 150px;
     margin-bottom: 30px;
-    float: left;
-    color: ${`var(--brown-dark)`};
     display: flex;
     justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    font-size: 32px;
 `;
+const Content = styled.div``;
 
 const OtherViewAnswer = (props) => {
     const { text, user_list } = props;
@@ -33,7 +27,7 @@ const OtherViewAnswer = (props) => {
     const height = "200px";
 
     return (
-        <>
+        <Container>
             <Timer />
             <Head>
                 <Answer>
@@ -41,12 +35,14 @@ const OtherViewAnswer = (props) => {
                 </Answer>
                 <Card imageSrc={imageSrc} description={text} />
             </Head>
-            {user_list.map((user, index) => (
-                <Box key={index}>
-                    <VideoComponent width={width} height={height} />
-                </Box>
-            ))}
-        </>
+            <Content>
+                {user_list.map((user, index) => (
+                    <Box key={index}>
+                        <VideoComponent width={width} height={height} />
+                    </Box>
+                ))}
+            </Content>
+        </Container>
     );
 };
 
