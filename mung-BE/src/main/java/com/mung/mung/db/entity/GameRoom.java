@@ -19,7 +19,7 @@ public class GameRoom {
 
     @Id
     @GeneratedValue
-    private Long roomPk;
+    private Long roomId;
 
     private String roomTitle;
 
