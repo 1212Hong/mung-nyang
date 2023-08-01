@@ -9,7 +9,7 @@ const ModalContainer = styled.div`
     z-index: 1;
     height: 100%;
 `;
-const ModalView = styled.div`
+const ReadyModalView = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -17,10 +17,21 @@ const ModalView = styled.div`
     width: 500px;
     height: 200px;
     background-color: var(--white);
+`;
+const RuleModalView = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 20px;
+    width: 700px;
+    height: 500px;
+    background-color: var(--white);
     > div.desc {
+        width: 650px;
+        height: 450px;
         margin: 50px;
         font-size: 20px;
-        color: var(--macciato);
+        background-color: var(--yellow);
     }
 `;
 const ModalBackdrop = styled.div`
@@ -33,4 +44,4 @@ const ModalBackdrop = styled.div`
     inset: 0;
 `;
 
-export { ModalBackdrop, ModalContainer, ModalView };
+export { ModalBackdrop, ModalContainer, ReadyModalView, RuleModalView };
