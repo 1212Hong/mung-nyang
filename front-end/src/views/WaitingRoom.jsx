@@ -6,7 +6,6 @@ import { ReactComponent as DogFootIcon } from "../assets/img/dog_foot.svg";
 import { ReactComponent as QuestionIcon } from "../assets/img/question_mark.svg";
 import { ReactComponent as VolumeOnIcon } from "../assets/img/volume_on.svg";
 import { ReactComponent as VolumeMuteIcon } from "../assets/img/volume_mute.svg";
-import DropDownSet from "../components/DropDownSet";
 import VideoComponent from "../components/VideoBoxing";
 import Participant from "../components/Participant";
 import Input from "../components/Input";
@@ -118,7 +117,6 @@ function WaitingRoom() {
                     <Button width="130" height="50">
                         START
                     </Button>
-                    <DropDownSet width={130} cnt={setCnt} />
                 </StartnSetBox>
             </Rightbox>
         </Container>
