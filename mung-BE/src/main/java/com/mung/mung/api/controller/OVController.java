@@ -4,10 +4,12 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,12 +46,14 @@ public class OVController {
      * @param params The Session properties
      * @return The Session ID
      */
-    @PostMapping("/api/sessions")
+    @PostMapping("/api/game-sessions")
     public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException {
         System.out.println(params);
 //        log.info("params : ", params);
         SessionProperties properties = SessionProperties.fromJson(params).build();
+        System.out.println("내가만든 println",properties);
+
 //        log.info("properties : ", String.valueOf(properties));
         Session session = openvidu.createSession(properties);
 //        log.info("session : ",String.valueOf(session));
@@ -61,7 +65,7 @@ public class OVController {
      * @param params    The Connection properties
      * @return The Token associated to the Connection
      */
-    @PostMapping("/api/sessions/{sessionId}/connections")
+    @PostMapping("/api/game-sessions/{sessionId}/connections")
     public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
                                                    @RequestBody(required = false) Map<String, Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException {
