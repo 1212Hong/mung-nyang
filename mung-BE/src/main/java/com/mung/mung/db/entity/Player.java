@@ -15,7 +15,7 @@ public class Player {
 
     @Id
     @GeneratedValue
-    private  Long playerPk;
+    private  Long playerId;
 
     private String pNickname;
 

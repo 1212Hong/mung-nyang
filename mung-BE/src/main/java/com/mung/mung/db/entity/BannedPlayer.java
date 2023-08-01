@@ -15,7 +15,7 @@ public class BannedPlayer {
 
     @Id
     @GeneratedValue
-    private  Long banPk;
+    private  Long banId;
 
     private String banIp;
 

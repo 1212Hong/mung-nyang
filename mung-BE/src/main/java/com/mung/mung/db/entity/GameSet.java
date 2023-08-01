@@ -15,7 +15,7 @@ public class GameSet {
 
     @Id
     @GeneratedValue
-    private Long setPk;
+    private Long setId;
 
     private int setFirst;
 

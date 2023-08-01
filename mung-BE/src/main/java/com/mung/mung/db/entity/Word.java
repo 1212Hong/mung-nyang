@@ -18,7 +18,7 @@ public class Word {
 
     @Id
     @GeneratedValue
-    private Long wordPk;
+    private Long wordId;
 
     private String wCategory;
 

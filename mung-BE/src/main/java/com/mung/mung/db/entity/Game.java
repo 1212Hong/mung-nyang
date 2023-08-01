@@ -17,7 +17,7 @@ public class Game {
 
     @Id
     @GeneratedValue
-    private Long gamePk;
+    private Long gameId;
 
     private String imageUrl;
 

@@ -18,7 +18,7 @@ public class Dance {
 
     @Id
     @GeneratedValue
-    private Long dancePk;
+    private Long danceId;
 
     private String danceUrl;
 
