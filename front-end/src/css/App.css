@@ -14,11 +14,11 @@ html {
     --vanilla-cream: #f4d7c5;
     --macciato: #ac8367;
     --orange: #f98e11;
+    --yellow: #ecd78d;
 }
 
 body {
     --background: var(--beige);
-    --accent: var(--white);
     margin: 0;
     padding: 0;
     background-color: var(--background);
@@ -35,36 +35,5 @@ body {
     right: 0;
     width: 1280px;
     height: 750px;
-    margin: 0 auto;
-}
-
-* {
-    font-family: "Jua", sans-serif;
-    font-weight: 400;
-    -webkit-font-smoothing: antialiased;
-}
-
-h1,
-h2,
-h3 {
-    font-family: "BlackHanSans", sans-serif;
-    font-style: normal;
-}
-
-h2 {
-    font-weight: 600;
-    margin: 50px 0 10px;
-}
-
-h3 {
-    font-weight: 500;
-    margin: 30px 0 5px;
-}
-
-p {
-    font-size: 16px;
-}
-
-input {
-    accent-color: var(--accent);
+    margin: auto;
 }
