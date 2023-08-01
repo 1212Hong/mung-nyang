@@ -3,13 +3,14 @@ import { styled } from "styled-components";
 
 function Participant({ user_list, host }) {
     const Container = styled.div`
-        width: 300px;
-        height: 300px;
-        background-color: ${`var(--beige)`};
-        font-size: 32px;
+        width: 250px;
+        height: 230px;
+        background-color: ${`var(--beige-dark)`};
+        font-size: 24px;
         border-radius: 20px;
         padding-left: 10px;
         padding-top: 10px;
+        margin: 15px;
     `;
 
     return (
