@@ -7,7 +7,7 @@ import { ReactComponent as DogFootIcon } from "../assets/img/dog_foot.svg";
 import { ReactComponent as QuestionIcon } from "../assets/img/question_mark.svg";
 import DropDown from "../components/DropDown";
 import VideoComponent from "../components/VideoBoxing";
-import Participant from "../components/participant";
+import Participant from "../components/Participant";
 
 const Container = styled.div`
     background-color: ${`var(--beige-dark)`};
@@ -45,14 +45,9 @@ const Rightbox = styled.div`
 `;
 
 const Videobox = styled.div`
-    background-color: ${`var(--beige-dark)`};
-    width: 423px;
-    height: 200px;
-    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
 `;
 
 const VideoboxGrid = styled.div`
@@ -63,12 +58,6 @@ const VideoboxGrid = styled.div`
     grid-auto-flow: row;
     align-items: center;
     justify-content: center;
-`;
-
-const ParticipantBox = styled.div`
-    background-color: ${`var(--beige-dark)`};
-    margin: 15px;
-    border-radius: 20px;
 `;
 
 const ChattingBox = styled.div`
@@ -82,7 +71,7 @@ const ChatBox = styled.div`
 `;
 const ChattingInputBox = styled.div`
     height: 30px;
-    background-color: white;
+    background-color: ${`var(--white)`};
     margin: 5px;
     border-radius: 20px;
     display: flex;
@@ -108,22 +97,9 @@ const StartnSetBox = styled.div`
     border-radius: 20px;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 `;
 
-const StartBox = styled.div`
-    height: 50px;
-    border-radius: 20px;
-    width: 130px;
-    background-color: #f1ead2;
-    margin-right: 20px;
-`;
-
-const SetBox = styled.div`
-    height: 50px;
-    border-radius: 20px;
-    width: 120px;
-    background-color: #ded7be;
-`;
 const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
 
 const host = "권영재";
@@ -151,34 +127,34 @@ function WaitingRoom() {
                     </VideoboxGrid>
                 </Leftbox>
                 <Rightbox>
-                    <ParticipantBox>
-                        <Participant user_list={user_list} host={host} />
-                    </ParticipantBox>
+                    <Participant user_list={user_list} host={host} />
                     <ChattingBox>
                         <ChatBox></ChatBox>
                         <ChattingInputBox>
-                            <Button type="icon" background="#FFFFFF">
+                            <Button type="icon" background={`var(--white)`}>
                                 <DogFootIcon width="15" height="10" />
                             </Button>
                         </ChattingInputBox>
                     </ChattingBox>
                     <MenuBox>
-                        <Button type="icon" background="#ded7be">
-                            <QuestionIcon width="30" height="20" />
-                        </Button>
-                        <Button type="icon" background="#ded7be">
-                            <LinkIcon width="30" height="20" />
-                        </Button>
-                        <Button type="icon" background="#ded7be">
-                            <CaptureIcon width="30" height="20" />
-                        </Button>
+                        {[
+                            { icon: <QuestionIcon width="30" height="20" /> },
+                            { icon: <LinkIcon width="30" height="20" /> },
+                            { icon: <CaptureIcon width="30" height="20" /> },
+                        ].map((item, index) => (
+                            <Button
+                                key={index}
+                                type="icon"
+                                background={`var(--beige-dark)`}
+                            >
+                                {item.icon}
+                            </Button>
+                        ))}
                     </MenuBox>
                     <StartnSetBox>
-                        <StartBox>
-                            <Button width="130px" height="50px">
-                                START
-                            </Button>
-                        </StartBox>
+                        <Button width="130" height="50">
+                            START
+                        </Button>
                         <DropDown />
                     </StartnSetBox>
                 </Rightbox>
