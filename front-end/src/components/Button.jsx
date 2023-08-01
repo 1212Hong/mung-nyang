@@ -7,14 +7,14 @@ const StyledButton = styled(motion.button)`
         props.type !== "icon" && !props.width ? "200px" : props.width};
     height: ${(props) =>
         props.type !== "icon" && !props.height ? "50px" : props.height};
-    background: ${(props) => props.background ?? `var(--vanilla-cream)`};
-    font-size: ${(props) => props.fontSize ?? "16px"};
-    color: ${(props) => props.fontColor ?? `var(--white)`};
-    font-weight: ${(props) => props.weight ?? "normal"};
-    border-radius: ${(props) => props.border ?? "30px"};
+    background: ${(props) => props.background};
+    font-size: ${(props) => props.fontSize};
+    color: ${(props) => props.fontColor};
+    font-weight: ${(props) => props.weight};
+    border-radius: ${(props) => props.border};
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     text-align: center;
     object-fit: ${(props) => (props.type === "icon" ? "fill" : "none")};
@@ -27,7 +27,6 @@ const StyledButton = styled(motion.button)`
         background-color: ${(props) =>
             props.hoverBgColor ? props.hoverBgColor : `var(--macciato)`};
     }
-    /* whiletab: ${(props) => props.whileTab}; */
 `;
 
 const Button = (props) => {
