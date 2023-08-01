@@ -44,7 +44,9 @@ const ImageOverlay = styled.div`
     display: ${(props) => (props.active ? "block" : "none")};
 `;
 const imgSrc = foot;
-const SelectLiar = () => {
+
+const SelectLiar = (props) => {
+    const { userlist, text } = props;
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
 
@@ -60,42 +62,14 @@ const SelectLiar = () => {
 
     const handleBoxClick = (boxIndex) => {
         setActiveBox(boxIndex === activeBox ? null : boxIndex);
-
-        // 클릭한 Box 정보를 JSON 형태로 변환
-        const clickedBoxData = JSON.stringify({ boxIndex });
-
-        // 백앤드 서버 URL 설정 (예시)
-        const serverURL = "/api/clickedBoxes";
-
-        // 백앤드 서버로 클릭한 Box 정보 전송
-        fetch(serverURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: clickedBoxData,
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data);
-            })
-            .catch((error) => {
-                console.error("Error sending data to the server:", error);
-            });
+        console.log(boxIndex);
     };
-
-    const user_list = [0, 1, 2, 3, 4, 5];
 
     return (
         <Container>
             <Timer></Timer>
             <Line>
-                {user_list.map((boxIndex) => (
+                {userlist.map((boxIndex) => (
                     <Box
                         key={boxIndex}
                         onClick={() => handleBoxClick(boxIndex)}
@@ -108,7 +82,7 @@ const SelectLiar = () => {
                 ))}
             </Line>
             <NotificationContainer show={showNotification}>
-                라이어를 선택하세요.
+                {text}
             </NotificationContainer>
         </Container>
     );
