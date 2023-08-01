@@ -41,6 +41,14 @@ function WaitingRoom() {
             }),
         );
     };
+    const openReadyModal = () => {
+        dispatch(
+            openModal({
+                modalType: "ReadyModal",
+                isOpen: true,
+            }),
+        );
+    };
 
     function selectSet(idx) {
         console.log(setCnt);
@@ -86,7 +94,6 @@ function WaitingRoom() {
                             type="icon"
                             background={`var(--beige-dark)`}
                             onClick={() => {
-                                console.log(openRuleBook);
                                 openRuleBook();
                             }}
                         >
@@ -114,7 +121,13 @@ function WaitingRoom() {
                     )}
                 </MenuBox>
                 <StartnSetBox>
-                    <Button width="130" height="50">
+                    <Button
+                        width="130"
+                        height="50"
+                        onClick={() => {
+                            openReadyModal();
+                        }}
+                    >
                         START
                     </Button>
                 </StartnSetBox>

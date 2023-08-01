@@ -1,11 +1,11 @@
 import React from "react";
-import { ModalView } from "../layout/modal";
+import { ReadyModalView } from "../layout/modal";
 
 const ReadyModal = () => {
     return (
-        <ModalView>
-            <h1>Are you Ready?</h1>
-        </ModalView>
+        <ReadyModalView>
+            <h2>Are you Ready?</h2>
+        </ReadyModalView>
     );
 };
 
