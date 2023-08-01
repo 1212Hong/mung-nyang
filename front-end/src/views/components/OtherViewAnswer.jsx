@@ -4,7 +4,7 @@ import VideoComponent from "../../components/VideoBoxing";
 import Card from "../../components/Card";
 import imageSrc from "../../assets/img/clock.png";
 import Timer from "../../components/Timer";
-import { Box } from "../../components/layout";
+import { Box } from "../../components/layout/common";
 
 const Container = styled.div``;
 const Head = styled.div`
