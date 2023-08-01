@@ -5,12 +5,14 @@ import { ReactComponent as LinkIcon } from "../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../assets/img/capture_image.svg";
 import { ReactComponent as DogFootIcon } from "../assets/img/dog_foot.svg";
 import { ReactComponent as QuestionIcon } from "../assets/img/question_mark.svg";
+import { ReactComponent as VolumeOnIcon } from "../assets/img/volume_on.svg";
+import { ReactComponent as VolumeMuteIcon } from "../assets/img/volume_mute.svg";
 import DropDown from "../components/DropDown";
 import VideoComponent from "../components/VideoBoxing";
 import Participant from "../components/Participant";
 
 const Container = styled.div`
-    background-color: ${`var(--beige-dark)`};
+    background-color: var(--beige-dark);
     border-radius: 20px;
 `;
 
@@ -29,7 +31,7 @@ const ContainerBody = styled.div`
 const Leftbox = styled.div`
     width: 897px;
     height: 700px;
-    background-color: ${`var(--beige)`};
+    background-color: var(--beige);
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -40,7 +42,7 @@ const Leftbox = styled.div`
 const Rightbox = styled.div`
     width: 300px;
     height: 720px;
-    background-color: ${`var(--beige)`};
+    background-color: var(--beige);
     border-radius: 20px;
 `;
 
@@ -62,7 +64,7 @@ const VideoboxGrid = styled.div`
 
 const ChattingBox = styled.div`
     height: 300px;
-    background-color: ${`var(--beige-dark)`};
+    background-color: var(--beige-dark);
     margin: 15px;
     border-radius: 20px;
 `;
@@ -71,7 +73,7 @@ const ChatBox = styled.div`
 `;
 const ChattingInputBox = styled.div`
     height: 30px;
-    background-color: ${`var(--white)`};
+    background-color: var(--white);
     margin: 5px;
     border-radius: 20px;
     display: flex;
@@ -80,7 +82,7 @@ const ChattingInputBox = styled.div`
 `;
 const MenuBox = styled.div`
     height: 50px;
-    background-color: ${`var(--beige-dark)`};
+    background-color: var(--beige-dark);
     margin: 15px;
     border-radius: 20px;
     display: flex;
@@ -106,10 +108,14 @@ const host = "권영재";
 
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
+    const [isMuted, setIsMuted] = useState(false);
 
     function selectSet(idx) {
         console.log(setCnt);
         // setSetCnt(setArr[idx]);
+    }
+    function toggleVolume() {
+        setIsMuted((prevState) => !prevState);
     }
 
     return (
@@ -138,9 +144,9 @@ function WaitingRoom() {
                     </ChattingBox>
                     <MenuBox>
                         {[
-                            { icon: <QuestionIcon width="30" height="20" /> },
-                            { icon: <LinkIcon width="30" height="20" /> },
-                            { icon: <CaptureIcon width="30" height="20" /> },
+                            { icon: <QuestionIcon width="25" height="20" /> },
+                            { icon: <LinkIcon width="25" height="20" /> },
+                            { icon: <CaptureIcon width="25" height="20" /> },
                         ].map((item, index) => (
                             <Button
                                 key={index}
@@ -150,6 +156,25 @@ function WaitingRoom() {
                                 {item.icon}
                             </Button>
                         ))}
+                        {isMuted ? (
+                            <Button
+                                key="mute"
+                                type="icon"
+                                background={`var(--beige-dark)`}
+                                onClick={toggleVolume}
+                            >
+                                <VolumeMuteIcon width="20" height="25" />
+                            </Button>
+                        ) : (
+                            <Button
+                                key="on"
+                                type="icon"
+                                background={`var(--beige-dark)`}
+                                onClick={toggleVolume}
+                            >
+                                <VolumeOnIcon width="20" height="25" />
+                            </Button>
+                        )}
                     </MenuBox>
                     <StartnSetBox>
                         <Button width="130" height="50">
