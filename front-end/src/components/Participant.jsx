@@ -10,6 +10,7 @@ function Participant({ user_list, host }) {
         border-radius: 20px;
         padding-left: 10px;
         padding-top: 10px;
+        margin: 15px;
     `;
 
     return (
