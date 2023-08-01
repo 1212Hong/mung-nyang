@@ -1,21 +1,22 @@
 import React from "react";
 import styled from "styled-components";
+import Timer from "../../components/Timer";
 
 const Container = styled.div`
-    padding: 20px;
     text-align: center;
 `;
 const Head = styled.div`
     background-color: ${`var(--brown-dark)`};
+    margin-top: 20px;
     padding: 30px;
-    margin-left: 375px;
-    margin-right: 400px;
+    margin-left: 200px;
+    margin-right: 200px;
     font-size: 32px;
     border-radius: 10px;
 `;
 const Line = styled.div`
-    margin-top: 50px;
-    margin-left: 130px;
+    margin-top: 30px;
+    margin-left: 10px;
     padding-left: 10px;
     display: grid;
     grid-template-columns: 450px 450px 450px;
@@ -26,26 +27,24 @@ const Content = styled.button`
     font-size: 32px;
     background-color: ${`var(--white)`};
     border-color: ${`var(--white)`};
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border-radius: 10px;
     color: ${`var(--brown-dark)`};
-    transition: all 0.2s ease-in-out; /* 확대 효과를 위한 transition 속성 추가 */
-
+    transition: all 0.2s ease-in-out;
     &:hover {
-        transform: scale(
-            1.5
-        ); /* 마우스 커서를 올렸을 때 버튼 크기를 1.1배로 확대 */
+        transform: scale(1.3);
         cursor: pointer;
     }
 `;
 
 const PonitedPersonAnswer = (props) => {
-    const { Answerlst, title } = props;
+    const { Answerlist, title } = props;
     return (
         <Container>
+            <Timer></Timer>
             <Head>{title}</Head>
             <Line>
-                {Answerlst.map((item, index) => (
+                {Answerlist.map((item, index) => (
                     <Content key={index}>{item}</Content>
                 ))}
             </Line>
