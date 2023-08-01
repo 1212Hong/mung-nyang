@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Timer from "../../components/Timer";
 
 const Container = styled.div`
+    margin-top: 15px;
     text-align: center;
 `;
 const Head = styled.div`
-    background-color: ${`var(--brown-dark)`};
+    background-color: var(--brown-dark);
+    color: var(--white);
     margin-top: 20px;
     padding: 30px;
     margin-left: 200px;
@@ -25,11 +27,11 @@ const Content = styled.button`
     width: 300px;
     height: 70px;
     font-size: 32px;
-    background-color: ${`var(--white)`};
-    border-color: ${`var(--white)`};
+    background-color: var(--white);
+    border-color: var(--white);
     margin-bottom: 20px;
     border-radius: 10px;
-    color: ${`var(--brown-dark)`};
+    color: var(--brown-dark);
     transition: all 0.2s ease-in-out;
     &:hover {
         transform: scale(1.3);
@@ -39,13 +41,24 @@ const Content = styled.button`
 
 const PonitedPersonAnswer = (props) => {
     const { Answerlist, title } = props;
+    const [activeBox, setActiveBox] = useState(null);
+
+    const handleContentClick = (boxIndex) => {
+        setActiveBox(boxIndex === activeBox ? null : boxIndex);
+        console.log(boxIndex);
+    };
     return (
         <Container>
             <Timer></Timer>
             <Head>{title}</Head>
             <Line>
                 {Answerlist.map((item, index) => (
-                    <Content key={index}>{item}</Content>
+                    <Content
+                        key={index}
+                        onClick={() => handleContentClick(item)}
+                    >
+                        {item}
+                    </Content>
                 ))}
             </Line>
         </Container>
