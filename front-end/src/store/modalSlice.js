@@ -1,9 +1,11 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     modalType: "",
     isOpen: false,
 };
+
+export const selectModal = (state) => state.modal;
 
 export const modalSlice = createSlice({
     name: "modal",
@@ -15,14 +17,9 @@ export const modalSlice = createSlice({
             state.isOpen = true;
         },
         closeModal: (state) => {
-            state.isOpen = false;
+            return initialState;
         },
     },
 });
 
 export const { openModal, closeModal } = modalSlice.actions;
-export const selectModal = (state) => state.modal;
-
-export default configureStore({
-    reducer: modalSlice.reducer,
-});

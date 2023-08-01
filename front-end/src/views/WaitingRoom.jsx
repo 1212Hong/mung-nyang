@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import Button from "../components/Button";
 import { ReactComponent as LinkIcon } from "../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../assets/img/capture_image.svg";
@@ -11,87 +10,20 @@ import DropDownSet from "../components/DropDownSet";
 import VideoComponent from "../components/VideoBoxing";
 import Participant from "../components/Participant";
 import Input from "../components/Input";
-
-const Container = styled.div`
-    background-color: var(--beige-dark);
-    border-radius: 20px;
-    height: 750px;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    border-radius: 20px;
-`;
-
-const Leftbox = styled.div`
-    width: 897px;
-    height: 700px;
-    background-color: var(--beige);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Rightbox = styled.div`
-    width: 300px;
-    height: 700px;
-    background-color: var(--beige);
-    border-radius: 20px;
-`;
-
-const Videobox = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-const VideoboxGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    grid-gap: 25px;
-    grid-auto-flow: row;
-    align-items: center;
-    justify-content: center;
-`;
-
-const ChattingBox = styled.div`
-    height: 300px;
-    background-color: var(--beige-dark);
-    margin: 15px;
-    border-radius: 20px;
-`;
-const ChatBox = styled.div`
-    height: 250px;
-`;
-const ChattingInputBox = styled.div`
-    height: 30px;
-    margin: 5px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-`;
-const MenuBox = styled.div`
-    height: 50px;
-    background-color: var(--beige-dark);
-    margin: 15px;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding-left: 10px;
-    padding-right: 10px;
-`;
-
-const StartnSetBox = styled.div`
-    height: 50px;
-    margin: 15px;
-    border-radius: 20px;
-    display: grid;
-    grid-template-columns: 120px 120px;
-`;
+import {
+    ChatBox,
+    ChattingBox,
+    ChattingInputBox,
+    Container,
+    Leftbox,
+    MenuBox,
+    Rightbox,
+    StartnSetBox,
+    Videobox,
+    VideoboxGrid,
+} from "../components/layout/waiting";
+import { useDispatch } from "react-redux";
+import { openModal } from "../store/modalSlice";
 
 const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
 
@@ -100,6 +32,16 @@ const host = "권영재";
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
     const [isMuted, setIsMuted] = useState(false);
+    const dispatch = useDispatch();
+
+    const openRuleBook = () => {
+        dispatch(
+            openModal({
+                modalType: "RuleModal",
+                isOpen: true,
+            }),
+        );
+    };
 
     function selectSet(idx) {
         console.log(setCnt);
@@ -133,6 +75,7 @@ function WaitingRoom() {
                         </Button>
                     </ChattingInputBox>
                 </ChattingBox>
+
                 <MenuBox>
                     {[
                         { icon: <QuestionIcon width="25" height="20" /> },
@@ -143,6 +86,10 @@ function WaitingRoom() {
                             key={index}
                             type="icon"
                             background={`var(--beige-dark)`}
+                            onClick={() => {
+                                console.log(openRuleBook);
+                                openRuleBook();
+                            }}
                         >
                             {item.icon}
                         </Button>
