@@ -17,9 +17,16 @@ const StyledInput = styled.input`
 `;
 
 const Input = (props) => {
-    const { type, placeholder } = props;
+    const { type, width, height, placeholder } = props;
 
-    return <StyledInput type={type} placeholder={placeholder} />;
+    return (
+        <StyledInput
+            type={type}
+            placeholder={placeholder}
+            width={width}
+            height={height}
+        />
+    );
 };
 
 export default Input;
