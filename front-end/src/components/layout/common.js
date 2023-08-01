@@ -5,3 +5,11 @@ export const Box = styled.div`
     margin-left: 47px;
     float: left;
 `;
+// gugi제목
+export const MainText = styled.p`
+    font-size: 64px;
+`;
+// jua설명
+export const SubText = styled.span`
+    font-size: 24px;
+`;
