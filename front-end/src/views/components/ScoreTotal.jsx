@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import Button from "../../components/Button";
 
@@ -13,6 +13,12 @@ const Head = styled.div`
 const Body = styled.div`
     border: 2px solid black;
 `;
+const Headline = styled.div`
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid black;
+    display: flex;
+`;
 const Line = styled.div`
     margin-top: 20px;
     padding-bottom: 20px;
@@ -20,19 +26,23 @@ const Line = styled.div`
     display: flex;
 `;
 const Content = styled.div`
-    margin-left: 200px;
+    margin-left: 150px;
+    font-size: 32px;
+`;
+const Rank = styled.div`
+    margin-left: 50px;
     font-size: 32px;
 `;
 const Nickname = styled.div`
-    margin-left: 170px;
+    margin-left: 120px;
     font-size: 32px;
 `;
 const Upscore = styled.div`
-    margin-left: 160px;
+    margin-left: 110px;
     font-size: 32px;
 `;
 const Total = styled.div`
-    margin-left: 100px;
+    margin-left: 60px;
     font-size: 32px;
 `;
 const Win = styled.div`
@@ -51,19 +61,6 @@ const Btn = styled.div`
     justify-content: flex-end;
     margin-top: 20px;
 `;
-const NotificationContainer = styled.div`
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 10px 20px;
-    border-radius: 5px;
-    display: ${(props) => (props.show ? "block" : "none")};
-    transition: display 0.2s;
-    font-size: 72px;
-`;
 
 const ScoreTotal = (props) => {
     const { title, userlist, set, totalset } = props;
@@ -77,15 +74,15 @@ const ScoreTotal = (props) => {
                 </Set>
             </Head>
             <Body>
-                <Line>
-                    <Content>Rank</Content>
+                <Headline>
+                    <Rank>Rank</Rank>
                     <Nickname>닉네임</Nickname>
                     <Upscore>오른 점수</Upscore>
                     <Total>총 점수</Total>
-                </Line>
+                </Headline>
                 {userlist.map((user, index) => (
                     <Line key={index}>
-                        <Content>{index + 1}st</Content>
+                        <Rank>{index + 1}st</Rank>
                         <Content>{user.username}</Content>
                         <Content>{user.upscore}</Content>
                         <Content>{user.total}</Content>
@@ -97,9 +94,6 @@ const ScoreTotal = (props) => {
                     다음
                 </Button>
             </Btn>
-            <NotificationContainer show={showNotification}>
-                라이어를 선택하세요.
-            </NotificationContainer>
         </Container>
     );
 };
