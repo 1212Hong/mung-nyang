@@ -18,7 +18,7 @@ public class Dog {
 
     @Id
     @GeneratedValue
-    private Long dogPk;
+    private Long dogId;
 
     private String dogNickname;
 
