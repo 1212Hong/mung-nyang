@@ -1,9 +1,9 @@
 import React from "react";
 import RuleModal from "./RuleModal";
 import ReadyModal from "./ReadyModal";
-import { ModalBackdrop, ModalContainer } from "../layout";
+import { ModalBackdrop, ModalContainer } from "../layout/modal";
 import { useDispatch, useSelector } from "react-redux";
-import { closeModal, selectModal } from "../../store/store";
+import { closeModal, selectModal } from "../../store/modalSlice";
 
 const MODAL_TYPES = {
     RuleModal: "RuleModal",
@@ -13,11 +13,11 @@ const MODAL_TYPES = {
 
 const MODAL_COMPONENTS = [
     {
-        type: MODAL_TYPES.LoginModal,
+        type: MODAL_TYPES.RuleModal,
         component: <RuleModal />,
     },
     {
-        type: MODAL_TYPES.BasicModal,
+        type: MODAL_TYPES.ReadyModal,
         component: <ReadyModal />,
     },
 ];
@@ -29,6 +29,7 @@ const Modal = () => {
     if (!isOpen) return;
 
     const findModal = MODAL_COMPONENTS.find((modal) => {
+        console.log(modal);
         return modal.type === modalType;
     });
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { ModalView } from "../layout";
+import { ModalView } from "../layout/modal";
 
 const RuleModal = () => {
     return (
