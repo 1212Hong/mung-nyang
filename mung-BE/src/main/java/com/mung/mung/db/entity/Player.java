@@ -30,7 +30,7 @@ public class Player {
     private int owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_pk")
+    @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
 
 }

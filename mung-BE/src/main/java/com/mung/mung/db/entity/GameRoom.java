@@ -19,13 +19,9 @@ public class GameRoom {
 
     @Id
     @GeneratedValue
-    private Long roomId;
-
-    private String roomTitle;
+    private String roomId;
 
     private String roomPw;
-
-    private String roomUrl;
 
     private LocalDateTime startTime;
 

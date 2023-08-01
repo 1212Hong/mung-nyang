@@ -32,7 +32,7 @@ public class Game {
     private String endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_Id")
+    @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
 
     @OneToMany(mappedBy = "game")

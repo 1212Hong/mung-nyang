@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 
 public interface GameRoomHandler {
 
-    public GameRoom createGameRoom(long roomPk, String roomTitle, String roomPw, String roomUrl);
-    public GameRoom getGameRoom(long roomPk); // 어떤 값을 사용할지 추후 결정
+    public GameRoom createGameRoom(String roomId, String roomPw);
+    public GameRoom getGameRoom(String roomId); // 어떤 값을 사용할지 추후 결정
 
 }
 
