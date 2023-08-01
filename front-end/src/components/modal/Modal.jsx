@@ -29,7 +29,6 @@ const Modal = () => {
     if (!isOpen) return;
 
     const findModal = MODAL_COMPONENTS.find((modal) => {
-        console.log(modal);
         return modal.type === modalType;
     });
 
