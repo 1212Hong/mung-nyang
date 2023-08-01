@@ -31,7 +31,7 @@ public class GameSet {
     private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "game_pk")
+    @JoinColumn(name = "game_id")
     private Game game;
 
 }

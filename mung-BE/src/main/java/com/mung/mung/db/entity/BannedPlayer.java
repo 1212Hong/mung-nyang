@@ -25,7 +25,7 @@ public class BannedPlayer {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_pk")
+    @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
 
 }
