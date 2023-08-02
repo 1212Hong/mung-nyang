@@ -1,8 +1,9 @@
 package com.mung.mung.stomp.service;
 
 import com.mung.mung.db.entity.GameRoom;
+import com.mung.mung.stomp.response.StompRoomJoinRes;
 
 public interface RoomService {
 
-    GameRoom findById(String roomId);
+    StompRoomJoinRes joinPlayerInfo(String roomId);
 }

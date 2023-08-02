@@ -1,3 +1,7 @@
+.root {
+    cursor: not-allowed;
+    pointer-events: none;
+}
 .textContainer {
     padding: 5px !important;
     margin: 0 !important;
