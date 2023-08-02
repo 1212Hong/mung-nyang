@@ -56,11 +56,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.ConnectionProperties;
@@ -101,7 +97,7 @@ public class GameRoomController {
     }
 
     @PostMapping("/api/game-sessions")
-    public ResponseEntity<String> CreateRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
+    public ResponseEntity<String> createRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         // makeRoom에서 return으로 중복된 Id가 있는지 없는지를 판단 후 중복이라면 Data 생성 없이 false값을 return함
@@ -121,6 +117,7 @@ public class GameRoomController {
 //        log.info("properties : ", String.valueOf(properties));
             Session session = openvidu.createSession(properties);
 //        log.info("session : ",String.valueOf(session));
+
             return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         }else {
             return new ResponseEntity<>("방 생성에 실패했습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
@@ -156,5 +153,8 @@ public class GameRoomController {
         Connection connection = session.createConnection(properties); //이 부분이 연결을 담당하는 부분
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
+
+//    @PutMapping("/api/game-session/leave")
+//    public ResponseEntity<String>
 
 }

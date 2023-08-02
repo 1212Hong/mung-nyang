@@ -9,6 +9,5 @@ import lombok.ToString;
 @NoArgsConstructor
 public class PlayerJoinReq {
     private String roomId;
-    private String pnIckname; // 닉네임 받아오기
-    private String Test;
+    private String playerNickname; // 닉네임 받아오기
 }

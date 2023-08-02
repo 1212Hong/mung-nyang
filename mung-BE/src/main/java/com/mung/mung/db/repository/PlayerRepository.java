@@ -4,5 +4,6 @@ import com.mung.mung.db.entity.Player;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PlayerRepository extends JpaRepository<Player, Long> {
-    //
+    //player의 Id로 조회
+     Player findByPlayerId(long playerId);
 }

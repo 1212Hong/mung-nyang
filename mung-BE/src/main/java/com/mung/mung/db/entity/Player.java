@@ -22,10 +22,10 @@ public class Player {
     @GeneratedValue
     private  Long playerId;
 
-    private String pNickname;
+    private String playerNickname;
 
     @ColumnDefault("0")
-    private int pScore;
+    private int playerScore;
 
     private String pIp;
 

@@ -1,14 +1,14 @@
 package com.mung.mung.api.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 @Getter
-@ToString
-@RequiredArgsConstructor
+@Builder
 public class GameRoomJoinRes {
-    private final String playerId;
+    private String playerId;
     private String pIp;
     private String pNickName;
     // private int owner;
