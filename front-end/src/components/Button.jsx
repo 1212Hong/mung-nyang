@@ -1,24 +1,26 @@
 import React from "react";
 import { styled } from "styled-components";
 import { motion } from "framer-motion";
+import effect from "../assets/audio/dog-toy.mp3";
 
 const StyledButton = styled(motion.button)`
     width: ${(props) =>
         props.type !== "icon" && !props.width ? "200px" : props.width};
     height: ${(props) =>
         props.type !== "icon" && !props.height ? "50px" : props.height};
-    background: ${(props) => props.background ?? `var(--vanilla-cream)`};
-    font-size: ${(props) => props.fontSize ?? "16px"};
-    color: ${(props) => props.fontColor ?? `var(--white)`};
-    font-weight: ${(props) => props.weight ?? "normal"};
-    border-radius: ${(props) => props.border ?? "30px"};
+    background: ${(props) => props.background};
+    font-size: ${(props) => props.fontSize};
+    color: ${(props) => props.fontColor};
+    font-weight: ${(props) => props.weight};
+    border-radius: ${(props) => props.border};
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     object-fit: ${(props) => (props.type === "icon" ? "fill" : "none")};
-    padding: 10px 20px;
+    padding: ${(props) => props.padding};
+    margin: ${(props) => props.margin};
     border: none;
     &:hover {
         transition: all 0.8s;
@@ -27,10 +29,11 @@ const StyledButton = styled(motion.button)`
         background-color: ${(props) =>
             props.hoverBgColor ? props.hoverBgColor : `var(--macciato)`};
     }
-    /* whiletab: ${(props) => props.whileTab}; */
 `;
 
 const Button = (props) => {
+    const audio = new Audio(effect);
+
     const {
         width,
         height,
@@ -45,7 +48,13 @@ const Button = (props) => {
         children,
         type,
         text,
+        // audioURL,
+        // -> url props로는 못줄거같고 특정 사운드 후보들 미리 저장해두고 바꿔쓰기는 가능
+        padding,
+        margin,
     } = props;
+
+    // const test = new Audio(audioURL && "");
 
     return (
         <StyledButton
@@ -56,10 +65,16 @@ const Button = (props) => {
             fontColor={fontColor}
             weight={weight}
             border={border}
-            onClick={onClick}
+            onClick={() => {
+                audio.play();
+                // test.play();
+                onClick();
+            }}
             type={type}
             hoverColor={hoverColor}
             hoverBgColor={hoverBgColor}
+            padding={padding}
+            margin={margin}
         >
             {text}
             {children}
