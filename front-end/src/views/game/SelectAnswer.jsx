@@ -9,9 +9,9 @@ import {
     Image,
     NotificationContainer,
     Overlay,
-} from "../../components/layout/LiarAnswer";
+} from "../../components/layout/selectAnswer";
 
-const PonitedPersonAnswer = (props) => {
+const SelectAnswer = (props) => {
     const { Answerlist, time } = props;
     const [activeBox, setActiveBox] = useState(null);
     const [showNotification, setShowNotification] = useState(true);
@@ -58,4 +58,4 @@ const PonitedPersonAnswer = (props) => {
     );
 };
 
-export default PonitedPersonAnswer;
+export default SelectAnswer;
