@@ -1,47 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Timer from "../../components/Timer";
+import foot2 from "../../assets/img/foot2.png";
+import {
+    Container,
+    Head,
+    Line,
+    Content,
+    Image,
+    NotificationContainer,
+} from "../../components/layout/pointedpersonanswer";
 
-const Container = styled.div`
-    margin-top: 15px;
-    text-align: center;
-`;
-const Head = styled.div`
-    background-color: var(--brown-dark);
-    color: var(--white);
-    margin-top: 20px;
-    padding: 30px;
-    margin-left: 200px;
-    margin-right: 200px;
-    font-size: 32px;
-    border-radius: 10px;
-`;
-const Line = styled.div`
-    margin-top: 30px;
-    margin-left: 10px;
-    padding-left: 10px;
-    display: grid;
-    grid-template-columns: 450px 450px 450px;
-`;
-const Content = styled.button`
-    width: 300px;
-    height: 70px;
-    font-size: 32px;
-    background-color: var(--white);
-    border-color: var(--white);
-    margin-bottom: 20px;
-    border-radius: 10px;
-    color: var(--brown-dark);
-    transition: all 0.2s ease-in-out;
-    &:hover {
-        transform: scale(1.3);
-        cursor: pointer;
-    }
-`;
+const imgSrc = foot2;
 
 const PonitedPersonAnswer = (props) => {
-    const { Answerlist, title } = props;
+    const { Answerlist, time } = props;
     const [activeBox, setActiveBox] = useState(null);
+    const [showNotification, setShowNotification] = useState(true);
+    const title = "아래 단어들 중 정답을 골라주세요.";
+    const text = "당신은 라이어로 선택되었습니다. 제시어를 맞추면 승리합니다.";
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowNotification(false);
+        }, 3000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
 
     const handleContentClick = (boxIndex) => {
         setActiveBox(boxIndex === activeBox ? null : boxIndex);
@@ -49,7 +36,7 @@ const PonitedPersonAnswer = (props) => {
     };
     return (
         <Container>
-            <Timer></Timer>
+            <Timer time={time}></Timer>
             <Head>{title}</Head>
             <Line>
                 {Answerlist.map((item, index) => (
@@ -58,9 +45,15 @@ const PonitedPersonAnswer = (props) => {
                         onClick={() => handleContentClick(item)}
                     >
                         {item}
+                        {activeBox === item && (
+                            <Image src={imgSrc} alt="Image" />
+                        )}
                     </Content>
                 ))}
             </Line>
+            <NotificationContainer show={showNotification}>
+                {text}
+            </NotificationContainer>
         </Container>
     );
 };
