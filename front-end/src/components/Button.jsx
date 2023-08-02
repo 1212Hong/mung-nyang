@@ -10,7 +10,7 @@ const StyledButton = styled(motion.button)`
         props.type !== "icon" && !props.height ? "50px" : props.height};
     background: ${(props) => props.background};
     font-size: ${(props) => props.fontSize};
-    color: ${(props) => props.fontColor};
+    color: ${(props) => props.color};
     font-weight: ${(props) => props.weight};
     border-radius: ${(props) => props.border};
     cursor: pointer;
@@ -41,7 +41,7 @@ const Button = (props) => {
         hoverBgColor,
         background,
         fontSize,
-        fontColor,
+        color,
         weight,
         border,
         onClick,
@@ -62,7 +62,7 @@ const Button = (props) => {
             height={height}
             background={background}
             fontSize={fontSize}
-            fontColor={fontColor}
+            color={color}
             weight={weight}
             border={border}
             onClick={() => {
