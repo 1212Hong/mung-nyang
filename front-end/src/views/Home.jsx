@@ -46,10 +46,12 @@ const Home = () => {
     };
     const makeRoom = () => {
         console.log("방생성 api호출");
+        console.log(roomInfo);
         createRoom();
     };
     const joinRoom = () => {
         console.log("방입장 api");
+        console.log(roomInfo);
     };
 
     return (
