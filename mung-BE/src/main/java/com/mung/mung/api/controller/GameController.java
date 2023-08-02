@@ -5,13 +5,7 @@ import com.mung.mung.api.service.GameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.time.Duration;
-import java.time.Instant;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,35 +15,27 @@ public class GameController {
 
     private final GameService gameService;
 
-    // 타이머 관련 시간 설정
-    private Instant gameStartTime = null;
-    private final Duration votingDuration = Duration.ofSeconds(20);
+    @PostMapping("/startvote")
+    public ResponseEntity<GameStartRes> startVote(@RequestParam(required = true) String roomId) {
+        gameService.startVote(roomId);
 
-    private final int votepeople = 
-
-    @GetMapping("/votestart")
-    public ResponseEntity<GameStartRes> startVote(@RequestParam(required = true) String roomId){
-        gameStartTime = Instant.now();
-        
         return ResponseEntity.ok(new GameStartRes(roomId));
     }
 
-    @GetMapping("/votecheck")
-    public ResponseEntity<String> countVote(@RequestParam(required = true) String roomId){
-        Instant curTime = Instant.now();
+    @PostMapping("/vote")
+    public ResponseEntity<String> countVote(@RequestParam(required = true) String roomId) {
 
-        if (curTime.isBefore(gameStartTime.plus(votingDuration))) {
+        String result = gameService.countVote(roomId);
 
-            return ResponseEntity.ok("투표 완료");
-        }else{
-            return ResponseEntity.badRequest().body("투표 완료");
-        }
-        return ResponseEntity.ok(new GameStartRes(roomId));
+        return ResponseEntity.ok(result);
+
     }
 
-
-
-
+    @GetMapping("/voteResult")
+    public ResponseEntity<String> getVoteResult(@RequestParam String roomId) {
+        String result = gameService.getVoteResult(roomId);
+        return ResponseEntity.ok(result);
+    }
 
 
 }
