@@ -69,6 +69,10 @@ const GlobalStyle = createGlobalStyle`
         font-family: "gugi";
         font-size: 16px;
     }
+    span {
+        font-family: "jua";
+        color: var(--black)
+    }
 
     button {
         padding: 10px 20px;
