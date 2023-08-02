@@ -46,8 +46,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 
 import com.google.gson.Gson;
+import com.mung.mung.api.request.GameRoomConnectReq;
 import com.mung.mung.api.request.GameRoomCreateReq;
-import com.mung.mung.api.service.RoomService;
+import com.mung.mung.api.service.GameRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ import org.springframework.web.servlet.view.groovy.GroovyMarkupConfig;
 public class GameRoomController {
 
     private final int LIMIT = 6;
-    private final RoomService roomService;
+    private final GameRoomService gameRoomService;
 
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
@@ -90,8 +91,8 @@ public class GameRoomController {
     private Map<String, Integer> mapSessions = new ConcurrentHashMap<>();
 
     @Autowired
-    public GameRoomController(RoomService roomService){
-        this.roomService=roomService;
+    public GameRoomController(GameRoomService gameRoomService){
+        this.gameRoomService=gameRoomService;
     }
 
     @PostConstruct
@@ -99,39 +100,27 @@ public class GameRoomController {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-
     @PostMapping("/api/game-sessions")
     public ResponseEntity<String> CreateRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
-
-        boolean createSuccess = roomService.makeRoom(gameRoomCreateReq.getRoomId(), gameRoomCreateReq);
+        // makeRoom에서 return으로 중복된 Id가 있는지 없는지를 판단 후 중복이라면 Data 생성 없이 false값을 return함
+        boolean createSuccess = gameRoomService.makeRoom(gameRoomCreateReq.getRoomId(), gameRoomCreateReq);
         if (createSuccess) {
             this.mapSessions.put(gameRoomCreateReq.getRoomId(), 1);
-
+            // customSessionId를 한글로 할 수 없음 => 시간되면 한글로 바꾸기!
+            // Db에 customSessionId colum을 만들고 roomId를 아스키변환해 숫자로 저장해 사용할 수도 있음
             // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
             Map<String, Object> gameInfoMap = new HashMap<>();
             gameInfoMap.put("customSessionId", gameRoomCreateReq.getRoomId());
             gameInfoMap.put("roomPw", gameRoomCreateReq.getRoomPw());
 
             System.out.println(gameInfoMap);
-            // DB에 있으면 return Fail 반환하는것 구현해야함?
-
-            // 방 만드는 과정에서 DB에서 중복된게 있는지 확인
-
-            // front에서 Token만 받아서 통신할 수 있는지 테스트 해본 결과 createToken만 통과해도 연결 됨을 확인.
-            // pw일치여부만 구현하면 됨
-//        log.info("params : ", params);
 
             SessionProperties properties = SessionProperties.fromJson(gameInfoMap).build();
-            System.out.println("내가만든 println");
-            System.out.println(properties);
-
 //        log.info("properties : ", String.valueOf(properties));
             Session session = openvidu.createSession(properties);
 //        log.info("session : ",String.valueOf(session));
-            System.out.println("session.getSessionId() 입니당");
-            System.out.println(session.getSessionId());
             return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
         }else {
             return new ResponseEntity<>("방 생성에 실패했습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
@@ -141,21 +130,30 @@ public class GameRoomController {
 
     @PostMapping("/api/game-sessions/{sessionId}/connections")
     public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId, // react의 create token method임
-                                                   @RequestBody GameRoomCreateReq gameRoomCreateReq)
+                                                   @RequestBody GameRoomConnectReq gameRoomConnectReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
-        Session session = openvidu.getActiveSession(sessionId);
+        Session session = openvidu.getActiveSession(sessionId); // 이 부분에서 session을 바탕으로 연결
         if (session == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("해당하는 방을 찾을 수 없습니다.",HttpStatus.NOT_FOUND);
         }
+
+
+        // 인원수가 LIMIT보다 작다면 인원수 1 추가
+        if (this.mapSessions.get(sessionId)<LIMIT){
+            this.mapSessions.put(sessionId, this.mapSessions.get(sessionId) + 1);
+        } else{ // LIMIT이 됐다면 접근불가
+            return new ResponseEntity<>("방 인원이 다 찼습니다.",HttpStatus.FORBIDDEN);
+        }
+
         System.out.println("첫 방 개설자도 확인해보기");
         System.out.println("Connection test");
         Map<String, Object> gameConnectionInfoMap = new HashMap<>();
-        gameConnectionInfoMap.put("customSessionId", gameRoomCreateReq.getRoomId());
-        gameConnectionInfoMap.put("roomPw", gameRoomCreateReq.getRoomPw());
+//        gameConnectionInfoMap.put("customSessionId", gameRoomConnectReq.getRoomId());
+        gameConnectionInfoMap.put("roomPw", gameRoomConnectReq.getRoomPw());
         System.out.println(gameConnectionInfoMap);
 
         ConnectionProperties properties = ConnectionProperties.fromJson(gameConnectionInfoMap).build();
-        Connection connection = session.createConnection(properties);
+        Connection connection = session.createConnection(properties); //이 부분이 연결을 담당하는 부분
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
 
