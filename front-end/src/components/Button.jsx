@@ -18,7 +18,8 @@ const StyledButton = styled(motion.button)`
     align-items: center;
     text-align: center;
     object-fit: ${(props) => (props.type === "icon" ? "fill" : "none")};
-    padding: 10px 20px;
+    padding: ${(props) => props.padding};
+    margin: ${(props) => props.margin};
     border: none;
     &:hover {
         transition: all 0.8s;
@@ -44,6 +45,8 @@ const Button = (props) => {
         children,
         type,
         text,
+        padding,
+        margin,
     } = props;
 
     return (
@@ -59,6 +62,8 @@ const Button = (props) => {
             type={type}
             hoverColor={hoverColor}
             hoverBgColor={hoverBgColor}
+            padding={padding}
+            margin={margin}
         >
             {text}
             {children}
