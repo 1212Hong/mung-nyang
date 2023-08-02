@@ -1,7 +1,10 @@
 import { styled } from "styled-components";
+import { ReactComponent as SettingIcon } from "../../assets/img/setting.svg";
+import { ReactComponent as CameraIcon } from "../../assets/img/camera_on.svg";
+import { ReactComponent as CameraOffIcon } from "../../assets/img/camera_off.svg";
 
 const Container = styled.div`
-    background-color: var(--beige-dark);
+    background-color: var(--white);
     border-radius: 20px;
 `;
 
@@ -20,13 +23,13 @@ const ContainerBody = styled.div`
 const HeaderBox = styled.div`
     width: 1250px;
     height: 50px;
-    background-color: var(--beige-dark);
+    background-color: var(--white);
     border-radius: 10px;
 `;
 const LeftBox = styled.div`
     width: 600px;
     height: 650px;
-    background-color: var(--beige);
+    background-color: var(--dusty-pink-white);
     border-radius: 10px;
     margin: 20px;
     display: flex;
@@ -38,7 +41,7 @@ const LeftBox = styled.div`
 const RightBox = styled.div`
     width: 600px;
     height: 650px;
-    background-color: var(--beige-dark);
+    background-color: var(--white);
     border-radius: 10px;
     margin: 20px;
     color: var(--black);
@@ -48,7 +51,7 @@ const RightBox = styled.div`
 `;
 
 const MicBox = styled.div`
-    background: var(--white);
+    background: var(--dusty-pink-white);
     width: 500px;
     height: 50px;
     margin-top: 10px;
@@ -60,7 +63,7 @@ const MicBar = styled.div.attrs((props) => ({
     },
 }))`
     border-radius: 10px;
-    background: var(--beige);
+    background: var(--dusty-pink-white);
     height: 50px;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -69,7 +72,7 @@ const VolumeSlider = styled.input`
     width: 480px;
     height: 30px;
     appearance: none;
-    background: var(--beige);
+    background: var(--dusty-pink-white);
     outline: none;
     border-radius: 10px;
     position: relative;
@@ -80,7 +83,7 @@ const VolumeSlider = styled.input`
         appearance: none;
         width: 30px;
         height: 30px;
-        background: var(--beige-dark);
+        background: var(--white);
         border-radius: 50%;
         cursor: pointer;
     }
@@ -110,7 +113,7 @@ const FooterBox = styled.div`
 const NickName = styled.div`
     width: 270px;
     height: 80px;
-    background-color: var(--beige);
+    background-color: var(--dusty-pink-white);
     border-radius: 20px;
 `;
 const TestButtonWrapper = styled.div`
@@ -134,4 +137,7 @@ export {
     FooterBox,
     NickName,
     TestButtonWrapper,
+    SettingIcon,
+    CameraIcon,
+    CameraOffIcon,
 };
