@@ -17,10 +17,11 @@ import java.util.List;
 public class GameRoom {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String roomId;
 
     private String roomPw;
+
+    private String owner;
 
     private LocalDateTime startTime;
 

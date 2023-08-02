@@ -27,8 +27,6 @@ public class Player {
 
     private String pIp;
 
-    private int owner;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
