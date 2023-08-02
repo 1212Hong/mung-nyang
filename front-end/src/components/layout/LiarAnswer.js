@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-    margin-top: 15px;
+    margin-top: 30px;
     text-align: center;
 `;
 
@@ -54,16 +54,24 @@ export const Image = styled.img`
 
 export const NotificationContainer = styled.div`
     position: fixed;
-    width: 900px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 9999;
     background-color: rgba(0, 0, 0, 0.8);
     padding: 30px 40px;
     border-radius: 5px;
     display: ${(props) => (props.show ? "block" : "none")};
     transition: display 5s;
-    font-size: 80px;
+    font-size: 48px;
     color: var(--white);
+`;
+
+export const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: ${(props) => (props.show ? "block" : "none")};
 `;
