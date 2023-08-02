@@ -1,7 +1,12 @@
 import React from "react";
+import WaitingRoom from "./game/WaitingRoom";
 
 const Game = () => {
-    return <h1>Game page</h1>;
+    return (
+        <>
+            <WaitingRoom />
+        </>
+    );
 };
 
 export default Game;
