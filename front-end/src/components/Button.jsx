@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import { motion } from "framer-motion";
-import effect from "../assets/audio/99085B335CDE901103.mp3";
+import effect from "../assets/audio/dog-toy.mp3";
 
 const StyledButton = styled(motion.button)`
     width: ${(props) =>
@@ -47,9 +47,11 @@ const Button = (props) => {
         children,
         type,
         text,
+        // audioURL,
+        // -> url props로는 못줄거같고 특정 사운드 후보들 미리 저장해두고 바꿔쓰기는 가능
     } = props;
 
-    const propsF = () => onClick;
+    // const test = new Audio(audioURL && "");
 
     return (
         <StyledButton
@@ -62,7 +64,8 @@ const Button = (props) => {
             border={border}
             onClick={() => {
                 audio.play();
-                propsF();
+                // test.play();
+                onClick();
             }}
             type={type}
             hoverColor={hoverColor}
