@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../views/Home";
 import WaitingRoom from "../views/WaitingRoom";
-import ConnectionTest from "../views/ConnectionTest";
+import ConnectionTest from "../views/home/ConnectionTest";
 
 const Router = () => {
     return (

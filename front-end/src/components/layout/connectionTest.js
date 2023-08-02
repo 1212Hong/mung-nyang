@@ -1,9 +1,4 @@
 import { styled } from "styled-components";
-import { ReactComponent as SettingIcon } from "../assets/img/setting.svg";
-import { ReactComponent as CameraIcon } from "../assets/img/camera_on.svg";
-import { ReactComponent as CameraOffIcon } from "../assets/img/camera_off.svg";
-
-const TestSound = require("../assets/audio/test_sound.mp3");
 
 const Container = styled.div`
     background-color: var(--beige-dark);
@@ -43,43 +38,49 @@ const LeftBox = styled.div`
 const RightBox = styled.div`
     width: 600px;
     height: 650px;
-    background-color: var(--beige);
+    background-color: var(--beige-dark);
     border-radius: 10px;
     margin: 20px;
     color: var(--black);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 `;
 
 const MicBox = styled.div`
     background: var(--white);
     width: 500px;
     height: 50px;
-    margin: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 `;
 const MicBar = styled.div.attrs((props) => ({
     style: {
         width: `${Math.min(props.volume * 500, 500)}px`,
     },
 }))`
-    border: 1px solid black;
-    background: var(--beige-dark);
+    border-radius: 10px;
+    background: var(--beige);
     height: 50px;
-    margin: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 `;
 const VolumeSlider = styled.input`
-    width: 500px;
+    width: 480px;
     height: 30px;
     appearance: none;
-    background: var(--beige-dark);
+    background: var(--beige);
     outline: none;
     border-radius: 10px;
     position: relative;
     cursor: pointer;
+    margin: 10px 0;
 
     &::-webkit-slider-thumb {
         appearance: none;
-        width: 20px;
-        height: 20px;
-        background: var(--macciato);
+        width: 30px;
+        height: 30px;
+        background: var(--beige-dark);
         border-radius: 50%;
         cursor: pointer;
     }
@@ -101,29 +102,25 @@ const FooterBox = styled.div`
     width: 500px;
     display: flex;
     flex-direction: row;
-    margin: 10px;
-    justify-content: space-evenly;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    justify-content: space-between;
 `;
 
 const NickName = styled.div`
-    width: 300px;
+    width: 270px;
     height: 80px;
-    background-color: var(--beige-dark);
+    background-color: var(--beige);
     border-radius: 20px;
 `;
-
-const Entrance = styled.div`
-    width: 100px;
-    height: 80px;
-    background-color: var(--beige-dark);
-    border-radius: 20px;
+const TestButtonWrapper = styled.div`
+    width: 500px;
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
 `;
 
 export {
-    SettingIcon,
-    CameraIcon,
-    CameraOffIcon,
-    TestSound,
     Container,
     ContainerBody,
     HeaderBox,
@@ -136,5 +133,5 @@ export {
     EmptyScreen,
     FooterBox,
     NickName,
-    Entrance,
+    TestButtonWrapper,
 };
