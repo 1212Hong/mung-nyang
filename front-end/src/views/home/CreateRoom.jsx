@@ -1,17 +1,11 @@
 import React from "react";
-import Input from "../components/Input";
-import Button from "../components/Button";
-import { MainText, SubText } from "../components/layout/common";
-import {
-    ButtonBox,
-    FormBox,
-    HeaderBox,
-    LeftBox,
-} from "../components/layout/home";
+import Input from "../../components/Input";
+import { MainText, SubText } from "../../components/layout/common";
+import { FormBox, HeaderBox } from "../../components/layout/home";
 
 const CreateRoom = () => {
     return (
-        <LeftBox className="leftbox">
+        <>
             <HeaderBox>
                 <MainText>멍 마을의 냥</MainText>
             </HeaderBox>
@@ -21,14 +15,10 @@ const CreateRoom = () => {
                 </SubText>
             </HeaderBox>
             <FormBox>
-                <Input width="250px" />
+                <Input width="250px" placeholder="방제목" />
                 <Input type="password" width="250px" />
             </FormBox>
-            <ButtonBox>
-                <Button text={"방생성"} width="100px" margin="20px" />
-                <Button text={"입장하기"} width="100px" margin="20px" />
-            </ButtonBox>
-        </LeftBox>
+        </>
     );
 };
 
