@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import VideoComponent from "../../components/VideoBoxing";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../../components/Button";
-import { ReactComponent as SettingIcon } from "../../assets/img/setting.svg";
-import { ReactComponent as CameraIcon } from "../../assets/img/camera_on.svg";
-import { ReactComponent as CameraOffIcon } from "../../assets/img/camera_off.svg";
 import {
     Container,
     ContainerBody,
@@ -19,6 +16,9 @@ import {
     FooterBox,
     NickName,
     TestButtonWrapper,
+    SettingIcon,
+    CameraIcon,
+    CameraOffIcon,
 } from "../../components/layout/connectionTest";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
@@ -161,6 +161,7 @@ function ConnectionTest() {
                         max="100"
                         value={outputVolumeValue}
                         onChange={handleVolumeChange}
+                        color="black"
                     />
                     <TestButtonWrapper>
                         <Button
@@ -168,6 +169,8 @@ function ConnectionTest() {
                             width="200px"
                             onClick={handleTestButtonClick}
                             className="testBtn"
+                            background={`var(--dusty-pink-white)`}
+                            fontColor={`var(--black)`}
                         />
                     </TestButtonWrapper>
                     <h3>소리변조 테스트</h3>
@@ -183,7 +186,8 @@ function ConnectionTest() {
                             width="150px"
                             height="80px"
                             onClick={handleTestButtonClick}
-                            background={`var(--beige)`}
+                            background={`var(--dusty-pink-white)`}
+                            fontColor={`var(--black)`}
                         >
                             입장
                         </Button>
