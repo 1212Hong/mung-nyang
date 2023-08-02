@@ -10,4 +10,7 @@ public interface GameRoomRepositoryCustom {
     GameRoomDto findByTitle(String roomTitle);
 
     String findOwner(String roomId);
+
+
+
 }

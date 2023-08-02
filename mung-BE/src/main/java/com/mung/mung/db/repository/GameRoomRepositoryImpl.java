@@ -3,6 +3,7 @@ package com.mung.mung.db.repository;
 import com.mung.mung.api.dto.GameRoomDto;
 import com.mung.mung.api.dto.QGameRoomDto;
 
+import com.mung.mung.db.entity.GameRoom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -29,4 +30,6 @@ public class GameRoomRepositoryImpl implements GameRoomRepositoryCustom{
                 .where(gameRoom.roomId.eq(roomId))
                 .fetchOne();
     }
+
+
 }
