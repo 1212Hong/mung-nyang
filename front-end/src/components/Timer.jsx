@@ -1,9 +1,8 @@
 import React from "react";
-import PuppyRun from "../assets/img/Puppy-run.gif";
 import ProgressTimer from "react-progress-bar-timer";
 import "../css/style/timer.css";
 const Timer = (props) => {
-    const time = props;
+    const { time } = props;
     return (
         <>
             <ProgressTimer
@@ -14,14 +13,14 @@ const Timer = (props) => {
                 rootRounded
                 started={true}
                 variant="empty"
+                disabled={"true"}
                 classes={{
+                    root: "root",
                     progressContainer: "progressContainer",
                     textContainer: "textContainer",
                     progress: "progress",
                 }}
             ></ProgressTimer>
-
-            <img src={PuppyRun} alt="" width="40px" />
         </>
     );
 };
