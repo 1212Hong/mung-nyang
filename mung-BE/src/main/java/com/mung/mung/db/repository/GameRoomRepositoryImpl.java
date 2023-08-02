@@ -6,23 +6,27 @@ import com.mung.mung.api.dto.QGameRoomDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+//q클래스 static으로 선언
 import static com.mung.mung.db.entity.QGameRoom.gameRoom;
-import java.util.List;
+
 @RequiredArgsConstructor
 public class GameRoomRepositoryImpl implements GameRoomRepositoryCustom{
     private final JPAQueryFactory queryFactory;
-//    QGameRoom qGameRoom = QGameRoom.gameRoom;
     @Override
     public GameRoomDto findByTitle(String roomTitle) {
         return queryFactory
-                .select(new QGameRoomDto(gameRoom.roomTitle, gameRoom.roomPw, gameRoom.roomUrl))
+                .select(new QGameRoomDto(gameRoom.roomId, gameRoom.roomPw, gameRoom.roomPw))
                 .from(gameRoom)
-                .where(gameRoom.roomTitle.eq(roomTitle))
+                .where(gameRoom.roomId.eq(roomTitle))
                 .fetchOne();
     }
 
     @Override
     public String findOwner(String roomId) {
-        return null;
+        return queryFactory
+                .select(gameRoom.owner)
+                .from(gameRoom)
+                .where(gameRoom.roomId.eq(roomId))
+                .fetchOne();
     }
 }

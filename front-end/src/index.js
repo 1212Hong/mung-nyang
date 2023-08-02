@@ -1,18 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Router from "./router/Router";
 import App from "./App";
-import "./assets/fonts/font.css";
 import { Provider } from "react-redux";
-import store from "./store/store";
+import store from "./store";
+import GlobalStyle from "./components/style/GlobalStyle";
+import Modal from "./components/modal/Modal";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <>
-        <Provider store={store}>
-            <App />
-        </Provider>
-
-        <Router />
-    </>,
+    <Provider store={store}>
+        <Modal />
+        <App />
+        <GlobalStyle />
+    </Provider>,
 );
