@@ -19,7 +19,8 @@ const StyledButton = styled(motion.button)`
     align-items: center;
     text-align: center;
     object-fit: ${(props) => (props.type === "icon" ? "fill" : "none")};
-    padding: 10px 20px;
+    padding: ${(props) => props.padding};
+    margin: ${(props) => props.margin};
     border: none;
     &:hover {
         transition: all 0.8s;
@@ -49,6 +50,8 @@ const Button = (props) => {
         text,
         // audioURL,
         // -> url props로는 못줄거같고 특정 사운드 후보들 미리 저장해두고 바꿔쓰기는 가능
+        padding,
+        margin,
     } = props;
 
     // const test = new Audio(audioURL && "");
@@ -70,6 +73,8 @@ const Button = (props) => {
             type={type}
             hoverColor={hoverColor}
             hoverBgColor={hoverBgColor}
+            padding={padding}
+            margin={margin}
         >
             {text}
             {children}

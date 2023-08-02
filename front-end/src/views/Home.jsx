@@ -1,36 +1,41 @@
-import React from "react";
-import Input from "../components/Input";
+import React, { useState } from "react";
+import {
+    ButtonBox,
+    HomeContainer,
+    LeftBox,
+    RightBox,
+} from "../components/layout/home";
+import CreateRoom from "./home/CreateRoom";
+import JoinRoom from "./home/JoinRoom";
 import Button from "../components/Button";
-import { styled } from "styled-components";
-
-const HomeContainer = styled.div`
-    display: flex;
-    min-width: 1280px;
-    min-height: 720px;
-    flex-direction: row;
-    justify-content: center;
-`;
-
-const LeftBox = styled.div`
-    min-width: 440px;
-`;
-
-const RightBox = styled.div`
-    background-color: var(--white);
-    min-width: 840px;
-`;
 
 const Home = () => {
+    const [view, setView] = useState(false);
+    console.log(view);
+
+    const changeView = () => {
+        setView(!view);
+    };
+
     return (
         <HomeContainer>
-            <LeftBox>
-                <h1>홈페이지</h1>
-                <h2>h2</h2>
-                <h3>h3크기</h3>
-                <Input />
-                <Button text={"입장"} />
+            <LeftBox className="leftbox">
+                {view ? <CreateRoom /> : <JoinRoom />}
+                <ButtonBox>
+                    <Button
+                        text={view ? "방생성" : "입장하기"}
+                        width="100px"
+                        margin="20px"
+                    />
+                    <Button
+                        text={view ? "입장하러가기" : "방생성하러가기"}
+                        onClick={changeView}
+                        width="100px"
+                        margin="20px"
+                    />
+                </ButtonBox>
             </LeftBox>
-            <RightBox>메인화면</RightBox>
+            <RightBox className="rightbox" />
         </HomeContainer>
     );
 };
