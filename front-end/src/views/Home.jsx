@@ -28,26 +28,15 @@ const Home = () => {
         });
     };
 
-    const reset = () => {
-        setRoomInfo({
-            roomId: "",
-            roomPw: "",
-        });
-    };
-
     const changeView = () => {
         setRoomInfo({ roomId: "", roomPw: "" });
         setView(!view);
-        // if (view) {
-        //     setRoomInfo({ roomId: "", roomPw: "" });
-        //     window.location.reload();
-        // }
         console.log(roomInfo);
     };
     const makeRoom = () => {
         console.log("방생성 api호출");
         console.log(roomInfo);
-        createRoom();
+        // createRoom(); api 테스트필요
     };
     const joinRoom = () => {
         console.log("방입장 api");
