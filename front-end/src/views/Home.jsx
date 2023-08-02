@@ -8,6 +8,7 @@ import {
 import CreateRoom from "./home/CreateRoom";
 import JoinRoom from "./home/JoinRoom";
 import Button from "../components/Button";
+import Timer from "../components/Timer";
 
 const Home = () => {
     const [view, setView] = useState(false);
@@ -19,6 +20,7 @@ const Home = () => {
 
     return (
         <HomeContainer>
+            <Timer />
             <LeftBox className="leftbox">
                 {view ? <CreateRoom /> : <JoinRoom />}
                 <ButtonBox>
