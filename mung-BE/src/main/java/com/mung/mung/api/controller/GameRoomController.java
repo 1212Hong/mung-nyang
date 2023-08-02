@@ -132,7 +132,7 @@ public class GameRoomController {
     public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId, // react의 create token method임
                                                    @RequestBody GameRoomConnectReq gameRoomConnectReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
-        Session session = openvidu.getActiveSession(sessionId); // 이 부분에서 session을 바탕으로 연결
+        Session session = openvidu.getActiveSession(sessionId); // 이 부분에서 열린 session을 찾아옴
         if (session == null) {
             return new ResponseEntity<>("해당하는 방을 찾을 수 없습니다.",HttpStatus.NOT_FOUND);
         }
@@ -150,7 +150,7 @@ public class GameRoomController {
         Map<String, Object> gameConnectionInfoMap = new HashMap<>();
 //        gameConnectionInfoMap.put("customSessionId", gameRoomConnectReq.getRoomId());
         gameConnectionInfoMap.put("roomPw", gameRoomConnectReq.getRoomPw());
-        System.out.println(gameConnectionInfoMap);
+        //
 
         ConnectionProperties properties = ConnectionProperties.fromJson(gameConnectionInfoMap).build();
         Connection connection = session.createConnection(properties); //이 부분이 연결을 담당하는 부분
