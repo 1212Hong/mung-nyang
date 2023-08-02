@@ -2,7 +2,7 @@ import React from "react";
 import ProgressTimer from "react-progress-bar-timer";
 import "../css/style/timer.css";
 const Timer = (props) => {
-    const time = props;
+    const { time } = props;
     return (
         <>
             <ProgressTimer
