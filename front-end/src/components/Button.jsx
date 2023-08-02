@@ -1,6 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import { motion } from "framer-motion";
+import effect from "../assets/audio/99085B335CDE901103.mp3";
 
 const StyledButton = styled(motion.button)`
     width: ${(props) =>
@@ -30,7 +31,7 @@ const StyledButton = styled(motion.button)`
 `;
 
 const Button = (props) => {
-    const audio = new Audio("../assets/audio/99085B335CDE901103.mp3");
+    const audio = new Audio(effect);
 
     const {
         width,
@@ -48,6 +49,8 @@ const Button = (props) => {
         text,
     } = props;
 
+    const propsF = () => onClick;
+
     return (
         <StyledButton
             width={width}
@@ -57,7 +60,10 @@ const Button = (props) => {
             fontColor={fontColor}
             weight={weight}
             border={border}
-            onClick={onClick}
+            onClick={() => {
+                audio.play();
+                propsF();
+            }}
             type={type}
             hoverColor={hoverColor}
             hoverBgColor={hoverBgColor}
