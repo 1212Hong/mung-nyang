@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import VideoComponent from "../../components/VideoBoxing";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../../components/Button";
+import { ReactComponent as SettingIcon } from "../../assets/img/setting.svg";
+import { ReactComponent as CameraIcon } from "../../assets/img/camera_on.svg";
+import { ReactComponent as CameraOffIcon } from "../../assets/img/camera_off.svg";
 import {
-    SettingIcon,
-    CameraIcon,
-    CameraOffIcon,
-    TestSound,
     Container,
     ContainerBody,
     HeaderBox,
@@ -19,8 +18,10 @@ import {
     EmptyScreen,
     FooterBox,
     NickName,
-    Entrance,
+    TestButtonWrapper,
 } from "../../components/layout/connectionTest";
+
+const TestSound = require("../../assets/audio/test_sound.mp3");
 
 function Switch({ isOn, onToggle }) {
     return (
@@ -101,6 +102,20 @@ function ConnectionTest() {
             });
     }
 
+    useEffect(() => {
+        function requestMicPermission() {
+            navigator.mediaDevices
+                .getUserMedia({ audio: true })
+                .then((stream) => {
+                    updateMicVolume();
+                })
+                .catch((error) => {
+                    console.error("마이크 접근 에러:", error);
+                });
+        }
+        requestMicPermission();
+    }, []);
+
     function updateOutputVolume(newVolume) {
         setOutputVolumeValue(newVolume);
 
@@ -135,7 +150,7 @@ function ConnectionTest() {
                 <RightBox>
                     <h3>마이크 선택</h3>
                     <MicBox />
-                    <h3>입력조절</h3>
+                    <h3>입력확인</h3>
                     <MicBar volume={micVolumeValue / 100} />
                     <h3>스피커</h3>
                     <MicBox />
@@ -147,16 +162,31 @@ function ConnectionTest() {
                         value={outputVolumeValue}
                         onChange={handleVolumeChange}
                     />
-                    <Button
-                        text="테스트"
-                        width="50"
-                        onClick={handleTestButtonClick}
-                    />
+                    <TestButtonWrapper>
+                        <Button
+                            text="테스트"
+                            width="200px"
+                            onClick={handleTestButtonClick}
+                            className="testBtn"
+                        />
+                    </TestButtonWrapper>
                     <h3>소리변조 테스트</h3>
-                    <Button isOn={isOn} onToggle={handleToggle} text="임시" />
+                    {/* <Button
+                        isOn={isOn}
+                        onToggle={handleToggle}
+                        text="임시"
+                        width="100px"
+                    /> */}
                     <FooterBox>
                         <NickName />
-                        <Entrance />
+                        <Button
+                            width="150px"
+                            height="80px"
+                            onClick={handleTestButtonClick}
+                            background={`var(--beige)`}
+                        >
+                            입장
+                        </Button>
                     </FooterBox>
                 </RightBox>
                 <audio ref={audioRef} src={TestSound} loop={false} />
