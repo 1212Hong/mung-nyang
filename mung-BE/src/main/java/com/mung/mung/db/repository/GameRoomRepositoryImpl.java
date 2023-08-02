@@ -20,4 +20,9 @@ public class GameRoomRepositoryImpl implements GameRoomRepositoryCustom{
                 .where(gameRoom.roomTitle.eq(roomTitle))
                 .fetchOne();
     }
+
+    @Override
+    public String findOwner(String roomId) {
+        return null;
+    }
 }

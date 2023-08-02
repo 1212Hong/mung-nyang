@@ -16,6 +16,9 @@ public class RoomController {
     public void joinGameSession (@DestinationVariable int roomId){
         log.info("room id : {}", roomId);
 
+
+
+
 //        RoomJoinRes res =
 
     }
