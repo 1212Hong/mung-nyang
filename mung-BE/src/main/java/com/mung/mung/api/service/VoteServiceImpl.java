@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GameServiceImpl implements GameService {
+public class VoteServiceImpl implements VoteService {
 
     private final GameRoomRepository gameRoomRepository;
 
