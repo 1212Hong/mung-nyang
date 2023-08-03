@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const Container = styled.div``;
 
-export const Box = styled.div`
+export const User = styled.div`
     margin-left: 20px;
     float: left;
 `;

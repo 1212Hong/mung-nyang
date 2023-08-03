@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "../../components/Button";
 import VideoComponent from "../../components/VideoBoxing";
-import { Box, Container } from "../../components/layout/common";
+import { User, Container } from "../../components/layout/common";
 import Timer from "../../components/Timer";
 import {
     NotificationContainer,
@@ -74,9 +74,9 @@ const Dance = (props) => {
             </PenaltyBox>
             <UsersBox>
                 {userlist.map((index) => (
-                    <Box key={index}>
+                    <User key={index}>
                         <VideoComponent width="230" height="200" />
-                    </Box>
+                    </User>
                 ))}
             </UsersBox>
             <Overlay show={showNotification} />
