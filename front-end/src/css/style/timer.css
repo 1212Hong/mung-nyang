@@ -1,10 +1,28 @@
-.root {
-    cursor: not-allowed;
-    pointer-events: none;
+.RSPBprogressBar {
+    width: 80%;
 }
-.textContainer {
-    padding: 5px !important;
-    margin: 0 !important;
-    gap: 0 !important;
-    justify-content: center !important;
+.RSPBprogression {
+    color: #1976d2;
+}
+.indexedStep {
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    background-color: rgba(211, 211, 211, 0.8);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.indexedStep .accomplished {
+    background-color: rgba(0, 116, 217, 1);
+}
+.transitionStep {
+    filter: grayscale(1);
+}
+
+.transitionStep.accomplished {
+    filter: grayscale(0);
 }
