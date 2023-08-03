@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -22,7 +23,9 @@ public class Player {
     private  Long playerId;
 
     private String playerNickname;
+    private String playerNickname;
 
+    @ColumnDefault("0")
     private int playerScore;
 
     private String pIp;
