@@ -29,15 +29,6 @@ public class GameRoom {
 
     private LocalDateTime endTime;
 
-//    @OneToMany(mappedBy = "gameRoom")// default : LAZY
-//    private List<Player> players = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "gameRoom")// default : LAZY
-//    private List<Game> games = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "gameRoom")// default : LAZY
-//    private List<BannedPlayer> bannedPlayers = new ArrayList<>();
-
     @Builder.Default
     @OneToMany(mappedBy = "gameRoom")// default : LAZY
     private List<Player> players = new ArrayList<>();
@@ -50,10 +41,6 @@ public class GameRoom {
     @OneToMany(mappedBy = "gameRoom")// default : LAZY
     private List<BannedPlayer> bannedPlayers = new ArrayList<>();
 
-//    public static GameRoomBuilder builder(long roomPk, String roomTitle, String roomPw, String roomUrl ) {
-//        return new GameRoomBuilder().roomPk(roomPk).roomTitle(roomTitle).roomPw(roomPw)
-//                .roomUrl(roomUrl);
-//    }
 
 }
 
