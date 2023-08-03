@@ -7,6 +7,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class GameRoomJoinReq {
-    private String pNickname; // 닉네임 받아오기
+public class PlayerJoinReq {
+    private String roomId;
+    private String playerNickname; // 닉네임 받아오기
 }
