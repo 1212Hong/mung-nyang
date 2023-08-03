@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const PenaltyBox = styled.div`
-    margin-top: 10px;
+    margin-top: 15px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -15,7 +15,6 @@ export const RightItem = styled.div`
 `;
 
 export const Video = styled.div`
-    margin-left: 30px;
     width: 253px;
     height: 450px;
     iframe {
@@ -33,5 +32,5 @@ export const Buttons = styled.div`
 `;
 
 export const UsersBox = styled.div`
-    margin-top: 20px;
+    margin-top: 15px;
 `;

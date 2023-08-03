@@ -2,7 +2,8 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-    display: table-cell;
+    display: flex;
+    flex-direction: column;
 `;
 
 export const Box = styled.div`
