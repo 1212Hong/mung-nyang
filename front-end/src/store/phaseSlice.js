@@ -4,8 +4,6 @@ const initialState = {
     phaseType: "Test",
 };
 
-export const choosePhase = (state) => state.phase;
-
 export const phaseSlice = createSlice({
     name: "phase",
     initialState,
