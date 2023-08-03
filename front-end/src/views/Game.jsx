@@ -11,17 +11,16 @@ const PHASES = {
     Category: "Category",
     Desc: "Desc",
     QnA: "QnA",
-    Answer: "Answer",
-    EmergencyAns: "EmergencyAns",
-    SelectLiar: "SelectLiar",
-    MiddleResult: "MiddleResult",
-    FinalResult: "FinalResult",
+    Ans: "Ans",
+    EmgAns: "EmgAns",
+    LiarVote: "LiarVote",
+    SelectAns: "SelectAns",
     OpenLiar: "OpenLiar",
+    MidScore: "MidScore",
+    FinScore: "FinScore",
+    DupVote: "DupVote", // 최하위플레이어가 동점일때
     Dance: "Dance",
     Paint: "Paint",
-    VoteLiar: "VoteLiar",
-    // + 게임 중 사용할 api 명
-    // Join, Leave, {(Vote)agree, disagree}
 };
 
 const PHASE_COMPONENTS = [
