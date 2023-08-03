@@ -7,7 +7,7 @@ import Timer from "../../components/Timer";
 import { Box } from "../../components/layout/common";
 
 const Container = styled.div``;
-const Head = styled.div`
+const AnswerBox = styled.div`
     margin-top: 40px;
     display: grid;
     grid-template-columns: 690px 600px;
@@ -23,22 +23,20 @@ const Content = styled.div``;
 
 const OtherViewAnswer = (props) => {
     const { text, user_list } = props;
-    const width = "200px";
-    const height = "200px";
 
     return (
         <Container>
             <Timer />
-            <Head>
+            <AnswerBox>
                 <Answer>
                     <VideoComponent width="500px" height="400px" />
                 </Answer>
                 <Card imageSrc={imageSrc} description={text} />
-            </Head>
+            </AnswerBox>
             <Content>
-                {user_list.map((user, index) => (
+                {user_list.map((index) => (
                     <Box key={index}>
-                        <VideoComponent width={width} height={height} />
+                        <VideoComponent width="230px" height="200px" />
                     </Box>
                 ))}
             </Content>
