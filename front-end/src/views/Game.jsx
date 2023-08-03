@@ -1,65 +1,12 @@
 import React from "react";
-import WaitingRoom from "./game/WaitingRoom";
-import ConnectionTest from "./game/ConnectionTest";
-import { useDispatch, useSelector } from "react-redux";
-
-const PHASES = {
-    Test: "Test",
-    Wait: "Wait",
-    GameVote: "GameVote",
-    Quiz: "Quiz",
-    Category: "Category",
-    Desc: "Desc",
-    QnA: "QnA",
-    Ans: "Ans",
-    EmgAns: "EmgAns",
-    LiarVote: "LiarVote",
-    SelectAns: "SelectAns",
-    OpenLiar: "OpenLiar",
-    MidScore: "MidScore",
-    FinScore: "FinScore",
-    DupVote: "DupVote", // 최하위플레이어가 동점일때
-    Dance: "Dance",
-    Paint: "Paint",
-};
-
-const PHASE_COMPONENTS = [
-    {
-        type: PHASES.Test,
-        component: <ConnectionTest />,
-    },
-    {
-        type: PHASES.Wait,
-        component: <WaitingRoom />,
-    },
-];
+import OtherView from "./game/OtherView";
 
 const Game = () => {
-    const phaseType = useSelector((state) => state.phase.phaseType);
-    // const dispatch = useDispatch(); dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
-    console.log(phaseType);
-
-    const findPhase = PHASE_COMPONENTS.find(
-        (phase) => phase.type === phaseType,
-    );
-
-    if (!findPhase) {
-        // 해당 phaseType에 맞는 컴포넌트를 찾지 못한 경우 오류 처리
-        return <h1>Invalid phaseType: {phaseType}</h1>;
-    }
-
-    const renderPhase = () => {
-        return findPhase.component;
-    };
-
+    const text = "정답자가 정답을 입력 중입니다.";
+    const user_list = ["이민규", "이민규", "이민규", "이민규", "이민규"];
     return (
         <>
-            {/* <button
-                onClick={() => {
-                    dispatch(changePhase({ phaseType: "Wait" }));
-                }}
-            ></button> */}
-            {renderPhase()}
+            <OtherView text={text} user_list={user_list} />
         </>
     );
 };
