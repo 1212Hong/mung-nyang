@@ -1,6 +1,8 @@
 package com.mung.mung.db.entity;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +19,11 @@ public class Game {
 
     @Id
     @GeneratedValue
-    private Long gamePk;
+    private Long gameId;
+
+    private int maxSet;
+
+    private int curSet;
 
     private String imageUrl;
 
@@ -28,7 +34,7 @@ public class Game {
     private String endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_pk")
+    @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
 
     @OneToMany(mappedBy = "game")

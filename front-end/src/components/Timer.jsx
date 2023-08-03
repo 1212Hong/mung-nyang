@@ -1,26 +1,36 @@
-import React from "react";
-import ProgressTimer from "react-progress-bar-timer";
+import React, { useState, useEffect } from "react";
+import "react-step-progress-bar/styles.css";
+import { ProgressBar } from "react-step-progress-bar";
 import "../css/style/timer.css";
+
 const Timer = (props) => {
-    const time = props;
+    const {
+        time = typeof props.time === "undefined" ? 10 : props.time,
+        width = typeof props.width === "undefined" ? "100%" : props.width,
+        height = typeof props.height === "undefined" ? "20px" : props.height,
+        text,
+    } = props;
+
+    const decreaseRatio = 10 / time;
+    const [progress, setProgress] = useState(100);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setProgress((progress) => progress - decreaseRatio);
+        }, 100);
+
+        setTimeout(() => {
+            clearInterval(timer);
+        }, time * 1000);
+    }, [time, decreaseRatio]);
     return (
         <>
-            <ProgressTimer
-                barRounded
-                direction="left"
-                duration={typeof time === "number" ? time : 10}
-                fontSize={4}
-                rootRounded
-                started={true}
-                variant="empty"
-                disabled={"true"}
-                classes={{
-                    root: "root",
-                    progressContainer: "progressContainer",
-                    textContainer: "textContainer",
-                    progress: "progress",
-                }}
-            ></ProgressTimer>
+            <ProgressBar
+                percent={progress}
+                height={height}
+                text={text}
+                width={width}
+            ></ProgressBar>
         </>
     );
 };

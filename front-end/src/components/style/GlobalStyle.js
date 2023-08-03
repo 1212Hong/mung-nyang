@@ -26,6 +26,8 @@ const GlobalStyle = createGlobalStyle`
     input {
         min-width: 100px;
         min-height: 15px;
+        padding: 10px;
+        margin: 10px;
     }
 
     button {
@@ -64,9 +66,17 @@ const GlobalStyle = createGlobalStyle`
     }
 
     p {
+        font-family: "gugi";
         font-size: 16px;
     }
+    span {
+        font-family: "jua";
+        color: var(--black)
+    }
 
+    button {
+        padding: 10px 20px;
+    }
 `;
 
 export default GlobalStyle;
