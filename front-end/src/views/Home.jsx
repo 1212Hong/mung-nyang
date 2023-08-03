@@ -12,7 +12,6 @@ import Button from "../components/Button";
 import { createRoom } from "../api/room";
 import { MainText, SubText } from "../components/layout/common";
 import Input from "../components/Input";
-import GameStartVote from "./game/GameStartModal";
 const Home = () => {
     const [view, setView] = useState(false);
     const [roomInfo, setRoomInfo] = useState({
@@ -45,26 +44,25 @@ const Home = () => {
     };
 
     return (
-        <GameStartVote />
-        // <HomeContainer>
-        //     <LeftBox className="leftbox">
-        //         {view ? <createRoom /> : <joinRoom />}
-        //         <ButtonBox>
-        //             <Button
-        //                 text={view ? "방생성" : "입장하기"}
-        //                 width="100px"
-        //                 margin="20px"
-        //             />
-        //             <Button
-        //                 text={view ? "입장하러가기" : "방생성하러가기"}
-        //                 onClick={changeView}
-        //                 width="100px"
-        //                 margin="20px"
-        //             />
-        //         </ButtonBox>
-        //     </LeftBox>
-        //     <RightBox className="rightbox" />
-        // </HomeContainer>
+        <HomeContainer>
+            <LeftBox className="leftbox">
+                {view ? <createRoom /> : <joinRoom />}
+                <ButtonBox>
+                    <Button
+                        text={view ? "방생성" : "입장하기"}
+                        width="100px"
+                        margin="20px"
+                    />
+                    <Button
+                        text={view ? "입장하러가기" : "방생성하러가기"}
+                        onClick={changeView}
+                        width="100px"
+                        margin="20px"
+                    />
+                </ButtonBox>
+            </LeftBox>
+            <RightBox className="rightbox" />
+        </HomeContainer>
     );
 };
 
