@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "react-step-progress-bar/styles.css";
-import { ProgressBar, Step } from "react-step-progress-bar";
+import { ProgressBar } from "react-step-progress-bar";
 import "../css/style/timer.css";
+
 const Timer = (props) => {
-    const time = props.time === "number" ? props.time : 10;
+    const {
+        time = typeof props.time === "undefined" ? 10 : props.time,
+        width = typeof props.width === "undefined" ? "100%" : props.width,
+        height = typeof props.height === "undefined" ? "20px" : props.height,
+        text,
+    } = props;
+
     const decreaseRatio = 10 / time;
     const [progress, setProgress] = useState(100);
 
@@ -20,7 +27,9 @@ const Timer = (props) => {
         <>
             <ProgressBar
                 percent={progress}
-                filledBackground="linear-gradient(to right, #fefb72, #f0bb31)"
+                height={height}
+                text={text}
+                width={width}
             ></ProgressBar>
         </>
     );
