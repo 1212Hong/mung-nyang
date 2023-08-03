@@ -8,12 +8,12 @@ import {
     Overlay,
 } from "../../components/layout/selectAnswer";
 import {
-    Body,
-    Left,
-    Right,
+    PenaltyBox,
+    LeftItem,
+    RightItem,
     Video,
-    Btn,
-    Users,
+    Buttons,
+    UsersBox,
 } from "../../components/layout/dance";
 
 const Dance = (props) => {
@@ -35,8 +35,8 @@ const Dance = (props) => {
     return (
         <Container>
             <Timer />
-            <Body>
-                <Left>
+            <PenaltyBox>
+                <LeftItem>
                     <Video>
                         <iframe
                             width="330"
@@ -46,13 +46,13 @@ const Dance = (props) => {
                             allow="autoplay"
                         ></iframe>
                     </Video>
-                </Left>
-                <Right>
+                </LeftItem>
+                <RightItem>
                     <VideoComponent
                         width="800px"
                         height="450px"
                     ></VideoComponent>
-                    <Btn>
+                    <Buttons>
                         <Button
                             width="100px"
                             height="150px"
@@ -70,16 +70,16 @@ const Dance = (props) => {
                         >
                             FAIL
                         </Button>
-                    </Btn>
-                </Right>
-            </Body>
-            <Users>
+                    </Buttons>
+                </RightItem>
+            </PenaltyBox>
+            <UsersBox>
                 {userlist.map((user, index) => (
                     <Box key={index}>
                         <VideoComponent width="200" height="200" />
                     </Box>
                 ))}
-            </Users>
+            </UsersBox>
             <Overlay show={showNotification} />
             <NotificationContainer show={showNotification}>
                 벌칙자 : {penalty}
