@@ -1,50 +1,26 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import Button from "../../components/Button";
 import VideoComponent from "../../components/VideoBoxing";
-import { Box } from "../../components/layout/common";
+import { Box, Container } from "../../components/layout/common";
 import Timer from "../../components/Timer";
 import {
     NotificationContainer,
     Overlay,
 } from "../../components/layout/selectAnswer";
-
-const Container = styled.div``;
-const Body = styled.div`
-    margin-top: 10px;
-    display: flex;
-`;
-const Left = styled.div`
-    flex: 1;
-`;
-const Right = styled.div`
-    flex: 3;
-    margin-left: 10px;
-    display: flex;
-`;
-const Video = styled.div`
-    margin-left: 30px;
-    width: 253px;
-    height: 450px;
-    iframe {
-        border-radius: 1.5rem;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-`;
-const Btn = styled.div`
-    margin-left: 20px;
-    margin-right: 5px;
-    margin-top: 10px;
-`;
-const Users = styled.div`
-    margin-top: 20px;
-`;
+import {
+    Body,
+    Left,
+    Right,
+    Video,
+    Btn,
+    Users,
+} from "../../components/layout/dance";
 
 const Dance = (props) => {
-    const { url, userlist, penalty } = props;
+    const { userlist } = props;
     const [showNotification, setShowNotification] = useState(true);
+    const url = "https://www.youtube.com/embed/8vPs-hdMGWQ";
+    const penalty = "허스키";
 
     useEffect(() => {
         const timer = setTimeout(() => {
