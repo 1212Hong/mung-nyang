@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { changePhase, choosePhase } from "../store/phaseSlice";
 
 const PHAGES = {
-    Test: "test",
-    Wait: "wait",
-    vote: "vote",
+    Test: "Test",
+    Wait: "Wait",
+    Vote: "Vote",
 };
 
 const PHAGE_COMPONENTS = [
@@ -22,18 +22,21 @@ const PHAGE_COMPONENTS = [
 ];
 
 const Game = () => {
-    const { phase } = useSelector(choosePhase);
+    const { phaseType } = useSelector(choosePhase);
     const dispatch = useDispatch();
+    console.log(phaseType);
+    if (phaseType === "") return <h1>game type none</h1>;
 
-    const fintPhage = PHAGE_COMPONENTS.find((phase) => {
-        return phase.phase === phase;
+    const findPhage = PHAGE_COMPONENTS.find((phase) => {
+        console.log(phase);
+        return phase.type === phaseType;
     });
 
     const renderPhase = () => {
-        return fintPhage.component;
+        return findPhage.component;
     };
 
-    dispatch(changePhase("wait"));
+    dispatch(changePhase("Wait"));
 
     return <>{renderPhase()}</>;
 };

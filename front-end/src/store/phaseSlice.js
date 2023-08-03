@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    phase: "test",
+    phase: "Test",
 };
 
 export const choosePhase = (state) => state.phase;
@@ -11,7 +11,9 @@ export const phaseSlice = createSlice({
     initialState,
     reducers: {
         changePhase: (state, actions) => {
-            state.phase = actions.payload;
+            const { phaseType } = actions.payload;
+            console.log(phaseType);
+            state.phase = phaseType;
         },
     },
 });
