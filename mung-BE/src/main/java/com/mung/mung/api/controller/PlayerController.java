@@ -21,7 +21,6 @@ public class PlayerController {
     // player가 테스트 단계에서 닉네임을 정하고 입장을 누르면 DB에 nick과 room_id를 저장한 뒤 player정보 반환.
     @PostMapping("/join")
     public ResponseEntity<PlayerStatusRes> joinGameRoom(@RequestBody PlayerJoinReq playerJoinReq)
-//    public ResponseEntity<String> createConnection(@RequestBody Map<String,String>  playerJoinReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
         // player정보를 DB에 저장
         System.out.println(playerJoinReq);
@@ -31,7 +30,7 @@ public class PlayerController {
         String playerNickname=playerJoinReq.getPlayerNickname();
         String roomId = playerJoinReq.getRoomId();
         long playerId= playerService.GetPlayerId(playerNickname, roomId);
-        System.out.println("호에엥");
+
         System.out.println(playerService.getPlayerStatus(playerId, playerNickname, roomId));
         return new ResponseEntity<>(playerService.getPlayerStatus(playerId, playerNickname, roomId),HttpStatus.OK);
     }
