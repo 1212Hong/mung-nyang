@@ -2,12 +2,26 @@ import React from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import ConnectionTest from "./game/ConnectionTest";
 import { useDispatch, useSelector } from "react-redux";
-import { changePhase } from "../store/phaseSlice";
 
 const PHASES = {
     Test: "Test",
     Wait: "Wait",
-    Vote: "Vote",
+    GameVote: "GameVote",
+    Quiz: "Quiz",
+    Category: "Category",
+    Desc: "Desc",
+    QnA: "QnA",
+    Answer: "Answer",
+    EmergencyAns: "EmergencyAns",
+    SelectLiar: "SelectLiar",
+    MiddleResult: "MiddleResult",
+    FinalResult: "FinalResult",
+    OpenLiar: "OpenLiar",
+    Dance: "Dance",
+    Paint: "Paint",
+    VoteLiar: "VoteLiar",
+    // + 게임 중 사용할 api 명
+    // Join, Leave, {(Vote)agree, disagree}
 };
 
 const PHASE_COMPONENTS = [
@@ -23,7 +37,7 @@ const PHASE_COMPONENTS = [
 
 const Game = () => {
     const phaseType = useSelector((state) => state.phase.phaseType);
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch(); dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     console.log(phaseType);
 
     const findPhase = PHASE_COMPONENTS.find(
@@ -41,12 +55,12 @@ const Game = () => {
 
     return (
         <>
-            <button
+            {/* <button
                 onClick={() => {
                     dispatch(changePhase({ phaseType: "Wait" }));
                 }}
-            ></button>
-            <>{renderPhase()}</>
+            ></button> */}
+            {renderPhase()}
         </>
     );
 };
