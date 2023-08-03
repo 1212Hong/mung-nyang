@@ -8,7 +8,8 @@ const StyledInput = styled.input`
     background-color: var(--white);
     color: var(--black);
     font-size: ${(props) => props.fontSize};
-    padding: 10px;
+    margin: ${(props) => props.margin};
+    padding: ${(props) => props.padding};
     border-radius: 10px;
     placeholder: ${(props) => props.placeholder};
     &:focus {
@@ -17,7 +18,17 @@ const StyledInput = styled.input`
 `;
 
 const Input = (props) => {
-    const { type, width, height, placeholder } = props;
+    const {
+        type,
+        width,
+        height,
+        placeholder,
+        margin,
+        padding,
+        onChange,
+        id,
+        value,
+    } = props;
 
     return (
         <StyledInput
@@ -25,6 +36,11 @@ const Input = (props) => {
             placeholder={placeholder}
             width={width}
             height={height}
+            margin={margin}
+            padding={padding}
+            onChange={onChange}
+            id={id}
+            value={value}
         />
     );
 };
