@@ -22,9 +22,7 @@ export const NotificationContainer = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 9999;
     background-color: rgba(0, 0, 0, 0.8);
-    padding: 20px;
     border-radius: 5px;
     display: ${(props) => (props.show ? "block" : "none")};
     transition: display 0.2s;
