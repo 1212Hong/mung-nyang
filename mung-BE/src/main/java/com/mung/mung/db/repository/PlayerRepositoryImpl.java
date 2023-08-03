@@ -20,4 +20,5 @@ public class PlayerRepositoryImpl implements PlayerRepositoryCumstom{
                 .where(player.gameRoom.roomId.eq(roomId))
                 .fetch();
     }
+
 }

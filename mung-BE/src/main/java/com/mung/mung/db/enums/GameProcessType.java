@@ -1,6 +1,6 @@
 package com.mung.mung.db.enums;
 
-public enum StompMessageType {
+public enum GameProcessType {
 
     JOIN,
     LEAVE,
