@@ -23,6 +23,8 @@ public class GameRoom {
 
     private String owner;
 
+    private String status;
+
     private LocalDateTime startTime;
 
     private LocalDateTime endTime;
