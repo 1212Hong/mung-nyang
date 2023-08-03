@@ -1,6 +1,8 @@
 package com.mung.mung.db.entity;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,12 +12,14 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GameSet {
 
     @Id
     @GeneratedValue
-    private Long setPk;
+    private Long setId;
 
     private int setFirst;
 
@@ -27,7 +31,7 @@ public class GameSet {
     private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "game_pk")
+    @JoinColumn(name = "game_id")
     private Game game;
 
 }
