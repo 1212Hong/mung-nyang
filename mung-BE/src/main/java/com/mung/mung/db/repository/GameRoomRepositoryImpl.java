@@ -1,39 +1,24 @@
 package com.mung.mung.db.repository;
 
-import com.mung.mung.api.dto.GameRoomDto;
-
+import com.mung.mung.db.entity.GameRoom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
+//q클래스 static으로 선언
+import static com.mung.mung.db.entity.QGameRoom.gameRoom;
 
 @RequiredArgsConstructor
 public class GameRoomRepositoryImpl implements GameRoomRepositoryCustom{
     private final JPAQueryFactory queryFactory;
-    // queryFactory 내부 메서드 들을 사용하기 위함
-//    QGameRoom qGameRoom = QGameRoom.gameRoom;
-//    @Override
-//    public GameRoomDto findByTitle(String roomTitle) {
-//        return queryFactory
-//                .select(new QGameRoomDto(gameRoom.roomTitle, gameRoom.roomPw))
-//                .from(gameRoom)
-//                .where(gameRoom.roomTitle.eq(roomTitle))
-//                .fetchOne();
-//    }
 
-//    @Override
-//    public GameRoomDto createRoom(){
-//        GameRoomDto a;
-//        //집에서 구현할 것
-//        return a;
-//    };
+    @Override
+    public String findOwner(String roomId) {
+        return queryFactory
+                .select(gameRoom.owner)
+                .from(gameRoom)
+                .where(gameRoom.roomId.eq(roomId))
+                .fetchOne();
+    }
 
-    // @Override
-    // public GameRoomDto findByPk(long roomPw){
-    //     return queryFactory
-    //             .select(new QGameRoomDto(gameRoom.roomTitle, gameRoom.roomPw, gameRoom.roomUrl))
-    //             .from(gameRoom)
-    //             .where(gameRoom.roomPw.eq(roomPw))
-    //             .fetchOne();
-    // }
+
 }
