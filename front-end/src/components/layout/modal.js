@@ -46,5 +46,34 @@ const ModalBackdrop = styled.div`
     background-color: rgba(0, 0, 0, 0.3);
     inset: 0;
 `;
-
-export { ModalBackdrop, ModalContainer, ReadyModalView, RuleModalView };
+const ModalViewDescDiv = styled.div`
+    padding: 20px 0;
+    width: 80%;
+    text-align: center;
+    border-bottom: 1px solid silver;
+`;
+const ModalViewResultDiv = styled.div`
+    padding: 20px 0;
+    display: flex;
+    width: 80%;
+    justify-contents: space-between;
+`;
+const ModalViewResultBox = styled.div`
+    width: 30%;
+    margin: 0 5px;
+    display: flex;
+`;
+const ModalViewButtonDiv = styled.div`
+    color: black;
+    display: flex;
+`;
+export {
+    ModalBackdrop,
+    ModalContainer,
+    ReadyModalView,
+    RuleModalView,
+    ModalViewDescDiv,
+    ModalViewResultDiv,
+    ModalViewResultBox,
+    ModalViewButtonDiv,
+};

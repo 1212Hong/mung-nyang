@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import {
     ButtonBox,
     FormBox,
@@ -12,7 +11,7 @@ import Button from "../components/Button";
 import { createRoom } from "../api/room";
 import { MainText, SubText } from "../components/layout/common";
 import Input from "../components/Input";
-import GameStartVote from "./game/GameStartModal";
+import ReadyModal from "../components/modal/ReadyModal";
 const Home = () => {
     const [view, setView] = useState(false);
     const [roomInfo, setRoomInfo] = useState({
@@ -45,7 +44,7 @@ const Home = () => {
     };
 
     return (
-        <GameStartVote />
+        <ReadyModal></ReadyModal>
         // <HomeContainer>
         //     <LeftBox className="leftbox">
         //         {view ? <createRoom /> : <joinRoom />}
