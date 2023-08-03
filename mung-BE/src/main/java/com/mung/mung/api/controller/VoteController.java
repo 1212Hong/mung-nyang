@@ -1,6 +1,6 @@
 package com.mung.mung.api.controller;
 
-import com.mung.mung.api.response.GameStartRes;
+import com.mung.mung.api.response.VoteStartRes;
 import com.mung.mung.api.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +16,10 @@ public class VoteController {
     private final VoteService voteService;
 
     @PostMapping("/start")
-    public ResponseEntity<GameStartRes> startVote(@RequestParam(required = true) String roomId) {
+    public ResponseEntity<VoteStartRes> startVote(@RequestParam(required = true) String roomId) {
         voteService.startVote(roomId);
 
-        return ResponseEntity.ok(new GameStartRes(roomId));
+        return ResponseEntity.ok(new VoteStartRes(roomId));
     }
 
     @PostMapping("/count")
