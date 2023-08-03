@@ -40,6 +40,7 @@ public class GameServiceImpl implements GameService {
         if (startedRooms.contains(roomId)) {
             resetVote(roomId); // 전에 투표 기록이 있으면 초기화
         }
+        startedRooms.add(roomId);
         Instant voteStartTime = Instant.now();
         roomVoteStartTime.put(roomId, voteStartTime);
         int cntPlayers = countPlayers(roomId);
