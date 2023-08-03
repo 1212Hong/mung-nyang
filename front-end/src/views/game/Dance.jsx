@@ -34,7 +34,7 @@ const Dance = (props) => {
 
     return (
         <Container>
-            <Timer></Timer>
+            <Timer />
             <Body>
                 <Left>
                     <Video>
