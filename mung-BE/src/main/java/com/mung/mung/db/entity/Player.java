@@ -21,9 +21,9 @@ public class Player {
     @GeneratedValue
     private  Long playerId;
 
-    private String pNickname;
+    private String playerNickname;
 
-    private int pScore;
+    private int playerScore;
 
     private String pIp;
 

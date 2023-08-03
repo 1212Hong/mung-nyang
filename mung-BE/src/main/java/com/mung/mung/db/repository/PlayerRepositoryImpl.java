@@ -14,7 +14,7 @@ public class PlayerRepositoryImpl implements PlayerRepositoryCumstom{
     public List<String> findPlayers(String roomId) {
 
         return queryFactory
-                .select(player.pNickname)
+                .select(player.playerNickname)
                 .from(player)
                 .join(player.gameRoom)
                 .where(player.gameRoom.roomId.eq(roomId))
