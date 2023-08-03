@@ -1,16 +1,14 @@
-import GlobalStyle from "./components/style/GlobalStyle";
 import "./css/App.css";
 import Router from "./router/Router";
-import { Provider } from "react-redux";
-import store from "./store";
 import "./assets/fonts/font.css";
 
 function App() {
+    // const APPLICATION_SERVER_URL =
+    //     process.env.NODE_ENV === "production" ? "" : "http://localhost:8080/";
     return (
-        <Provider store={store}>
-            <GlobalStyle />
+        <>
             <Router />
-        </Provider>
+        </>
     );
 }
 
