@@ -1,7 +1,9 @@
 import React from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import ConnectionTest from "./game/ConnectionTest";
+import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
+import { changePhase } from "../store/phaseSlice";
 
 const PHASES = {
     Test: "Test",
@@ -32,11 +34,19 @@ const PHASE_COMPONENTS = [
         type: PHASES.Wait,
         component: <WaitingRoom />,
     },
+    {
+        type: PHASES.Quiz,
+        component: <TopBottomVideo />,
+    },
+    {
+        type: PHASES.Category,
+        component: <TopBottomVideo />,
+    },
 ];
 
 const Game = () => {
     const phaseType = useSelector((state) => state.phase.phaseType);
-    // const dispatch = useDispatch(); dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
+    const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     console.log(phaseType);
 
     const findPhase = PHASE_COMPONENTS.find(
@@ -47,6 +57,8 @@ const Game = () => {
         // 해당 phaseType에 맞는 컴포넌트를 찾지 못한 경우 오류 처리
         return <h1>Invalid phaseType: {phaseType}</h1>;
     }
+
+    // dispatch(changePhase({ phaseType: "Wait" }));
 
     const renderPhase = () => {
         return findPhase.component;
