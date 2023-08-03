@@ -74,9 +74,9 @@ const Dance = (props) => {
                 </RightItem>
             </PenaltyBox>
             <UsersBox>
-                {userlist.map((user, index) => (
+                {userlist.map((index) => (
                     <Box key={index}>
-                        <VideoComponent width="200" height="200" />
+                        <VideoComponent width="230" height="200" />
                     </Box>
                 ))}
             </UsersBox>
