@@ -7,6 +7,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class GameRoomNickNameRes {
-    private String pNickname;
+public class PlayerNicknameRes {
+    private String playerNickname;
 }
