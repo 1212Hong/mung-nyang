@@ -3,15 +3,15 @@ import styled from "styled-components";
 export const PenaltyBox = styled.div`
     margin-top: 10px;
     display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 `;
 
-export const LeftItem = styled.div`
-    flex: 1;
-`;
+export const LeftItem = styled.div``;
 
 export const RightItem = styled.div`
-    flex: 3;
     display: flex;
+    justify-content: space-between;
 `;
 
 export const Video = styled.div`
@@ -27,7 +27,9 @@ export const Video = styled.div`
 `;
 
 export const Buttons = styled.div`
-    margin: 10px 5px 0px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 `;
 
 export const UsersBox = styled.div`

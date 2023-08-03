@@ -52,26 +52,25 @@ const Dance = (props) => {
                         width="800px"
                         height="450px"
                     ></VideoComponent>
-                    <Buttons>
-                        <Button
-                            width="100px"
-                            height="150px"
-                            margin="40px 0px"
-                            color="black"
-                            fontSize="32px"
-                        >
-                            PASS
-                        </Button>
-                        <Button
-                            width="100px"
-                            height="150px"
-                            color="black"
-                            fontSize="32px"
-                        >
-                            FAIL
-                        </Button>
-                    </Buttons>
                 </RightItem>
+                <Buttons>
+                    <Button
+                        width="100px"
+                        height="150px"
+                        color="black"
+                        fontSize="32px"
+                    >
+                        PASS
+                    </Button>
+                    <Button
+                        width="100px"
+                        height="150px"
+                        color="black"
+                        fontSize="32px"
+                    >
+                        FAIL
+                    </Button>
+                </Buttons>
             </PenaltyBox>
             <UsersBox>
                 {userlist.map((index) => (
