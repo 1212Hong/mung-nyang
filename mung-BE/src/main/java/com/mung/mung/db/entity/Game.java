@@ -14,14 +14,16 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Game {
 
     @Id
     @GeneratedValue
     private Long gameId;
+
+    private int maxSet;
+
+    private int curSet;
 
     private String imageUrl;
 
