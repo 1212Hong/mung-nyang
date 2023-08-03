@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import Button from "../components/Button";
-import { ReactComponent as LinkIcon } from "../assets/img/link_image.svg";
-import { ReactComponent as CaptureIcon } from "../assets/img/capture_image.svg";
-import { ReactComponent as DogFootIcon } from "../assets/img/dog_foot.svg";
-import { ReactComponent as QuestionIcon } from "../assets/img/question_mark.svg";
-import { ReactComponent as VolumeOnIcon } from "../assets/img/volume_on.svg";
-import { ReactComponent as VolumeMuteIcon } from "../assets/img/volume_mute.svg";
-import VideoComponent from "../components/VideoBoxing";
-import Participant from "../components/Participant";
-import Input from "../components/Input";
+import Button from "../../components/Button";
+import { ReactComponent as LinkIcon } from "../../assets/img/link_image.svg";
+import { ReactComponent as CaptureIcon } from "../../assets/img/capture_image.svg";
+import { ReactComponent as DogFootIcon } from "../../assets/img/dog_foot.svg";
+import { ReactComponent as QuestionIcon } from "../../assets/img/question_mark.svg";
+import { ReactComponent as VolumeOnIcon } from "../../assets/img/volume_on.svg";
+import { ReactComponent as VolumeMuteIcon } from "../../assets/img/volume_mute.svg";
+import VideoComponent from "../../components/VideoBoxing";
+import Participant from "../../components/Participant";
+import Input from "../../components/Input";
 import {
     ChatBox,
     ChattingBox,
@@ -20,9 +20,9 @@ import {
     StartnSetBox,
     Videobox,
     VideoboxGrid,
-} from "../components/layout/waiting";
+} from "../../components/layout/waiting";
 import { useDispatch } from "react-redux";
-import { openModal } from "../store/modalSlice";
+import { openModal } from "../../store/modalSlice";
 
 const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
 
@@ -74,7 +74,7 @@ function WaitingRoom() {
             <Rightbox>
                 <Participant user_list={user_list} host={host} />
                 <ChattingBox>
-                    <ChatBox></ChatBox>
+                    <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>
                         <Input width="200px" height="15px" />
                         <Button type="icon" background={`var(--white)`}>
@@ -123,7 +123,7 @@ function WaitingRoom() {
                 <StartnSetBox>
                     <Button
                         width="130"
-                        height="50"
+                        height="45"
                         onClick={() => {
                             openReadyModal();
                         }}
