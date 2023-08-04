@@ -5,7 +5,7 @@ import { phaseSlice } from "./phaseSlice";
 
 const rootReducer = combineReducers({
     modal: modalSlice.reducer,
-    ov: openviduSlice.reducer,
+    openvidu: openviduSlice.reducer,
     phase: phaseSlice.reducer,
 });
 
