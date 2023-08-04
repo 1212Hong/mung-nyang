@@ -47,4 +47,19 @@ const ModalBackdrop = styled.div`
     inset: 0;
 `;
 
-export { ModalBackdrop, ModalContainer, ReadyModalView, RuleModalView };
+const ChooseModalView = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 20px;
+    width: 700px;
+    height: 500px;
+    background-color: var(--dusty-pink);
+`;
+export {
+    ModalBackdrop,
+    ModalContainer,
+    ReadyModalView,
+    RuleModalView,
+    ChooseModalView,
+};

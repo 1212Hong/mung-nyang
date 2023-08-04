@@ -17,7 +17,7 @@ import Button from "../../components/Button";
 function TopBottomVideo() {
     const list = ["임시", "임시", "임시"];
     const title = "제시어 카테고리";
-    const [view, setView] = useState("");
+    const [view, setView] = useState("Quiz");
     const user_list = [
         "권영재",
         "김대홍",
