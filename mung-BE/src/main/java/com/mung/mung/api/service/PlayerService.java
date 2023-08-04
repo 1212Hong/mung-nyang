@@ -19,6 +19,9 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     private final GameRoomRepository gameRoomRepository;
 
+
+
+
     // Player가 Join한 데이터를 저장
     @Transactional
     public void joinRoom(PlayerJoinReq playerJoinReq){
