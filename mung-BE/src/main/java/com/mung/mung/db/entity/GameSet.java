@@ -26,7 +26,7 @@ public class GameSet {
 
     private String answerer;
 
-    private String lier;
+    private String liar;
 
     private String answer;
 

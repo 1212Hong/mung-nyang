@@ -23,7 +23,6 @@ public class Player {
     private  Long playerId;
 
     private String playerNickname;
-    private String playerNickname;
 
     @ColumnDefault("0")
     private int playerScore;
