@@ -68,11 +68,7 @@ import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
 import org.springframework.web.servlet.view.groovy.GroovyMarkupConfig;
 
-class PlayerNotFoundException extends RuntimeException {
-    public PlayerNotFoundException(String message) {
-        super(message);
-    }
-}
+
 //@CrossOrigin(origins = "*")
 @Slf4j
 @RestController
