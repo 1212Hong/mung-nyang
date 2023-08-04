@@ -143,6 +143,10 @@ public class GameRoomController {
         if (session == null) {
             return new ResponseEntity<>("해당하는 방을 찾을 수 없습니다.",HttpStatus.NOT_FOUND);
         }
+        // 방 게임이 이미 시작됐으면 접속 차단.
+        if (!gameRoomService.getRoomStatus(sessionId).equals("waiting")){
+            return new ResponseEntity<>("이미 게임이 시작 됐습니다.",HttpStatus.FORBIDDEN);
+        }
 
         if (!this.gameConnectionInfoMap.get(sessionId).equals(gameRoomConnectReq.getRoomPw())){
             return new ResponseEntity<>("비밀번호가 틀렸습니다.",HttpStatus.FORBIDDEN);
@@ -187,9 +191,10 @@ public class GameRoomController {
         if (this.mapSessions.get(roomId)>0) {
             // DB에서 playerData 삭제
             gameRoomService.leaveRoom(playerId);
-        }else { // 만약 모든 사람이 방을 떠나면 GameRoom 삭제
+        }else { // 만약 모든 사람이 방을 떠나면 GameRoom 데이터 삭제
             gameRoomService.deleteRoom(roomId);
             this.mapSessions.remove(roomId);
+            this.gameConnectionInfoMap.remove(roomId);
         }
 
 

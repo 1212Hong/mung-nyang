@@ -4,6 +4,7 @@ import com.mung.mung.api.request.PlayerJoinReq;
 import com.mung.mung.api.response.PlayerStatusRes;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.entity.Player;
+import com.mung.mung.db.repository.NicknameRepository;
 import com.mung.mung.db.repository.GameRoomRepository;
 import com.mung.mung.db.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,9 @@ import java.util.NoSuchElementException;
 public class PlayerService {
     private final PlayerRepository playerRepository;
     private final GameRoomRepository gameRoomRepository;
+//    private final NicknameRepository nicknameRepository;
 
-
+//    public final long nicknameCount = dogRepository.count() if count가 1보다 작으면 1이 되도록;
 
 
     // Player가 Join한 데이터를 저장
@@ -73,6 +75,7 @@ public class PlayerService {
                 .build();
         return playerStatusRes;
     }
+
 
 //    this.roomId=roomId;
 //        this.playerNickname=playerNickname;
