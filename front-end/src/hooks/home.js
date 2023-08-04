@@ -1,6 +1,6 @@
 import store from "../store/";
 import { connectRoom, createRoom } from "../api";
-import { ovActions } from "../store/ovenviduSlice";
+import { ovActions } from "../store/openviduSlice";
 
 export const makeRoom = async (roomInfo) => {
     console.log("방생성 api호출");
