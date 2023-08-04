@@ -20,6 +20,8 @@ import {
     CameraIcon,
     CameraOffIcon,
 } from "../../components/layout/connectionTest";
+import { useDispatch, useSelector } from "react-redux";
+import { changePhase } from "../../store/phaseSlice";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
 
@@ -44,6 +46,13 @@ function ConnectionTest() {
     const [outputVolumeValue, setOutputVolumeValue] = useState(50); // 출력 볼륨 상태 추가
     const [isOn, setIsOn] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
+    const dispatch = useDispatch();
+    const sessionId = useSelector((state) => state.openvidu.mySessionId);
+
+    const handleGoWaitingRoom = () => {
+        dispatch(changePhase({ phaseType: "Wait" }));
+        console.log(sessionId);
+    };
 
     const audioRef = React.createRef();
     const audioContext = new (window.AudioContext ||
@@ -133,69 +142,77 @@ function ConnectionTest() {
         updateOutputVolume(newOutputVolume);
     }
     return (
-        <Container>
-            <HeaderBox>
-                <SettingIcon width="50" height="50" />
-            </HeaderBox>
-            <ContainerBody>
-                <LeftBox className="LeftBox">
-                    {isOn ? (
-                        <EmptyScreen />
-                    ) : (
-                        <VideoComponent width="450" height="450" />
-                    )}
-                    <br />
-                    <Switch isOn={isOn} onToggle={handleToggle} />
-                </LeftBox>
-                <RightBox>
-                    <h3>마이크 선택</h3>
-                    <MicBox />
-                    <h3>입력확인</h3>
-                    <MicBar volume={micVolumeValue / 100} />
-                    <h3>스피커</h3>
-                    <MicBox />
-                    <h3>출력조절 : {outputVolumeValue}</h3>
-                    <VolumeSlider
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={outputVolumeValue}
-                        onChange={handleVolumeChange}
-                        color="black"
-                    />
-                    <TestButtonWrapper>
-                        <Button
-                            text="테스트"
-                            width="200px"
-                            onClick={handleTestButtonClick}
-                            className="testBtn"
-                            background={`var(--dusty-pink-white)`}
-                            fontColor={`var(--black)`}
-                        />
-                    </TestButtonWrapper>
-                    <h3>소리변조 테스트</h3>
-                    {/* <Button
+        <>
+            {sessionId ? (
+                <Container>
+                    <HeaderBox>
+                        <SettingIcon width="50" height="50" />
+                    </HeaderBox>
+                    <ContainerBody>
+                        <LeftBox className="LeftBox">
+                            {isOn ? (
+                                <EmptyScreen />
+                            ) : (
+                                <VideoComponent width="450" height="450" />
+                            )}
+                            <br />
+                            <Switch isOn={isOn} onToggle={handleToggle} />
+                        </LeftBox>
+                        <RightBox>
+                            <h3>마이크 선택</h3>
+                            <MicBox />
+                            <h3>입력확인</h3>
+                            <MicBar volume={micVolumeValue / 100} />
+                            <h3>스피커</h3>
+                            <MicBox />
+                            <h3>출력조절 : {outputVolumeValue}</h3>
+                            <VolumeSlider
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={outputVolumeValue}
+                                onChange={handleVolumeChange}
+                                color="black"
+                            />
+                            <TestButtonWrapper>
+                                <Button
+                                    text="테스트"
+                                    width="200px"
+                                    onClick={handleTestButtonClick}
+                                    className="testBtn"
+                                    background={`var(--dusty-pink-white)`}
+                                    fontColor={`var(--black)`}
+                                />
+                            </TestButtonWrapper>
+                            <h3>소리변조 테스트</h3>
+                            {/* <Button
                         isOn={isOn}
                         onToggle={handleToggle}
                         text="임시"
                         width="100px"
                     /> */}
-                    <FooterBox>
-                        <NickName />
-                        <Button
-                            width="150px"
-                            height="80px"
-                            onClick={handleTestButtonClick}
-                            background={`var(--dusty-pink-white)`}
-                            fontColor={`var(--black)`}
-                        >
-                            입장
-                        </Button>
-                    </FooterBox>
-                </RightBox>
-                <audio ref={audioRef} src={TestSound} loop={false} />
-            </ContainerBody>
-        </Container>
+                            <FooterBox>
+                                <NickName />
+                                <Button
+                                    width="150px"
+                                    height="80px"
+                                    onClick={() => {
+                                        handleGoWaitingRoom();
+                                    }}
+                                    background={`var(--dusty-pink-white)`}
+                                    fontColor={`var(--black)`}
+                                >
+                                    입장
+                                </Button>
+                            </FooterBox>
+                        </RightBox>
+                        <audio ref={audioRef} src={TestSound} loop={false} />
+                    </ContainerBody>
+                </Container>
+            ) : (
+                <>nosessionid</>
+            )}
+        </>
     );
 }
 
