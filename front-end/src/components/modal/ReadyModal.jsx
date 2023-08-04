@@ -5,6 +5,7 @@ import {
     ModalViewResultDiv,
     ModalViewResultBox,
     ModalViewButtonDiv,
+    ModalViewCompleteDiv,
 } from "../layout/modal";
 import Button from "../Button";
 import Timer from "../Timer";
@@ -18,9 +19,10 @@ const ReadyModal = () => {
 
     const [complete, setComplete] = useState(false);
     return (
-        <ReadyModalView>
+        <ReadyModalView onClick={(e) => e.stopPropagation()}>
             <Timer width={"80%"}></Timer>
             <ModalViewDescDiv>게임 시작 투표</ModalViewDescDiv>
+
             <ModalViewResultDiv>
                 <ModalViewResultBox>찬성 : {agree}</ModalViewResultBox>
                 <ModalViewResultBox>반대 : {disagree}</ModalViewResultBox>
@@ -28,9 +30,7 @@ const ReadyModal = () => {
             </ModalViewResultDiv>
             <ModalViewButtonDiv>
                 {complete ? (
-                    <>
-                        <Button disabled>투표 완료</Button>
-                    </>
+                    <ModalViewCompleteDiv>투표 완료</ModalViewCompleteDiv>
                 ) : (
                     <>
                         <Button

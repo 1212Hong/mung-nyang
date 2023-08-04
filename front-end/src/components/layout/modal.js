@@ -67,6 +67,17 @@ const ModalViewButtonDiv = styled.div`
     color: black;
     display: flex;
 `;
+const ModalViewCompleteDiv = styled.div`
+    background-color: var(--vanilla-cream);
+    width: 200px;
+    height: 50px;
+    border-radius: 10px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    color: var(--white);
+    font-weight: bold;
+`;
 export {
     ModalBackdrop,
     ModalContainer,
@@ -76,4 +87,5 @@ export {
     ModalViewResultDiv,
     ModalViewResultBox,
     ModalViewButtonDiv,
+    ModalViewCompleteDiv,
 };
