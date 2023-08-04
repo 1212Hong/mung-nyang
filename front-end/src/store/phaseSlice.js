@@ -1,10 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    phaseType: "Test",
+    phaseType: "Wait",
 };
-
-export const choosePhase = (state) => state.phase;
 
 export const phaseSlice = createSlice({
     name: "phase",

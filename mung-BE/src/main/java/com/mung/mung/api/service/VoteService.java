@@ -1,8 +1,6 @@
 package com.mung.mung.api.service;
 
-import org.springframework.stereotype.Service;
-
-public interface GameService {
+public interface VoteService {
     void startVote(String roomId);
 
     String countVote(String roomId);

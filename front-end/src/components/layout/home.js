@@ -4,7 +4,7 @@ import BackgroundImg from "../../assets/img/mungnyangImg.png";
 export const HomeContainer = styled.div`
     display: flex;
     min-width: 1280px;
-    min-height: 750px;
+    min-height: 720px;
     flex-direction: row;
     justify-content: center;
 `;
@@ -22,6 +22,7 @@ export const RightBox = styled.div`
     background-size: cover;
     background-repeat: "no-repeat"; // 이미지 반복 지정
     min-width: 840px;
+    min-height: 720px;
 `;
 
 export const HeaderBox = styled.div`
