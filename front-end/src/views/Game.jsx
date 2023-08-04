@@ -1,11 +1,10 @@
-import React from "react";
-import store from "../store";
+import React, { useState } from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import ConnectionTest from "./game/ConnectionTest";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
-import { changePhase } from "../store/phaseSlice";
 import { ovActions } from "../store/openviduSlice";
+import { OpenVidu } from "openvidu-browser";
 
 const PHASES = {
     Test: "Test",
@@ -47,15 +46,10 @@ const PHASE_COMPONENTS = [
 ];
 
 const Game = () => {
-    const phaseType = useSelector((state) => state.phase.phaseType);
-    const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
-    console.log(phaseType);
     const openvidu = useSelector((state) => state.openvidu);
-    console.log(openvidu);
-
     const {
-        OV,
-        session,
+        // OV,
+        // session,
         subscribers,
         myUserName,
         mySessionId,
@@ -63,22 +57,37 @@ const Game = () => {
         devices,
     } = openvidu;
 
+    const phaseType = useSelector((state) => state.phase.phaseType);
+    const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
+    console.log(phaseType);
+
+    console.log(openvidu);
+
+    var OV = new OpenVidu();
+    const session = OV.initSession();
+
+    session
+        .connect("")
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+
     if (session) {
+        // On every new Stream received...
         session.on("streamCreated", (event) => {
             // Subscribe to the Stream to receive it. Second parameter is undefined
             // so OpenVidu doesn't create an HTML video by its own
             var subscriber = session.subscribe(event.stream, undefined);
 
             //We use an auxiliar array to push the new stream
-            var user_list = subscribers;
+            var subscribers = this.state.subscribers;
 
-            user_list.push(subscriber);
-            store.dispatch(ovActions.createPublisher);
+            subscribers.push(subscriber);
+
             // Update the state with the new subscribers
-            //user_lit prop로 전달
         });
     }
     console.log(subscribers);
+
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
     );
@@ -94,16 +103,7 @@ const Game = () => {
         return findPhase.component;
     };
 
-    return (
-        <>
-            {/* <button
-                onClick={() => {
-                    dispatch(changePhase({ phaseType: "Wait" }));
-                }}
-            ></button> */}
-            {renderPhase()}
-        </>
-    );
+    return <>{renderPhase()}</>;
 };
 
 export default Game;

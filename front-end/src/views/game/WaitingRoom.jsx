@@ -36,7 +36,6 @@ function WaitingRoom() {
     const openvidu = useSelector((state) => state.openvidu);
     // setUsers(subscribers)
     const {
-        OV,
         session,
         subscribers,
         myUserName,
@@ -46,36 +45,6 @@ function WaitingRoom() {
     } = openvidu;
 
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        const init = async () => {
-            if (OV === null || session === undefined) {
-                dispatch(() =>
-                    ovActions.createOpenvidu({
-                        nickname: "test",
-                        roomId: mySessionId,
-                    }),
-                );
-            }
-            if (session) {
-                session.on("streamCreated", (event) => {
-                    let subscriber = session.subscribe(event.stream, undefined);
-
-                    subscribers.push(subscriber);
-                });
-                session.on("streamDestroyed", (event) => {
-                    let index = subscribers.indexOf(
-                        event.stream.streamManager,
-                        0,
-                    );
-                    if (index > -1) {
-                        subscribers.splice(index, 1);
-                    }
-                });
-            }
-        };
-        init();
-    });
 
     const openRuleBook = () => {
         dispatch(
@@ -106,7 +75,7 @@ function WaitingRoom() {
         <Container className="waiting-container">
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
-                    {user_list.map((user, index) => (
+                    {subscribers.map((user, index) => (
                         <React.Fragment key={index}>
                             <Videobox>
                                 <VideoComponent width="423" height="200" />
