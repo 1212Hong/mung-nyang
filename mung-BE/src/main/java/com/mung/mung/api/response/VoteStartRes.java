@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameStartRes {
+public class VoteStartRes {
 
     private String roomId;
 }
