@@ -74,7 +74,7 @@ function WaitingRoom() {
             <Rightbox>
                 <Participant user_list={user_list} host={host} />
                 <ChattingBox>
-                    <ChatBox></ChatBox>
+                    <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>
                         <Input width="200px" height="15px" />
                         <Button type="icon" background={`var(--white)`}>
@@ -123,7 +123,7 @@ function WaitingRoom() {
                 <StartnSetBox>
                     <Button
                         width="130"
-                        height="50"
+                        height="45"
                         onClick={() => {
                             openReadyModal();
                         }}

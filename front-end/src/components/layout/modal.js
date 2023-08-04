@@ -12,11 +12,14 @@ const ModalContainer = styled.div`
 const ReadyModalView = styled.div`
     display: flex;
     align-items: center;
+    justify-content: space-evenly;
     flex-direction: column;
-    border-radius: 20px;
+    border-radius: 5px;
+    overflow: hidden;
     width: 500px;
-    height: 200px;
+    height: 300px;
     background-color: var(--white);
+    box-sizing: border-box;
 `;
 const RuleModalView = styled.div`
     display: flex;
