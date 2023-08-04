@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "../../components/Button";
+import { changePhase } from "../../store/phaseSlice";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
     color: black;
@@ -63,7 +65,25 @@ const Btn = styled.div`
 `;
 
 const ScoreTotal = (props) => {
-    const { title, userlist, set, totalset } = props;
+    const dispatch = useDispatch();
+    const { totalset, title } = props;
+    const set = 3;
+    const userlist = [
+        { username: "개냥이", upscore: "+5", total: 8 },
+        { username: "냥냥이", upscore: "+0", total: 7 },
+        { username: "씹냥이", upscore: "+0", total: 5 },
+        { username: "뚱냥이", upscore: "+0", total: 4 },
+        { username: "멍멍이", upscore: "+0", total: 2 },
+        { username: "댕댕이", upscore: "+0", total: 0 },
+    ];
+
+    const Next = () => {
+        if (set === totalset) {
+            dispatch(changePhase({ phaseType: "Wait" }));
+        } else {
+            dispatch(changePhase({ phaseType: "Wait" }));
+        }
+    };
 
     return (
         <Container>
@@ -90,7 +110,11 @@ const ScoreTotal = (props) => {
                 ))}
             </Body>
             <Btn>
-                <Button fontSize="32px" fontColor="var(--brown-dark)">
+                <Button
+                    fontSize="32px"
+                    fontColor="var(--brown-dark)"
+                    onClick={Next}
+                >
                     다음
                 </Button>
             </Btn>
