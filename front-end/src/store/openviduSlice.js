@@ -10,6 +10,7 @@ const initialState = {
     publisher: undefined,
     subscribers: [],
     currentVideoDevice: undefined,
+    token: "",
 };
 
 export const openviduSlice = createSlice({
@@ -20,15 +21,19 @@ export const openviduSlice = createSlice({
             state.mySessionId = action.payload;
             console.log(state.mySessionId);
         },
-        createOpenvidu: (state, { payload }) => {
-            if (!state.OV) {
-                state.myUserName = payload.nickname;
-                state.mySessionId = payload.roomId;
-                state.OV = new OpenVidu();
-                state.session = state.OV.initSession();
-                state.devices = state.OV.getDevices();
-            }
+        saveToken: (state, action) => {
+            state.token = action.payload;
+            console.log(state.token);
         },
+        // createOpenvidu: (state, { payload }) => {
+        //     if (!state.OV) {
+        //         state.myUserName = payload.nickname;
+        //         state.mySessionId = payload.roomId;
+        //         state.OV = new OpenVidu();
+        //         state.session = state.OV.initSession();
+        //         state.devices = state.OV.getDevices();
+        //     }
+        // },
 
         createPublisher: (state, { payload }) => {
             state.session.publish(payload.publisher);
