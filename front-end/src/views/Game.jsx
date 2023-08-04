@@ -4,6 +4,8 @@ import ConnectionTest from "./game/ConnectionTest";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../store/phaseSlice";
+import SelectLiar from "../views/game/SelectLiar";
+import SelectAnswer from "./game/SelectAnswer";
 
 const PHASES = {
     Test: "Test",
@@ -25,6 +27,7 @@ const PHASES = {
     Paint: "Paint",
 };
 
+const userlist = ["고양이", "개냥이", "냥냥이", "돼냥이", "댕댕이", "멍멍이"];
 const PHASE_COMPONENTS = [
     {
         type: PHASES.Test,
@@ -42,11 +45,19 @@ const PHASE_COMPONENTS = [
         type: PHASES.Category,
         component: <TopBottomVideo />,
     },
+    {
+        type: PHASES.LiarVote,
+        component: <SelectLiar userlist={userlist} />,
+    },
+    {
+        type: PHASES.SelectAns,
+        component: <SelectAnswer />,
+    },
 ];
 
 const Game = () => {
     const phaseType = useSelector((state) => state.phase.phaseType);
-    const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
+    // const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     console.log(phaseType);
 
     const findPhase = PHASE_COMPONENTS.find(

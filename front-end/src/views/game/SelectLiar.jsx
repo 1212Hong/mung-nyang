@@ -9,6 +9,8 @@ import {
     NotificationContainer,
     ImageOverlay,
 } from "../../components/layout/selectLiar";
+import { changePhase } from "../../store/phaseSlice";
+import { useDispatch } from "react-redux";
 
 const SelectLiar = (props) => {
     const { userlist } = props;
@@ -16,6 +18,15 @@ const SelectLiar = (props) => {
     const [activeBox, setActiveBox] = useState(null);
     const text = "라이어를 선택하세요.";
     const imgSrc = foot;
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            dispatch(changePhase({ phaseType: "SelectAns" }));
+        }, 7000);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => {
