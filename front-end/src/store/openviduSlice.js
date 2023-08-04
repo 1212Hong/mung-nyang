@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { OpenVidu } from "openvidu-browser";
 
 const initialState = {
-    OV: null,
+    // OV: null,
     mySessionId: undefined,
     myUserName: undefined,
     session: undefined,
@@ -20,15 +20,15 @@ export const openviduSlice = createSlice({
             state.mySessionId = action.payload;
             console.log(state.mySessionId);
         },
-        createOpenvidu: (state, { payload }) => {
-            if (!state.OV) {
-                state.myUserName = payload.nickname;
-                state.mySessionId = payload.roomId;
-                state.OV = new OpenVidu();
-                state.session = state.OV.initSession();
-                state.devices = state.OV.getDevices();
-            }
-        },
+        // createOpenvidu: (state, { payload }) => {
+        //     if (!state.OV) {
+        //         state.myUserName = payload.nickname;
+        //         state.mySessionId = payload.roomId;
+        //         state.OV = new OpenVidu();
+        //         state.session = state.OV.initSession();
+        //         state.devices = state.OV.getDevices();
+        //     }
+        // },
 
         createPublisher: (state, { payload }) => {
             state.session.publish(payload.publisher);

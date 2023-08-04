@@ -1,9 +1,11 @@
 import React from "react";
+import store from "../store";
 import WaitingRoom from "./game/WaitingRoom";
 import ConnectionTest from "./game/ConnectionTest";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../store/phaseSlice";
+import { ovActions } from "../store/openviduSlice";
 
 const PHASES = {
     Test: "Test",
@@ -71,7 +73,7 @@ const Game = () => {
             var user_list = subscribers;
 
             user_list.push(subscriber);
-
+            store.dispatch(ovActions.createPublisher);
             // Update the state with the new subscribers
             //user_lit prop로 전달
         });
