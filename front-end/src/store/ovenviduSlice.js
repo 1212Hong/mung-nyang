@@ -2,18 +2,24 @@ import { createSlice } from "@reduxjs/toolkit";
 import { OpenVidu } from "openvidu-browser";
 
 const initialState = {
-    mySessionId: "",
-    myUserName: "",
+    OV: null,
+    mySessionId: undefined,
+    myUserName: undefined,
     session: undefined,
     mainStreamManager: undefined,
     publisher: undefined,
     subscribers: [],
+    currentVideoDevice: undefined,
 };
 
 export const openviduSlice = createSlice({
-    name: "OpenVidu",
+    name: "openvidu",
     initialState,
     reducers: {
+        saveSessionId: (state, action) => {
+            state.mySessionId = action.payload;
+            console.log(state.mySessionId);
+        },
         createOpenvidu: (state, { payload }) => {
             if (!state.OV) {
                 state.myUserName = payload.nickname;
@@ -64,5 +70,5 @@ export const openviduSlice = createSlice({
         },
     },
 });
-
+export const { saveSessionId } = openviduSlice.actions;
 export const ovActions = openviduSlice.actions;

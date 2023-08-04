@@ -21,7 +21,7 @@ import {
     Videobox,
     VideoboxGrid,
 } from "../../components/layout/waiting";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 
 const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
@@ -30,7 +30,9 @@ const host = "권영재";
 
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
+    const [users, setUsers] = useState([]);
     const [isMuted, setIsMuted] = useState(false);
+
     const dispatch = useDispatch();
 
     const openRuleBook = () => {
