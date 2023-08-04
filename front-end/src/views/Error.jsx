@@ -1,37 +1,15 @@
-import { styled } from "styled-components";
 import error from "../assets/img/error.png";
 import detective from "../assets/img/detective.png";
-
-const Container = styled.div`
-    display: flex;
-    justify-content: space-evenly;
-`;
-const LeftBox = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-const RightBox = styled.div``;
-const ImgItem = styled.div`
-    margin-top: 70px;
-`;
-const TitleItemx = styled.div`
-    margin-top: 20px;
-    font-size: 64px;
-`;
-const SubtitleItem = styled.div`
-    font-size: 32px;
-    margin-bottom: 20px;
-`;
-const DescriptionItem = styled.div`
-    font-size: 16px;
-    margin-top: 10px;
-`;
-const Group = styled.div`
-    height: 200px;
-    padding: 0px 40px;
-    background-color: var(--dusty-pink-white);
-    border-radius: 20px;
-`;
+import {
+    Container,
+    LeftBox,
+    RightBox,
+    ImgItem,
+    TitleItem,
+    SubtitleItem,
+    DescriptionItem,
+    Group,
+} from "../components/layout/error";
 
 const imgSrc1 = error;
 const imgSrc2 = detective;
@@ -44,7 +22,7 @@ const Error = () => {
                     <img width={200} src={imgSrc2} alt="" />
                 </ImgItem>
                 <Group>
-                    <TitleItemx>404</TitleItemx>
+                    <TitleItem>404</TitleItem>
                     <SubtitleItem>Page Not Found</SubtitleItem>
                     <DescriptionItem>
                         Sorry, you requested a page that cannot be found at this
