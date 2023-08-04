@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -21,14 +22,18 @@ public class Player {
     @GeneratedValue
     private  Long playerId;
 
-    private String pNickname;
+    private String playerNickname;
+    private String playerNickname;
 
-    private int pScore;
+    @ColumnDefault("0")
+    private int playerScore;
 
     private String pIp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
+
+
 
 }

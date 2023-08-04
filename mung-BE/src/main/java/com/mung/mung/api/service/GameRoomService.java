@@ -22,7 +22,8 @@ public class GameRoomService {
     @Transactional
     public boolean makeRoom(String roomId, final GameRoomCreateReq gameRoomCreateReq){
         // DB에서 roomId가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
-        if (gameRoomRepository.findByRoomId(roomId).isPresent()) {
+        GameRoom existingGameRoom = gameRoomRepository.findByRoomId(roomId);
+        if (existingGameRoom != null) {
             // 이미 해당 roomId가 존재하는 경우
             return false;
         } else
