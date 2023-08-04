@@ -1,9 +1,9 @@
 import React from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import ConnectionTest from "./game/ConnectionTest";
+import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../store/phaseSlice";
-import ScoreTotal from "../views/game/ScoreTotal";
 
 const PHASES = {
     Test: "Test",
@@ -24,8 +24,6 @@ const PHASES = {
     Dance: "Dance",
     Paint: "Paint",
 };
-const totalset = 5;
-const title = "라이어 승리";
 
 const PHASE_COMPONENTS = [
     {
@@ -37,14 +35,19 @@ const PHASE_COMPONENTS = [
         component: <WaitingRoom />,
     },
     {
-        type: PHASES.MidScore,
-        component: <ScoreTotal totalset={totalset} title={title}></ScoreTotal>,
+        type: PHASES.Quiz,
+        component: <TopBottomVideo />,
+    },
+    {
+        type: PHASES.Category,
+        component: <TopBottomVideo />,
     },
 ];
 
 const Game = () => {
     const phaseType = useSelector((state) => state.phase.phaseType);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
+    console.log(phaseType);
 
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
@@ -55,6 +58,8 @@ const Game = () => {
         return <h1>Invalid phaseType: {phaseType}</h1>;
     }
 
+    // dispatch(changePhase({ phaseType: "Wait" }));
+
     const renderPhase = () => {
         return findPhase.component;
     };
@@ -63,7 +68,7 @@ const Game = () => {
         <>
             {/* <button
                 onClick={() => {
-                    dispatch(changePhase({ phaseType: "MidScore" }));
+                    dispatch(changePhase({ phaseType: "Wait" }));
                 }}
             ></button> */}
             {renderPhase()}
