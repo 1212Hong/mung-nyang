@@ -44,10 +44,12 @@ const VideoboxGrid = styled.div`
 `;
 
 const ChattingBox = styled.div`
-    height: 300px;
+    height: 280px;
     background-color: var(--beige-dark);
     margin: 15px;
     border-radius: 20px;
+    display: flex;
+    flex-direction: column;
 `;
 const ChatBox = styled.div`
     height: 250px;
@@ -78,7 +80,7 @@ const StartnSetBox = styled.div`
     margin: 15px;
     border-radius: 20px;
     display: grid;
-    grid-template-columns: 120px 120px;
+    grid-template-columns: 135px 135px;
 `;
 
 export {
