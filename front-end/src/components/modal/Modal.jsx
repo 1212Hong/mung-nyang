@@ -35,9 +35,13 @@ const Modal = () => {
     const renderModal = () => {
         return findModal.component;
     };
+    // 투표 modal 종료 방지
+    const readyModalCheck = modalType === "ReadyModal" ? true : false;
     return (
         <ModalContainer>
-            <ModalBackdrop onClick={() => dispatch(closeModal())}>
+            <ModalBackdrop
+                onClick={() => (readyModalCheck ? {} : dispatch(closeModal()))}
+            >
                 {renderModal()}
             </ModalBackdrop>
         </ModalContainer>
