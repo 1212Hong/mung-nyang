@@ -8,9 +8,10 @@ import {
     RightBox,
 } from "../components/layout/home";
 import Button from "../components/Button";
-import { createRoom } from "../api/room";
 import { MainText, SubText } from "../components/layout/common";
 import Input from "../components/Input";
+import { makeRoom, joinRoom } from "../hooks/home";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
     const [view, setView] = useState(false);
@@ -18,8 +19,8 @@ const Home = () => {
         roomId: "",
         roomPw: "",
     });
-
     const { roomId, roomPw } = roomInfo;
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setRoomInfo({
@@ -33,14 +34,17 @@ const Home = () => {
         setView(!view);
         console.log(roomInfo);
     };
-    const makeRoom = () => {
-        console.log("방생성 api호출");
-        console.log(roomInfo);
-        createRoom(roomInfo.roomId, roomInfo.roomPw); //api 테스트필요
-    };
-    const joinRoom = () => {
-        console.log("방입장 api");
-        console.log(roomInfo);
+
+    const handleJoinRoom = async () => {
+        const joinRoomResponse = await joinRoom(roomInfo);
+        if (joinRoomResponse && joinRoomResponse.error) {
+            // If joinRoomResponse contains an error message, show an error window or message
+            console.log("Error:", joinRoomResponse.error);
+            // You can show an error window or message here using a state variable and a conditional rendering
+        } else {
+            // Room joined successfully, navigate to the game page
+            navigate("/game");
+        }
     };
 
     return (
@@ -73,12 +77,28 @@ const Home = () => {
                     />
                 </FormBox>
                 <ButtonBox>
-                    <Button
-                        text={view ? "방생성" : "입장하기"}
-                        width="100px"
-                        margin="20px"
-                        onClick={view ? makeRoom : joinRoom}
-                    />
+                    {view ? (
+                        <Button
+                            text={"방생성"}
+                            width="100px"
+                            margin="20px"
+                            onClick={() => {
+                                makeRoom(roomInfo);
+                                navigate("/game");
+                            }}
+                        />
+                    ) : (
+                        <Button
+                            text="입장하기"
+                            width="100px"
+                            margin="20px"
+                            onClick={() => {
+                                joinRoom(roomInfo);
+                                handleJoinRoom();
+                            }}
+                        />
+                    )}
+
                     <Button
                         text={view ? "입장하러가기" : "방생성하러가기"}
                         onClick={changeView}
