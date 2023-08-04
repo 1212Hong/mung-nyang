@@ -1,5 +1,7 @@
 package com.mung.mung.api.service;
 
+import com.mung.mung.api.response.VoteResultRes;
+import com.mung.mung.db.enums.GameProcessType;
 import com.mung.mung.db.repository.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,17 +69,16 @@ public class VoteServiceImpl implements VoteService {
         }
     }
 
-    public String getVoteResult(String roomId) {
+    public VoteResultRes getVoteResult(String roomId) {
         int requiredVotes = roomPlayers.get(roomId); // 각 방에 필요한 투표 수
         int votes = roomVotesMap.getOrDefault(roomId, 0);
         log.info("getVoteResult - requiredVotes : {} - votes : {}", requiredVotes, votes);
+        resetVote(roomId); // 투표 완료 시 초기화
 
         if (votes >= requiredVotes) {
-            resetVote(roomId); // 투표 완료 시 초기화
-            return "Success";
+            return new VoteResultRes(roomId, GameProcessType.Quiz);
         } else {
-            resetVote(roomId);
-            return "Fail";
+            return new VoteResultRes(roomId, GameProcessType.Wait);
         }
     }
 
