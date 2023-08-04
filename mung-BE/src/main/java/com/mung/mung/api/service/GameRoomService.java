@@ -3,7 +3,10 @@ package com.mung.mung.api.service;
 import com.mung.mung.api.request.GameRoomCreateReq;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameRoom;
+import com.mung.mung.db.entity.Player;
 import com.mung.mung.db.repository.GameRoomRepository;
+import com.mung.mung.db.repository.PlayerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,13 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class GameRoomService {
     private final GameRoomRepository gameRoomRepository;
-
-    @Autowired
-    public GameRoomService(GameRoomRepository gameRoomRepository){
-        this.gameRoomRepository=gameRoomRepository;
-    }
+    private final PlayerRepository playerRepository;
 
     @Transactional
     public boolean makeRoom(String roomId, final GameRoomCreateReq gameRoomCreateReq){
@@ -38,5 +38,41 @@ public class GameRoomService {
             gameRoomRepository.save(gameRoom);
             return true;
         }
+    }
+
+    @Transactional
+    public boolean isPlayerExists(long playerId){
+        // DB에서 roomId가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
+        Player existingPlayer = playerRepository.findByPlayerId(playerId);
+        if (existingPlayer == null) {
+            // 플레이어가 없으면
+            return false;
+        } else
+        {   // 있으면
+            return true;
+        }
+    }
+
+    @Transactional
+    public boolean isRoomExists(String roomId){
+        // DB에서 roomId가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
+        GameRoom existingRoom = gameRoomRepository.findByRoomId(roomId);
+        if (existingRoom == null) {
+            // 방이 없으면
+            return false;
+        } else
+        {
+            return true;
+        }
+    }
+
+    @Transactional
+    public void leaveRoom(long playerId){
+        playerRepository.deleteByPlayerId(playerId);
+    }
+
+    @Transactional
+    public void deleteRoom(String roomId){
+        gameRoomRepository.deleteByRoomId(roomId);
     }
 }
