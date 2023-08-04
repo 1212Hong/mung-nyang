@@ -36,7 +36,7 @@ const Home = () => {
     const makeRoom = () => {
         console.log("방생성 api호출");
         console.log(roomInfo);
-        // createRoom(); api 테스트필요
+        createRoom(roomInfo.roomId, roomInfo.roomPw); //api 테스트필요
     };
     const joinRoom = () => {
         console.log("방입장 api");
