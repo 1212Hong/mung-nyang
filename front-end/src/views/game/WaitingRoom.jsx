@@ -31,15 +31,11 @@ import { ovActions } from "../../store/openviduSlice";
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
     const [isMuted, setIsMuted] = useState(false);
+
     const openvidu = useSelector((state) => state.openvidu);
     const {
-        session,
         subscribers,
-        myUserName,
-        mySessionId,
-        mainStreamManager,
         // devices,
-        token,
     } = openvidu;
     console.log(subscribers);
     const dispatch = useDispatch();

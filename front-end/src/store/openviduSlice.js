@@ -32,6 +32,15 @@ export const openviduSlice = createSlice({
             state.subscribers = action.payload;
             console.log(state.subscribers);
         },
+        // Action to save the publisher in the state
+        savePublisher: (state, action) => {
+            state.publisher = action.payload;
+        },
+
+        // Action to delete the publisher from the state
+        deletePublisher: (state) => {
+            state.publisher = undefined;
+        },
         createOpenvidu: (state, { payload }) => {
             if (!state.OV) {
                 state.myUserName = payload.nickname;
