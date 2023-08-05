@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import WaitingRoom from "./game/WaitingRoom";
-import ConnectionTest from "./game/ConnectionTest";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
@@ -43,7 +42,6 @@ const PHASE_COMPONENTS = [
 
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
-
     const {
         OV,
         session,
@@ -69,14 +67,10 @@ const Game = () => {
                 }),
             );
         }
+    }, [OV, dispatch, myUserName, mySessionId]);
 
-        // 세션 생성
-        if (!session && OV) {
-            const newSession = OV.initSession();
-            dispatch(ovActions.saveSession(newSession));
-        }
-
-        // 세션에 접속
+    // 세션에 접속하고 유저들을 연결
+    useEffect(() => {
         const joinSession = async () => {
             try {
                 if (token && session && myUserName) {
@@ -88,8 +82,42 @@ const Game = () => {
             }
         };
 
-        joinSession(); // 세션에 접속하는 함수 호출
-    }, [OV, session, token, myUserName, mySessionId, dispatch]);
+        const connectUsersToSession = async () => {
+            try {
+                const usersToConnect = subscribers.filter(
+                    (user) => user !== mainStreamManager,
+                );
+
+                // 각 유저들을 세션에 연결
+                for (const user of usersToConnect) {
+                    await session.connect(token, { clientData: user });
+                }
+
+                // Subscribe to streams of connected users and update subscribers state
+                session.on("streamCreated", (event) => {
+                    const subscriber = session.subscribe(
+                        event.stream,
+                        undefined,
+                    );
+                    // 기존 subscribers 배열을 변경하지 않고, 새로운 배열을 생성하여 업데이트
+                    const updatedSubscribers = [...subscribers, subscriber];
+
+                    // Dispatch the action to update subscribers in Redux state
+                    dispatch(ovActions.saveSubscribers(updatedSubscribers));
+                    console.log(updatedSubscribers); // subscribers 대신 updatedSubscribers를 출력
+                });
+
+                console.log("Users connected to the session");
+            } catch (error) {
+                console.error("Error connecting users to the session:", error);
+            }
+        };
+
+        if (token && session && myUserName) {
+            joinSession();
+            connectUsersToSession();
+        }
+    }, [session, token, myUserName, subscribers, mainStreamManager, dispatch]);
 
     const deleteSubscriber = (streamManager) => {
         const prevSubscribers = subscribers;

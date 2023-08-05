@@ -44,44 +44,6 @@ function WaitingRoom() {
     console.log(subscribers);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        // 유저들을 OpenVidu 세션에 연결하는 함수
-        const connectUsersToSession = async () => {
-            try {
-                const usersToConnect = subscribers.filter(
-                    (user) => user !== mainStreamManager,
-                );
-
-                // 각 유저들을 세션에 연결
-                for (const user of usersToConnect) {
-                    await session.connect(token, { clientData: user });
-                }
-
-                // Subscribe to streams of connected users and update subscribers state
-                session.on("streamCreated", (event) => {
-                    const subscriber = session.subscribe(
-                        event.stream,
-                        undefined,
-                    );
-                    // Dispatch the action to update subscribers in Redux state
-                    dispatch(
-                        ovActions.saveSubscribers([...subscribers, subscriber]),
-                    );
-                    console.log(subscribers);
-                });
-
-                console.log("Users connected to the session");
-            } catch (error) {
-                console.error("Error connecting users to the session:", error);
-            }
-        };
-
-        // 세션이 유효한 경우에만 유저들을 세션에 연결
-        if (session && subscribers) {
-            connectUsersToSession();
-        }
-    }, [session, token, subscribers, dispatch]);
-
     const openRuleBook = () => {
         dispatch(
             openModal({
