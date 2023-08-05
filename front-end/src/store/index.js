@@ -1,10 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { modalSlice } from "./modalSlice";
 import { openviduSlice } from "./ovenviduSlice";
+import { phaseSlice } from "./phaseSlice";
 
 const rootReducer = combineReducers({
     modal: modalSlice.reducer,
     ov: openviduSlice.reducer,
+    phase: phaseSlice.reducer,
 });
 
 const store = configureStore({

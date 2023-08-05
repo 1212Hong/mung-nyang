@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/vote")
-public class VoteController {
+@RequestMapping("/api/quiz")
+public class QuizController {
 
     private final VoteService voteService;
 
