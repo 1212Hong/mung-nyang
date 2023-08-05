@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import VideoComponent from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../../components/Button";
 import {
