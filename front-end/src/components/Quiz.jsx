@@ -5,7 +5,7 @@ const Container = styled.div`
     padding-bottom: 40px;
     width: 600px;
     height: 300px;
-    background: ${`var(--beige)`};
+    background: ${`var(--macciato)`};
     text-align: center;
     border-radius: 5px;
 `;
