@@ -25,15 +25,22 @@ export const openviduSlice = createSlice({
             state.token = action.payload;
             console.log(state.token);
         },
-        // createOpenvidu: (state, { payload }) => {
-        //     if (!state.OV) {
-        //         state.myUserName = payload.nickname;
-        //         state.mySessionId = payload.roomId;
-        //         state.OV = new OpenVidu();
-        //         state.session = state.OV.initSession();
-        //         state.devices = state.OV.getDevices();
-        //     }
-        // },
+        saveSession: (state, action) => {
+            state.session = action.payload; // payload에 생성된 session 전달
+        },
+        saveSubscribers: (state, action) => {
+            state.subscribers = action.payload;
+            console.log(state.subscribers);
+        },
+        createOpenvidu: (state, { payload }) => {
+            if (!state.OV) {
+                state.myUserName = payload.nickname;
+                state.mySessionId = payload.roomId;
+                state.OV = new OpenVidu();
+                state.session = state.OV.initSession();
+                state.devices = state.OV.getDevices();
+            }
+        },
 
         createPublisher: (state, { payload }) => {
             state.session.publish(payload.publisher);
@@ -43,5 +50,5 @@ export const openviduSlice = createSlice({
         },
     },
 });
-export const { saveSessionId } = openviduSlice.actions;
+export const { saveSessionId, saveSubscribers } = openviduSlice.actions;
 export const ovActions = openviduSlice.actions;
