@@ -67,6 +67,7 @@ function WaitingRoom() {
                     dispatch(
                         ovActions.saveSubscribers([...subscribers, subscriber]),
                     );
+                    console.log(subscribers);
                 });
 
                 console.log("Users connected to the session");
