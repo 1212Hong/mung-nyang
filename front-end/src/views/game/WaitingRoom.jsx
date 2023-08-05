@@ -6,7 +6,7 @@ import { ReactComponent as DogFootIcon } from "../../assets/img/dog_foot.svg";
 import { ReactComponent as QuestionIcon } from "../../assets/img/question_mark.svg";
 import { ReactComponent as VolumeOnIcon } from "../../assets/img/volume_on.svg";
 import { ReactComponent as VolumeMuteIcon } from "../../assets/img/volume_mute.svg";
-import VideoComponent from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import Participant from "../../components/Participant";
 import Input from "../../components/Input";
 import {
@@ -69,10 +69,14 @@ function WaitingRoom() {
         <Container className="waiting-container">
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
-                    {subscribers.map((user, index) => (
-                        <React.Fragment key={index}>
+                    {subscribers.map((sub, i) => (
+                        <React.Fragment key={sub.id}>
                             <Videobox>
-                                <VideoComponent width="423" height="200" />
+                                <VideoComponent
+                                    width="423"
+                                    height="200"
+                                    streamManager={sub}
+                                />
                             </Videobox>
                         </React.Fragment>
                     ))}

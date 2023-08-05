@@ -59,7 +59,9 @@ const Game = () => {
     const navigate = useNavigate();
     console.log(phaseType);
     const myUserName = "test";
-    const currentSubscribers = subscribers;
+    const currentSubscribers = useSelector(
+        (state) => state.openvidu.subscribers,
+    );
 
     if (!mySessionId) navigate("/error");
 
@@ -79,10 +81,8 @@ const Game = () => {
     useEffect(() => {
         const handleStreamCreated = (event) => {
             const subscriber = session.subscribe(event.stream, undefined);
-
-            dispatch(
-                ovActions.saveSubscribers([...currentSubscribers, subscriber]),
-            );
+            const updatedSubscribers = [...currentSubscribers, subscriber];
+            dispatch(ovActions.saveSubscribers(updatedSubscribers));
         };
 
         const joinSession = async () => {
@@ -90,6 +90,7 @@ const Game = () => {
                 if (token && session && myUserName) {
                     await session.connect(token, { clientData: myUserName });
                     console.log("Successfully connected to the session");
+                    connectUsersToSession();
                 }
             } catch (error) {
                 console.error("Error connecting to the session:", error);
