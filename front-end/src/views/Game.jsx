@@ -7,7 +7,7 @@ import { ovActions } from "../store/openviduSlice";
 import { OpenVidu } from "openvidu-browser";
 
 const PHASES = {
-    Test: "Test",
+    // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
     Wait: "Wait",
     GameVote: "GameVote",
     Quiz: "Quiz",
@@ -28,10 +28,6 @@ const PHASES = {
 
 const PHASE_COMPONENTS = [
     {
-        type: PHASES.Test,
-        component: <ConnectionTest />,
-    },
-    {
         type: PHASES.Wait,
         component: <WaitingRoom />,
     },
@@ -47,8 +43,9 @@ const PHASE_COMPONENTS = [
 
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
+
     const {
-        // OV,
+        OV,
         session,
         subscribers,
         myUserName,
@@ -58,41 +55,48 @@ const Game = () => {
         token,
     } = openvidu;
     console.log(openvidu);
-    const [OV, setOV] = useState();
-    const [state, setState] = useState({
-        mySessionId: mySessionId,
-        myUserName: myUserName,
-        session: session,
-        mainStreamManager: mainStreamManager, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
-        publisher: undefined,
-        subscribers: [],
-    });
-
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     console.log(phaseType);
 
-    useEffect(function () {
-        // window.addEventListener("beforeunload", this.onbeforeunload);
-        // window.removeEventListener("beforeunload", this.onbeforeunload);
-        // useEffect가 한번 실행된 후 다시 실행될 때 이전에 실행했던 값을 정리해주는 것이 clean up
-        // 예를 들면 입장할 때 구독하고 퇴장할 때 구독취소를 하는 것
-        // 이 effect는 부모 컴포넌트에서 이 함수 컴포넌트를 삭제하는 경우에 clean-up(unmount)을 하게 된다.
-        // return function beforeunload() {
-        //     this.leaveSession();
-        // };
-        // 빈 배열을 넣으면 처음 한 번만 실행되고 그 후로는 실행되지 않는다.(componentDidMount만 하도록)
-    }, []);
+    useEffect(() => {
+        // OpenVidu 객체를 생성하여 상태에 저장
+        if (!OV) {
+            dispatch(
+                ovActions.createOpenvidu({
+                    nickname: myUserName,
+                    roomId: mySessionId,
+                }),
+            );
+        }
+
+        // 세션 생성
+        if (!session && OV) {
+            const newSession = OV.initSession();
+            dispatch(ovActions.saveSession(newSession));
+        }
+
+        // 세션에 접속
+        const joinSession = async () => {
+            try {
+                if (token && session && myUserName) {
+                    await session.connect(token, { clientData: myUserName });
+                    console.log("Successfully connected to the session");
+                }
+            } catch (error) {
+                console.error("Error connecting to the session:", error);
+            }
+        };
+
+        joinSession(); // 세션에 접속하는 함수 호출
+    }, [OV, session, token, myUserName, mySessionId, dispatch]);
 
     const deleteSubscriber = (streamManager) => {
         const prevSubscribers = subscribers;
         let index = prevSubscribers.indexOf(streamManager, 0);
         if (index > -1) {
             prevSubscribers.splice(index, 1);
-            setState({
-                ...state,
-                subscribers: [...prevSubscribers],
-            });
+            dispatch(ovActions.saveSubscribers([...prevSubscribers]));
         }
     };
 

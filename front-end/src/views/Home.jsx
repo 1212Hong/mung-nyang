@@ -43,7 +43,7 @@ const Home = () => {
             // You can show an error window or message here using a state variable and a conditional rendering
         } else {
             // Room joined successfully, navigate to the game page
-            navigate("/game");
+            navigate("/test");
         }
     };
 
@@ -84,7 +84,7 @@ const Home = () => {
                             margin="20px"
                             onClick={() => {
                                 makeRoom(roomInfo);
-                                navigate("/game");
+                                navigate("/test");
                             }}
                         />
                     ) : (
