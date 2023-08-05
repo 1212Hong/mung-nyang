@@ -164,7 +164,7 @@ const Game = () => {
     }
 
     const renderPhase = () => {
-        return findPhase.component;
+        return <>{findPhase.component}</>;
     };
 
     return <>{renderPhase()}</>;
