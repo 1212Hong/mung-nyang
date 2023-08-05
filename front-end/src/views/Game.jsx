@@ -49,7 +49,7 @@ const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const {
         // OV,
-        // session,
+        session,
         subscribers,
         myUserName,
         mySessionId,
@@ -62,8 +62,8 @@ const Game = () => {
     const [state, setState] = useState({
         mySessionId: mySessionId,
         myUserName: myUserName,
-        session: undefined,
-        mainStreamManager: undefined, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
+        session: session,
+        mainStreamManager: mainStreamManager, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
         publisher: undefined,
         subscribers: [],
     });
@@ -94,101 +94,6 @@ const Game = () => {
                 subscribers: [...prevSubscribers],
             });
         }
-    };
-
-    const joinSession = () => {
-        const newOV = new OpenVidu();
-        newOV.enableProdMode();
-
-        const newSession = OV.initSession();
-
-        setOV(newOV);
-        setState({
-            ...state,
-            session: newSession,
-        });
-
-        const connection = () => {
-            if (token) {
-                // 1. connection 메소드 내부에 이벤트 수신 처리
-                // 1-1 session에 참여한 사용자 추가
-                newSession.on("streamCreated", (event) => {
-                    const newSubscriber = newSession.subscribe(
-                        event.stream,
-                        JSON.parse(event.stream.connection.data).clientData,
-                    );
-
-                    const newSubscribers = subscribers;
-                    newSubscribers.push(newSubscriber);
-
-                    setState({
-                        ...state,
-                        subscribers: [...newSubscribers],
-                    });
-                });
-                // 1-2 session에서 disconnect한 사용자 삭제
-                // newSession.on("streamDestroyed", (event) => {
-                //     if (event.stream.typeOfVideo === "CUSTOM") {
-                //         deleteSubscriber(event.stream.streamManager);
-                //     } else {
-                //         setDestroyedStream(event.stream.streamManager);
-                //         setCheckMyScreen(true);
-                //     }
-                // });
-                // 1-3 예외처리
-                newSession.on("exception", (exception) => {
-                    console.warn(exception);
-                });
-                newSession
-                    .connect(token, {
-                        clientData: myUserName,
-                    })
-                    .then(async () => {
-                        newOV
-                            .getUserMedia({
-                                audioSource: false,
-                                videoSource: undefined,
-                                resolution: "1280x720",
-                                frameRate: 10,
-                            })
-                            .then((mediaStream) => {
-                                var videoTrack =
-                                    mediaStream.getVideoTracks()[0];
-                                // Obtain the current video device in use
-
-                                var newPublisher = newOV.initPublisher(
-                                    myUserName,
-                                    {
-                                        audioSource: undefined,
-                                        videoSource: videoTrack,
-                                        publishAudio: true,
-                                        publishVideo: true,
-                                        // resolution: '1280x720',
-                                        // frameRate: 10,
-                                        insertMode: "APPEND",
-                                        mirror: true,
-                                    },
-                                );
-                                // 4-c publish
-                                newPublisher.once("accessAllowed", () => {
-                                    newSession.publish(newPublisher);
-                                    setState({
-                                        ...state,
-                                        publisher: newPublisher,
-                                    });
-                                });
-                            })
-                            .catch((error) => {
-                                console.warn(
-                                    "There was an error connecting to the session:",
-                                    error.code,
-                                    error.message,
-                                );
-                            });
-                    });
-            }
-        };
-        connection();
     };
 
     const findPhase = PHASE_COMPONENTS.find(
