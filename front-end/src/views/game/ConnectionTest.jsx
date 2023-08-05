@@ -22,6 +22,8 @@ import {
 } from "../../components/layout/connectionTest";
 import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../../store/phaseSlice";
+import { OpenVidu } from "openvidu-browser";
+import Error from "../Error";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
 
@@ -47,11 +49,129 @@ function ConnectionTest() {
     const [isOn, setIsOn] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const dispatch = useDispatch();
-    const sessionId = useSelector((state) => state.openvidu.mySessionId);
+    const openvidu = useSelector((state) => state.openvidu);
+    const {
+        // OV,
+        session,
+        subscribers,
+        myUserName,
+        mySessionId,
+        mainStreamManager,
+        currentVideoDevice,
+        token,
+    } = openvidu;
+    // console.log(openvidu);
+    const [OV, setOV] = useState();
+    const [state, setState] = useState({
+        mySessionId: mySessionId,
+        myUserName: myUserName,
+        session: session,
+        mainStreamManager: mainStreamManager, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
+        publisher: undefined,
+        subscribers: [],
+    });
+
+    const joinSession = () => {
+        const newOV = new OpenVidu();
+        newOV.enableProdMode();
+
+        const newSession = newOV.initSession();
+
+        setOV(newOV);
+        setState({
+            ...state,
+            OV: newOV,
+            session: newSession,
+        });
+
+        const connection = () => {
+            if (token) {
+                // 1. connection 메소드 내부에 이벤트 수신 처리
+                // 1-1 session에 참여한 사용자 추가
+                console.log(token);
+                newSession.on("streamCreated", (event) => {
+                    const newSubscriber = newSession.subscribe(
+                        event.stream,
+                        JSON.parse(event.stream.connection.data).clientData,
+                    );
+
+                    const newSubscribers = subscribers;
+                    newSubscribers.push(newSubscriber);
+                    console.log(newSubscriber);
+                    setState({
+                        ...state,
+                        subscribers: [...newSubscribers],
+                    });
+                });
+                // 1-2 session에서 disconnect한 사용자 삭제
+                // newSession.on("streamDestroyed", (event) => {
+                //     if (event.stream.typeOfVideo === "CUSTOM") {
+                //         deleteSubscriber(event.stream.streamManager);
+                //     } else {
+                //         setDestroyedStream(event.stream.streamManager);
+                //         setCheckMyScreen(true);
+                //     }
+                // });
+                // 1-3 예외처리
+                newSession.on("exception", (exception) => {
+                    console.warn(exception);
+                });
+                newSession
+                    .connect(token, {
+                        clientData: myUserName,
+                    })
+                    .then(async () => {
+                        newOV
+                            .getUserMedia({
+                                audioSource: false,
+                                videoSource: undefined,
+                                resolution: "1280x720",
+                                frameRate: 10,
+                            })
+                            .then((mediaStream) => {
+                                var videoTrack =
+                                    mediaStream.getVideoTracks()[0];
+                                // Obtain the current video device in use
+
+                                var newPublisher = newOV.initPublisher(
+                                    myUserName,
+                                    {
+                                        audioSource: undefined,
+                                        videoSource: videoTrack,
+                                        publishAudio: true,
+                                        publishVideo: true,
+                                        // resolution: '1280x720',
+                                        // frameRate: 10,
+                                        insertMode: "APPEND",
+                                        mirror: true,
+                                    },
+                                );
+                                // 4-c publish
+                                newPublisher.once("accessAllowed", () => {
+                                    newSession.publish(newPublisher);
+                                    setState({
+                                        ...state,
+                                        publisher: newPublisher,
+                                    });
+                                });
+                            })
+                            .catch((error) => {
+                                console.warn(
+                                    "There was an error connecting to the session:",
+                                    error.code,
+                                    error.message,
+                                );
+                            });
+                    });
+            }
+        };
+        connection();
+    };
 
     const handleGoWaitingRoom = () => {
         dispatch(changePhase({ phaseType: "Wait" }));
-        console.log(sessionId);
+        joinSession();
+        console.log(mySessionId);
     };
 
     const audioRef = React.createRef();
@@ -143,7 +263,7 @@ function ConnectionTest() {
     }
     return (
         <>
-            {sessionId ? (
+            {mySessionId ? (
                 <Container>
                     <HeaderBox>
                         <SettingIcon width="50" height="50" />
@@ -210,7 +330,7 @@ function ConnectionTest() {
                     </ContainerBody>
                 </Container>
             ) : (
-                <>nosessionid</>
+                <Error />
             )}
         </>
     );
