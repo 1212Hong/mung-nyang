@@ -93,7 +93,6 @@ const Home = () => {
                             width="100px"
                             margin="20px"
                             onClick={() => {
-                                joinRoom(roomInfo);
                                 handleJoinRoom();
                             }}
                         />
