@@ -5,12 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
-@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -23,12 +21,17 @@ public class GameSet {
 
     private int setFirst;
 
+    private String category;
 
     private String answerer;
 
     private String liar;
 
     private String answer;
+
+    private String wrongAnswer;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")

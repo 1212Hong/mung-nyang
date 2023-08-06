@@ -19,14 +19,14 @@ public class VoteController {
     private final VoteService voteService;
 
     @PostMapping("/start")
-    public ResponseEntity<VoteStartRes> startVote(@RequestParam(required = true) String roomId) {
+    public ResponseEntity<VoteStartRes> startVote(@RequestParam String roomId) {
         voteService.startVote(roomId);
 
         return ResponseEntity.ok(new VoteStartRes(roomId));
     }
 
     @PostMapping("/count")
-    public ResponseEntity<VoteCountRes> countVote(@RequestParam(required = true) String roomId) {
+    public ResponseEntity<VoteCountRes> countVote(@RequestParam String roomId) {
 
         String voteCheck = voteService.countVote(roomId);
 

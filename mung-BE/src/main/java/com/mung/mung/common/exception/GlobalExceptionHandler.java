@@ -1,5 +1,6 @@
 package com.mung.mung.common.exception;
 
+import com.mung.mung.common.exception.custom.QuizNotFoundException;
 import com.mung.mung.common.exception.custom.RoomNotExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiException, httpStatus);
 
+    }
+
+    @ExceptionHandler(value = {QuizNotFoundException.class})
+    public ResponseEntity<Object> handleQuizNotFoundException(QuizNotFoundException e){
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.QUIZ_NOT_FOUND_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
     }
 
 }

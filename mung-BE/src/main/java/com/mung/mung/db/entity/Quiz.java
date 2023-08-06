@@ -8,7 +8,6 @@ import javax.persistence.Id;
 
 
 @Getter
-@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -17,13 +16,13 @@ public class Quiz {
 
     @Id
     @GeneratedValue
-    private Long quizId;
+    private Long id;
 
-    private String quizTitle;
+    private String question;
 
-    private String quizAnswer1;
+    private String answer1;
 
-    private String quizAnswer2;
+    private String answer2;
 
 
 

@@ -106,8 +106,6 @@ public class VoteServiceImpl implements VoteService {
 
         if (votes >= requiredVotes) {
 
-
-
             gameRoom.updateStatus("Start");
 
             gameRoomRepository.save(gameRoom);
@@ -121,14 +119,15 @@ public class VoteServiceImpl implements VoteService {
 
             gameRepository.save(game);
 
+            Long gameId = game.getGameId();
+
             resetVote(roomId); // 투표 완료 시 초기화
 
-
-            return new VoteResultRes(roomId, GameProcessType.Quiz);
+            return new VoteResultRes(roomId,gameId, GameProcessType.Quiz);
         } else {
             resetVote(roomId); // 투표 완료 시 초기화
 
-            return new VoteResultRes(roomId, GameProcessType.Wait);
+            return new VoteResultRes(roomId, null, GameProcessType.Wait);
         }
     }
 

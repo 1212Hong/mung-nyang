@@ -1,8 +1,10 @@
 package com.mung.mung.api.controller;
 
-import com.mung.mung.api.response.VoteResultRes;
-import com.mung.mung.api.response.VoteStartRes;
-import com.mung.mung.api.service.VoteService;
+import com.mung.mung.api.request.QuizCountReq;
+import com.mung.mung.api.request.QuizResultReq;
+import com.mung.mung.api.request.QuizPlayersRoleReq;
+import com.mung.mung.api.response.*;
+import com.mung.mung.api.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,29 +16,47 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/quiz")
 public class QuizController {
 
-    private final VoteService voteService;
+    private final QuizService quizService;
 
     @PostMapping("/start")
-    public ResponseEntity<VoteStartRes> startVote(@RequestParam(required = true) String roomId) {
-        voteService.startVote(roomId);
+    public ResponseEntity<QuizStartRes> startQuiz(@RequestParam String roomId) {
+        QuizStartRes quizStartRes = quizService.startQuiz(roomId);
 
-        return ResponseEntity.ok(new VoteStartRes(roomId));
+        return ResponseEntity.ok(quizStartRes);
     }
 
-    @PostMapping("/count")
-    public ResponseEntity<String> countVote(@RequestParam(required = true) String roomId) {
+    @PostMapping("/positive")
+    public ResponseEntity<String> submitPositiveQuiz(@RequestBody QuizCountReq quizCountReq) {
 
-        String result = voteService.countVote(roomId);
+        quizService.submitPositiveQuiz(quizCountReq);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok("1번 투표 완료");
+
+    }
+
+    @PostMapping("/negative")
+    public ResponseEntity<String> submitNegativeQuiz(@RequestBody QuizCountReq quizCountReq) {
+
+        quizService.submitNegativeQuiz(quizCountReq);
+
+        return ResponseEntity.ok("2번 투표 완료");
 
     }
 
     @GetMapping("/result")
-    public ResponseEntity<VoteResultRes> getVoteResult(@RequestParam String roomId) {
-        VoteResultRes voteResultRes = voteService.getVoteResult(roomId);
+    public ResponseEntity<QuizResultRes> getQuizResult(@RequestBody QuizResultReq quizResultReq) {
+        QuizResultRes quizResultRes = quizService.getQuizResult(quizResultReq);
 
-        return ResponseEntity.ok(voteResultRes);
+        return ResponseEntity.ok(quizResultRes);
+    }
+
+    @PostMapping("/category")
+    public ResponseEntity<QuizPlayersRoleRes> getPlayersRole(@RequestBody QuizPlayersRoleReq quizPlayersRoleReq) {
+
+        QuizPlayersRoleRes quizPlayersRoleRes = quizService.getPlayersRole(quizPlayersRoleReq);
+
+        return ResponseEntity.ok(quizPlayersRoleRes);
+
     }
 
 
