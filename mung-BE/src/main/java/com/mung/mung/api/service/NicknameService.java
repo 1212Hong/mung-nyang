@@ -1,5 +1,6 @@
 package com.mung.mung.api.service;
 
+import com.mung.mung.db.entity.Dog;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.entity.Player;
 import com.mung.mung.db.repository.GameRoomRepository;
@@ -38,9 +39,17 @@ public class NicknameService {
         int playerCount = players.size();
         int ChangeCount = 0;
         String returnNickname="NotAllowNickname";
+        String playerNickname="null";
         for (int i = 0; i < 100; i++) {
             ChangeCount += 1;
-            String playerNickname = nicknameRepository.findByDogId(randomNumber).getDogNickname();
+            System.out.println("아오");
+            System.out.println(randomNumber);
+            Dog existingNickname = nicknameRepository.findByDogId(randomNumber);
+            if (existingNickname !=null){
+                playerNickname=existingNickname.getDogNickname();
+            }else{
+                return returnNickname;
+            }
             int playerNameCount = 0;
             for (Player player : players) {
                 if (player.getPlayerNickname().equals(playerNickname)) {
