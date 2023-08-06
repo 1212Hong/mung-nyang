@@ -2,6 +2,7 @@ package com.mung.mung.api.controller;
 
 import com.mung.mung.api.request.PlayerJoinReq;
 import com.mung.mung.api.response.PlayerStatusRes;
+import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.NicknameService;
 import com.mung.mung.api.service.PlayerService;
 import io.openvidu.java.client.OpenViduHttpException;
@@ -18,6 +19,7 @@ public class PlayerController {
 
     private final PlayerService playerService;
     private final NicknameService nicknameService;
+    private final GameRoomService gameRoomService;
 
     // player가 테스트 단계에서 닉네임을 정하고 입장을 누르면 DB에 nick과 room_id를 저장한 뒤 player정보 반환.
     @PostMapping("/join")
@@ -41,6 +43,10 @@ public class PlayerController {
     public ResponseEntity<String> giveNickname(@PathVariable("roomId") String roomId)
             throws OpenViduJavaClientException, OpenViduHttpException {
         // player정보를 DB에 저장
+        if (!gameRoomService.isRoomExists(roomId)){
+            return new ResponseEntity<>("방이 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
+        };
+
         if (nicknameService.giveNickname(roomId).equals("NotAllowNickname")){
             return new ResponseEntity<>("닉네임을 가져올 수 없습니다...",HttpStatus.BAD_REQUEST);
         }else {
