@@ -43,7 +43,8 @@ function WaitingRoom() {
         mainStreamManager,
         devices,
     } = openvidu;
-
+    console.log(subscribers);
+    console.log(mainStreamManager);
     const dispatch = useDispatch();
 
     const openRuleBook = () => {
@@ -79,6 +80,7 @@ function WaitingRoom() {
                         <React.Fragment key={index}>
                             <Videobox>
                                 <VideoComponent width="423" height="200" />
+                                {user}asdf
                             </Videobox>
                         </React.Fragment>
                     ))}

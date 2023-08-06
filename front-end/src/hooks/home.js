@@ -23,7 +23,7 @@ export const makeRoom = async (roomInfo) => {
         );
         console.log(connectRoomResponse);
         store.dispatch(ovActions.saveSessionId(sessionId));
-
+        store.dispatch(ovActions.saveToken(connectRoomResponse.data));
         // 여기에서 sessionId와 connectRoomResponse 등을 필요에 따라 처리할 수 있음
     } catch (error) {
         console.log(error);
