@@ -2,6 +2,7 @@ import styled from "styled-components";
 import smell from "../assets/img/smell.png";
 import cat from "../assets/img/cat.png";
 import loading from "../assets/img/loading.png";
+import imgSrc from "../assets/img/loadingBackground.png";
 
 const Container = styled.div`
     display: flex;
@@ -9,6 +10,8 @@ const Container = styled.div`
     height: 100%;
     justify-content: flex-end;
     align-items: flex-end;
+    background-image: url("../assets/img/loadingBackground.png");
+    background-size: cover;
 `;
 const ImgBox = styled.div`
     margin-right: 50px;
@@ -33,10 +36,12 @@ const ImgItem = styled.div`
         }
     }
 `;
+const DogItem = styled.div``;
 
 const Loading = () => {
     return (
         <Container>
+            <img width={1280} height={500} src={imgSrc} alt="" />
             <ImgBox>
                 <ImgItem>
                     <img width={100} height={100} src={loading} alt="" />
@@ -50,12 +55,12 @@ const Loading = () => {
                 <ImgItem>
                     <img width={100} height={100} src={loading} alt="" />
                 </ImgItem>
-                <ImgItem>
+                <DogItem>
                     <img width={100} height={100} src={smell} alt="" />
-                </ImgItem>
-                <ImgItem>
+                </DogItem>
+                <DogItem>
                     <img width={100} height={100} src={cat} alt="" />
-                </ImgItem>
+                </DogItem>
             </ImgBox>
             <TextBox>Loading ...</TextBox>
         </Container>
