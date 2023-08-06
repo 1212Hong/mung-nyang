@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { ReactComponent as LinkIcon } from "../../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../../assets/img/capture_image.svg";
@@ -21,8 +21,9 @@ import {
     Videobox,
     VideoboxGrid,
 } from "../../components/layout/waiting";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
+import { ovActions } from "../../store/openviduSlice";
 
 const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
 
@@ -30,7 +31,19 @@ const host = "권영재";
 
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
+    const [users, setUsers] = useState([]);
     const [isMuted, setIsMuted] = useState(false);
+    const openvidu = useSelector((state) => state.openvidu);
+    // setUsers(subscribers)
+    const {
+        session,
+        subscribers,
+        myUserName,
+        mySessionId,
+        mainStreamManager,
+        devices,
+    } = openvidu;
+
     const dispatch = useDispatch();
 
     const openRuleBook = () => {
@@ -62,7 +75,7 @@ function WaitingRoom() {
         <Container className="waiting-container">
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
-                    {user_list.map((user, index) => (
+                    {subscribers.map((user, index) => (
                         <React.Fragment key={index}>
                             <Videobox>
                                 <VideoComponent width="423" height="200" />
