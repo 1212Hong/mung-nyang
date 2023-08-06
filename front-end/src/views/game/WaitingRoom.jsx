@@ -33,10 +33,7 @@ function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
 
     const openvidu = useSelector((state) => state.openvidu);
-    const {
-        subscribers,
-        // devices,
-    } = openvidu;
+    const { subscribers } = openvidu;
     console.log(subscribers);
     const dispatch = useDispatch();
 

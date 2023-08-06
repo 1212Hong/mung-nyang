@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
-import { OpenVidu } from "openvidu-browser";
 import { useNavigate } from "react-router-dom";
 
 const PHASES = {
@@ -88,58 +87,74 @@ const Game = () => {
         const joinSession = async () => {
             try {
                 if (token && session && myUserName) {
-                    await session.connect(token, { clientData: myUserName });
+                    console.log(session);
+
+                    session.connect(token, { clientData: myUserName });
+
                     console.log("Successfully connected to the session");
-                    connectUsersToSession();
+                    // Subscribe to streams of connected users and update subscribers state
+                    session.on("streamCreated", handleStreamCreated);
+
+                    // On every Stream destroyed...
+                    session.on("streamDestroyed", (event) => {
+                        // Remove the stream from 'subscribers' array
+                        deleteSubscriber(event.stream.streamManager);
+                    });
+
+                    // On every asynchronous exception...
+                    session.on("exception", (exception) => {
+                        console.warn(exception);
+                    });
+
+                    // Get your own camera stream
+                    let publisher;
+                    try {
+                        publisher = await OV.initPublisherAsync(undefined, {
+                            audioSource: undefined,
+                            videoSource: undefined,
+                            publishAudio: true,
+                            publishVideo: true,
+                            resolution: "640x480",
+                            frameRate: 30,
+                            insertMode: "APPEND",
+                            mirror: false,
+                        });
+                        session.publish(publisher);
+                        dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
+                        console.log("Publisher created and published");
+                    } catch (error) {
+                        console.error("Error creating publisher:", error);
+                    }
+
+                    // Obtain the current video device in use
+                    var devices = await OV.getDevices();
+                    var videoDevices = devices.filter(
+                        (device) => device.kind === "videoinput",
+                    );
+                    var currentVideoDeviceId = publisher.stream
+                        .getMediaStream()
+                        .getVideoTracks()[0]
+                        .getSettings().deviceId;
+                    var currentVideoDevice = videoDevices.find(
+                        (device) => device.deviceId === currentVideoDeviceId,
+                    );
+
+                    // Set the main video in the page to display our webcam and store our Publisher
+                    dispatch(
+                        ovActions.saveCurrentVideoDevice(currentVideoDevice),
+                    );
+                    dispatch(ovActions.saveMainStreamManager(publisher));
+
+                    console.log(openvidu);
+                    console.log("Successfully connected to the session");
                 }
             } catch (error) {
                 console.error("Error connecting to the session:", error);
-            }
-
-            // Get your own camera stream
-            let publisher;
-            try {
-                publisher = await OV.initPublisherAsync(undefined, {
-                    audioSource: undefined,
-                    videoSource: undefined,
-                    publishAudio: true,
-                    publishVideo: true,
-                    resolution: "640x480",
-                    frameRate: 30,
-                    insertMode: "APPEND",
-                    mirror: false,
-                });
-                session.publish(publisher);
-                dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
-                console.log("Publisher created and published");
-            } catch (error) {
-                console.error("Error creating publisher:", error);
-            }
-        };
-
-        const connectUsersToSession = async () => {
-            try {
-                const usersToConnect = subscribers.filter(
-                    (user) => user !== mainStreamManager,
-                );
-
-                // 각 유저들을 세션에 연결
-                for (const user of usersToConnect) {
-                    await session.connect(token, { clientData: user });
-                }
-
-                // Subscribe to streams of connected users and update subscribers state
-                session.on("streamCreated", handleStreamCreated);
-
-                console.log("Users connected to the session");
-            } catch (error) {
-                console.error("Error connecting users to the session:", error);
             }
         };
 
         if (token && session && myUserName) {
             joinSession();
-            connectUsersToSession();
         }
     }, [session, token, myUserName, subscribers, mainStreamManager, dispatch]);
 
@@ -148,9 +163,7 @@ const Game = () => {
         const index = currentSubscribers.indexOf(streamManager, 0);
         if (index > -1) {
             // Create a new array without the streamManager and update the state
-            const updatedSubscribers = currentSubscribers.filter(
-                (_, i) => i !== index,
-            );
+            const updatedSubscribers = currentSubscribers.splice(index, 1);
             dispatch(ovActions.saveSubscribers(updatedSubscribers));
         }
     };
