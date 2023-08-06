@@ -1,5 +1,7 @@
 package com.mung.mung.api.controller;
 
+import com.mung.mung.api.request.VoteSetReq;
+import com.mung.mung.api.response.VoteCountRes;
 import com.mung.mung.api.response.VoteResultRes;
 import com.mung.mung.api.response.VoteStartRes;
 import com.mung.mung.api.service.VoteService;
@@ -24,17 +26,17 @@ public class VoteController {
     }
 
     @PostMapping("/count")
-    public ResponseEntity<String> countVote(@RequestParam(required = true) String roomId) {
+    public ResponseEntity<VoteCountRes> countVote(@RequestParam(required = true) String roomId) {
 
-        String result = voteService.countVote(roomId);
+        String voteCheck = voteService.countVote(roomId);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(new VoteCountRes(roomId, voteCheck));
 
     }
 
     @GetMapping("/result")
-    public ResponseEntity<VoteResultRes> getVoteResult(@RequestParam String roomId) {
-        VoteResultRes voteResultRes = voteService.getVoteResult(roomId);
+    public ResponseEntity<VoteResultRes> getVoteResult(@RequestParam String roomId, @RequestBody VoteSetReq voteSetReq) {
+        VoteResultRes voteResultRes = voteService.getVoteResult(roomId, voteSetReq.getGameSet());
 
         return ResponseEntity.ok(voteResultRes);
     }

@@ -7,5 +7,5 @@ public interface VoteService {
 
     String countVote(String roomId);
 
-    VoteResultRes getVoteResult(String roomId);
+    VoteResultRes getVoteResult(String roomId, int gameSet);
 }

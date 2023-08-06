@@ -8,12 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Game {
 
@@ -29,9 +31,9 @@ public class Game {
 
     private String videoUrl;
 
-    private String startTime;
+    private LocalDateTime startTime;
 
-    private String endTime;
+    private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")

@@ -27,6 +27,7 @@ public class Player {
     @ColumnDefault("0")
     private int playerScore;
 
+    @ColumnDefault("0")
     private int playerVote;
 
     @ManyToOne(fetch = FetchType.LAZY)
