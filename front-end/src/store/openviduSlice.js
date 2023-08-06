@@ -36,7 +36,12 @@ export const openviduSlice = createSlice({
         savePublisher: (state, action) => {
             state.publisher = action.payload;
         },
-
+        saveCurrentVideoDevice: (state, action) => {
+            state.currentVideoDevice = action.payload;
+        },
+        saveMainStreamManager: (state, action) => {
+            state.mainStreamManager = action.payload;
+        },
         // Action to delete the publisher from the state
         deletePublisher: (state) => {
             state.publisher = undefined;
@@ -47,10 +52,8 @@ export const openviduSlice = createSlice({
                 state.mySessionId = payload.roomId;
                 state.OV = new OpenVidu();
                 state.session = state.OV.initSession();
-                state.devices = state.OV.getDevices();
             }
         },
-
         createPublisher: (state, { payload }) => {
             state.session.publish(payload.publisher);
             state.currentVideoDevice = payload.currentVideoDevice;
