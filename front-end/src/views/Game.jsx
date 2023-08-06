@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../store/phaseSlice";
 import SelectLiar from "../views/game/SelectLiar";
 import SelectAnswer from "./game/SelectAnswer";
+import OtherView from "../views/game/OtherView";
 
 const PHASES = {
     Test: "Test",
@@ -19,6 +20,7 @@ const PHASES = {
     EmgAns: "EmgAns",
     LiarVote: "LiarVote",
     SelectAns: "SelectAns",
+    OtherView: "OtherView",
     OpenLiar: "OpenLiar",
     MidScore: "MidScore",
     FinScore: "FinScore",
@@ -27,6 +29,7 @@ const PHASES = {
     Paint: "Paint",
 };
 
+const text = "지목된 사람이 정답을 선택중입니다.";
 const userlist = ["고양이", "개냥이", "냥냥이", "돼냥이", "댕댕이", "멍멍이"];
 const PHASE_COMPONENTS = [
     {
@@ -52,6 +55,10 @@ const PHASE_COMPONENTS = [
     {
         type: PHASES.SelectAns,
         component: <SelectAnswer />,
+    },
+    {
+        type: PHASES.OtherView,
+        component: <OtherView text={text} userlist={userlist} />,
     },
 ];
 

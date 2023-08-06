@@ -11,8 +11,7 @@ import {
 } from "../../components/layout/otherView";
 
 const OtherView = (props) => {
-    const { text, user_list } = props;
-
+    const { text, userlist } = props;
     return (
         <Container>
             <Timer />
@@ -23,7 +22,7 @@ const OtherView = (props) => {
                 <Card imageSrc={imageSrc} description={text} />
             </AnswerBox>
             <UserBox>
-                {user_list.map((index) => (
+                {userlist.map((index) => (
                     <OtherUsers key={index}>
                         <VideoComponent width="235px" height="235px" />
                     </OtherUsers>
