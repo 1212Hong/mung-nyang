@@ -25,15 +25,15 @@ export const openviduSlice = createSlice({
             state.token = action.payload;
             console.log(state.token);
         },
-        // createOpenvidu: (state, { payload }) => {
-        //     if (!state.OV) {
-        //         state.myUserName = payload.nickname;
-        //         state.mySessionId = payload.roomId;
-        //         state.OV = new OpenVidu();
-        //         state.session = state.OV.initSession();
-        //         state.devices = state.OV.getDevices();
-        //     }
-        // },
+        createOpenvidu: (state, { payload }) => {
+            if (!state.OV) {
+                state.myUserName = payload.nickname;
+                state.mySessionId = payload.roomId;
+                state.OV = new OpenVidu();
+                state.session = state.OV.initSession();
+                state.devices = state.OV.getDevices();
+            }
+        },
 
         createPublisher: (state, { payload }) => {
             state.session.publish(payload.publisher);
@@ -41,7 +41,11 @@ export const openviduSlice = createSlice({
             state.mainStreamManager = payload.publisher;
             state.publisher = payload.publisher;
         },
+        updateSubscribers: (state, { payload }) => {
+            console.log(payload);
+            state.subscribers.push(payload.subscriber);
+        },
     },
 });
-export const { saveSessionId } = openviduSlice.actions;
+export const { saveSessionId, updateSubscribers } = openviduSlice.actions;
 export const ovActions = openviduSlice.actions;
