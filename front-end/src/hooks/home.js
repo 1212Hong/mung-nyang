@@ -38,9 +38,9 @@ export const joinRoom = async (roomInfo) => {
         console.log(res);
         store.dispatch(ovActions.saveSessionId(roomInfo.roomId));
         store.dispatch(ovActions.saveToken(res.data));
-        return res.data; // Return the response if successful
+        return res.data; // Return
     } catch (error) {
         console.log(error);
-        return { error: "Room not found" }; // Return an error message if the room is not found
+        return { error: "Room not found" };
     }
 };

@@ -8,7 +8,7 @@ import {
     AnswerBox,
     FooterBox,
 } from "../../components/layout/topbottomvideo";
-import VideoComponent from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import Quiz from "../../components/Quiz";
 import Select from "../../components/Select";
 import Input from "../../components/Input";
