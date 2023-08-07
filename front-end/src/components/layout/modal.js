@@ -56,7 +56,7 @@ const ModalViewResultDiv = styled.div`
     padding: 20px 0;
     display: flex;
     width: 80%;
-    justify-contents: space-between;
+    justify-content: space-between;
 `;
 const ModalViewResultBox = styled.div`
     width: 30%;
@@ -78,6 +78,16 @@ const ModalViewCompleteDiv = styled.div`
     color: var(--white);
     font-weight: bold;
 `;
+
+const ChooseModalView = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 20px;
+    width: 700px;
+    height: 500px;
+    background-color: var(--dusty-pink);
+`;
 export {
     ModalBackdrop,
     ModalContainer,
@@ -88,4 +98,5 @@ export {
     ModalViewResultBox,
     ModalViewButtonDiv,
     ModalViewCompleteDiv,
+    ChooseModalView,
 };
