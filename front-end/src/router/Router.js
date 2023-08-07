@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../views/Home";
 import Game from "../views/Game";
 import Loading from "../views/Loading";
+import Error from "../views/Error";
 
 const Router = () => {
     return (
@@ -11,6 +12,7 @@ const Router = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/game" element={<Game />} />
                 <Route path="/loading" element={<Loading />} />
+                <Route path="/error" element={<Error />} />
             </Routes>
         </BrowserRouter>
     );
