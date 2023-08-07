@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
+import SelectLiar from "../views/game/SelectLiar";
+import SelectAnswer from "../views/game/SelectAnswer";
+import OtherView from "../views/game/OtherView";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -18,6 +21,7 @@ const PHASES = {
     EmgAns: "EmgAns",
     LiarVote: "LiarVote",
     SelectAns: "SelectAns",
+    OtherView: "OtherView",
     OpenLiar: "OpenLiar",
     MidScore: "MidScore",
     FinScore: "FinScore",
@@ -25,6 +29,7 @@ const PHASES = {
     Dance: "Dance",
     Paint: "Paint",
 };
+const text = "지목된 사람이 정답을 선택 중입니다.";
 
 const PHASE_COMPONENTS = [
     {
@@ -38,6 +43,18 @@ const PHASE_COMPONENTS = [
     {
         type: PHASES.Category,
         component: <TopBottomVideo />,
+    },
+    {
+        type: PHASES.LiarVote,
+        component: <SelectLiar />,
+    },
+    {
+        type: PHASES.SelectAns,
+        component: <SelectAnswer />,
+    },
+    {
+        type: PHASES.OtherView,
+        component: <OtherView text={text} />,
     },
 ];
 
