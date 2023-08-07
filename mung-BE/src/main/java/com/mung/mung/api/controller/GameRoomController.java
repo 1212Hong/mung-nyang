@@ -90,6 +90,10 @@ public class GameRoomController {
 
     // 방 비밀번호 체크용이라서 HashMap사용, 동기화 필요 X
     private Map<String, String> gameConnectionInfoMap = new HashMap<>();
+
+    // 방과 Session을 매칭 시켜주기 위함 => 한글로 방 생성 가능
+    private Map<String, String> sessionRoomConvert =new HashMap<>();
+    private long convertNum=1;
     @Autowired
     public GameRoomController(GameRoomService gameRoomService){
         this.gameRoomService=gameRoomService;
@@ -111,60 +115,61 @@ public class GameRoomController {
             String roomPw= gameRoomCreateReq.getRoomPw();
 
             this.mapSessions.put(roomId, 0);
-            // customSessionId를 한글로 할 수 없음 => 시간되면 한글로 바꾸기!
-            // Db에 customSessionId colum을 만들고 roomId를 아스키변환해 숫자로 저장해 사용할 수도 있음
-            // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
-            Map<String, String> gameInfoMap = new HashMap<>();
-            gameInfoMap.put("customSessionId", roomId);
-            gameInfoMap.put("roomPw", roomPw);
 //            System.out.println(gameInfoMap);
-
             // 방별로 Pw 저장해서 관리
             this.gameConnectionInfoMap.put(roomId,roomPw);
+            this.sessionRoomConvert.put(roomId,"Session"+this.convertNum);
+            this.convertNum+=1;
 
+            // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
+            Map<String, String> gameInfoMap = new HashMap<>();
+//            gameInfoMap.put("customSessionId", roomId);
+            gameInfoMap.put("customSessionId", this.sessionRoomConvert.get(roomId));
+            gameInfoMap.put("roomPw", roomPw);
 
             SessionProperties properties = SessionProperties.fromJson(gameInfoMap).build();
 //        log.info("properties : ", String.valueOf(properties));
             Session session = openvidu.createSession(properties);
 //        log.info("session : ",String.valueOf(session));
 
-            return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
+            return new ResponseEntity<>(roomId, HttpStatus.OK);
         }else {
             return new ResponseEntity<>("방 생성에 실패했습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
 
-    @PostMapping("/api/game-sessions/{sessionId}/connections")
-    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId, // react의 create token method임
-                                                   @RequestBody GameRoomConnectReq gameRoomConnectReq)
+    @PostMapping("/api/game-sessions/connections")
+    public ResponseEntity<String> createConnection(@RequestBody GameRoomConnectReq gameRoomConnectReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
+        log.info("어떤 오류인지 로그 : {}",gameRoomConnectReq);
+        System.out.println("아니뭔데");
+        String roomId=gameRoomConnectReq.getRoomId();
+        String sessionId=sessionRoomConvert.get(roomId);
+        log.info("세션 아이디 확인 로그 : {}",sessionId);
         Session session = openvidu.getActiveSession(sessionId); // 이 부분에서 열린 session을 찾아옴
         if (session == null) {
             return new ResponseEntity<>("해당하는 방을 찾을 수 없습니다.",HttpStatus.NOT_FOUND);
         }
         // 방 게임이 이미 시작됐으면 접속 차단.
-        if (!gameRoomService.getRoomStatus(sessionId).equals("waiting")){
+        if (!gameRoomService.getRoomStatus(roomId).equals("waiting")){
             return new ResponseEntity<>("이미 게임이 시작 됐습니다.",HttpStatus.FORBIDDEN);
         }
 
-        if (!this.gameConnectionInfoMap.get(sessionId).equals(gameRoomConnectReq.getRoomPw())){
+        if (!this.gameConnectionInfoMap.get(roomId).equals(gameRoomConnectReq.getRoomPw())){
             return new ResponseEntity<>("비밀번호가 틀렸습니다.",HttpStatus.FORBIDDEN);
         }
 
 
         // 인원수가 LIMIT보다 작다면 인원수 1 추가
-        if (this.mapSessions.get(sessionId)<LIMIT){
-            this.mapSessions.put(sessionId, this.mapSessions.get(sessionId) + 1);
+        if (this.mapSessions.get(roomId)<LIMIT){
+            this.mapSessions.put(roomId, this.mapSessions.get(roomId) + 1);
         } else{ // LIMIT이 됐다면 접근불가
             return new ResponseEntity<>("방 인원이 다 찼습니다.",HttpStatus.FORBIDDEN);
         }
         System.out.println(this.mapSessions);
 
         // player pk 생성 필요.
-
-
-
         ConnectionProperties properties = ConnectionProperties.fromJson(gameConnectionInfoMap).build();
         Connection connection = session.createConnection(properties); //이 부분이 연결을 담당하는 부분
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
@@ -193,6 +198,7 @@ public class GameRoomController {
             gameRoomService.deleteRoom(roomId);
             this.mapSessions.remove(roomId);
             this.gameConnectionInfoMap.remove(roomId);
+            this.sessionRoomConvert.remove(roomId); //roomId,SessionID 삭제
         }
 
 

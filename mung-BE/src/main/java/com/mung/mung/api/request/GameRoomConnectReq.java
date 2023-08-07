@@ -10,5 +10,6 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class GameRoomConnectReq {
+    private String roomId;
     private String roomPw;
 }
