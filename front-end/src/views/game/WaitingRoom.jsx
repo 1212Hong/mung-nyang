@@ -6,7 +6,7 @@ import { ReactComponent as DogFootIcon } from "../../assets/img/dog_foot.svg";
 import { ReactComponent as QuestionIcon } from "../../assets/img/question_mark.svg";
 import { ReactComponent as VolumeOnIcon } from "../../assets/img/volume_on.svg";
 import { ReactComponent as VolumeMuteIcon } from "../../assets/img/volume_mute.svg";
-import VideoComponent from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import Participant from "../../components/Participant";
 import Input from "../../components/Input";
 import {
@@ -25,26 +25,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { ovActions } from "../../store/openviduSlice";
 
-const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
-
-const host = "권영재";
+// const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
+// const host = "권영재";
 
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
-    const [users, setUsers] = useState([]);
     const [isMuted, setIsMuted] = useState(false);
+
     const openvidu = useSelector((state) => state.openvidu);
-    // setUsers(subscribers)
-    const {
-        session,
-        subscribers,
-        myUserName,
-        mySessionId,
-        mainStreamManager,
-        devices,
-    } = openvidu;
+    const { subscribers } = openvidu;
     console.log(subscribers);
-    console.log(mainStreamManager);
     const dispatch = useDispatch();
 
     const openRuleBook = () => {
@@ -76,18 +66,24 @@ function WaitingRoom() {
         <Container className="waiting-container">
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
-                    {subscribers.map((user, index) => (
-                        <React.Fragment key={index}>
+                    {subscribers.map((sub, i) => (
+                        <React.Fragment key={i}>
                             <Videobox>
-                                <VideoComponent width="423" height="200" />
-                                {user}asdf
+                                <VideoComponent
+                                    width="423"
+                                    height="200"
+                                    streamManager={sub}
+                                />
                             </Videobox>
                         </React.Fragment>
                     ))}
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                <Participant user_list={user_list} host={host} />
+                <Participant
+                    user_list={subscribers}
+                    // host={host}
+                />
                 <ChattingBox>
                     <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>

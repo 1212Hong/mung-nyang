@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import WaitingRoom from "./game/WaitingRoom";
-import ConnectionTest from "./game/ConnectionTest";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
+import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
 
 const PHASES = {
-    Test: "Test",
+    // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
     Wait: "Wait",
     GameVote: "GameVote",
     Quiz: "Quiz",
@@ -27,10 +27,6 @@ const PHASES = {
 };
 
 const PHASE_COMPONENTS = [
-    {
-        type: PHASES.Test,
-        component: <ConnectionTest />,
-    },
     {
         type: PHASES.Wait,
         component: <WaitingRoom />,
@@ -57,7 +53,6 @@ const Game = () => {
         publisher: undefined,
         subscribers: subscribers,
     });
-
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     useEffect(() => {
@@ -69,7 +64,7 @@ const Game = () => {
 
                 setState((prevState) => ({
                     ...prevState,
-                    subscribers: [...prevState.subscribers, subscriber],
+                    subscribers: [...subscribers, subscriber],
                 }));
                 dispatch(
                     ovActions.updateSubscribers([
@@ -106,7 +101,9 @@ const Game = () => {
                     mirror: false,
                 });
 
+                console.log(publisher);
                 session.publish(publisher);
+                dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
 
                 var devices = await this.OV.getDevices();
                 var videoDevices = devices.filter(
@@ -119,6 +116,8 @@ const Game = () => {
                 var currentVideoDevice = videoDevices.find(
                     (device) => device.deviceId === currentVideoDeviceId,
                 );
+                dispatch(ovActions.saveCurrentVideoDevice(currentVideoDevice));
+                dispatch(ovActions.saveMainStreamManager(publisher));
 
                 setState((prevState) => ({
                     ...prevState,
@@ -146,6 +145,7 @@ const Game = () => {
             this.setState({
                 subscribers: subscribers,
             });
+            dispatch(ovActions.saveSubscribers(subscribers));
         }
     };
     const findPhase = PHASE_COMPONENTS.find(
@@ -158,7 +158,7 @@ const Game = () => {
     }
 
     const renderPhase = () => {
-        return findPhase.component;
+        return <>{findPhase.component}</>;
     };
 
     return <>{renderPhase()}</>;
