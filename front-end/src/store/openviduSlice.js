@@ -60,7 +60,11 @@ export const openviduSlice = createSlice({
             state.mainStreamManager = payload.publisher;
             state.publisher = payload.publisher;
         },
+        updateSubscribers: (state, { payload }) => {
+            console.log(payload);
+            state.subscribers.push(payload.subscriber);
+        },
     },
 });
-export const { saveSessionId, saveSubscribers } = openviduSlice.actions;
+export const { saveSessionId, updateSubscribers } = openviduSlice.actions;
 export const ovActions = openviduSlice.actions;
