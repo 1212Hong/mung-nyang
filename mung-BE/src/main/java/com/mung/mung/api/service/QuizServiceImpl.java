@@ -8,6 +8,7 @@ import com.mung.mung.api.response.QuizResultRes;
 import com.mung.mung.api.response.QuizStartRes;
 import com.mung.mung.api.response.VoteResultRes;
 import com.mung.mung.common.exception.custom.QuizNotFoundException;
+import com.mung.mung.common.exception.custom.SetNotExistException;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameSet;
 import com.mung.mung.db.entity.Quiz;
@@ -40,16 +41,13 @@ public class QuizServiceImpl implements QuizService{
             throw new QuizNotFoundException();
         }
 
-        QuizStartRes quizStartRes = QuizStartRes.builder()
-                .roomId(roomId)
+        return QuizStartRes.builder()
                 .quiz(quiz)
                 .build();
-
-        return quizStartRes;
     }
 
-    private Map<String, Set<String>> positiveQuizsByRoom = new ConcurrentHashMap<>();
-    private Map<String, Set<String>> negativeQuizsByRoom = new ConcurrentHashMap<>();
+    private final Map<String, Set<String>> positiveQuizsByRoom = new ConcurrentHashMap<>();
+    private final Map<String, Set<String>> negativeQuizsByRoom = new ConcurrentHashMap<>();
 
     public void submitPositiveQuiz(QuizCountReq quizCountReq) {
         String roomId = quizCountReq.getRoomId();
@@ -79,32 +77,36 @@ public class QuizServiceImpl implements QuizService{
 
         int positiveCount = positiveQuizsByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet()).size();
         int negativeCount = negativeQuizsByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet()).size();
+        log.info("positive : {} - negative : {}" , positiveQuizsByRoom.get(roomId), negativeQuizsByRoom.get(roomId));
 
         String selectedPlayerNickname = null;
+        int pickedAnswer;
         if (positiveCount > negativeCount) {
-            String result = "Positive votes: " + positiveCount + ", Negative votes: " + negativeCount;
+            pickedAnswer=1;
 
             Set<String> positiveVoters = positiveQuizsByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
             selectedPlayerNickname = getRandomNickname(positiveVoters);
         } else if (negativeCount > positiveCount) {
-            String result = "Negative votes: " + negativeCount + ", Positive votes: " + positiveCount;
+            pickedAnswer=2;
 
             Set<String> negativeVoters = negativeQuizsByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
             selectedPlayerNickname = getRandomNickname(negativeVoters);
         } else {
-            String result = "Positive votes: " + positiveCount + ", Negative votes: " + negativeCount;
+            pickedAnswer=0; // 무승부
             List<String> players = playerRepository.findPlayers(roomId);
+            log.info("[Draw] players : {}" , players);
             int randomIndex = new Random().nextInt(players.size());
             selectedPlayerNickname = players.get(randomIndex);
         }
 
+        log.info("answerer : {}", selectedPlayerNickname);
         Long gameId = quizResultReq.getGameId();
 
         Game game = gameRepository.findByGameId(gameId);
 
         GameSet gameSet = GameSet.builder()
                 .answerer(selectedPlayerNickname)
-                .setFirst(0)
+                .setFirst(1)
                 .game(game)
                 .build();
 
@@ -112,7 +114,10 @@ public class QuizServiceImpl implements QuizService{
 
         Long setId = gameSet.getSetId();
 
-        return new QuizResultRes(roomId, setId, selectedPlayerNickname);
+        // 해당 room의 투표 정보 삭제
+        resetVote(roomId);
+
+        return new QuizResultRes(setId, pickedAnswer, selectedPlayerNickname);
 
     }
 
@@ -128,7 +133,7 @@ public class QuizServiceImpl implements QuizService{
         List<String> players = playerRepository.findPlayers(roomId);
         players.removeIf(s -> s.equals(answerer));
 
-        // 해당 category에 해당하는 제시어 2개 랜덤으로 가져오기
+        // 해당 category 해당하는 제시어 2개 랜덤으로 가져오기
         String category = quizPlayersRoleReq.getCategory();
         List<String> randomTitles = wordRepository.getRandomTitlesByCategory(category);
 
@@ -159,6 +164,7 @@ public class QuizServiceImpl implements QuizService{
 
         Optional<GameSet> gameSetOptional = gameSetRepository.findById(setId);
 
+        // GameSet 테이블 업데이트
         if(gameSetOptional.isPresent()){
             GameSet gameSet = gameSetOptional.get();
 
@@ -177,16 +183,21 @@ public class QuizServiceImpl implements QuizService{
             
         }
         else {
-            log.info("데이터 예외 처리");
+            throw new SetNotExistException();
         }
 
-        return new QuizPlayersRoleRes(roomId, setId, playersRoleInfo, GameProcessType.Desc);
+        return new QuizPlayersRoleRes(setId, playersRoleInfo, GameProcessType.Desc);
     }
 
     private String getRandomNickname(Set<String> votersSet) {
         List<String> votersList = new ArrayList<>(votersSet);
         int randomIndex = new Random().nextInt(votersList.size());
         return votersList.get(randomIndex);
+    }
+
+    private void resetVote(String roomId) {
+        positiveQuizsByRoom.remove(roomId);
+        negativeQuizsByRoom.remove(roomId);
     }
 
 
