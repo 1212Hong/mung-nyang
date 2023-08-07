@@ -1,4 +1,8 @@
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Timer from "./Timer";
+import { submitAnswer } from "../hooks/quiz";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
     padding: 20px;
@@ -9,16 +13,7 @@ const Container = styled.div`
     text-align: center;
     border-radius: 5px;
 `;
-const Head = styled.div`
-    width: 150px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    font-size: 64px;
-    text-align: left;
-    color: ${`var(--beige-dark)`};
-    background-color: ${`var(--brown-dark)`};
-`;
+
 const Title = styled.div`
     padding: 20px;
     margin-bottom: 20px;
@@ -26,9 +21,11 @@ const Title = styled.div`
     font-size: 32px;
     color: ${`var(--dusty-pink-dark)`};
 `;
+
 const Box = styled.div`
     display: flex;
 `;
+
 const Content = styled.button`
     background-color: ${`var(--white)`};
     margin-right: 10px;
@@ -37,17 +34,44 @@ const Content = styled.button`
     height: 150px;
     border-radius: 5px;
     font-size: 32px;
+    color: ${`var(--beige-dark)`};
 `;
 
 const Quiz = (props) => {
     const { title, text1, text2 } = props;
+    const [userChoice, setUserChoice] = useState(null);
+    const [answered, setAnswered] = useState(false);
+    const roomId = useSelector((state) => state.openvidu.mySessionId);
+    const playerNickname = useSelector((state) => state.openvidu.myUserName);
+    const handleUserChoice = (isPositive) => {
+        setUserChoice(isPositive ? "positive" : "negative");
+    };
+
+    useEffect(() => {
+        if (answered) {
+            console.log(userChoice);
+            submitAnswer(roomId, playerNickname, userChoice);
+        }
+    }, [answered, roomId, playerNickname, userChoice]);
+
+    // useEffect(() => {
+    //     console.log(userChoice); // 여기에서 로그 찍기
+    // }, [userChoice]);
     return (
         <Container>
-            <Head>QUIZ</Head>
+            <Timer
+                onTimerEnd={() => setAnswered(true)}
+                roomId={roomId}
+                playerNickname={playerNickname}
+            />
             <Title>{title}</Title>
             <Box>
-                <Content>{text1}</Content>
-                <Content>{text2}</Content>
+                <Content onClick={() => handleUserChoice(true)}>
+                    {text1}
+                </Content>
+                <Content onClick={() => handleUserChoice(false)}>
+                    {text2}
+                </Content>
             </Box>
         </Container>
     );
