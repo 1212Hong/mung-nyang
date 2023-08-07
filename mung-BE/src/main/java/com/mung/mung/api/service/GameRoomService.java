@@ -27,12 +27,13 @@ public class GameRoomService {
             // 이미 해당 roomId가 존재하는 경우
             return false;
         } else
-        {
+        { // 존재하지 않으면 roomId로 방 생성
 
             System.out.println(roomId);
             GameRoom gameRoom = GameRoom.builder()
                     .roomId(roomId)
                     .roomPw(gameRoomCreateReq.getRoomPw())
+                    .status("waiting")
                     .startTime(LocalDateTime.now())
                     .build();
             gameRoomRepository.save(gameRoom);
@@ -65,6 +66,14 @@ public class GameRoomService {
             return true;
         }
     }
+
+    @Transactional
+    public String getRoomStatus(String roomId){
+        // roomStatus 반환
+       GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+       return gameRoom.getStatus();
+    }
+
 
     @Transactional
     public void leaveRoom(long playerId){
