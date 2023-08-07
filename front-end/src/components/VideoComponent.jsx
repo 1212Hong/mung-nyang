@@ -45,14 +45,13 @@ const VideoComponent = (props) => {
 
     // Automatically start video on component mount
     useEffect(() => {
-        // ComponentDidUpdate에 해당하는 처리
         console.log(streamManager);
         if (streamManager && videoRef.current) {
-            streamManager.addVideoElement(videoRef.current);
+            streamManager[0].addVideoElement(videoRef.current);
         } else {
             startVideo();
         }
-    }, [streamManager]);
+    }, []);
 
     return (
         <>

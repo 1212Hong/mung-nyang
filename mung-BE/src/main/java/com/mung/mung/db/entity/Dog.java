@@ -26,6 +26,4 @@ public class Dog {
 
     private String dogNickname;
 
-
-
 }

@@ -77,30 +77,26 @@ function WaitingRoom() {
                             />
                         </Videobox>
                     )}
-                    {/* {subscribers.map((sub, i) => (
-                        <Videobox key={i}>
-                            <span>{i}</span>
-                            <UserVideoComponent streamManager={sub} />
-                        </Videobox>
-                    ))} */}
-                    {subscribers.map((sub, i) => (
-                        <Videobox key={i}>
-                            {console.log(sub)}
-                            <VideoComponent
-                                key={i}
-                                width="423"
-                                height="200"
-                                streamManager={sub}
-                            />
-                        </Videobox>
-                    ))}
+                    {subscribers !== undefined
+                        ? subscribers.map((sub, i) => (
+                              <React.Fragment key={i}>
+                                  <Videobox>
+                                      <VideoComponent
+                                          width="423"
+                                          height="200"
+                                          streamManager={sub}
+                                      />
+                                  </Videobox>
+                              </React.Fragment>
+                          ))
+                        : null}
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                <Participant
-                    user_list={subscribers}
+                {/* <Participant
+                    user_list={(subscribers, subscribers.id)}
                     // host={host}
-                />
+                /> */}
                 <ChattingBox>
                     <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>
