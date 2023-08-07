@@ -66,24 +66,26 @@ function WaitingRoom() {
         <Container className="waiting-container">
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
-                    {subscribers.map((sub, i) => (
-                        <React.Fragment key={i}>
-                            <Videobox>
-                                <VideoComponent
-                                    width="423"
-                                    height="200"
-                                    streamManager={sub}
-                                />
-                            </Videobox>
-                        </React.Fragment>
-                    ))}
+                    {subscribers !== undefined
+                        ? subscribers.map((sub, i) => (
+                              <React.Fragment key={i}>
+                                  <Videobox>
+                                      <VideoComponent
+                                          width="423"
+                                          height="200"
+                                          streamManager={sub}
+                                      />
+                                  </Videobox>
+                              </React.Fragment>
+                          ))
+                        : null}
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                <Participant
-                    user_list={subscribers}
+                {/* <Participant
+                    user_list={(subscribers, subscribers.id)}
                     // host={host}
-                />
+                /> */}
                 <ChattingBox>
                     <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>

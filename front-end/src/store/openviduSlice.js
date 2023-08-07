@@ -29,7 +29,7 @@ export const openviduSlice = createSlice({
             state.session = action.payload; // payload에 생성된 session 전달
         },
         saveSubscribers: (state, action) => {
-            state.subscribers = action.payload;
+            state.subscribers.push(action.payload);
             console.log(state.subscribers);
         },
         // Action to save the publisher in the state
@@ -62,7 +62,7 @@ export const openviduSlice = createSlice({
         },
         updateSubscribers: (state, { payload }) => {
             console.log(payload);
-            state.subscribers.push(payload.subscriber);
+            state.subscribers = [...state.subscribers, payload];
         },
     },
 });
