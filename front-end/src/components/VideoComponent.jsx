@@ -12,7 +12,7 @@ const StyledVideo = styled.video`
 const VideoComponent = (props) => {
     // styled-components settings
     const { width, height, border, objectfit, streamManager } = props;
-    console.log(streamManager);
+
     // video calls
     const videoRef = useRef(null);
     const constraints = {
@@ -54,14 +54,18 @@ const VideoComponent = (props) => {
     }, []);
 
     return (
-        <StyledVideo
-            width={width}
-            height={height}
-            border={border}
-            ref={videoRef}
-            objectfit={objectfit}
-            autoPlay
-        />
+        <>
+            {streamManager && (
+                <StyledVideo
+                    width={width}
+                    height={height}
+                    border={border}
+                    ref={videoRef}
+                    objectfit={objectfit}
+                    autoPlay
+                />
+            )}
+        </>
     );
 };
 
