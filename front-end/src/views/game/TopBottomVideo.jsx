@@ -20,7 +20,9 @@ function TopBottomVideo() {
     const title = "카테고리제목";
     const list = ["임", "시", "카", "테", "고", "리"];
     const [quizInfo, setQuizInfo] = useState(null);
-    const roomId = useSelector((state) => state.openvidu.mySessionId);
+    const openvidu = useSelector((state) => state.openvidu);
+    console.log(openvidu);
+    const { roomId } = openvidu;
     const playerNickname = useSelector((state) => state.openvidu.myUserName);
     const [view, setView] = useState("Quiz");
     const gameId = "gameId";

@@ -9,6 +9,8 @@ import {
 } from "../layout/modal";
 import Button from "../Button";
 import Timer from "../Timer";
+import { useDispatch } from "react-redux";
+import { changePhase } from "../../store/phaseSlice";
 
 const ReadyModal = () => {
     // api 적용할 부분
@@ -18,6 +20,7 @@ const ReadyModal = () => {
     const [wait, setWait] = useState(6);
 
     const [complete, setComplete] = useState(false);
+    const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
             <Timer width={"80%"}></Timer>
@@ -33,6 +36,13 @@ const ReadyModal = () => {
                     <ModalViewCompleteDiv>투표 완료</ModalViewCompleteDiv>
                 ) : (
                     <>
+                        <button
+                            onClick={() =>
+                                dispatch(changePhase({ phaseType: "Quiz" }))
+                            }
+                        >
+                            quiz가기
+                        </button>
                         <Button
                             onClick={() => {
                                 // api 코드 작성할 곳.
