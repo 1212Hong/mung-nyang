@@ -12,7 +12,7 @@ const StyledVideo = styled.video`
 const VideoComponent = (props) => {
     // styled-components settings
     const { width, height, border, objectfit, streamManager } = props;
-
+    console.log(streamManager);
     // video calls
     const videoRef = useRef(null);
     const constraints = {
@@ -45,16 +45,13 @@ const VideoComponent = (props) => {
 
     // Automatically start video on component mount
     useEffect(() => {
-        startVideo(); // ComponentDidUpdate에 해당하는 처리
-        if (streamManager) {
-            streamManager.addVideoElement(videoRef.current);
+        console.log(streamManager);
+        if (streamManager && videoRef.current) {
+            streamManager[0].addVideoElement(videoRef.current);
+        } else {
+            startVideo();
         }
-
-        // ComponentWillUnmount에 해당하는 처리
-        return () => {
-            endVideo();
-        };
-    }, [streamManager]);
+    }, []);
 
     return (
         <StyledVideo
