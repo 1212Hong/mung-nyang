@@ -29,6 +29,8 @@ const PHASES = {
     Dance: "Dance",
     Paint: "Paint",
 };
+
+const roomId = 3;
 const text = "지목된 사람이 정답을 선택 중입니다.";
 
 const PHASE_COMPONENTS = [
@@ -46,7 +48,7 @@ const PHASE_COMPONENTS = [
     },
     {
         type: PHASES.LiarVote,
-        component: <SelectLiar />,
+        component: <SelectLiar roomId={roomId} />,
     },
     {
         type: PHASES.SelectAns,
