@@ -13,4 +13,7 @@ public interface GameRoomRepository extends JpaRepository<GameRoom, String>, Gam
     GameRoom findByRoomId(String roomId);
     void deleteByRoomId(String roomId);
     Long countByRoomId(String roomId);
+
+
+
 }
