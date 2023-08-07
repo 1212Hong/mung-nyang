@@ -11,8 +11,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class QuizPlayersRoleRes {
 
-    private String roomId;
-
     private Long setId;
 
     List<Map<String, String>> playersRoleInfo;

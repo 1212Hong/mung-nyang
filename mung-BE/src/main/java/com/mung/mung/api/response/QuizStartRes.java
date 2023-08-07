@@ -7,8 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 public class QuizStartRes {
 
-    private String roomId;
-
     private String question;
 
     private String answer1;
@@ -16,8 +14,7 @@ public class QuizStartRes {
     private String answer2;
 
     @Builder
-    public QuizStartRes(String roomId, Quiz quiz){
-        this.roomId = roomId;
+    public QuizStartRes(Quiz quiz){
         this.question = quiz.getQuestion();
         this.answer1 = quiz.getAnswer1();
         this.answer2 = quiz.getAnswer2();
