@@ -33,7 +33,7 @@ function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
 
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers } = openvidu;
+    const { subscribers, publisher } = openvidu;
     console.log(subscribers);
     const dispatch = useDispatch();
 
@@ -66,24 +66,35 @@ function WaitingRoom() {
         <Container className="waiting-container">
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
-                    {subscribers.map((sub, i) => (
-                        <React.Fragment key={i}>
-                            <Videobox>
-                                <VideoComponent
-                                    width="423"
-                                    height="200"
-                                    streamManager={sub}
-                                />
-                            </Videobox>
-                        </React.Fragment>
-                    ))}
+                    {publisher && (
+                        <Videobox>
+                            <VideoComponent
+                                width="380"
+                                height="200"
+                                streamManager={publisher}
+                            />
+                        </Videobox>
+                    )}
+                    {subscribers !== undefined
+                        ? subscribers.map((sub, i) => (
+                              <React.Fragment key={i}>
+                                  <Videobox>
+                                      <VideoComponent
+                                          width="380"
+                                          height="200"
+                                          streamManager={sub}
+                                      />
+                                  </Videobox>
+                              </React.Fragment>
+                          ))
+                        : null}
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                <Participant
-                    user_list={subscribers}
+                {/* <Participant
+                    user_list={(subscribers, subscribers.id)}
                     // host={host}
-                />
+                /> */}
                 <ChattingBox>
                     <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>
