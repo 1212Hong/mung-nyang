@@ -68,9 +68,8 @@ function WaitingRoom() {
                 <VideoboxGrid className="videos-grid">
                     {publisher && (
                         <Videobox>
-                            publisher임
                             <VideoComponent
-                                width="423"
+                                width="380"
                                 height="200"
                                 streamManager={publisher}
                             />
@@ -81,7 +80,7 @@ function WaitingRoom() {
                               <React.Fragment key={i}>
                                   <Videobox>
                                       <VideoComponent
-                                          width="423"
+                                          width="380"
                                           height="200"
                                           streamManager={sub}
                                       />
