@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,19 +48,25 @@ const Game = () => {
         subscribers,
         // myUserName,
         mySessionId,
-        mainStreamManager,
-        currentVideoDevice,
         token,
     } = openvidu;
     console.log(openvidu);
+    const myUserName = "test" + Math.floor(Math.random() * 100);
+    const [state, setState] = useState({
+        OVstate: OV,
+        mySessionId: mySessionId,
+        myUserName: myUserName,
+        session: undefined,
+        mainStreamManager: undefined,
+        publisher: undefined,
+        subscribers: subscribers,
+    });
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     const navigate = useNavigate();
     console.log(phaseType);
-    const myUserName = "test" + Math.floor(Math.random() * 100);
-    const currentSubscribers = useSelector(
-        (state) => state.openvidu.subscribers,
-    );
+
+    const currentSubscribers = useSelector(subscribers);
 
     if (!mySessionId) navigate("/error");
 
@@ -104,7 +110,13 @@ const Game = () => {
                     navigate("/error");
                 });
 
-                session
+                setState({
+                    ...state,
+                    OVstate: OV,
+                    session: session,
+                });
+
+                await session
                     .connect(token, { clientData: myUserName })
                     .then(async () => {
                         console.log("connecting webcam");
