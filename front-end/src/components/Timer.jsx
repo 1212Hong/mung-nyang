@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import "react-step-progress-bar/styles.css";
 import { ProgressBar } from "react-step-progress-bar";
 import "../css/style/timer.css";
-
+import { useDispatch } from "react-redux";
+import { closeModal } from "../store/modalSlice";
 const Timer = (props) => {
     const {
         time = typeof props.time === "undefined" ? 10 : props.time,
@@ -13,7 +14,7 @@ const Timer = (props) => {
 
     const decreaseRatio = 10 / time;
     const [progress, setProgress] = useState(100);
-
+    const dispatch = useDispatch();
     useEffect(() => {
         const timer = setInterval(() => {
             setProgress((progress) => progress - decreaseRatio);
@@ -21,8 +22,9 @@ const Timer = (props) => {
 
         setTimeout(() => {
             clearInterval(timer);
+            dispatch(closeModal());
         }, time * 1000);
-    }, [time, decreaseRatio]);
+    }, [time, decreaseRatio, dispatch]);
     return (
         <>
             <ProgressBar
