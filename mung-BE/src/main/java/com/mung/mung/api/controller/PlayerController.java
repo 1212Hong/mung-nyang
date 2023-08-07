@@ -27,15 +27,15 @@ public class PlayerController {
             throws OpenViduJavaClientException, OpenViduHttpException {
         // player정보를 DB에 저장
         System.out.println(playerJoinReq);
-        playerService.joinRoom(playerJoinReq);
+        boolean ownerCheck = playerService.joinRoom(playerJoinReq);
 
         // 저장 후 조회 해 Id를 보내 줌
         String playerNickname=playerJoinReq.getPlayerNickname();
         String roomId = playerJoinReq.getRoomId();
         long playerId= playerService.GetPlayerId(playerNickname, roomId);
-
-        System.out.println(playerService.getPlayerStatus(playerId, playerNickname, roomId));
-        return new ResponseEntity<>(playerService.getPlayerStatus(playerId, playerNickname, roomId),HttpStatus.OK);
+        //owner 추가해야함
+//        System.out.println(playerService.getPlayerStatus(playerId, playerNickname, roomId, ownerCheck));
+        return new ResponseEntity<>(playerService.getPlayerStatus(playerId, playerNickname, roomId, ownerCheck),HttpStatus.OK);
     }
 
     // 유저에게 랜덤으로 닉네임을 주기.
