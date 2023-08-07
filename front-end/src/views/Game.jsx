@@ -8,6 +8,7 @@ import { OpenVidu } from "openvidu-browser";
 import SelectLiar from "../views/game/SelectLiar";
 import SelectAnswer from "../views/game/SelectAnswer";
 import OtherView from "../views/game/OtherView";
+import OpenLiar from "../views/game/OpenLiar";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -31,7 +32,8 @@ const PHASES = {
 };
 
 const roomId = 3;
-const text = "지목된 사람이 정답을 선택 중입니다.";
+const selectAnswerText = "지목된 사람이 정답을 선택 중입니다.";
+const selectedAnswer = "축구공";
 
 const PHASE_COMPONENTS = [
     {
@@ -56,7 +58,11 @@ const PHASE_COMPONENTS = [
     },
     {
         type: PHASES.OtherView,
-        component: <OtherView text={text} />,
+        component: <OtherView text={selectAnswerText} />,
+    },
+    {
+        type: PHASES.OpenLiar,
+        component: <OpenLiar selectedAnswer={selectedAnswer} />,
     },
 ];
 
