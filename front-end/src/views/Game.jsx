@@ -51,7 +51,7 @@ const Game = () => {
         session: undefined,
         mainStreamManager: undefined,
         publisher: undefined,
-        subscribers: [],
+        subscribers: subscribers,
     });
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
@@ -63,11 +63,17 @@ const Game = () => {
             session.on("streamCreated", (event) => {
                 console.log(event.stream);
                 const subscriber = session.subscribe(event.stream, undefined);
-                const updatedSubscribers = [...subscribers, subscriber];
-                dispatch(ovActions.saveSubscribers(updatedSubscribers));
+                // const updatedSubscribers = [...subscribers, subscriber];
+                // dispatch(ovActions.saveSubscribers(updatedSubscribers));
+                dispatch(
+                    ovActions.updateSubscribers([
+                        ...state.subscribers,
+                        subscriber,
+                    ]),
+                );
                 setState((prevState) => ({
                     ...prevState,
-                    subscribers: [...prevState.subscribers, subscriber],
+                    subscribers: [...subscribers, subscriber],
                 }));
             });
 
@@ -113,8 +119,6 @@ const Game = () => {
                 var currentVideoDevice = videoDevices.find(
                     (device) => device.deviceId === currentVideoDeviceId,
                 );
-                dispatch(ovActions.saveCurrentVideoDevice(currentVideoDevice));
-                dispatch(ovActions.saveMainStreamManager(publisher));
 
                 setState((prevState) => ({
                     ...prevState,
@@ -122,6 +126,9 @@ const Game = () => {
                     mainStreamManager: publisher,
                     publisher: publisher,
                 }));
+
+                dispatch(ovActions.saveCurrentVideoDevice(currentVideoDevice));
+                dispatch(ovActions.saveMainStreamManager(publisher));
             } catch (error) {
                 console.log(
                     "There was an error connecting to the session:",
@@ -132,27 +139,27 @@ const Game = () => {
         };
 
         initializeSession();
-    }, [state.OV, state.subscribers, token]);
+    }, [state.OV, token]);
 
-    // const deleteSubscriber = (streamManager) => {
-    //     let subscribers = state.subscribers;
-    //     let index = subscribers.indexOf(streamManager, 0);
-    //     if (index > -1) {
-    //         subscribers.splice(index, 1);
-    //         setState({
-    //             subscribers: subscribers,
-    //         });
-    //         dispatch(ovActions.saveSubscribers(subscribers));
-    //     }
-    // };
     const deleteSubscriber = (streamManager) => {
-        setState((prevState) => ({
-            ...prevState,
-            subscribers: prevState.subscribers.filter(
-                (subscriber) => subscriber !== streamManager,
-            ),
-        }));
+        let subscribers = state.subscribers;
+        let index = subscribers.indexOf(streamManager, 0);
+        if (index > -1) {
+            subscribers.splice(index, 1);
+            setState({
+                subscribers: subscribers,
+            });
+            dispatch(ovActions.saveSubscribers(subscribers));
+        }
     };
+    // const deleteSubscriber = (streamManager) => {
+    //     setState((prevState) => ({
+    //         ...prevState,
+    //         subscribers: prevState.subscribers.filter(
+    //             (subscriber) => subscriber !== streamManager,
+    //         ),
+    //     }));
+    // };
 
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
@@ -164,7 +171,7 @@ const Game = () => {
     }
 
     const renderPhase = () => {
-        return <>{findPhase.component}</>;
+        return findPhase.component;
     };
 
     return <>{renderPhase()}</>;
