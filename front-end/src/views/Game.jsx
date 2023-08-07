@@ -53,6 +53,7 @@ const Game = () => {
         publisher: undefined,
         subscribers: subscribers,
     });
+    console.log("sessiontest", state.session);
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     useEffect(() => {
@@ -61,17 +62,18 @@ const Game = () => {
 
             session.on("streamCreated", (event) => {
                 const subscriber = session.subscribe(event.stream, undefined);
-
-                setState((prevState) => ({
-                    ...prevState,
-                    subscribers: [...subscribers, subscriber],
-                }));
                 dispatch(
                     ovActions.updateSubscribers([
                         ...state.subscribers,
                         subscriber,
                     ]),
                 );
+                console.log("stream", event.stream);
+                console.log(subscriber);
+                setState((prevState) => ({
+                    ...prevState,
+                    subscribers: subscribers,
+                }));
             });
 
             session.on("streamDestroyed", (event) => {
@@ -89,7 +91,7 @@ const Game = () => {
             }));
 
             try {
-                const connection = await session.connect(token, "User 1");
+                await session.connect(token, "User 1");
                 const publisher = await state.OV.initPublisherAsync(undefined, {
                     audioSource: undefined,
                     videoSource: undefined,
@@ -104,15 +106,19 @@ const Game = () => {
                 console.log(publisher);
                 session.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
-
-                var devices = await this.OV.getDevices();
+                console.log(1);
+                var devices = await state.OV.getDevices();
+                console.log(2);
                 var videoDevices = devices.filter(
                     (device) => device.kind === "videoinput",
                 );
+                console.log(3);
                 var currentVideoDeviceId = publisher.stream
                     .getMediaStream()
                     .getVideoTracks()[0]
                     .getSettings().deviceId;
+                console.log(4);
+                console.log("currentvideodevice", currentVideoDeviceId);
                 var currentVideoDevice = videoDevices.find(
                     (device) => device.deviceId === currentVideoDeviceId,
                 );
@@ -125,6 +131,7 @@ const Game = () => {
                     mainStreamManager: publisher,
                     publisher: publisher,
                 }));
+                console.log("end");
             } catch (error) {
                 console.log(
                     "There was an error connecting to the session:",
