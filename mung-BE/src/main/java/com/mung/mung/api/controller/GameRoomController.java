@@ -172,8 +172,7 @@ public class GameRoomController {
 
     @DeleteMapping("/api/game-sessions/leave/{roomId}/{playerId}")
     public ResponseEntity<String> leaveRoom(@PathVariable("roomId") String roomId,
-                                            @PathVariable("playerId") long playerId)
-            throws OpenViduJavaClientException, OpenViduHttpException {
+                                            @PathVariable("playerId") long playerId){
 
         // roomId와 playerId가 유효하지 않은 경우 예외 처리
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
@@ -186,7 +185,6 @@ public class GameRoomController {
         if (!gameRoomService.isPlayerExists(playerId)) { // 있으면 true
             return new ResponseEntity<>("플레이어가 존재하지 않거나, 생성되지 않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
         }
-
 
         if (this.mapSessions.get(roomId)>0) {
             // DB에서 playerData 삭제

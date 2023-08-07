@@ -8,6 +8,9 @@ import com.mung.mung.db.repository.GameSetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class AnswerService {
@@ -43,6 +46,30 @@ public class AnswerService {
         return "LiarWin_ElsePick";
     }
 
+    public Map<String,Integer> emergencyAnswerScore(String returnAnswer){
+        Map<String, Integer> scoreHash=new HashMap<>();
+        int liarScore;
+        int noLiarScore;
+        int elseScore;
+        if (returnAnswer.equals("LiarLose_AnsPick")){
+            liarScore=0; noLiarScore=1; elseScore=1;
+        } else if (returnAnswer.equals("LiarWin_AnsPick")) {
+            liarScore=1; noLiarScore=0; elseScore=-1;
+        }else if (returnAnswer.equals("LiarWin_LiarPick")) {
+            liarScore=1; noLiarScore=0; elseScore=1;
+        }else if (returnAnswer.equals("LiarLose_LiarPick")) {
+            liarScore=0; noLiarScore=1; elseScore=0; //-1?
+        }else{
+            // 시민이 눌러서 패배당함
+            liarScore=1; noLiarScore=0; elseScore=-1;
+        }
+        scoreHash.put("liarScore", liarScore);
+        scoreHash.put("noLiarScore", noLiarScore);
+        scoreHash.put("elseScore", elseScore);
+        return scoreHash;
+
+    }
+
     //정답자의 최종 정답 여부만 판별
     public  String finalAnswer(FinalAnswerReq finalAnswerReq){
         GameSet gameSet=gameSetRepository.findBySetId(finalAnswerReq.getSetId());
@@ -74,4 +101,21 @@ public class AnswerService {
         }
     }
 
+    public Map<String, Integer>liarAnswerScore(String returnAnswer){
+        int liarScore; int noLiarScore;
+        Map<String, Integer> scoreHash=new HashMap<>();
+        if (returnAnswer.equals("LiarWin_Success")){
+            // 라이어가 정답을 맞추는데 성공함
+            liarScore = 1; noLiarScore = 0;
+        } else if (returnAnswer.equals("LiarLose_Fail")) {
+            // 라이어가 정답을 못 맞춤
+            liarScore = 0; noLiarScore = 1;
+        }else{
+            // 라이어 지목에 실패함
+            liarScore = 1; noLiarScore =0;
+        }
+        scoreHash.put("liarScore",liarScore);
+        scoreHash.put("noLiarScore",noLiarScore);
+        return scoreHash;
+    }
 }
