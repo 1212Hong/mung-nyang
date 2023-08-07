@@ -63,17 +63,22 @@ const Game = () => {
             session.on("streamCreated", (event) => {
                 console.log(event.stream);
                 const subscriber = session.subscribe(event.stream, undefined);
-                // const updatedSubscribers = [...subscribers, subscriber];
-                // dispatch(ovActions.saveSubscribers(updatedSubscribers));
+
+                setState((prevState) => ({
+                    ...prevState,
+                    subscribers: [...subscribers, subscriber],
+                }));
                 dispatch(
                     ovActions.updateSubscribers([
                         ...state.subscribers,
                         subscriber,
                     ]),
                 );
+                console.log("stream", event.stream);
+                console.log(subscriber);
                 setState((prevState) => ({
                     ...prevState,
-                    subscribers: [...subscribers, subscriber],
+                    subscribers: subscribers,
                 }));
             });
 
