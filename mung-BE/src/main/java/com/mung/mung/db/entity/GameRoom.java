@@ -46,5 +46,11 @@ public class GameRoom {
         this.owner = newOwner;
     }
 
+    public void updateStatus(String newStatus){
+        this.status = newStatus;
+
+    }
+
+
 }
 

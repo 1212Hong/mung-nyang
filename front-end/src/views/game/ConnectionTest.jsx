@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import VideoComponent from "../../components/VideoBoxing";
+import React, { useState, useEffect, useRef } from "react";
+import VideoComponent from "../../components/VideoComponent";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../../components/Button";
 import {
@@ -20,8 +20,11 @@ import {
     CameraIcon,
     CameraOffIcon,
 } from "../../components/layout/connectionTest";
-import { useDispatch, useSelector } from "react-redux";
-import { changePhase } from "../../store/phaseSlice";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Error from "../Error";
+import Input from "../../components/Input";
+import VideoDeviceSelector from "../../components/deviceSelect/VideoDeviceSelector";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
 
@@ -46,56 +49,55 @@ function ConnectionTest() {
     const [outputVolumeValue, setOutputVolumeValue] = useState(50); // 출력 볼륨 상태 추가
     const [isOn, setIsOn] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
-    const dispatch = useDispatch();
-    const sessionId = useSelector((state) => state.openvidu.mySessionId);
+    const mySessionId = useSelector((state) => state.openvidu.mySessionId);
+    const navigate = useNavigate();
+    const audioRef = useRef(null);
+    const audioContextRef = useRef(null);
+    // 사용자 제스처와 연관된 플래그
+    const [userGesturePerformed, setUserGesturePerformed] = useState(false);
 
     const handleGoWaitingRoom = () => {
-        dispatch(changePhase({ phaseType: "Wait" }));
-        console.log(sessionId);
+        navigate("/game");
+        console.log(mySessionId);
     };
-
-    const audioRef = React.createRef();
-    const audioContext = new (window.AudioContext ||
-        window.webkitAudioContext)();
-
-    function handleTestButtonClick() {
-        setIsPlaying(true);
-        audioRef.current.play();
-
-        if (audioContext.state === "suspended") {
-            audioContext.resume().then(() => {
-                console.log("AudioContext is resumed!");
-            });
-        }
-    }
 
     function handleToggle() {
         setIsOn(!isOn);
     }
 
     useEffect(() => {
+        // AudioContext 생성
+        const audioContext = new (window.AudioContext ||
+            window.webkitAudioContext)();
+        audioContextRef.current = audioContext;
+
+        // 마이크 볼륨 업데이트
         updateMicVolume();
+
+        return () => {
+            // 컴포넌트가 언마운트될 때 AudioContext 정리
+            audioContext.close().then(() => {
+                console.log("AudioContext is closed!");
+            });
+        };
     }, []);
 
     function updateMicVolume() {
-        const audioContext = new (window.AudioContext ||
-            window.webkitAudioContext)();
-        const analyser = audioContext.createAnalyser();
+        const analyser = audioContextRef.current.createAnalyser();
         navigator.mediaDevices
             .getUserMedia({ audio: true })
             .then((stream) => {
-                const source = audioContext.createMediaStreamSource(stream);
+                const source =
+                    audioContextRef.current.createMediaStreamSource(stream);
                 source.connect(analyser);
 
                 analyser.fftSize = 256;
                 const bufferLength = analyser.frequencyBinCount;
                 const dataArray = new Uint8Array(bufferLength);
+
                 function update() {
                     analyser.getByteFrequencyData(dataArray);
-                    let sum = 0;
-                    for (let i = 0; i < dataArray.length; i++) {
-                        sum += dataArray[i];
-                    }
+                    let sum = dataArray.reduce((acc, val) => acc + val, 0);
                     let micVolume = sum / dataArray.length;
                     micVolume = Math.min(Math.max(micVolume, 0), 100);
                     micVolume = Math.round(micVolume);
@@ -109,6 +111,28 @@ function ConnectionTest() {
             .catch((error) => {
                 console.error("마이크 접근 에러:", error);
             });
+    }
+
+    function handleTestButtonClick() {
+        setIsPlaying(true);
+        audioRef.current.play();
+
+        // 사용자 제스처와 연관된 부분에서 AudioContext 생성
+        const audioContext = new (window.AudioContext ||
+            window.webkitAudioContext)();
+        audioContextRef.current = audioContext;
+
+        audioRef.current.play().then(() => {
+            // 사용자 제스처와 연관된 부분에서 setUserGesturePerformed를 true로 설정
+            setUserGesturePerformed(true);
+
+            // 사용자 제스처와 연관된 부분에서 AudioContext가 이미 시작되어 있을 수 있으므로 상태를 확인합니다.
+            if (audioContext.state === "suspended") {
+                audioContext.resume().then(() => {
+                    console.log("AudioContext is resumed!");
+                });
+            }
+        });
     }
 
     useEffect(() => {
@@ -143,7 +167,7 @@ function ConnectionTest() {
     }
     return (
         <>
-            {sessionId ? (
+            {mySessionId ? (
                 <Container>
                     <HeaderBox>
                         <SettingIcon width="50" height="50" />
@@ -174,6 +198,11 @@ function ConnectionTest() {
                                 onChange={handleVolumeChange}
                                 color="black"
                             />
+                            <VideoDeviceSelector
+                                onDeviceSelected={(selectedDevice) =>
+                                    console.log(selectedDevice)
+                                }
+                            />
                             <TestButtonWrapper>
                                 <Button
                                     text="테스트"
@@ -192,7 +221,7 @@ function ConnectionTest() {
                         width="100px"
                     /> */}
                             <FooterBox>
-                                <NickName />
+                                <NickName></NickName>
                                 <Button
                                     width="150px"
                                     height="80px"
@@ -210,7 +239,7 @@ function ConnectionTest() {
                     </ContainerBody>
                 </Container>
             ) : (
-                <>nosessionid</>
+                <Error />
             )}
         </>
     );
