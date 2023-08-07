@@ -35,16 +35,16 @@ const Home = () => {
         console.log(roomInfo);
     };
 
+    const handleMakeRoom = async () => {
+        makeRoom(roomInfo);
+        navigate("/test");
+    };
+
     const handleJoinRoom = async () => {
         const joinRoomResponse = await joinRoom(roomInfo);
-        if (joinRoomResponse && joinRoomResponse.error) {
-            // If joinRoomResponse contains an error message, show an error window or message
-            console.log("Error:", joinRoomResponse.error);
-            // You can show an error window or message here using a state variable and a conditional rendering
-        } else {
-            // Room joined successfully, navigate to the game page
-            navigate("/test");
-        }
+        joinRoomResponse && joinRoomResponse.error
+            ? console.log("Error:", joinRoomResponse.error)
+            : navigate("/test");
     };
 
     return (
@@ -83,8 +83,7 @@ const Home = () => {
                             width="100px"
                             margin="20px"
                             onClick={() => {
-                                makeRoom(roomInfo);
-                                navigate("/test");
+                                handleMakeRoom();
                             }}
                         />
                     ) : (
