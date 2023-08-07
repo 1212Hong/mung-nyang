@@ -1,11 +1,6 @@
 package com.mung.mung.db.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,20 +8,21 @@ import javax.persistence.Id;
 
 
 @Getter
-@Setter
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Word {
+public class Quiz {
 
     @Id
     @GeneratedValue
-    private Long wordId;
+    private Long id;
 
-    private String category;
+    private String question;
 
-    private String title;
+    private String answer1;
+
+    private String answer2;
 
 
 
