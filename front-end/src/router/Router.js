@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../views/Home";
 import Game from "../views/Game";
-import TopBottomVideo from "../views/game/TopBottomVideo";
+import Error from "../views/Error";
 
 const Router = () => {
     return (
@@ -10,7 +10,7 @@ const Router = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/game" element={<Game />} />
-                <Route path="/quizpage" element={<TopBottomVideo />} />
+                <Route path="/error" element={<Error />} />
             </Routes>
         </BrowserRouter>
     );
