@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -106,8 +108,12 @@ public class ScoreService {
 
 
     @Transactional
-    public List<Player> returnScore(String roomId){
+    public HashMap<String, Integer> returnScore(String roomId){
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
-        return gameRoom.getPlayers();
+        HashMap<String, Integer> playerScore=new HashMap<>();
+        for (Player player : gameRoom.getPlayers()){
+            playerScore.put(player.getPlayerNickname(),player.getPlayerScore());
+        }
+        return playerScore;
     }
 }

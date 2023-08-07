@@ -25,12 +25,7 @@ public class ScoreController {
     private final ScoreService scoreService;
     private final GameRoomService gameRoomService;
     @GetMapping("/{roomId}")
-    public ResponseEntity<HashMap> returnScore(@PathVariable("roomId") String roomId){
-        HashMap<String, Integer> playerScore=new HashMap<>();
-        List<Player> players=scoreService.returnScore(roomId);
-        for (Player player : players){
-            playerScore.put(player.getPlayerNickname(),player.getPlayerScore());
-        }
-        return new ResponseEntity<>(playerScore, HttpStatus.OK);
+    public ResponseEntity<HashMap<String,Integer>> returnScore(@PathVariable("roomId") String roomId){
+        return new ResponseEntity<>(scoreService.returnScore(roomId), HttpStatus.OK);
     }
 }

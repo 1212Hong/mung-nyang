@@ -23,8 +23,7 @@ public class PlayerController {
 
     // player가 테스트 단계에서 닉네임을 정하고 입장을 누르면 DB에 nick과 room_id를 저장한 뒤 player정보 반환.
     @PostMapping("/join")
-    public ResponseEntity<PlayerStatusRes> joinGameRoom(@RequestBody PlayerJoinReq playerJoinReq)
-            throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<PlayerStatusRes> joinGameRoom(@RequestBody PlayerJoinReq playerJoinReq) {
         // player정보를 DB에 저장
         System.out.println(playerJoinReq);
         boolean ownerCheck = playerService.joinRoom(playerJoinReq);
@@ -40,8 +39,7 @@ public class PlayerController {
 
     // 유저에게 랜덤으로 닉네임을 주기.
     @GetMapping("/nickname/{roomId}")
-    public ResponseEntity<String> giveNickname(@PathVariable("roomId") String roomId)
-            throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<String> giveNickname(@PathVariable("roomId") String roomId) {
         // player정보를 DB에 저장
         if (!gameRoomService.isRoomExists(roomId)){
             return new ResponseEntity<>("방이 유효하지 않습니다.",HttpStatus.BAD_REQUEST);

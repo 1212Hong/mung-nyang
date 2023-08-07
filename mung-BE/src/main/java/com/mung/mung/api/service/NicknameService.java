@@ -6,6 +6,7 @@ import com.mung.mung.db.entity.Player;
 import com.mung.mung.db.repository.GameRoomRepository;
 import com.mung.mung.db.repository.NicknameRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class NicknameService {
     private final NicknameRepository nicknameRepository;
@@ -42,8 +44,8 @@ public class NicknameService {
         String playerNickname="null";
         for (int i = 0; i < 100; i++) {
             ChangeCount += 1;
-            System.out.println("아오");
-            System.out.println(randomNumber);
+            
+            log.info("randomNumber : {}",randomNumber);
             Dog existingNickname = nicknameRepository.findByDogId(randomNumber);
             if (existingNickname !=null){
                 playerNickname=existingNickname.getDogNickname();
