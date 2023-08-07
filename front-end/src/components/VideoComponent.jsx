@@ -12,7 +12,7 @@ const StyledVideo = styled.video`
 const VideoComponent = (props) => {
     // styled-components settings
     const { width, height, border, objectfit, streamManager } = props;
-
+    console.log(streamManager);
     // video calls
     const videoRef = useRef(null);
     const constraints = {
@@ -47,25 +47,23 @@ const VideoComponent = (props) => {
     useEffect(() => {
         console.log(streamManager);
         if (streamManager && videoRef.current) {
-            streamManager[0].addVideoElement(videoRef.current);
+            if (Array.isArray(streamManager))
+                streamManager[0].addVideoElement(videoRef.current);
+            else streamManager.addVideoElement(videoRef.current);
         } else {
             startVideo();
         }
     }, []);
 
     return (
-        <>
-            {streamManager && (
-                <StyledVideo
-                    width={width}
-                    height={height}
-                    border={border}
-                    ref={videoRef}
-                    objectfit={objectfit}
-                    autoPlay
-                />
-            )}
-        </>
+        <StyledVideo
+            width={width}
+            height={height}
+            border={border}
+            ref={videoRef}
+            objectfit={objectfit}
+            autoPlay
+        />
     );
 };
 
