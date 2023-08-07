@@ -11,7 +11,7 @@ const StyledVideo = styled.video`
 
 const VideoComponent = (props) => {
     // styled-components settings
-    const { width, height, border, objectfit } = props;
+    const { width, height, border, objectfit, streamManager } = props;
 
     // video calls
     const videoRef = useRef(null);
@@ -45,8 +45,16 @@ const VideoComponent = (props) => {
 
     // Automatically start video on component mount
     useEffect(() => {
-        startVideo();
-    });
+        startVideo(); // ComponentDidUpdate에 해당하는 처리
+        if (streamManager) {
+            streamManager.addVideoElement(videoRef.current);
+        }
+
+        // ComponentWillUnmount에 해당하는 처리
+        return () => {
+            endVideo();
+        };
+    }, [streamManager]);
 
     return (
         <StyledVideo
