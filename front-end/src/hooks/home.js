@@ -23,7 +23,7 @@ export const makeRoom = async (roomInfo) => {
         );
         console.log(connectRoomResponse);
         store.dispatch(ovActions.saveSessionId(sessionId));
-
+        store.dispatch(ovActions.saveToken(connectRoomResponse.data));
         // 여기에서 sessionId와 connectRoomResponse 등을 필요에 따라 처리할 수 있음
     } catch (error) {
         console.log(error);
@@ -38,9 +38,9 @@ export const joinRoom = async (roomInfo) => {
         console.log(res);
         store.dispatch(ovActions.saveSessionId(roomInfo.roomId));
         store.dispatch(ovActions.saveToken(res.data));
-        return res.data; // Return the response if successful
+        return res.data; // Return
     } catch (error) {
         console.log(error);
-        return { error: "Room not found" }; // Return an error message if the room is not found
+        return { error: "Room not found" };
     }
 };
