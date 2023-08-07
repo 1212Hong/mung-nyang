@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WaitingRoom from "./game/WaitingRoom";
-import ConnectionTest from "./game/ConnectionTest";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
-import { OpenVidu } from "openvidu-browser";
+import { useNavigate } from "react-router-dom";
 
 const PHASES = {
-    Test: "Test",
+    // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
     Wait: "Wait",
     GameVote: "GameVote",
     Quiz: "Quiz",
@@ -28,10 +27,6 @@ const PHASES = {
 
 const PHASE_COMPONENTS = [
     {
-        type: PHASES.Test,
-        component: <ConnectionTest />,
-    },
-    {
         type: PHASES.Wait,
         component: <WaitingRoom />,
     },
@@ -48,102 +43,153 @@ const PHASE_COMPONENTS = [
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const {
-        // OV,
-        // session,
+        OV,
+        session,
         subscribers,
-        myUserName,
+        // myUserName,
         mySessionId,
-        mainStreamManager,
-        devices,
         token,
     } = openvidu;
+    console.log(openvidu);
+    const myUserName = "test" + Math.floor(Math.random() * 100);
     const [state, setState] = useState({
-        OV,
+        OVstate: OV,
         mySessionId: mySessionId,
         myUserName: myUserName,
         session: undefined,
-        mainStreamManager: undefined, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
+        mainStreamManager: undefined,
         publisher: undefined,
-        subscribers: [],
+        subscribers: subscribers,
     });
-
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
+    const navigate = useNavigate();
     console.log(phaseType);
 
-    console.log(openvidu);
+    const currentSubscribers = useSelector(subscribers);
 
-    var OV = new OpenVidu();
-    const session = OV.initSession();
+    if (!mySessionId) navigate("/error");
 
-    if (session) {
-        // On every new Stream received...
-        session.on("streamCreated", (event) => {
-            // Subscribe to the Stream to receive it. Second parameter is undefined
-            // so OpenVidu doesn't create an HTML video by its own
-            var subscriber = session.subscribe(event.stream, undefined);
+    // 세션에 접속하고 유저들을 연결
+    useEffect(() => {
+        let publisher;
+        const joinSession = async () => {
+            if (!OV) {
+                dispatch(
+                    ovActions.createOpenvidu({
+                        nickname: myUserName,
+                        roomId: mySessionId,
+                    }),
+                );
+            }
 
-            //We use an auxiliar array to push the new stream
-            var subscribers = this.state.subscribers;
+            if (token && session && myUserName) {
+                console.log(session);
 
-            subscribers.push(subscriber);
-
-            // Update the state with the new subscribers
-        });
-    }
-    console.log(subscribers);
-
-    token &&
-        session
-            .connect(token, "User 1")
-            .then(async () => {
-                // --- 5) Get your own camera stream ---
-
-                // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
-                // element: we will manage it on our own) and with the desired properties
-                let publisher = await OV.initPublisherAsync(undefined, {
-                    audioSource: undefined, // The source of audio. If undefined default microphone
-                    videoSource: undefined, // The source of video. If undefined default webcam
-                    publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-                    publishVideo: true, // Whether you want to start publishing with your video enabled or not
-                    resolution: "640x480", // The resolution of your video
-                    frameRate: 30, // The frame rate of your video
-                    insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
-                    mirror: false, // Whether to mirror your local video or not
+                session.on("streamCreated", (event) => {
+                    const subscriber = session.subscribe(
+                        event.stream,
+                        undefined,
+                    );
+                    const updatedSubscribers = [
+                        ...currentSubscribers,
+                        subscriber,
+                    ];
+                    dispatch(ovActions.saveSubscribers(updatedSubscribers));
                 });
 
-                // --- 6) Publish your stream ---
+                // On every Stream destroyed...
+                session.on("streamDestroyed", (event) => {
+                    // Remove the stream from 'subscribers' array
+                    deleteSubscriber(event.stream.streamManager);
+                });
 
-                session.publish(publisher);
+                // On every asynchronous exception...
+                session.on("exception", (exception) => {
+                    console.warn(exception);
+                    navigate("/error");
+                });
 
-                // Obtain the current video device in use
-                var devices = await OV.getDevices();
-                var videoDevices = devices.filter(
-                    (device) => device.kind === "videoinput",
-                );
-                var currentVideoDeviceId = publisher.stream
-                    .getMediaStream()
-                    .getVideoTracks()[0]
-                    .getSettings().deviceId;
-                var currentVideoDevice = videoDevices.find(
-                    (device) => device.deviceId === currentVideoDeviceId,
-                );
-
-                // Set the main video in the page to display our webcam and store our Publisher
                 setState({
                     ...state,
-                    currentVideoDevice: currentVideoDevice,
-                    mainStreamManager: publisher,
-                    publisher: publisher,
+                    OVstate: OV,
+                    session: session,
                 });
-            })
-            .catch((error) => {
-                console.log(
-                    "There was an error connecting to the session:",
-                    error.code,
-                    error.message,
-                );
-            });
+
+                await session
+                    .connect(token, { clientData: myUserName })
+                    .then(async () => {
+                        console.log("connecting webcam");
+                        // Get your own camera stream
+                        console.log(OV);
+                        publisher = await OV.initPublisherAsync(undefined, {
+                            audioSource: undefined,
+                            videoSource: undefined,
+                            publishAudio: true,
+                            publishVideo: true,
+                            resolution: "640x480",
+                            frameRate: 30,
+                            insertMode: "APPEND",
+                            mirror: false,
+                        });
+
+                        console.log(publisher);
+                        session.publish(publisher);
+                        dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
+
+                        // Obtain the current video device in use
+                        var devices = await OV.getDevices();
+                        var videoDevices = devices.filter(
+                            (device) => device.kind === "videoinput",
+                        );
+                        var currentVideoDeviceId = publisher.stream
+                            .getMediaStream()
+                            .getVideoTracks()[0]
+                            .getSettings().deviceId;
+                        var currentVideoDevice = videoDevices.find(
+                            (device) =>
+                                device.deviceId === currentVideoDeviceId,
+                        );
+
+                        // Set the main video in the page to display our webcam and store our Publisher
+                        dispatch(
+                            ovActions.saveCurrentVideoDevice(
+                                currentVideoDevice,
+                            ),
+                        );
+                        dispatch(ovActions.saveMainStreamManager(publisher));
+
+                        console.log(openvidu);
+                    })
+                    .catch(
+                        (err) =>
+                            console.warn(
+                                "error connection to session",
+                                err.code,
+                                err.msg,
+                            ),
+                        // navigate("/error"),
+                    );
+            }
+        };
+
+        if (token && myUserName) {
+            console.log("join start");
+            joinSession();
+        } else {
+            console.log("no token or nickname");
+        }
+    }, [token, myUserName, session]);
+
+    const deleteSubscriber = (streamManager) => {
+        // Find the index of the streamManager to be removed
+        const index = currentSubscribers.indexOf(streamManager, 0);
+        if (index > -1) {
+            // Create a new array without the streamManager and update the state
+            const updatedSubscribers = currentSubscribers.splice(index, 1);
+            dispatch(ovActions.saveSubscribers(updatedSubscribers));
+        }
+    };
 
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
@@ -155,7 +201,7 @@ const Game = () => {
     }
 
     const renderPhase = () => {
-        return findPhase.component;
+        return <>{findPhase.component}</>;
     };
 
     return <>{renderPhase()}</>;
