@@ -24,9 +24,9 @@ public class Word {
     @GeneratedValue
     private Long wordId;
 
-    private String wCategory;
+    private String category;
 
-    private String wTitle;
+    private String title;
 
 
 

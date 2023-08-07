@@ -2,13 +2,12 @@ package com.mung.mung.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
-public class VoteStartRes {
+public class QuizResultRes {
 
-    private String roomId;
+    private Long setId;
+    private int pickedAnswer;
+    private String answerer;
 }
