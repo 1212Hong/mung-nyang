@@ -37,7 +37,7 @@ const VideoboxGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    grid-gap: 25px;
+    grid-gap: 27.5px;
     grid-auto-flow: row;
     align-items: center;
     justify-content: center;

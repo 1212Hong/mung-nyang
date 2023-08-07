@@ -91,7 +91,7 @@ const Game = () => {
             }));
 
             try {
-                await session.connect(token, { clientData: myUserName });
+                await session.connect(token, myUserName);
                 const publisher = await state.OV.initPublisherAsync(undefined, {
                     audioSource: undefined,
                     videoSource: undefined,
