@@ -25,7 +25,7 @@ const OtherView = (props) => {
             <UserBox>
                 {userlist.map((index) => (
                     <OtherUsers key={index}>
-                        <VideoComponent width="235px" height="235px" />
+                        <VideoComponent width="232px" height="235px" />
                     </OtherUsers>
                 ))}
             </UserBox>
