@@ -77,19 +77,18 @@ function WaitingRoom() {
                             />
                         </Videobox>
                     )}
-                    {subscribers !== undefined
-                        ? subscribers.map((sub, i) => (
-                              <React.Fragment key={i}>
-                                  <Videobox>
-                                      <VideoComponent
-                                          width="423"
-                                          height="200"
-                                          streamManager={sub}
-                                      />
-                                  </Videobox>
-                              </React.Fragment>
-                          ))
-                        : null}
+                    {subscribers &&
+                        subscribers.map((sub, i) => (
+                            <React.Fragment key={i}>
+                                <Videobox>
+                                    <VideoComponent
+                                        width="423"
+                                        height="200"
+                                        streamManager={sub}
+                                    />
+                                </Videobox>
+                            </React.Fragment>
+                        ))}
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
