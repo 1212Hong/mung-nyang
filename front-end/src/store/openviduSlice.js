@@ -42,23 +42,12 @@ export const openviduSlice = createSlice({
         saveMainStreamManager: (state, action) => {
             state.mainStreamManager = action.payload;
         },
+        saveMyUserName: (state, action) => {
+            state.myUserName = action.payload;
+        },
         // Action to delete the publisher from the state
         deletePublisher: (state) => {
             state.publisher = undefined;
-        },
-        createOpenvidu: (state, { payload }) => {
-            if (!state.OV) {
-                state.myUserName = payload.nickname;
-                state.mySessionId = payload.roomId;
-                state.OV = new OpenVidu();
-                state.session = state.OV.initSession();
-            }
-        },
-        createPublisher: (state, { payload }) => {
-            state.session.publish(payload.publisher);
-            state.currentVideoDevice = payload.currentVideoDevice;
-            state.mainStreamManager = payload.publisher;
-            state.publisher = payload.publisher;
         },
         updateSubscribers: (state, { payload }) => {
             console.log(payload);
