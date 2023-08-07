@@ -3,10 +3,22 @@ import WaitingRoom from "./game/WaitingRoom";
 import ConnectionTest from "./game/ConnectionTest";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
+<<<<<<< HEAD
 import { changePhase } from "../store/phaseSlice";
 import SelectLiar from "../views/game/SelectLiar";
 import SelectAnswer from "./game/SelectAnswer";
 import { OpenVidu } from "openvidu-browser";
+=======
+<<<<<<< HEAD
+import { changePhase } from "../store/phaseSlice";
+import SelectLiar from "../views/game/SelectLiar";
+import SelectAnswer from "./game/SelectAnswer";
+import OtherView from "../views/game/OtherView";
+=======
+import { ovActions } from "../store/openviduSlice";
+import { OpenVidu } from "openvidu-browser";
+>>>>>>> cd1b8e037ae1b458ed4a117e3163bf2c23c62ca6
+>>>>>>> 1ca2dab8409c0defe6b65ce13bb19c850b240b8e
 
 const PHASES = {
     Test: "Test",
@@ -20,6 +32,7 @@ const PHASES = {
     EmgAns: "EmgAns",
     LiarVote: "LiarVote",
     SelectAns: "SelectAns",
+    OtherView: "OtherView",
     OpenLiar: "OpenLiar",
     MidScore: "MidScore",
     FinScore: "FinScore",
@@ -28,6 +41,7 @@ const PHASES = {
     Paint: "Paint",
 };
 
+const text = "지목된 사람이 정답을 선택중입니다.";
 const userlist = ["고양이", "개냥이", "냥냥이", "돼냥이", "댕댕이", "멍멍이"];
 const PHASE_COMPONENTS = [
     {
@@ -53,6 +67,10 @@ const PHASE_COMPONENTS = [
     {
         type: PHASES.SelectAns,
         component: <SelectAnswer />,
+    },
+    {
+        type: PHASES.OtherView,
+        component: <OtherView text={text} userlist={userlist} />,
     },
 ];
 

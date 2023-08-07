@@ -19,10 +19,16 @@ const SelectLiar = (props) => {
     const text = "라이어를 선택하세요.";
     const imgSrc = foot;
     const dispatch = useDispatch();
+    const liar = "댕댕이";
+    const user = "댕댕쓰";
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            dispatch(changePhase({ phaseType: "SelectAns" }));
+            if (liar === user) {
+                dispatch(changePhase({ phaseType: "SelectAns" }));
+            } else {
+                dispatch(changePhase({ phaseType: "OtherView" }));
+            }
         }, 7000);
 
         return () => clearTimeout(timer);
