@@ -67,7 +67,7 @@ function WaitingRoom() {
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
                     {subscribers.map((sub, i) => (
-                        <React.Fragment key={sub.id}>
+                        <React.Fragment key={i}>
                             <Videobox>
                                 <VideoComponent
                                     width="423"

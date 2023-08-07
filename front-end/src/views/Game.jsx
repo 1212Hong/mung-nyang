@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
+import { OpenVidu } from "openvidu-browser";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -42,18 +43,9 @@ const PHASE_COMPONENTS = [
 
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const {
-        OV,
-        session,
-        subscribers,
-        // myUserName,
-        mySessionId,
-        token,
-    } = openvidu;
-    console.log(openvidu);
-    const myUserName = "test" + Math.floor(Math.random() * 100);
+    const { subscribers, myUserName, token, mySessionId } = openvidu;
     const [state, setState] = useState({
-        OVstate: OV,
+        OV: new OpenVidu(),
         mySessionId: mySessionId,
         myUserName: myUserName,
         session: undefined,
@@ -63,133 +55,84 @@ const Game = () => {
     });
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
-    const navigate = useNavigate();
-    console.log(phaseType);
-
-    const currentSubscribers = useSelector(subscribers);
-
-    if (!mySessionId) navigate("/error");
-
-    // 세션에 접속하고 유저들을 연결
     useEffect(() => {
-        let publisher;
-        const joinSession = async () => {
-            if (!OV) {
+        const initializeSession = async () => {
+            const session = state.OV.initSession();
+
+            session.on("streamCreated", (event) => {
+                const subscriber = session.subscribe(event.stream, undefined);
+
+                setState((prevState) => ({
+                    ...prevState,
+                    subscribers: [...subscribers, subscriber],
+                }));
                 dispatch(
-                    ovActions.createOpenvidu({
-                        nickname: myUserName,
-                        roomId: mySessionId,
-                    }),
+                    ovActions.updateSubscribers([
+                        ...state.subscribers,
+                        subscriber,
+                    ]),
+                );
+            });
+
+            session.on("streamDestroyed", (event) => {
+                event.preventDefault();
+                deleteSubscriber(event.stream.streamManager);
+            });
+
+            session.on("exception", (exception) => {
+                console.warn(exception);
+            });
+
+            setState((prevState) => ({
+                ...prevState,
+                session,
+            }));
+
+            try {
+                const connection = await session.connect(token, "User 1");
+                const publisher = await state.OV.initPublisherAsync(undefined, {
+                    audioSource: undefined,
+                    videoSource: undefined,
+                    publishAudio: true,
+                    publishVideo: true,
+                    resolution: "640x480",
+                    frameRate: 30,
+                    insertMode: "APPEND",
+                    mirror: false,
+                });
+
+                console.log(publisher);
+                session.publish(publisher);
+                dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
+
+                var devices = await this.OV.getDevices();
+                var videoDevices = devices.filter(
+                    (device) => device.kind === "videoinput",
+                );
+                var currentVideoDeviceId = publisher.stream
+                    .getMediaStream()
+                    .getVideoTracks()[0]
+                    .getSettings().deviceId;
+                var currentVideoDevice = videoDevices.find(
+                    (device) => device.deviceId === currentVideoDeviceId,
+                );
+                dispatch(ovActions.saveCurrentVideoDevice(currentVideoDevice));
+                dispatch(ovActions.saveMainStreamManager(publisher));
+
+                setState((prevState) => ({
+                    ...prevState,
+                    currentVideoDevice: currentVideoDevice,
+                    mainStreamManager: publisher,
+                    publisher: publisher,
+                }));
+            } catch (error) {
+                console.log(
+                    "There was an error connecting to the session:",
+                    error.code,
+                    error.message,
                 );
             }
-
-            if (token && session && myUserName) {
-                console.log(session);
-
-                session.on("streamCreated", (event) => {
-                    const subscriber = session.subscribe(
-                        event.stream,
-                        undefined,
-                    );
-                    const updatedSubscribers = [
-                        ...currentSubscribers,
-                        subscriber,
-                    ];
-                    dispatch(ovActions.saveSubscribers(updatedSubscribers));
-                });
-
-                // On every Stream destroyed...
-                session.on("streamDestroyed", (event) => {
-                    // Remove the stream from 'subscribers' array
-                    deleteSubscriber(event.stream.streamManager);
-                });
-
-                // On every asynchronous exception...
-                session.on("exception", (exception) => {
-                    console.warn(exception);
-                    navigate("/error");
-                });
-
-                setState({
-                    ...state,
-                    OVstate: OV,
-                    session: session,
-                });
-
-                await session
-                    .connect(token, { clientData: myUserName })
-                    .then(async () => {
-                        console.log("connecting webcam");
-                        // Get your own camera stream
-                        console.log(OV);
-                        publisher = await OV.initPublisherAsync(undefined, {
-                            audioSource: undefined,
-                            videoSource: undefined,
-                            publishAudio: true,
-                            publishVideo: true,
-                            resolution: "640x480",
-                            frameRate: 30,
-                            insertMode: "APPEND",
-                            mirror: false,
-                        });
-
-                        console.log(publisher);
-                        session.publish(publisher);
-                        dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
-
-                        // Obtain the current video device in use
-                        var devices = await OV.getDevices();
-                        var videoDevices = devices.filter(
-                            (device) => device.kind === "videoinput",
-                        );
-                        var currentVideoDeviceId = publisher.stream
-                            .getMediaStream()
-                            .getVideoTracks()[0]
-                            .getSettings().deviceId;
-                        var currentVideoDevice = videoDevices.find(
-                            (device) =>
-                                device.deviceId === currentVideoDeviceId,
-                        );
-
-                        // Set the main video in the page to display our webcam and store our Publisher
-                        dispatch(
-                            ovActions.saveCurrentVideoDevice(
-                                currentVideoDevice,
-                            ),
-                        );
-                        dispatch(ovActions.saveMainStreamManager(publisher));
-
-                        console.log(openvidu);
-                    })
-                    .catch(
-                        (err) =>
-                            console.warn(
-                                "error connection to session",
-                                err.code,
-                                err.msg,
-                            ),
-                        // navigate("/error"),
-                    );
-            }
         };
-
-        if (token && myUserName) {
-            console.log("join start");
-            joinSession();
-        } else {
-            console.log("no token or nickname");
-        }
-    }, [token, myUserName, session]);
-
-    const deleteSubscriber = (streamManager) => {
-        // Find the index of the streamManager to be removed
-        const index = currentSubscribers.indexOf(streamManager, 0);
-        if (index > -1) {
-            // Create a new array without the streamManager and update the state
-            const updatedSubscribers = currentSubscribers.splice(index, 1);
-            dispatch(ovActions.saveSubscribers(updatedSubscribers));
-        }
-    };
 
         initializeSession();
     }, [state.OV, token]);
@@ -202,6 +145,7 @@ const Game = () => {
             this.setState({
                 subscribers: subscribers,
             });
+            dispatch(ovActions.saveSubscribers(subscribers));
         }
     };
     const findPhase = PHASE_COMPONENTS.find(
