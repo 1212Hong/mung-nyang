@@ -24,7 +24,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { ovActions } from "../../store/openviduSlice";
-import UserVideoComponent from "../../components/UserVideoComponent";
 
 // const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
 // const host = "권영재";
@@ -34,7 +33,7 @@ function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
 
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher } = openvidu;
+    const { subscribers } = openvidu;
     console.log(subscribers);
     const dispatch = useDispatch();
 
@@ -67,28 +66,19 @@ function WaitingRoom() {
         <Container className="waiting-container">
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
-                    {publisher && (
-                        <Videobox>
-                            publisher임
-                            <VideoComponent
-                                width="423"
-                                height="200"
-                                streamManager={publisher}
-                            />
-                        </Videobox>
-                    )}
-                    {subscribers &&
-                        subscribers.map((sub, i) => (
-                            <React.Fragment key={i}>
-                                <Videobox>
-                                    <VideoComponent
-                                        width="423"
-                                        height="200"
-                                        streamManager={sub}
-                                    />
-                                </Videobox>
-                            </React.Fragment>
-                        ))}
+                    {subscribers !== undefined
+                        ? subscribers.map((sub, i) => (
+                              <React.Fragment key={i}>
+                                  <Videobox>
+                                      <VideoComponent
+                                          width="423"
+                                          height="200"
+                                          streamManager={sub}
+                                      />
+                                  </Videobox>
+                              </React.Fragment>
+                          ))
+                        : null}
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
