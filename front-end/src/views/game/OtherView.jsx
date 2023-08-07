@@ -1,5 +1,5 @@
 import React from "react";
-import VideoComponent from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import Card from "../../components/Card";
 import imageSrc from "../../assets/img/clock.png";
 import Timer from "../../components/Timer";
@@ -11,7 +11,8 @@ import {
 } from "../../components/layout/otherView";
 
 const OtherView = (props) => {
-    const { text, userlist } = props;
+    const { text } = props;
+    const userlist = ["댕댕이1", "댕댕이2", "댕댕이3", "댕댕이4", "댕댕이5"];
     return (
         <Container>
             <Timer />
