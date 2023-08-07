@@ -21,4 +21,16 @@ public class PlayerRepositoryImpl implements PlayerRepositoryCumstom{
                 .fetch();
     }
 
+    @Override
+    public Long GetPlayerId(String playerNickname, String roomId) {
+        return queryFactory
+                .select(player.playerId)
+                .from(player)
+                .join(player.gameRoom)
+                .where(player.gameRoom.roomId.eq(roomId)
+                        .and(player.playerNickname.eq(playerNickname)))
+
+                .fetchOne();
+    }
+
 }
