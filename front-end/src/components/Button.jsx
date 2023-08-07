@@ -68,7 +68,7 @@ const Button = (props) => {
             onClick={() => {
                 audio.play();
                 // test.play();
-                onClick();
+                onClick && onClick();
             }}
             type={type}
             hoverColor={hoverColor}
