@@ -25,16 +25,35 @@ export const openviduSlice = createSlice({
             state.token = action.payload;
             console.log(state.token);
         },
-        // createOpenvidu: (state, { payload }) => {
-        //     if (!state.OV) {
-        //         state.myUserName = payload.nickname;
-        //         state.mySessionId = payload.roomId;
-        //         state.OV = new OpenVidu();
-        //         state.session = state.OV.initSession();
-        //         state.devices = state.OV.getDevices();
-        //     }
-        // },
-
+        saveSession: (state, action) => {
+            state.session = action.payload; // payload에 생성된 session 전달
+        },
+        saveSubscribers: (state, action) => {
+            state.subscribers = action.payload;
+            console.log(state.subscribers);
+        },
+        // Action to save the publisher in the state
+        savePublisher: (state, action) => {
+            state.publisher = action.payload;
+        },
+        saveCurrentVideoDevice: (state, action) => {
+            state.currentVideoDevice = action.payload;
+        },
+        saveMainStreamManager: (state, action) => {
+            state.mainStreamManager = action.payload;
+        },
+        // Action to delete the publisher from the state
+        deletePublisher: (state) => {
+            state.publisher = undefined;
+        },
+        createOpenvidu: (state, { payload }) => {
+            if (!state.OV) {
+                state.myUserName = payload.nickname;
+                state.mySessionId = payload.roomId;
+                state.OV = new OpenVidu();
+                state.session = state.OV.initSession();
+            }
+        },
         createPublisher: (state, { payload }) => {
             state.session.publish(payload.publisher);
             state.currentVideoDevice = payload.currentVideoDevice;
@@ -43,5 +62,5 @@ export const openviduSlice = createSlice({
         },
     },
 });
-export const { saveSessionId } = openviduSlice.actions;
+export const { saveSessionId, saveSubscribers } = openviduSlice.actions;
 export const ovActions = openviduSlice.actions;
