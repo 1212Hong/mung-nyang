@@ -42,5 +42,11 @@ public class GameRoom {
     private List<BannedPlayer> bannedPlayers = new ArrayList<>();
 
 
+    public void updateStatus(String newStatus){
+        this.status = newStatus;
+
+    }
+
+
 }
 

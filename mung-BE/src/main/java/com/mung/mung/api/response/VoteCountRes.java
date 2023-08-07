@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class VoteStartRes {
-
+public class VoteCountRes {
     private String roomId;
+    private String voteCheck;
 }
