@@ -36,11 +36,20 @@ public class VoteController {
 
     }
 
-    @GetMapping("/result")
+    @PostMapping("/result")
     public ResponseEntity<VoteResultRes> getVoteResult(@RequestBody VoteSetReq voteSetReq) {
         VoteResultRes voteResultRes = voteService.getVoteResult(voteSetReq);
 
         return ResponseEntity.ok(voteResultRes);
+    }
+
+    @DeleteMapping("/resetVote")
+    public ResponseEntity<Void> deleteVoteResult(@RequestBody RoomIdReq roomIdReq) {
+
+        voteService.resetVote(roomIdReq.getRoomId());
+
+        return ResponseEntity.noContent().build();
+
     }
 
 

@@ -3,8 +3,6 @@ package com.mung.mung.api.controller;
 import com.mung.mung.api.request.*;
 import com.mung.mung.api.response.*;
 import com.mung.mung.api.service.LiarService;
-import com.mung.mung.api.service.QuizService;
-import com.mung.mung.api.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +38,7 @@ public class LiarController {
     }
 
     @DeleteMapping("/resetVote")
-    public ResponseEntity<Void> getLiarVoteResult(@RequestBody LiarSetIdReq liarSetIdReq) {
+    public ResponseEntity<Void> deleteLiarVoteResult(@RequestBody LiarSetIdReq liarSetIdReq) {
 
         liarService.resetVote(liarSetIdReq.getSetId());
 
@@ -49,7 +47,7 @@ public class LiarController {
     }
 
     @GetMapping("/options")
-    public ResponseEntity<LiarAnswerOptionsRes> deleteLiarVoteResult(@RequestParam long setId) {
+    public ResponseEntity<LiarAnswerOptionsRes> getLiarAnswerOptions(@RequestParam long setId) {
 
         LiarAnswerOptionsRes liarAnswerOptionsRes = liarService.getLiarAnswerOptions(setId);
 
