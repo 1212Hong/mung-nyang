@@ -28,16 +28,12 @@ public class GameRoom {
     private LocalDateTime endTime;
 
     @Builder.Default
-    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL)// default : LAZY
+    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL) // default : LAZY
     private List<Player> players = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL)// default : LAZY
+    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL) // default : LAZY
     private List<Game> games = new ArrayList<>();
-
-//    @Builder.Default
-//    @OneToMany(mappedBy = "gameRoom" ,cascade = CascadeType.ALL)// default : LAZY
-//    private List<BannedPlayer> bannedPlayers = new ArrayList<>();
 
     public void updateOwner(String newOwner) {
         this.owner = newOwner;
@@ -45,9 +41,6 @@ public class GameRoom {
 
     public void updateStatus(String newStatus) {
         this.status = newStatus;
-
     }
 
-
 }
-

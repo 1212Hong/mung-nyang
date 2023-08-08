@@ -20,6 +20,11 @@ const UserItem = styled.div`
 const UserName = styled.div``;
 
 function Participant({ user_list, host }) {
+    console.log(user_list.length);
+    const flag = user_list.length === 0;
+    const subs = user_list[0];
+    if (!flag) console.log(subs[0].stream.session.connection.data);
+
     return (
         <Container>
             <div className="header">
@@ -27,16 +32,17 @@ function Participant({ user_list, host }) {
             </div>
             <br />
             <div className="container-body">
-                {user_list.map((user, index) => (
-                    <UserItem key={index}>
-                        <UserName>{user} </UserName>
-                        {user === host ? null : (
-                            <Button width="20px" height="20px">
-                                x
-                            </Button>
-                        )}
-                    </UserItem>
-                ))}
+                {subs &&
+                    subs.map((user, index) => (
+                        <UserItem key={index}>
+                            <UserName>{} </UserName>
+                            {user === host ? null : (
+                                <Button width="20px" height="20px">
+                                    x
+                                </Button>
+                            )}
+                        </UserItem>
+                    ))}
             </div>
         </Container>
     );
