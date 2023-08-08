@@ -84,4 +84,10 @@ public class GameRoomService {
     public void deleteRoom(String roomId){
         gameRoomRepository.deleteByRoomId(roomId);
     }
+
+    @Transactional
+    public void roomInitialize(String roomId){
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        gameRoom.updateStatus("waiting");
+    }
 }
