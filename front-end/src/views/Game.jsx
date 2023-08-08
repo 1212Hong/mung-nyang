@@ -69,8 +69,7 @@ const Game = () => {
                         subscriber,
                     ]),
                 );
-                console.log("stream", event.stream);
-                console.log(subscriber);
+
                 setState((prevState) => ({
                     ...prevState,
                     subscribers: subscribers,
@@ -78,7 +77,8 @@ const Game = () => {
             });
 
             session.on("streamDestroyed", (event) => {
-                event.preventDefault();
+                console.log("파괴");
+                console.log(state.session);
                 deleteSubscriber(event.stream.streamManager);
             });
 
@@ -141,18 +141,42 @@ const Game = () => {
         };
 
         initializeSession();
+        return () => {
+            window.addEventListener("beforeunload", leaveSession);
+        };
     }, [state.OV, token]);
 
     const deleteSubscriber = (streamManager) => {
-        let subscribers = this.state.subscribers;
+        console.log("delete 호출");
+        let subscribers = state.subscribers;
         let index = subscribers.indexOf(streamManager, 0);
         if (index > -1) {
             subscribers.splice(index, 1);
+
+            dispatch(ovActions.saveSubscribers(subscribers));
             this.setState({
                 subscribers: subscribers,
             });
-            dispatch(ovActions.saveSubscribers(subscribers));
         }
+    };
+    const leaveSession = () => {
+        const mySession = state.session;
+        if (mySession) {
+            mySession.disconnect();
+        }
+        state.OV = null;
+
+        setState({
+            OV: null,
+            mySessionId: undefined,
+            myUserName: undefined,
+            session: undefined,
+            mainStreamManager: undefined, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
+            publisher: undefined,
+            subscribers: [],
+        });
+        dispatch(ovActions.leaveSession(state));
+        console.log([...state]);
     };
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
