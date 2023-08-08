@@ -25,11 +25,12 @@ export const openviduSlice = createSlice({
             state.token = action.payload;
             console.log(state.token);
         },
+
         saveSession: (state, action) => {
             state.session = action.payload; // payload에 생성된 session 전달
         },
         saveSubscribers: (state, action) => {
-            state.subscribers = action.payload;
+            state.subscribers.push(action.payload);
             console.log(state.subscribers);
         },
         // Action to save the publisher in the state
@@ -46,23 +47,9 @@ export const openviduSlice = createSlice({
         deletePublisher: (state) => {
             state.publisher = undefined;
         },
-        createOpenvidu: (state, { payload }) => {
-            if (!state.OV) {
-                state.myUserName = payload.nickname;
-                state.mySessionId = payload.roomId;
-                state.OV = new OpenVidu();
-                state.session = state.OV.initSession();
-            }
-        },
-        createPublisher: (state, { payload }) => {
-            state.session.publish(payload.publisher);
-            state.currentVideoDevice = payload.currentVideoDevice;
-            state.mainStreamManager = payload.publisher;
-            state.publisher = payload.publisher;
-        },
         updateSubscribers: (state, { payload }) => {
             console.log(payload);
-            state.subscribers.push(payload.subscriber);
+            state.subscribers = [...state.subscribers, payload];
         },
     },
 });
