@@ -2,29 +2,27 @@ import { styled } from "styled-components";
 import { ReactComponent as SettingIcon } from "../../assets/img/setting.svg";
 import { ReactComponent as CameraIcon } from "../../assets/img/camera_on.svg";
 import { ReactComponent as CameraOffIcon } from "../../assets/img/camera_off.svg";
+import { ReactComponent as RefreshIcon } from "../../assets/img/icon_refresh leftsquare.svg";
 
 const Container = styled.div`
-    background-color: var(--white);
+    background-color: var(--vanilla-cream);
     border-radius: 20px;
 `;
 
 const ContainerBody = styled.div`
-    height: 700px;
+    height: 720px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     border-radius: 20px;
 
-    @media (max-width: 768px) {
-        flex-direction: column;
+    @media (max-width: 1280px) {
+        flex-direction: row;
     }
 `;
 
 const HeaderBox = styled.div`
-    width: 1250px;
-    height: 50px;
-    background-color: var(--white);
-    border-radius: 10px;
+    margin: 0 auto 12.5px 10px;
 `;
 const LeftBox = styled.div`
     width: 600px;
@@ -39,21 +37,26 @@ const LeftBox = styled.div`
 `;
 
 const RightBox = styled.div`
-    width: 600px;
-    height: 650px;
-    background-color: var(--white);
+    width: 680px;
+    height: 610px;
+    background-color: var(--dusty-pink-white);
     border-radius: 10px;
     margin: 20px;
+    padding: 20px 0;
     color: var(--black);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 `;
 
+const RightItem = styled.div`
+    padding: 0 30px;
+`;
+
 const MicBox = styled.div`
-    background: var(--dusty-pink-white);
+    background: var(--dusty-pink-light);
     width: 500px;
-    height: 50px;
+    height: 45px;
     margin-top: 10px;
     margin-bottom: 10px;
 `;
@@ -63,8 +66,8 @@ const MicBar = styled.div.attrs((props) => ({
     },
 }))`
     border-radius: 10px;
-    background: var(--dusty-pink-white);
-    height: 50px;
+    background: var(--dusty-pink-light);
+    height: 45px;
     margin-top: 10px;
     margin-bottom: 10px;
 `;
@@ -72,7 +75,7 @@ const VolumeSlider = styled.input`
     width: 480px;
     height: 30px;
     appearance: none;
-    background: var(--dusty-pink-white);
+    background: var(--dusty-pink-light);
     outline: none;
     border-radius: 10px;
     position: relative;
@@ -83,7 +86,7 @@ const VolumeSlider = styled.input`
         appearance: none;
         width: 30px;
         height: 30px;
-        background: var(--white);
+        background: var(--dusty-pink-dark);
         border-radius: 50%;
         cursor: pointer;
     }
@@ -101,26 +104,23 @@ const EmptyScreen = styled.div`
     background-color: var(--black);
     border-radius: 20px;
 `;
-const FooterBox = styled.div`
-    width: 500px;
-    display: flex;
-    flex-direction: row;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    justify-content: space-between;
-`;
 
 const NickName = styled.div`
     width: 270px;
     height: 80px;
     background-color: var(--dusty-pink-white);
     border-radius: 20px;
-`;
-const TestButtonWrapper = styled.div`
-    width: 500px;
-    height: 50px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+`;
+const FlexRowBox = styled.div`
+    padding: 0 30px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+    justify-content: space-between;
 `;
 
 export {
@@ -129,15 +129,16 @@ export {
     HeaderBox,
     LeftBox,
     RightBox,
+    RightItem,
     MicBar,
     MicBox,
     VolumeSlider,
     CameraIconWrapper,
     EmptyScreen,
-    FooterBox,
     NickName,
-    TestButtonWrapper,
+    FlexRowBox,
     SettingIcon,
     CameraIcon,
     CameraOffIcon,
+    RefreshIcon,
 };

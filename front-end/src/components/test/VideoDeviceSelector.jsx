@@ -32,7 +32,7 @@ const VideoDeviceSelector = ({ onDeviceSelected }) => {
 
     return (
         <div>
-            <label htmlFor="videoDevices">Select Video Device:</label>
+            <label htmlFor="videoDevices">비디오 선택 </label>
             <select
                 id="videoDevices"
                 value={selectedDevice?.deviceId || ""}
