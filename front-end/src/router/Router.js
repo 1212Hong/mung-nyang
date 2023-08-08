@@ -4,7 +4,6 @@ import Home from "../views/Home";
 import Game from "../views/Game";
 import Error from "../views/Error";
 import ConnectionTest from "../views/game/ConnectionTest";
-import TopBottomVideo from "../views/game/TopBottomVideo";
 
 const Router = () => {
     return (
@@ -14,7 +13,6 @@ const Router = () => {
                 <Route path="/test" element={<ConnectionTest />} />
                 <Route path="/game" element={<Game />} />
                 <Route path="/error" element={<Error />} />
-                <Route path="/quizpage" element={<TopBottomVideo />} />
             </Routes>
         </BrowserRouter>
     );
