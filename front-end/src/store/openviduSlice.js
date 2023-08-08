@@ -43,9 +43,6 @@ export const openviduSlice = createSlice({
         saveMainStreamManager: (state, action) => {
             state.mainStreamManager = action.payload;
         },
-        saveMyUserName: (state, action) => {
-            state.myUserName = action.payload;
-        },
         // Action to delete the publisher from the state
         deletePublisher: (state) => {
             state.publisher = undefined;
