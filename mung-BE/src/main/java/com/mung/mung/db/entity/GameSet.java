@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class GameSet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long setId;
 
     private int setFirst;

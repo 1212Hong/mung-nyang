@@ -14,7 +14,6 @@ import javax.persistence.Id;
 
 
 @Getter
-@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -22,7 +21,7 @@ import javax.persistence.Id;
 public class Dog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long dogId;
 
     private String dogNickname;
