@@ -9,6 +9,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class VoteCountRes {
-    private String roomId;
-    private String voteCheck;
+    private String voteMessage;
 }

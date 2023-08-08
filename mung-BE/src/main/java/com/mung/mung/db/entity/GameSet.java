@@ -19,8 +19,6 @@ public class GameSet {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long setId;
 
-    private int setFirst;
-
     private String category;
 
     private String answerer;
@@ -30,8 +28,6 @@ public class GameSet {
     private String answer;
 
     private String wrongAnswer;
-
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
