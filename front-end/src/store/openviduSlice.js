@@ -63,8 +63,8 @@ export const openviduSlice = createSlice({
             console.log(payload);
             state.subscribers = [...state.subscribers, payload];
         },
-        leaveSession: (state, { payload }) => {
-            [...state] = [...payload];
+        leaveSession: (state, action) => {
+            return initialState;
         },
     },
 });
