@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { ReactComponent as LinkIcon } from "../../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../../assets/img/capture_image.svg";
@@ -6,7 +6,7 @@ import { ReactComponent as DogFootIcon } from "../../assets/img/dog_foot.svg";
 import { ReactComponent as QuestionIcon } from "../../assets/img/question_mark.svg";
 import { ReactComponent as VolumeOnIcon } from "../../assets/img/volume_on.svg";
 import { ReactComponent as VolumeMuteIcon } from "../../assets/img/volume_mute.svg";
-import VideoComponent from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import Participant from "../../components/Participant";
 import Input from "../../components/Input";
 import {
@@ -21,16 +21,20 @@ import {
     Videobox,
     VideoboxGrid,
 } from "../../components/layout/waiting";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
+import { ovActions } from "../../store/openviduSlice";
 
-const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
-
-const host = "권영재";
+// const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
+// const host = "권영재";
 
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
     const [isMuted, setIsMuted] = useState(false);
+
+    const openvidu = useSelector((state) => state.openvidu);
+    const { subscribers, publisher } = openvidu;
+    console.log(subscribers);
     const dispatch = useDispatch();
 
     const openRuleBook = () => {
@@ -62,17 +66,35 @@ function WaitingRoom() {
         <Container className="waiting-container">
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
-                    {user_list.map((user, index) => (
-                        <React.Fragment key={index}>
-                            <Videobox>
-                                <VideoComponent width="423" height="200" />
-                            </Videobox>
-                        </React.Fragment>
-                    ))}
+                    {publisher && (
+                        <Videobox>
+                            <VideoComponent
+                                width="380"
+                                height="200"
+                                streamManager={publisher}
+                            />
+                        </Videobox>
+                    )}
+                    {subscribers !== undefined
+                        ? subscribers.map((sub, i) => (
+                              <React.Fragment key={i}>
+                                  <Videobox>
+                                      <VideoComponent
+                                          width="380"
+                                          height="200"
+                                          streamManager={sub}
+                                      />
+                                  </Videobox>
+                              </React.Fragment>
+                          ))
+                        : null}
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                <Participant user_list={user_list} host={host} />
+                {/* <Participant
+                    user_list={(subscribers, subscribers.id)}
+                    // host={host}
+                /> */}
                 <ChattingBox>
                     <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>

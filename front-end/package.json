@@ -51,5 +51,5 @@
         "eslint-plugin-react": "^7.28.0",
         "eslint-plugin-react-hooks": "^4.3.0"
     },
-    "proxy": "http://localhost:8080"
+    "proxy": "https://i9c209.p.ssafy.io"
 }
