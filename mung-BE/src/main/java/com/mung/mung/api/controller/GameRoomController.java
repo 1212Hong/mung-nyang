@@ -8,9 +8,11 @@ import javax.annotation.PostConstruct;
 
 import com.mung.mung.api.request.GameRoomConnectReq;
 import com.mung.mung.api.request.GameRoomCreateReq;
-import com.mung.mung.api.request.GameRoomLeaveReq;
 import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.service.GameRoomService;
+import com.mung.mung.api.service.PlayerService;
+import com.mung.mung.api.service.ScoreService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,11 +31,12 @@ import io.openvidu.java.client.SessionProperties;
 
 //@CrossOrigin(origins = "*")
 @Slf4j
-@RestController
+@RequiredArgsConstructor
 public class GameRoomController {
 
     private final int LIMIT = 6;
     private final GameRoomService gameRoomService;
+    private final PlayerService playerService;
 
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
@@ -52,10 +55,11 @@ public class GameRoomController {
     // 방과 Session을 매칭 시켜주기 위함 => 한글로 방 생성 가능
     private Map<String, String> sessionRoomConvert =new HashMap<>();
     private long convertNum=1;
-    @Autowired
-    public GameRoomController(GameRoomService gameRoomService){
-        this.gameRoomService=gameRoomService;
-    }
+//    @Autowired
+//    public GameRoomController(GameRoomService gameRoomService){
+//        this.gameRoomService=gameRoomService;
+//    }
+
 
     @PostConstruct
     public void init() {
@@ -135,10 +139,9 @@ public class GameRoomController {
 
 
     @DeleteMapping("/api/game-sessions/leave")
-    public ResponseEntity<String> leaveRoom(@RequestBody GameRoomLeaveReq gameRoomLeaveReq) {
+    public ResponseEntity<String> leaveRoom(@RequestParam("roomId") String roomId,
+                                            @RequestParam("playerId") long playerId) {
 
-        String roomId=gameRoomLeaveReq.getRoomId();
-        long playerId= gameRoomLeaveReq.getPlayerId();
         // roomId와 playerId가 유효하지 않은 경우 예외 처리
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
             return new ResponseEntity<>("roomId가 없거나 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
@@ -169,7 +172,8 @@ public class GameRoomController {
             @RequestBody RoomIdReq roomIdReq){
         String roomId=roomIdReq.getRoomId();
         gameRoomService.roomInitialize(roomId);
-        // All Player Initialize 추가해야함
+        // All Player Initialize => 점수 초기화
+        playerService.playerInitailize(roomId);
 
         return new ResponseEntity<>("방을 대기 중으로 변경 완료했습니다.",HttpStatus.OK);
     }
