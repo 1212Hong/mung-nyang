@@ -52,16 +52,22 @@ const Game = () => {
         session: undefined,
         mainStreamManager: undefined,
         publisher: undefined,
-        subscribers: subscribers,
+        subscribers: [],
     });
 
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
+    const navigate = useNavigate();
 
     useEffect(() => {
         const initializeSession = async () => {
             const session = state.OV.initSession();
-
+            console.log(session);
+            setState((prevState) => ({
+                ...prevState,
+                session: { session },
+            }));
+            console.log(state.session); // undefined찍힘 -> state에 저장이 안된상태라는뜻
             session.on("streamCreated", (event) => {
                 const subscriber = session.subscribe(event.stream, undefined);
                 dispatch(
@@ -86,11 +92,6 @@ const Game = () => {
             session.on("exception", (exception) => {
                 console.warn(exception);
             });
-
-            setState((prevState) => ({
-                ...prevState,
-                session,
-            }));
 
             try {
                 await session.connect(token, myUserName);
@@ -129,9 +130,10 @@ const Game = () => {
                 setState((prevState) => ({
                     ...prevState,
                     currentVideoDevice: currentVideoDevice,
-                    mainStreamManager: publisher,
-                    publisher: publisher,
+                    mainStreamManager: { publisher },
+                    publisher: { publisher },
                 }));
+                console.log(state.currentVideoDevice);
                 console.log("success connect to the session");
             } catch (error) {
                 console.log(
@@ -142,28 +144,44 @@ const Game = () => {
         };
 
         initializeSession();
-        return () => {
-            window.addEventListener("beforeunload", leaveSession);
-        };
     }, [state.OV, token]);
+
+    useEffect(() => {
+        // componentDidMount
+        console.log("didmount");
+        if (!mySessionId) navigate("/error");
+        window.addEventListener("beforeunload", leaveSession);
+
+        // componentWillUnmount
+        return () => {
+            console.log("willunmount");
+            window.removeEventListener("beforeunload", onbeforeunload);
+        };
+    }, []);
 
     const deleteSubscriber = (streamManager) => {
         console.log("delete 호출");
+        console.log(streamManager);
+        console.log(state);
+        console.log(state.subscribers);
         let subscribers = state.subscribers;
         let index = subscribers.indexOf(streamManager, 0);
+        console.log(index);
         if (index > -1) {
             subscribers.splice(index, 1);
-
-            dispatch(ovActions.saveSubscribers(subscribers));
-            this.setState({
+            console.log(subscribers);
+            setState((prevState) => ({
+                ...prevState,
                 subscribers: subscribers,
-            });
+            }));
+            dispatch(ovActions.saveSubscribers(subscribers));
             outRoom(mySessionId, playerId);
         }
         console.log(state.subscribers);
     };
     const leaveSession = () => {
         const mySession = state.session;
+        console.log(mySession);
         if (mySession) {
             mySession.disconnect();
         }

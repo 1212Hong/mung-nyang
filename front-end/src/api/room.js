@@ -24,8 +24,10 @@ export const joinRoom = (sessionId, nickname) => {
 // 닉네임 가져오기
 export const getNickname = (sessionId) => {
     return API.get(`/api/player/nickname`, {
-        roomId: sessionId,
-    });
+        data: {
+            roomId: sessionId,
+        },
+    }).then((data) => console.log(data).catch((err) => console.log(err)));
 };
 
 // 떠난 사용자 처리
