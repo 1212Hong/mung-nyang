@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import WaitingRoom from "./game/WaitingRoom";
-import ConnectionTest from "./game/ConnectionTest";
 import TopBottomVideo from "./game/TopBottomVideo";
 import { useDispatch, useSelector } from "react-redux";
-import { changePhase } from "../store/phaseSlice";
+import { ovActions } from "../store/openviduSlice";
+import { useNavigate } from "react-router-dom";
+import { OpenVidu } from "openvidu-browser";
 
 const PHASES = {
-    Test: "Test",
+    // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
     Wait: "Wait",
     GameVote: "GameVote",
     Quiz: "Quiz",
@@ -27,10 +28,6 @@ const PHASES = {
 
 const PHASE_COMPONENTS = [
     {
-        type: PHASES.Test,
-        component: <ConnectionTest />,
-    },
-    {
         type: PHASES.Wait,
         component: <WaitingRoom />,
     },
@@ -45,10 +42,117 @@ const PHASE_COMPONENTS = [
 ];
 
 const Game = () => {
+    const openvidu = useSelector((state) => state.openvidu);
+    const { subscribers, myUserName, token, mySessionId } = openvidu;
+    const [state, setState] = useState({
+        OV: new OpenVidu(),
+        mySessionId: mySessionId,
+        myUserName: myUserName,
+        session: undefined,
+        mainStreamManager: undefined,
+        publisher: undefined,
+        subscribers: subscribers,
+    });
+
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
-    console.log(phaseType);
+    useEffect(() => {
+        const initializeSession = async () => {
+            const session = state.OV.initSession();
 
+            session.on("streamCreated", (event) => {
+                const subscriber = session.subscribe(event.stream, undefined);
+                dispatch(
+                    ovActions.updateSubscribers([
+                        ...state.subscribers,
+                        subscriber,
+                    ]),
+                );
+                console.log("stream", event.stream);
+                console.log(subscriber);
+                setState((prevState) => ({
+                    ...prevState,
+                    subscribers: subscribers,
+                }));
+            });
+
+            session.on("streamDestroyed", (event) => {
+                event.preventDefault();
+                deleteSubscriber(event.stream.streamManager);
+            });
+
+            session.on("exception", (exception) => {
+                console.warn(exception);
+            });
+
+            setState((prevState) => ({
+                ...prevState,
+                session,
+            }));
+
+            try {
+                await session.connect(token, myUserName);
+                const publisher = await state.OV.initPublisherAsync(undefined, {
+                    audioSource: undefined,
+                    videoSource: undefined,
+                    publishAudio: true,
+                    publishVideo: true,
+                    resolution: "640x480",
+                    frameRate: 30,
+                    insertMode: "APPEND",
+                    mirror: false,
+                });
+
+                console.log(publisher);
+                session.publish(publisher);
+                dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
+
+                var devices = await state.OV.getDevices();
+
+                var videoDevices = devices.filter(
+                    (device) => device.kind === "videoinput",
+                );
+
+                var currentVideoDeviceId = publisher.stream
+                    .getMediaStream()
+                    .getVideoTracks()[0]
+                    .getSettings().deviceId;
+
+                var currentVideoDevice = videoDevices.find(
+                    (device) => device.deviceId === currentVideoDeviceId,
+                );
+                dispatch(ovActions.saveCurrentVideoDevice(currentVideoDevice));
+                dispatch(ovActions.saveMainStreamManager(publisher));
+
+                setState((prevState) => ({
+                    ...prevState,
+                    currentVideoDevice: currentVideoDevice,
+                    mainStreamManager: publisher,
+                    publisher: publisher,
+                }));
+                console.log("success connect to the session");
+            } catch (error) {
+                console.log(
+                    "There was an error connecting to the session:",
+                    error,
+                );
+            }
+        };
+
+        initializeSession();
+    }, [state.OV, token]);
+
+    const deleteSubscriber = (streamManager) => {
+        let subscribers = this.state.subscribers;
+        let index = subscribers.indexOf(streamManager, 0);
+        if (index > -1) {
+            subscribers.splice(index, 1);
+            this.setState({
+                subscribers: subscribers,
+            });
+            dispatch(ovActions.saveSubscribers(subscribers));
+        }
+    };
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
     );
@@ -58,22 +162,11 @@ const Game = () => {
         return <h1>Invalid phaseType: {phaseType}</h1>;
     }
 
-    // dispatch(changePhase({ phaseType: "Wait" }));
-
     const renderPhase = () => {
-        return findPhase.component;
+        return <>{findPhase.component}</>;
     };
 
-    return (
-        <>
-            {/* <button
-                onClick={() => {
-                    dispatch(changePhase({ phaseType: "Wait" }));
-                }}
-            ></button> */}
-            {renderPhase()}
-        </>
-    );
+    return <>{renderPhase()}</>;
 };
 
 export default Game;

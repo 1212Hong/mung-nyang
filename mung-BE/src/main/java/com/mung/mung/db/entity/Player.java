@@ -27,7 +27,8 @@ public class Player {
     @ColumnDefault("0")
     private int playerScore;
 
-    private String pIp;
+    @ColumnDefault("0")
+    private int playerVote;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
