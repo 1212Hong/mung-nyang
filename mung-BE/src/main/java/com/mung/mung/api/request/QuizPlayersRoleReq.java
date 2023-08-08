@@ -8,7 +8,6 @@ import lombok.Setter;
 public class QuizPlayersRoleReq {
     private String roomId;
     private Long gameId;
-    private Long setId;
     private String category;
     private String answerer;
 }

@@ -1,7 +1,6 @@
 package com.mung.mung.api.service;
 
 import com.mung.mung.api.request.QuizCountReq;
-import com.mung.mung.api.request.QuizResultReq;
 import com.mung.mung.api.request.QuizPlayersRoleReq;
 import com.mung.mung.api.response.QuizResultRes;
 import com.mung.mung.api.response.QuizPlayersRoleRes;
@@ -14,7 +13,7 @@ public interface QuizService {
 
     void submitNegativeQuiz(QuizCountReq quizCountReq);
 
-    QuizResultRes getQuizResult(QuizResultReq quizResultReq);
+    QuizResultRes getQuizResult(String roomId);
 
     QuizPlayersRoleRes getPlayersRole(QuizPlayersRoleReq quizPlayersRoleReq);
 }

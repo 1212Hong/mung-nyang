@@ -29,6 +29,21 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(value = {GameNotExistException.class})
+    public ResponseEntity<Object> handelGameNotExistException(GameNotExistException e){
+
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.GAME_NOT_EXIST_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+
+    }
+
     @ExceptionHandler(value = {QuizNotFoundException.class})
     public ResponseEntity<Object> handleQuizNotFoundException(QuizNotFoundException e){
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -73,7 +88,7 @@ public class GlobalExceptionHandler {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         ApiException apiException = new ApiException(
-                ExceptionMessage.LIAR_ANSWER_OPTIONS_NOT_EXIST_MESSAG,
+                ExceptionMessage.LIAR_ANSWER_OPTIONS_NOT_EXIST_MESSAGE,
                 httpStatus,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
