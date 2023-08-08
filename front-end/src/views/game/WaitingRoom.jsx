@@ -24,6 +24,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { ovActions } from "../../store/openviduSlice";
+import { startGameVote } from "../../api/game";
 
 // const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
 // const host = "권영재";
@@ -33,7 +34,7 @@ function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
 
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher } = openvidu;
+    const { subscribers, publisher, mySessionId } = openvidu;
     console.log(subscribers);
     const dispatch = useDispatch();
 
@@ -46,6 +47,7 @@ function WaitingRoom() {
         );
     };
     const openReadyModal = () => {
+        startGameVote(mySessionId);
         dispatch(
             openModal({
                 modalType: "ReadyModal",
