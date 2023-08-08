@@ -17,29 +17,33 @@ import {
     SetItem,
     BtnBox,
 } from "../../components/layout/scoreTotal";
+import { score } from "../../api/game";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
     const title = "라이어 승리";
     const totalset = 5;
-    const [userlist, setUserlist] = useState([]);
-    const [set, setSet] = useState(0);
+    const set = 3;
+    const roomId = "SessionC";
+    const [scoreData, setScoreData] = useState([]);
+    const userlist = [
+        "댕댕이1",
+        "댕댕이2",
+        "댕댕이3",
+        "댕댕이4",
+        "댕댕이5",
+        "댕댕이6",
+    ];
 
     useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        try {
-            const response = await fetch("/api/score/{roomId}");
-            const data = await response.json();
-
-            setUserlist(data.userlist);
-            setSet(data.set);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-    };
+        score(roomId)
+            .then((response) => {
+                setScoreData(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching score:", error);
+            });
+    }, [roomId]);
 
     const Next = () => {
         if (set === totalset) {
@@ -67,9 +71,9 @@ const ScoreTotal = () => {
                 {userlist.map((user, index) => (
                     <LineItem key={index}>
                         <RankItem>{index + 1}st</RankItem>
-                        <UserItem>{user.username}</UserItem>
+                        <UserItem>{user}</UserItem>
                         <UserItem>+{user.upscore}</UserItem>
-                        <UserItem>{user.total}</UserItem>
+                        <UserItem>{scoreData.user}</UserItem>
                     </LineItem>
                 ))}
             </RankBox>

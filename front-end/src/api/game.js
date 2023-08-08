@@ -57,3 +57,8 @@ export const QuizResult = (roomId, gameId) => {
         gameId: gameId,
     });
 };
+
+// 점수 집계
+export const score = (roomId) => {
+    return API.get(`/api/score`, { roomId: roomId });
+};
