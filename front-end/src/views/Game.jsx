@@ -53,15 +53,14 @@ const Game = () => {
         publisher: undefined,
         subscribers: subscribers,
     });
+
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
-
     useEffect(() => {
         const initializeSession = async () => {
             const session = state.OV.initSession();
-            dispatch(ovActions.saveMyUserName(Math.floor(Math.random() * 100))); // 이름 랜덤설정
+
             session.on("streamCreated", (event) => {
-                console.log(event.stream);
                 const subscriber = session.subscribe(event.stream, undefined);
                 dispatch(
                     ovActions.updateSubscribers([
@@ -92,7 +91,7 @@ const Game = () => {
             }));
 
             try {
-                await session.connect(token, { clientData: myUserName });
+                await session.connect(token, myUserName);
                 const publisher = await state.OV.initPublisherAsync(undefined, {
                     audioSource: undefined,
                     videoSource: undefined,
@@ -109,16 +108,21 @@ const Game = () => {
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
 
                 var devices = await state.OV.getDevices();
+
                 var videoDevices = devices.filter(
                     (device) => device.kind === "videoinput",
                 );
+
                 var currentVideoDeviceId = publisher.stream
                     .getMediaStream()
                     .getVideoTracks()[0]
                     .getSettings().deviceId;
+
                 var currentVideoDevice = videoDevices.find(
                     (device) => device.deviceId === currentVideoDeviceId,
                 );
+                dispatch(ovActions.saveCurrentVideoDevice(currentVideoDevice));
+                dispatch(ovActions.saveMainStreamManager(publisher));
 
                 setState((prevState) => ({
                     ...prevState,
@@ -126,14 +130,11 @@ const Game = () => {
                     mainStreamManager: publisher,
                     publisher: publisher,
                 }));
-
-                dispatch(ovActions.saveCurrentVideoDevice(currentVideoDevice));
-                dispatch(ovActions.saveMainStreamManager(publisher));
+                console.log("success connect to the session");
             } catch (error) {
                 console.log(
                     "There was an error connecting to the session:",
                     error,
-                    error.message,
                 );
             }
         };
@@ -152,15 +153,6 @@ const Game = () => {
             dispatch(ovActions.saveSubscribers(subscribers));
         }
     };
-    // const deleteSubscriber = (streamManager) => {
-    //     setState((prevState) => ({
-    //         ...prevState,
-    //         subscribers: prevState.subscribers.filter(
-    //             (subscriber) => subscriber !== streamManager,
-    //         ),
-    //     }));
-    // };
-
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
     );
@@ -171,7 +163,7 @@ const Game = () => {
     }
 
     const renderPhase = () => {
-        return findPhase.component;
+        return <>{findPhase.component}</>;
     };
 
     return <>{renderPhase()}</>;
