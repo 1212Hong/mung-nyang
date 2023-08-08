@@ -2,10 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { OpenVidu } from "openvidu-browser";
 
 const initialState = {
-    OV: null,
     mySessionId: undefined,
     myUserName: undefined,
-    session: undefined,
     mainStreamManager: undefined,
     publisher: undefined,
     subscribers: [],

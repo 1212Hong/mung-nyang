@@ -87,7 +87,7 @@ const Game = () => {
 
             setState((prevState) => ({
                 ...prevState,
-                session,
+                session: session,
             }));
 
             try {
@@ -143,11 +143,11 @@ const Game = () => {
     }, [state.OV, token]);
 
     const deleteSubscriber = (streamManager) => {
-        let subscribers = this.state.subscribers;
+        let subscribers = state.subscribers;
         let index = subscribers.indexOf(streamManager, 0);
         if (index > -1) {
             subscribers.splice(index, 1);
-            this.setState({
+            setState({
                 subscribers: subscribers,
             });
             dispatch(ovActions.saveSubscribers(subscribers));
