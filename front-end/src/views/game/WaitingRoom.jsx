@@ -36,6 +36,7 @@ function WaitingRoom() {
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher, mySessionId } = openvidu;
     console.log(subscribers);
+
     const dispatch = useDispatch();
 
     const openRuleBook = () => {
@@ -63,7 +64,7 @@ function WaitingRoom() {
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
-
+    console.log(subscribers);
     return (
         <Container className="waiting-container">
             <Leftbox>
@@ -77,26 +78,27 @@ function WaitingRoom() {
                             />
                         </Videobox>
                     )}
-                    {subscribers !== undefined
-                        ? subscribers.map((sub, i) => (
-                              <React.Fragment key={i}>
-                                  <Videobox>
-                                      <VideoComponent
-                                          width="380"
-                                          height="200"
-                                          streamManager={sub}
-                                      />
-                                  </Videobox>
-                              </React.Fragment>
-                          ))
-                        : null}
+                    {subscribers &&
+                        subscribers.map((sub, i) => (
+                            <React.Fragment key={i}>
+                                <Videobox>
+                                    <VideoComponent
+                                        width="380"
+                                        height="200"
+                                        streamManager={sub}
+                                    />
+                                </Videobox>
+                            </React.Fragment>
+                        ))}
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                {/* <Participant
-                    user_list={(subscribers, subscribers.id)}
+                {/* (
+                <Participant
+                    user_list={subscribers}
                     // host={host}
-                /> */}
+                />
+                ) */}
                 <ChattingBox>
                     <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>
@@ -106,7 +108,6 @@ function WaitingRoom() {
                         </Button>
                     </ChattingInputBox>
                 </ChattingBox>
-
                 <MenuBox>
                     {[
                         { icon: <QuestionIcon width="25" height="20" /> },
