@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { OpenVidu } from "openvidu-browser";
 
 const initialState = {
-    OV: null,
+    // OV: null,
     mySessionId: undefined,
     myUserName: undefined,
     session: undefined,
@@ -11,6 +11,9 @@ const initialState = {
     subscribers: [],
     currentVideoDevice: undefined,
     token: "",
+    owner: false,
+    score: 0,
+    playerId: 0,
 };
 
 export const openviduSlice = createSlice({
@@ -25,7 +28,15 @@ export const openviduSlice = createSlice({
             state.token = action.payload;
             console.log(state.token);
         },
-
+        saveUserName: (state, action) => {
+            state.myUserName = action.payload;
+        },
+        savePlayerInfo: (state, { payload }) => {
+            console.log(payload);
+            state.owner = payload.owner;
+            state.score = payload.score;
+            state.playerId = payload.playerId;
+        },
         saveSession: (state, action) => {
             state.session = action.payload; // payload에 생성된 session 전달
         },
