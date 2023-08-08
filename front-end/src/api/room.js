@@ -27,3 +27,15 @@ export const getNickname = (sessionId) => {
         roomId: sessionId,
     });
 };
+
+// 떠난 사용자 처리
+export const outRoom = (sessionId, playerId) => {
+    return API.delete(`/api/game-sessions/leave`, {
+        data: {
+            roomId: sessionId,
+            playerId: playerId,
+        },
+    })
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
