@@ -30,25 +30,32 @@ public class LiarController {
 
     }
 
-    @PostMapping("/result")
-    public ResponseEntity<LiarVoteResultRes> getLiarVoteResult(@RequestBody LiarSetIdReq liarSetIdReq) {
+    @GetMapping("/result")
+    public ResponseEntity<LiarVoteResultRes> getLiarVoteResult(@RequestParam long setId) {
 
-        LiarVoteResultRes liarVoteResultRes = liarService.getLiarVoteResult(liarSetIdReq);
+        LiarVoteResultRes liarVoteResultRes = liarService.getLiarVoteResult(setId);
 
         return ResponseEntity.ok(liarVoteResultRes);
 
     }
 
-    @PostMapping("/options")
-    public ResponseEntity<LiarAnswerOptionsRes> getLiarAnswerOptions(@RequestBody LiarSetIdReq liarSetIdReq) {
+    @DeleteMapping("/resetVote")
+    public ResponseEntity<Void> getLiarVoteResult(@RequestBody LiarSetIdReq liarSetIdReq) {
 
-        LiarAnswerOptionsRes liarAnswerOptionsRes = liarService.getLiarAnswerOptions(liarSetIdReq);
+        liarService.resetVote(liarSetIdReq.getSetId());
+
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @GetMapping("/options")
+    public ResponseEntity<LiarAnswerOptionsRes> deleteLiarVoteResult(@RequestParam long setId) {
+
+        LiarAnswerOptionsRes liarAnswerOptionsRes = liarService.getLiarAnswerOptions(setId);
 
         return ResponseEntity.ok(liarAnswerOptionsRes);
 
     }
-
-
 
 
 }
