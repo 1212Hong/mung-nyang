@@ -1,5 +1,7 @@
 package com.mung.mung.api.controller;
 
+import com.mung.mung.api.request.RoomIdReq;
+import com.mung.mung.api.request.VoteCountReq;
 import com.mung.mung.api.request.VoteSetReq;
 import com.mung.mung.api.response.VoteCountRes;
 import com.mung.mung.api.response.VoteResultRes;
@@ -19,24 +21,24 @@ public class VoteController {
     private final VoteService voteService;
 
     @PostMapping("/start")
-    public ResponseEntity<VoteStartRes> startVote(@RequestParam String roomId) {
-        voteService.startVote(roomId);
+    public ResponseEntity<VoteStartRes> startVote(@RequestBody RoomIdReq roomIdReq) {
+        voteService.startVote(roomIdReq.getRoomId());
 
-        return ResponseEntity.ok(new VoteStartRes(roomId));
+        return ResponseEntity.ok(new VoteStartRes(roomIdReq.getRoomId()));
     }
 
     @PostMapping("/count")
-    public ResponseEntity<VoteCountRes> countVote(@RequestParam String roomId) {
+    public ResponseEntity<VoteCountRes> countVote(@RequestBody VoteCountReq voteCountReq) {
 
-        String voteCheck = voteService.countVote(roomId);
+        VoteCountRes voteCountRes = voteService.countVote(voteCountReq);
 
-        return ResponseEntity.ok(new VoteCountRes(roomId, voteCheck));
+        return ResponseEntity.ok(voteCountRes);
 
     }
 
     @GetMapping("/result")
-    public ResponseEntity<VoteResultRes> getVoteResult(@RequestParam String roomId, @RequestBody VoteSetReq voteSetReq) {
-        VoteResultRes voteResultRes = voteService.getVoteResult(roomId, voteSetReq.getGameSet());
+    public ResponseEntity<VoteResultRes> getVoteResult(@RequestBody VoteSetReq voteSetReq) {
+        VoteResultRes voteResultRes = voteService.getVoteResult(voteSetReq);
 
         return ResponseEntity.ok(voteResultRes);
     }
