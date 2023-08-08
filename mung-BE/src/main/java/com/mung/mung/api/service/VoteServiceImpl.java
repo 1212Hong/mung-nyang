@@ -1,6 +1,10 @@
 package com.mung.mung.api.service;
 
+import com.mung.mung.api.request.VoteCountReq;
+import com.mung.mung.api.request.VoteSetReq;
+import com.mung.mung.api.response.VoteCountRes;
 import com.mung.mung.api.response.VoteResultRes;
+import com.mung.mung.common.exception.custom.PlayerNotExistException;
 import com.mung.mung.common.exception.custom.RoomNotExistException;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameRoom;
@@ -43,60 +47,53 @@ public class VoteServiceImpl implements VoteService {
     private final Map<String, Integer> roomVotesMap = new ConcurrentHashMap<>();
 
     // 각 방의 투표 시작 시간 저장
-    private final Map<String, Instant> roomVoteStartTime = new ConcurrentHashMap<>();
 
     public void startVote(String roomId){
-
-        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
-
-        if(gameRoom==null){
-            log.info("RoomNotExistException 예외처리");
-            throw new RoomNotExistException();
-        }
 
         if (startedRooms.contains(roomId)) {
             resetVote(roomId); // 전에 투표 기록이 있으면 초기화
         }
         startedRooms.add(roomId);
         Instant voteStartTime = Instant.now();
-        roomVoteStartTime.put(roomId, voteStartTime);
+
         int cntPlayers = countPlayers(roomId);
+
+        if(cntPlayers==0){
+            throw new PlayerNotExistException();
+        }
+
         roomPlayers.put(roomId, cntPlayers);
         log.info("startVote - roomID : {} - voteStartTime : {}, Players : {}", roomId, voteStartTime, cntPlayers);
 
     }
-    public String countVote(String roomId){
+    public VoteCountRes countVote(VoteCountReq voteCountReq){
 
-        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(voteCountReq.getRoomId());
 
         if(gameRoom==null){
             log.info("RoomNotExistException 예외처리");
             throw new RoomNotExistException();
         }
 
-        Instant voteStartTime = roomVoteStartTime.get(roomId);
-        Instant curTime = Instant.now();
+        String voted = voteCountReq.getVoteMessage();
+        String roomId = voteCountReq.getRoomId();
 
-        if (curTime.isBefore(voteStartTime.plus(votingDuration))) {
-            log.info("countVote - curTime : {} - calTime : {}, 결과 : {}", curTime, voteStartTime.plus(votingDuration), "true");
-
-            // 해당 방의 투표 수 증가
+        if(voted.equals("T")){
             roomVotesMap.merge(roomId, 1, Integer::sum);
-
-            return "T";
-        }else{
-            log.info("countVote - curTime : {} - calTime : {}, 결과 : {}", curTime, voteStartTime.plus(votingDuration), "false");
-
-            return "F";
         }
+
+        return new VoteCountRes(voted);
+
     }
     @Transactional
-    public VoteResultRes getVoteResult(String roomId, int gameSet) {
+    public VoteResultRes getVoteResult(VoteSetReq voteSetReq) {
+
+        String roomId = voteSetReq.getRoomId();
+        int maxGameSet = voteSetReq.getMaxSet();
 
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
 
         if(gameRoom==null){
-            log.info("RoomNotExistException 예외처리");
             throw new RoomNotExistException();
         }
 
@@ -112,7 +109,7 @@ public class VoteServiceImpl implements VoteService {
 
             Game game = Game.builder()
                     .curSet(1)
-                    .maxSet(gameSet)
+                    .maxSet(maxGameSet)
                     .startTime(LocalDateTime.now())
                     .gameRoom(gameRoom)
                     .build();
@@ -134,7 +131,6 @@ public class VoteServiceImpl implements VoteService {
     private void resetVote(String roomId) {
         startedRooms.remove(roomId);
         roomVotesMap.remove(roomId);
-        roomVoteStartTime.remove(roomId);
     }
 
     private int countPlayers(String roomId){
