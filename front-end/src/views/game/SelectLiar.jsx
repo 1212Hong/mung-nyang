@@ -10,11 +10,11 @@ import {
     ImageOverlay,
 } from "../../components/layout/selectLiar";
 import { changePhase } from "../../store/phaseSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar } from "../../api/game";
 
 const SelectLiar = () => {
-    const [setId, setSetId] = useState(1);
+    const setId = useSelector((state) => state.openvidu.setId);
     const userlist = [
         "댕댕이1",
         "댕댕이2",
@@ -38,8 +38,8 @@ const SelectLiar = () => {
                 console.log(setId);
 
                 const selectedLiarResponse = await selectedLiar(setId);
-                setMostVotedNicknames(selectedLiarResponse.data);
-
+                setMostVotedNicknames(selectedLiarResponse.data[0]);
+                
                 for (let i = 0; i < userlist.length; i++) {
                     if (userlist[i] === MostVotedNicknames) {
                         dispatch(changePhase({ phaseType: "SelectAns" }));
