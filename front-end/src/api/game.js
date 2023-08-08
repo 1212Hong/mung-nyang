@@ -63,7 +63,17 @@ export const selectLiar = (setId, playerNickname) => {
 
 // 라이어 투표 결과
 export const selectedLiar = (setId) => {
-    return API.get(`/api/liar/vote`, {
+    return API.get(`/api/liar/result`, {
         setId: setId,
+    });
+};
+
+// 라이어 정답
+export const liarAnswer = (setId, roomId, pickedLiar, answer) => {
+    return API.post(`/api/answer/liar`, {
+        setId: setId,
+        roomId: roomId,
+        pickedLiar: pickedLiar,
+        answer: answer,
     });
 };
