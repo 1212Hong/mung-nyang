@@ -100,6 +100,9 @@ const Home = () => {
                     <Button
                         text={view ? "입장하러가기" : "방생성하러가기"}
                         onClick={changeView}
+                        background="brown-white"
+                        hoverColor="dusty-pink-white"
+                        hoverBgColor="brown"
                         width="100px"
                         margin="20px"
                     />
