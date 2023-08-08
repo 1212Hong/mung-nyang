@@ -53,9 +53,8 @@ public class QuizServiceImpl implements QuizService{
         String roomId = quizCountReq.getRoomId();
         String playerNickname = quizCountReq.getPlayerNickname();
 
-        if (!positiveQuizsByRoom.containsKey(roomId)) {
-            positiveQuizsByRoom.put(roomId, ConcurrentHashMap.newKeySet());
-        }
+        positiveQuizsByRoom.computeIfAbsent(roomId, key -> ConcurrentHashMap.newKeySet());
+
         positiveQuizsByRoom.get(roomId).add(playerNickname);
 
     }
@@ -64,9 +63,8 @@ public class QuizServiceImpl implements QuizService{
         String roomId = quizCountReq.getRoomId();
         String playerNickname = quizCountReq.getPlayerNickname();
 
-        if (!negativeQuizsByRoom.containsKey(roomId)) {
-            negativeQuizsByRoom.put(roomId, ConcurrentHashMap.newKeySet());
-        }
+        negativeQuizsByRoom.computeIfAbsent(roomId, key -> ConcurrentHashMap.newKeySet());
+
         negativeQuizsByRoom.get(roomId).add(playerNickname);
 
     }
@@ -106,7 +104,7 @@ public class QuizServiceImpl implements QuizService{
 
         GameSet gameSet = GameSet.builder()
                 .answerer(selectedPlayerNickname)
-                .setFirst(1)
+//                .setFirst(1)
                 .game(game)
                 .build();
 
@@ -174,7 +172,7 @@ public class QuizServiceImpl implements QuizService{
                     .answerer(answerer)
                     .category(category)
                     .liar(liar)
-                    .setFirst(1)
+//                    .setFirst(1)
                     .wrongAnswer(wrongAnswer)
                     .game(game)
                     .build();

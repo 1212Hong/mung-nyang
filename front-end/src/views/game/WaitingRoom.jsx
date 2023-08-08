@@ -31,6 +31,7 @@ function WaitingRoom() {
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher } = openvidu;
     console.log(subscribers);
+
     const dispatch = useDispatch();
 
     const openRuleBook = () => {
@@ -57,7 +58,7 @@ function WaitingRoom() {
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
-
+    console.log(subscribers);
     return (
         <Container className="waiting-container">
             <Leftbox>
