@@ -47,9 +47,13 @@ export const openviduSlice = createSlice({
         deletePublisher: (state) => {
             state.publisher = undefined;
         },
+
         updateSubscribers: (state, { payload }) => {
             console.log(payload);
             state.subscribers = [...state.subscribers, payload];
+        },
+        leaveSession: (state, { payload }) => {
+            [...state] = [...payload];
         },
     },
 });
