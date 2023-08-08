@@ -28,6 +28,7 @@ const Input = (props) => {
         onChange,
         id,
         value,
+        disabled,
     } = props;
 
     return (
@@ -41,6 +42,7 @@ const Input = (props) => {
             onChange={onChange}
             id={id}
             value={value}
+            disabled={disabled}
         />
     );
 };

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import VideoComponent from "../../components/VideoComponent";
-import { motion, AnimatePresence } from "framer-motion";
 import Button from "../../components/Button";
 import {
     Container,
@@ -11,38 +10,23 @@ import {
     MicBar,
     MicBox,
     VolumeSlider,
-    CameraIconWrapper,
     EmptyScreen,
-    FooterBox,
     NickName,
-    TestButtonWrapper,
+    FlexRowBox,
     SettingIcon,
-    CameraIcon,
-    CameraOffIcon,
+    RefreshIcon,
+    RightItem,
 } from "../../components/layout/connectionTest";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Error from "../Error";
 import Input from "../../components/Input";
-import VideoDeviceSelector from "../../components/deviceSelect/VideoDeviceSelector";
+import VideoDeviceSelector from "../../components/test/VideoDeviceSelector";
+import { getNickname } from "../../api/room";
+import Switch from "../../components/test/Switch";
+import { MidText } from "../../components/layout/common";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
-
-function Switch({ isOn, onToggle }) {
-    return (
-        <motion.div layout onClick={onToggle}>
-            <AnimatePresence initial={false} mode="wait">
-                <CameraIconWrapper>
-                    {isOn ? (
-                        <CameraIcon width="100" height="100" />
-                    ) : (
-                        <CameraOffIcon width="100" height="100" />
-                    )}
-                </CameraIconWrapper>
-            </AnimatePresence>
-        </motion.div>
-    );
-}
 
 function ConnectionTest() {
     const [micVolumeValue, setMicVolumeValue] = useState(0);
@@ -53,6 +37,12 @@ function ConnectionTest() {
     const navigate = useNavigate();
     const audioRef = useRef(null);
     const audioContextRef = useRef(null);
+    const [nickName, setNcikname] = useState("닉네임");
+
+    const name = "test";
+    const handleChange = (e) => {
+        setNcikname(name);
+    };
     // 사용자 제스처와 연관된 플래그
     const [userGesturePerformed, setUserGesturePerformed] = useState(false);
 
@@ -64,6 +54,10 @@ function ConnectionTest() {
     function handleToggle() {
         setIsOn(!isOn);
     }
+
+    const refreshName = () => {
+        setNcikname(getNickname());
+    };
 
     useEffect(() => {
         // AudioContext 생성
@@ -169,11 +163,11 @@ function ConnectionTest() {
         <>
             {mySessionId ? (
                 <Container>
-                    <HeaderBox>
-                        <SettingIcon width="50" height="50" />
-                    </HeaderBox>
                     <ContainerBody>
                         <LeftBox className="LeftBox">
+                            <HeaderBox>
+                                <SettingIcon width="30" height="30" />
+                            </HeaderBox>
                             {isOn ? (
                                 <EmptyScreen />
                             ) : (
@@ -182,58 +176,81 @@ function ConnectionTest() {
                             <br />
                             <Switch isOn={isOn} onToggle={handleToggle} />
                         </LeftBox>
-                        <RightBox>
-                            <h3>마이크 선택</h3>
-                            <MicBox />
-                            <h3>입력확인</h3>
-                            <MicBar volume={micVolumeValue / 100} />
-                            <h3>스피커</h3>
-                            <MicBox />
-                            <h3>출력조절 : {outputVolumeValue}</h3>
-                            <VolumeSlider
-                                type="range"
-                                min="0"
-                                max="100"
-                                value={outputVolumeValue}
-                                onChange={handleVolumeChange}
-                                color="black"
-                            />
-                            <VideoDeviceSelector
-                                onDeviceSelected={(selectedDevice) =>
-                                    console.log(selectedDevice)
-                                }
-                            />
-                            <TestButtonWrapper>
+                        <RightBox className="RgihtBox">
+                            <RightItem>
+                                <MidText>마이크 선택</MidText>
+                                <MicBox />
+                            </RightItem>
+                            <RightItem>
+                                <MidText>입력확인</MidText>
+                                <MicBar volume={micVolumeValue / 100} />
+                            </RightItem>
+                            <RightItem>
+                                <MidText>스피커</MidText>
+                                <MicBox />
+                            </RightItem>
+                            <RightItem>
+                                <MidText>
+                                    출력조절 : {outputVolumeValue}
+                                </MidText>
+                                <VolumeSlider
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value={outputVolumeValue}
+                                    onChange={handleVolumeChange}
+                                    color="black"
+                                />
+                            </RightItem>
+                            <RightItem>
+                                <VideoDeviceSelector
+                                    onDeviceSelected={(selectedDevice) =>
+                                        console.log(selectedDevice)
+                                    }
+                                />
+                            </RightItem>
+                            <FlexRowBox>
+                                <MidText>소리변조 테스트</MidText>
+
                                 <Button
                                     text="테스트"
-                                    width="200px"
+                                    width="100px"
                                     onClick={handleTestButtonClick}
                                     className="testBtn"
-                                    background={`var(--dusty-pink-white)`}
-                                    fontColor={`var(--black)`}
+                                    color="black"
                                 />
-                            </TestButtonWrapper>
-                            <h3>소리변조 테스트</h3>
-                            {/* <Button
-                        isOn={isOn}
-                        onToggle={handleToggle}
-                        text="임시"
-                        width="100px"
-                    /> */}
-                            <FooterBox>
-                                <NickName></NickName>
+                            </FlexRowBox>
+
+                            <FlexRowBox>
+                                <NickName>
+                                    <Input
+                                        value={nickName}
+                                        disabled="disabled"
+                                        onChange={handleChange}
+                                    />
+                                </NickName>
                                 <Button
-                                    width="150px"
-                                    height="80px"
+                                    isOn={isOn}
+                                    onClick={refreshName}
+                                    type="icon"
+                                    width="100px"
+                                    hoverBgColor="white"
+                                    background="dusty-pink-white"
+                                >
+                                    <RefreshIcon />
+                                </Button>
+                                <Button
+                                    width="100px"
+                                    height="60px"
                                     onClick={() => {
                                         handleGoWaitingRoom();
                                     }}
                                     background={`var(--dusty-pink-white)`}
-                                    fontColor={`var(--black)`}
+                                    color="black"
                                 >
                                     입장
                                 </Button>
-                            </FooterBox>
+                            </FlexRowBox>
                         </RightBox>
                         <audio ref={audioRef} src={TestSound} loop={false} />
                     </ContainerBody>
