@@ -9,16 +9,34 @@ import {
     UserBox,
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { liarAnswer } from "../../api/game";
 
-const OtherView = (props) => {
-    const { selectedAnswer } = props;
+const OtherView = () => {
+    const setId = useSelector((state) => state.openvidu.setId);
+    const roomId = useSelector((state) => state.openvidu.mySessionId);
+    const pickedLiar = "댕댕이1";
+    const selectedAnswer = "농구";
     const userlist = ["댕댕이1", "댕댕이2", "댕댕이3", "댕댕이4", "댕댕이5"];
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            dispatch(changePhase({ phaseType: "Wait" }));
+        const timer = setTimeout(async () => {
+            try {
+                const response = await liarAnswer(
+                    setId,
+                    roomId,
+                    pickedLiar,
+                    selectedAnswer,
+                );
+                console.log(
+                    "Liar answer submitted successfully:",
+                    response.data,
+                );
+                dispatch(changePhase({ phaseType: "Wait" }));
+            } catch (error) {
+                console.error("Error submitting liar answer:", error);
+            }
         }, 7000);
 
         return () => clearTimeout(timer);
