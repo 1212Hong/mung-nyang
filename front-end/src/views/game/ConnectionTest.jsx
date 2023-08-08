@@ -17,14 +17,16 @@ import {
     RefreshIcon,
     RightItem,
 } from "../../components/layout/connectionTest";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Error from "../Error";
 import Input from "../../components/Input";
 import VideoDeviceSelector from "../../components/test/VideoDeviceSelector";
-import { getNickname } from "../../api/room";
+import { getNickname, joinRoom } from "../../api/room";
 import Switch from "../../components/test/Switch";
 import { MidText } from "../../components/layout/common";
+import { ovActions } from "../../store/openviduSlice";
+import { enterGameRoom } from "../../hooks/test";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
 
@@ -33,22 +35,24 @@ function ConnectionTest() {
     const [outputVolumeValue, setOutputVolumeValue] = useState(50); // 출력 볼륨 상태 추가
     const [isOn, setIsOn] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
-    const mySessionId = useSelector((state) => state.openvidu.mySessionId);
+    const openvidu = useSelector((state) => state.openvidu);
+    const { mySessionId, myUserName } = openvidu;
     const navigate = useNavigate();
     const audioRef = useRef(null);
     const audioContextRef = useRef(null);
-    const [nickName, setNcikname] = useState("닉네임");
+    const [userName, setUserName] = useState("닉네임");
+    const dispatch = useDispatch();
 
-    const name = "test";
     const handleChange = (e) => {
-        setNcikname(name);
+        setUserName(e.target.value);
     };
     // 사용자 제스처와 연관된 플래그
     const [userGesturePerformed, setUserGesturePerformed] = useState(false);
 
-    const handleGoWaitingRoom = () => {
-        navigate("/game");
+    const handleGoWaitingRoom = async () => {
         console.log(mySessionId);
+        await enterGameRoom(mySessionId, userName);
+        navigate("/game");
     };
 
     function handleToggle() {
@@ -56,7 +60,9 @@ function ConnectionTest() {
     }
 
     const refreshName = () => {
-        setNcikname(getNickname());
+        dispatch(ovActions.saveUserName(`user` + Math.random() * 100));
+        // setUserName(getNickname());
+        setUserName(myUserName);
     };
 
     useEffect(() => {
@@ -224,7 +230,7 @@ function ConnectionTest() {
                             <FlexRowBox>
                                 <NickName>
                                     <Input
-                                        value={nickName}
+                                        value={userName}
                                         disabled="disabled"
                                         onChange={handleChange}
                                     />
@@ -232,12 +238,12 @@ function ConnectionTest() {
                                 <Button
                                     isOn={isOn}
                                     onClick={refreshName}
+                                    padding={0}
                                     type="icon"
                                     width="100px"
-                                    hoverBgColor="white"
                                     background="dusty-pink-white"
                                 >
-                                    <RefreshIcon />
+                                    <RefreshIcon width="45" height="45" />
                                 </Button>
                                 <Button
                                     width="100px"
