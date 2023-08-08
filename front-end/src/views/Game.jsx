@@ -142,10 +142,13 @@ const Game = () => {
         };
 
         initializeSession();
+        return () => {
+            leaveSession();
+        };
     }, [state.OV, token]);
 
     const deleteSubscriber = (streamManager) => {
-        let subscribers = this.state.subscribers;
+        let subscribers = state.subscribers;
         let index = subscribers.indexOf(streamManager, 0);
         if (index > -1) {
             subscribers.splice(index, 1);
@@ -154,6 +157,24 @@ const Game = () => {
             });
             dispatch(ovActions.saveSubscribers(subscribers));
         }
+    };
+    const leaveSession = (streamManager) => {
+        const mySession = state.session;
+        if (mySession) {
+            mySession.disconnect();
+        }
+        state.OV = null;
+
+        setState({
+            OV: null,
+            mySessionId: undefined,
+            myUserName: undefined,
+            session: undefined,
+            mainStreamManager: undefined, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
+            publisher: undefined,
+            subscribers: [],
+        });
+        dispatch(ovActions.leaveSession([...state]));
     };
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
