@@ -42,8 +42,7 @@ public class PlayerController {
 
     // 유저에게 랜덤으로 닉네임을 주기.
     @GetMapping("/nickname")
-    public ResponseEntity<String> giveNickname(@RequestBody RoomIdReq roomIdReq) {
-        String roomId=roomIdReq.getRoomId();
+    public ResponseEntity<String> giveNickname(@RequestParam("roomId") String roomId) {
         // player정보를 DB에 저장
         if (!gameRoomService.isRoomExists(roomId)){
             return new ResponseEntity<>("방이 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
