@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
+import { outRoom } from "../api/room";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -43,7 +44,7 @@ const PHASE_COMPONENTS = [
 
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, myUserName, token, mySessionId } = openvidu;
+    const { subscribers, myUserName, token, mySessionId, playerId } = openvidu;
     const [state, setState] = useState({
         OV: new OpenVidu(),
         mySessionId: mySessionId,
@@ -157,7 +158,9 @@ const Game = () => {
             this.setState({
                 subscribers: subscribers,
             });
+            outRoom(mySessionId, playerId);
         }
+        console.log(state.subscribers);
     };
     const leaveSession = () => {
         const mySession = state.session;
