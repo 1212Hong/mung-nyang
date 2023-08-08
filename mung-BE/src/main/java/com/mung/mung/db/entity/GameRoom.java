@@ -48,7 +48,6 @@ public class GameRoom {
 
     public void updateStatus(String newStatus){
         this.status = newStatus;
-
     }
 
 
