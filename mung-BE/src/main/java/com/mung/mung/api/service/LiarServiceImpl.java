@@ -1,6 +1,5 @@
 package com.mung.mung.api.service;
 
-import com.mung.mung.api.request.LiarSetIdReq;
 import com.mung.mung.api.request.LiarSubmitVoteReq;
 import com.mung.mung.api.response.LiarAnswerOptionsRes;
 import com.mung.mung.api.response.LiarVoteResultRes;
@@ -47,9 +46,8 @@ public class LiarServiceImpl implements LiarService {
     }
 
     @Override
-    public LiarVoteResultRes getLiarVoteResult(LiarSetIdReq liarSetIdReq) {
+    public LiarVoteResultRes getLiarVoteResult(long setId) {
 
-        long setId = liarSetIdReq.getSetId();
         log.info("setId : {} 투표 현황 : {}", setId, votingData.get(setId));
         Map<String, Integer> setVotingData = votingData.get(setId);
 
@@ -68,11 +66,10 @@ public class LiarServiceImpl implements LiarService {
                 mostVotedNicknames.add(entry.getKey());
             }
         }
-        resetVote(setId);
         // 1명만 뽑힌 경우
-        if(mostVotedNicknames.size()==1){
+        if (mostVotedNicknames.size() == 1) {
             return new LiarVoteResultRes(mostVotedNicknames, GameProcessType.SelectAns);
-        }else {
+        } else {
             //무승부가 났을 경우
             return new LiarVoteResultRes(mostVotedNicknames, GameProcessType.LiarVote);
 
@@ -81,18 +78,18 @@ public class LiarServiceImpl implements LiarService {
     }
 
     @Override
-    public LiarAnswerOptionsRes getLiarAnswerOptions(LiarSetIdReq liarSetIdReq) {
-        long setId = liarSetIdReq.getSetId();
+    public LiarAnswerOptionsRes getLiarAnswerOptions(long setId) {
+
         GameSet gameSet = gameSetRepository.findBySetId(setId);
 
-        if(gameSet==null){
+        if (gameSet == null) {
             throw new SetNotExistException();
         }
 
         String category = gameSet.getCategory();
         List<String> randomAnswerOptions = wordRepository.findRandomLiarAnswers(category);
 
-        if(randomAnswerOptions==null){
+        if (randomAnswerOptions == null) {
             throw new LiarAnswerOptionsNotExistException();
         }
 
@@ -107,7 +104,7 @@ public class LiarServiceImpl implements LiarService {
         return new LiarAnswerOptionsRes(randomAnswerOptions);
     }
 
-    private void resetVote(long setId) {
+    public void resetVote(long setId) {
         votingData.remove(setId);
     }
 }
