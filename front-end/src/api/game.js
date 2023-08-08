@@ -52,7 +52,7 @@ export const QuizAnswerNegative = async (roomId, playerNickname) => {
 
 // 퀴즈의 결과(0 : 왼쪽, 1 : 오른쪽, 2: 무승부)와 정답자를 백에서 보내줌
 export const QuizResult = (roomId, gameId) => {
-    return API.get(`/api/quiz/result`, {
+    return API.post(`/api/quiz/result`, {
         roomId: roomId,
         gameId: gameId,
     });
