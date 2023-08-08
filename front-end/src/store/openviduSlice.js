@@ -14,6 +14,7 @@ const initialState = {
     owner: false,
     score: 0,
     playerId: 0,
+    setId: 1,
 };
 
 export const openviduSlice = createSlice({
