@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch } from "react-redux";
@@ -18,18 +18,28 @@ import {
     BtnBox,
 } from "../../components/layout/scoreTotal";
 
-const ScoreTotal = (props) => {
+const ScoreTotal = () => {
     const dispatch = useDispatch();
-    const { totalset, title } = props;
-    const set = 3;
-    const userlist = [
-        { username: "개냥이", upscore: 5, total: 8 },
-        { username: "냥냥이", upscore: 0, total: 7 },
-        { username: "씹냥이", upscore: 0, total: 5 },
-        { username: "뚱냥이", upscore: 0, total: 4 },
-        { username: "멍멍이", upscore: 0, total: 2 },
-        { username: "댕댕이", upscore: 0, total: 0 },
-    ];
+    const title = "라이어 승리";
+    const totalset = 5;
+    const [userlist, setUserlist] = useState([]);
+    const [set, setSet] = useState(0);
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch("/api/score/{roomId}");
+            const data = await response.json();
+
+            setUserlist(data.userlist);
+            setSet(data.set);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
     const Next = () => {
         if (set === totalset) {

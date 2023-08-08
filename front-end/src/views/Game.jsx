@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
+import ScoreTotal from "../views/game/ScoreTotal";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -38,6 +39,10 @@ const PHASE_COMPONENTS = [
     {
         type: PHASES.Category,
         component: <TopBottomVideo />,
+    },
+    {
+        type: PHASES.MidScore,
+        component: <ScoreTotal />,
     },
 ];
 

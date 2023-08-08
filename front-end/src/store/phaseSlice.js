@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    phaseType: "Wait",
+    phaseType: "MidScore",
 };
 
 export const phaseSlice = createSlice({
