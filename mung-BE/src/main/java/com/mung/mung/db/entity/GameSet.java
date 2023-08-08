@@ -16,10 +16,8 @@ import javax.persistence.*;
 public class GameSet {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long setId;
-
-    private int setFirst;
 
     private String category;
 
@@ -30,8 +28,6 @@ public class GameSet {
     private String answer;
 
     private String wrongAnswer;
-
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
