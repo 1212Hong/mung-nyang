@@ -26,7 +26,7 @@ import { getNickname, joinRoom } from "../../api/room";
 import Switch from "../../components/test/Switch";
 import { MidText } from "../../components/layout/common";
 import { ovActions } from "../../store/openviduSlice";
-import { enterGameRoom } from "../../hooks/test";
+import { enterGameRoom } from "../../hooks/testView";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
 

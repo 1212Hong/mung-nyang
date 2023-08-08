@@ -1,4 +1,4 @@
-import store from "../store/";
+import store from "../store";
 import { joinRoom } from "../api";
 import { ovActions } from "../store/openviduSlice";
 
