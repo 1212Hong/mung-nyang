@@ -3,6 +3,7 @@ import {
     QuizAnswerNegative,
     QuizAnswerPositive,
     QuizResult,
+    liarAnswer,
 } from "../api/game";
 
 export const fetchQuizInfo = async (roomId) => {
