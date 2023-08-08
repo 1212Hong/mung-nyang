@@ -30,7 +30,7 @@ public class LiarController {
 
     }
 
-    @GetMapping("/result")
+    @PostMapping("/result")
     public ResponseEntity<LiarVoteResultRes> getLiarVoteResult(@RequestBody LiarSetIdReq liarSetIdReq) {
 
         LiarVoteResultRes liarVoteResultRes = liarService.getLiarVoteResult(liarSetIdReq);

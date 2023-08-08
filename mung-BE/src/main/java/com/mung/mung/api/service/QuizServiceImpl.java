@@ -2,13 +2,11 @@ package com.mung.mung.api.service;
 
 import com.mung.mung.api.request.QuizCountReq;
 import com.mung.mung.api.request.QuizPlayersRoleReq;
-import com.mung.mung.api.request.QuizResultReq;
 import com.mung.mung.api.response.QuizPlayersRoleRes;
 import com.mung.mung.api.response.QuizResultRes;
 import com.mung.mung.api.response.QuizStartRes;
-import com.mung.mung.api.response.VoteResultRes;
+import com.mung.mung.common.exception.custom.GameNotExistException;
 import com.mung.mung.common.exception.custom.QuizNotFoundException;
-import com.mung.mung.common.exception.custom.SetNotExistException;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameSet;
 import com.mung.mung.db.entity.Quiz;
@@ -46,16 +44,16 @@ public class QuizServiceImpl implements QuizService{
                 .build();
     }
 
-    private final Map<String, Set<String>> positiveQuizsByRoom = new ConcurrentHashMap<>();
-    private final Map<String, Set<String>> negativeQuizsByRoom = new ConcurrentHashMap<>();
+    private final Map<String, Set<String>> positiveQuizByRoom = new ConcurrentHashMap<>();
+    private final Map<String, Set<String>> negativeQuizByRoom = new ConcurrentHashMap<>();
 
     public void submitPositiveQuiz(QuizCountReq quizCountReq) {
         String roomId = quizCountReq.getRoomId();
         String playerNickname = quizCountReq.getPlayerNickname();
 
-        positiveQuizsByRoom.computeIfAbsent(roomId, key -> ConcurrentHashMap.newKeySet());
+        positiveQuizByRoom.computeIfAbsent(roomId, key -> ConcurrentHashMap.newKeySet());
 
-        positiveQuizsByRoom.get(roomId).add(playerNickname);
+        positiveQuizByRoom.get(roomId).add(playerNickname);
 
     }
 
@@ -63,31 +61,30 @@ public class QuizServiceImpl implements QuizService{
         String roomId = quizCountReq.getRoomId();
         String playerNickname = quizCountReq.getPlayerNickname();
 
-        negativeQuizsByRoom.computeIfAbsent(roomId, key -> ConcurrentHashMap.newKeySet());
+        negativeQuizByRoom.computeIfAbsent(roomId, key -> ConcurrentHashMap.newKeySet());
 
-        negativeQuizsByRoom.get(roomId).add(playerNickname);
+        negativeQuizByRoom.get(roomId).add(playerNickname);
 
     }
 
     @Transactional
-    public QuizResultRes getQuizResult(QuizResultReq quizResultReq) {
-        String roomId = quizResultReq.getRoomId();
+    public QuizResultRes getQuizResult(String roomId) {
 
-        int positiveCount = positiveQuizsByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet()).size();
-        int negativeCount = negativeQuizsByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet()).size();
-        log.info("positive : {} - negative : {}" , positiveQuizsByRoom.get(roomId), negativeQuizsByRoom.get(roomId));
+        int positiveCount = positiveQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet()).size();
+        int negativeCount = negativeQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet()).size();
+        log.info("positive : {} - negative : {}" , positiveQuizByRoom.get(roomId), negativeQuizByRoom.get(roomId));
 
         String selectedPlayerNickname = null;
         int pickedAnswer;
         if (positiveCount > negativeCount) {
             pickedAnswer=1;
 
-            Set<String> positiveVoters = positiveQuizsByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
+            Set<String> positiveVoters = positiveQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
             selectedPlayerNickname = getRandomNickname(positiveVoters);
         } else if (negativeCount > positiveCount) {
             pickedAnswer=2;
 
-            Set<String> negativeVoters = negativeQuizsByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
+            Set<String> negativeVoters = negativeQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
             selectedPlayerNickname = getRandomNickname(negativeVoters);
         } else {
             pickedAnswer=0; // 무승부
@@ -98,31 +95,15 @@ public class QuizServiceImpl implements QuizService{
         }
 
         log.info("answerer : {}", selectedPlayerNickname);
-        Long gameId = quizResultReq.getGameId();
 
-        Game game = gameRepository.findByGameId(gameId);
+        return new QuizResultRes(pickedAnswer, selectedPlayerNickname);
 
-        GameSet gameSet = GameSet.builder()
-                .answerer(selectedPlayerNickname)
-//                .setFirst(1)
-                .game(game)
-                .build();
-
-        gameSetRepository.save(gameSet);
-
-        Long setId = gameSet.getSetId();
-
-        // 해당 room의 투표 정보 삭제
-        resetVote(roomId);
-
-        return new QuizResultRes(setId, pickedAnswer, selectedPlayerNickname);
 
     }
 
     @Override
     public QuizPlayersRoleRes getPlayersRole(QuizPlayersRoleReq quizPlayersRoleReq) {
         Long gameId = quizPlayersRoleReq.getGameId();
-        Long setId = quizPlayersRoleReq.getSetId();
 
         String roomId = quizPlayersRoleReq.getRoomId();
         String answerer = quizPlayersRoleReq.getAnswerer();
@@ -148,6 +129,7 @@ public class QuizServiceImpl implements QuizService{
         for (String player : players) {
             Map<String, String> userInfo = new HashMap<>();
 
+            // liar만 wrongAnswer를 줌
             if (player.equals(liar)) {
                 userInfo.put("playerNickname", player);
                 userInfo.put("word", wrongAnswer);
@@ -159,30 +141,26 @@ public class QuizServiceImpl implements QuizService{
         }
 
         Game game = gameRepository.findByGameId(gameId);
+        if(game==null){
+            throw new GameNotExistException();
+        }
 
-        Optional<GameSet> gameSetOptional = gameSetRepository.findById(setId);
-
-        // GameSet 테이블 업데이트
-        if(gameSetOptional.isPresent()){
-            GameSet gameSet = gameSetOptional.get();
-
-            GameSet updatedGameSet = GameSet.builder()
-                    .setId(gameSet.getSetId())
+        // GameSet 생성
+            GameSet gameSet = GameSet.builder()
                     .answer(answer)
                     .answerer(answerer)
                     .category(category)
                     .liar(liar)
-//                    .setFirst(1)
                     .wrongAnswer(wrongAnswer)
                     .game(game)
                     .build();
 
-            gameSetRepository.save(updatedGameSet);
-            
-        }
-        else {
-            throw new SetNotExistException();
-        }
+            gameSetRepository.save(gameSet);
+
+        Long setId = gameSet.getSetId();
+
+        // 해당 room의 투표 정보 삭제
+        resetVote(roomId);
 
         return new QuizPlayersRoleRes(setId, playersRoleInfo, GameProcessType.Desc);
     }
@@ -194,8 +172,9 @@ public class QuizServiceImpl implements QuizService{
     }
 
     private void resetVote(String roomId) {
-        positiveQuizsByRoom.remove(roomId);
-        negativeQuizsByRoom.remove(roomId);
+        log.info("Quiz 투표 정보 삭제 : {}", roomId);
+        positiveQuizByRoom.remove(roomId);
+        negativeQuizByRoom.remove(roomId);
     }
 
 
