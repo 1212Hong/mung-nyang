@@ -2,12 +2,14 @@ package com.mung.mung.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class VoteCountRes {
-    private String voteMessage;
+public class LiarAnswerOptionsRes {
+
+    List<String> answerOptions;
 }
