@@ -1,8 +1,13 @@
 import API from "./base";
 
 // 카테고리 내 제시어
-export const selectCategory = (roomId, category) => {
-    return API.get(`api/quiz/category/${roomId}`, { category: category });
+export const selectCategory = (roomId, gameId, category, answerer) => {
+    return API.get(`api/quiz/category/`, {
+        roomId,
+        gameId,
+        category,
+        answerer,
+    });
 };
 
 // 비상정답
@@ -22,6 +27,11 @@ export const FinalAnswer = (roomId, answer) => {
 // 제시어 정답 목록 요청
 export const listAnswer = (roomId) => {
     return API.get(`/pub/liar-category${roomId}`);
+};
+
+// 지목된 라이어에 정답 목록 표출
+export const liarAnswer = async (setId) => {
+    return await API.get(`api/liar/options?setId=${setId}`);
 };
 
 // 퀴즈 시작시 질문지와 answer 1,2 요청
