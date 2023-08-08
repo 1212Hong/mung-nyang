@@ -68,8 +68,7 @@ const Game = () => {
                         subscriber,
                     ]),
                 );
-                console.log("stream", event.stream);
-                console.log(subscriber);
+
                 setState((prevState) => ({
                     ...prevState,
                     subscribers: subscribers,
