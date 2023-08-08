@@ -28,7 +28,7 @@ const SelectLiar = () => {
     const text = "라이어를 선택하세요.";
     const imgSrc = foot;
     const dispatch = useDispatch();
-    const [MostVotedNicknames, setMostVotedNicknames] = useState([]);
+    const [mostVotedNickname, setMostVotedNickname] = useState("");
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -39,12 +39,15 @@ const SelectLiar = () => {
 
                 const selectedLiarResponse = await selectedLiar(setId);
                 console.log(selectedLiarResponse);
-                setMostVotedNicknames(selectedLiarResponse.data[0]);
+                const mostVotedNickname =
+                    selectedLiarResponse.data.mostVotedNicknames[0];
+                console.log(mostVotedNickname);
+                setMostVotedNickname(mostVotedNickname);
 
                 await deleteLiar(setId);
 
                 for (let i = 0; i < userlist.length; i++) {
-                    if (userlist[i] === MostVotedNicknames) {
+                    if (userlist[i] === mostVotedNickname) {
                         dispatch(changePhase({ phaseType: "SelectAns" }));
                     } else {
                         dispatch(changePhase({ phaseType: "OtherView" }));

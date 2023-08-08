@@ -63,7 +63,7 @@ export const selectLiar = (setId, playerNickname) => {
 
 // 라이어 투표 결과
 export const selectedLiar = (setId) => {
-    return API.get(`/api/liar/result/${setId}`);
+    return API.get(`/api/liar/result/?setId=${setId}`);
 };
 
 // 라이어 투표 내역 삭제
