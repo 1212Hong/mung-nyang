@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import VideoComponent from "../../components/VideoComponent";
 import foot from "../../assets/img/foot.png";
 import Timer from "../../components/Timer";
@@ -12,8 +11,10 @@ import {
 } from "../../components/layout/selectLiar";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch } from "react-redux";
+import { selectLiar, selectedLiar } from "../../api/game";
 
-const SelectLiar = ({ roomId }) => {
+const SelectLiar = () => {
+    const setId = 1;
     const userlist = [
         "댕댕이1",
         "댕댕이2",
@@ -27,20 +28,25 @@ const SelectLiar = ({ roomId }) => {
     const text = "라이어를 선택하세요.";
     const imgSrc = foot;
     const dispatch = useDispatch();
-    const liar = "댕댕이";
-    const user = "댕댕일";
+    const [MostVotedNicknames, setMostVotedNicknames] = useState([]);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (liar === user) {
+        const timer = setTimeout(async () => {
+            try {
+                const response = await selectLiar(setId, activeBox);
+                console.log(response);
+
+                const selectedLiarResponse = await selectedLiar(setId);
+                setMostVotedNicknames(selectedLiarResponse.data);
+
                 dispatch(changePhase({ phaseType: "SelectAns" }));
-            } else {
-                dispatch(changePhase({ phaseType: "OtherView" }));
+            } catch (error) {
+                console.error("Error sending data:", error);
             }
         }, 7000);
 
         return () => clearTimeout(timer);
-    }, []);
+    }, [activeBox]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -52,23 +58,8 @@ const SelectLiar = ({ roomId }) => {
         };
     }, []);
 
-    const handleBoxClick = async (boxIndex) => {
+    const handleBoxClick = (boxIndex) => {
         setActiveBox(boxIndex === activeBox ? null : boxIndex);
-        console.log(boxIndex);
-        console.log(roomId);
-        try {
-            const dataToSend = {
-                roomId: roomId,
-                boxIndex: boxIndex,
-            };
-            const response = await axios.post(
-                "http://localhost:3000",
-                dataToSend,
-            );
-            console.log("서버 응답:", response.data);
-        } catch (error) {
-            console.error("서버 요청 에러:", error);
-        }
     };
 
     return (

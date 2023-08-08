@@ -57,3 +57,18 @@ export const QuizResult = (roomId, gameId) => {
         gameId: gameId,
     });
 };
+
+// 라이어 투표
+export const selectLiar = (setId, playerNickname) => {
+    return API.post(`/api/liar/vote`, {
+        setId: setId,
+        playerNickname: playerNickname,
+    });
+};
+
+// 라이어 투표 결과
+export const selectedLiar = (setId) => {
+    return API.get(`/api/liar/vote`, {
+        setId: setId,
+    });
+};
