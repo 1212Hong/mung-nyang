@@ -8,6 +8,8 @@ import javax.annotation.PostConstruct;
 
 import com.mung.mung.api.request.GameRoomConnectReq;
 import com.mung.mung.api.request.GameRoomCreateReq;
+import com.mung.mung.api.request.GameRoomLeaveReq;
+import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.service.GameRoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,10 +133,12 @@ public class GameRoomController {
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/api/game-sessions/leave/{roomId}/{playerId}")
-    public ResponseEntity<String> leaveRoom(@PathVariable("roomId") String roomId,
-                                            @PathVariable("playerId") long playerId){
 
+    @DeleteMapping("/api/game-sessions/leave")
+    public ResponseEntity<String> leaveRoom(@RequestBody GameRoomLeaveReq gameRoomLeaveReq) {
+
+        String roomId=gameRoomLeaveReq.getRoomId();
+        long playerId= gameRoomLeaveReq.getPlayerId();
         // roomId와 playerId가 유효하지 않은 경우 예외 처리
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
             return new ResponseEntity<>("roomId가 없거나 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
@@ -157,13 +161,16 @@ public class GameRoomController {
             this.sessionRoomConvert.remove(roomId); //roomId,SessionID 삭제
         }
 
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("Leave 처리 성공",HttpStatus.OK);
     }
 
-    @DeleteMapping("/api/game-sessions/waiting/{roomId}")
-    public ResponseEntity<String> roomInitialize(@PathVariable("roomId") String roomId){
+    @PutMapping("/api/game-sessions/initialize")
+    public ResponseEntity<String> roomInitialize(
+            @RequestBody RoomIdReq roomIdReq){
+        String roomId=roomIdReq.getRoomId();
         gameRoomService.roomInitialize(roomId);
+        // All Player Initialize 추가해야함
+
         return new ResponseEntity<>("방을 대기 중으로 변경 완료했습니다.",HttpStatus.OK);
     }
 

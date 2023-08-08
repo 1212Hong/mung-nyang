@@ -38,10 +38,6 @@ public class GameRoom {
     @OneToMany(mappedBy = "gameRoom" ,cascade = CascadeType.ALL)// default : LAZY
     private List<Game> games = new ArrayList<>();
 
-    @Builder.Default
-    @OneToMany(mappedBy = "gameRoom" ,cascade = CascadeType.ALL)// default : LAZY
-    private List<BannedPlayer> bannedPlayers = new ArrayList<>();
-
     public void updateOwner(String newOwner){
         this.owner = newOwner;
     }
