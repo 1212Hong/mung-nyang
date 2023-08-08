@@ -11,6 +11,10 @@ export const OtherUsers = styled.div`
 export const MainText = styled.p`
     font-size: 64px;
 `;
+// 테스트화면 h3
+export const MidText = styled.span`
+    font-size: 32px;
+`;
 // jua설명
 export const SubText = styled.span`
     font-size: 24px;
