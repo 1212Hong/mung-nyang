@@ -47,7 +47,9 @@ const VideoComponent = (props) => {
     useEffect(() => {
         console.log(streamManager);
         if (streamManager && videoRef.current) {
-            streamManager[0].addVideoElement(videoRef.current);
+            if (Array.isArray(streamManager))
+                streamManager[0].addVideoElement(videoRef.current);
+            else streamManager.addVideoElement(videoRef.current);
         } else {
             startVideo();
         }

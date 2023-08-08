@@ -53,7 +53,7 @@ const Game = () => {
         publisher: undefined,
         subscribers: subscribers,
     });
-    console.log("sessiontest", state.session);
+
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     useEffect(() => {
@@ -91,7 +91,7 @@ const Game = () => {
             }));
 
             try {
-                await session.connect(token, "User 1");
+                await session.connect(token, myUserName);
                 const publisher = await state.OV.initPublisherAsync(undefined, {
                     audioSource: undefined,
                     videoSource: undefined,
@@ -106,19 +106,18 @@ const Game = () => {
                 console.log(publisher);
                 session.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
-                console.log(1);
+
                 var devices = await state.OV.getDevices();
-                console.log(2);
+
                 var videoDevices = devices.filter(
                     (device) => device.kind === "videoinput",
                 );
-                console.log(3);
+
                 var currentVideoDeviceId = publisher.stream
                     .getMediaStream()
                     .getVideoTracks()[0]
                     .getSettings().deviceId;
-                console.log(4);
-                console.log("currentvideodevice", currentVideoDeviceId);
+
                 var currentVideoDevice = videoDevices.find(
                     (device) => device.deviceId === currentVideoDeviceId,
                 );
@@ -131,12 +130,11 @@ const Game = () => {
                     mainStreamManager: publisher,
                     publisher: publisher,
                 }));
-                console.log("end");
+                console.log("success connect to the session");
             } catch (error) {
                 console.log(
                     "There was an error connecting to the session:",
-                    error.code,
-                    error.message,
+                    error,
                 );
             }
         };
