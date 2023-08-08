@@ -1,6 +1,7 @@
 package com.mung.mung.api.controller;
 
 import com.mung.mung.api.request.PlayerJoinReq;
+import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.response.PlayerStatusRes;
 import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.NicknameService;
@@ -8,12 +9,14 @@ import com.mung.mung.api.service.PlayerService;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 @RequestMapping("/api/player")
 public class PlayerController {
 
@@ -25,7 +28,7 @@ public class PlayerController {
     @PostMapping("/join")
     public ResponseEntity<PlayerStatusRes> joinGameRoom(@RequestBody PlayerJoinReq playerJoinReq) {
         // player정보를 DB에 저장
-        System.out.println(playerJoinReq);
+        log.info("playerJoinReq : {}",playerJoinReq);
         boolean ownerCheck = playerService.joinRoom(playerJoinReq);
 
         // 저장 후 조회 해 Id를 보내 줌
@@ -38,8 +41,9 @@ public class PlayerController {
     }
 
     // 유저에게 랜덤으로 닉네임을 주기.
-    @GetMapping("/nickname/{roomId}")
-    public ResponseEntity<String> giveNickname(@PathVariable("roomId") String roomId) {
+    @GetMapping("/nickname")
+    public ResponseEntity<String> giveNickname(@RequestBody RoomIdReq roomIdReq) {
+        String roomId=roomIdReq.getRoomId();
         // player정보를 DB에 저장
         if (!gameRoomService.isRoomExists(roomId)){
             return new ResponseEntity<>("방이 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
