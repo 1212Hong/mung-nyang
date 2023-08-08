@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Timer from "./Timer";
-import { submitAnswer } from "../hooks/quiz";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import ChooseModal from "../components/modal/ChooseModal";
+import { fetchQuizResult, submitAnswer } from "../hooks/quiz";
 
 const Container = styled.div`
     padding: 20px;
@@ -38,25 +39,65 @@ const Content = styled.button`
 `;
 
 const Quiz = (props) => {
-    const { title, text1, text2 } = props;
-    const [userChoice, setUserChoice] = useState(null);
+    const { title, text1, text2, onViewChange } = props;
+    const [showChooseModal, setShowChooseModal] = useState(false);
+    const [answerer, setAnswerer] = useState("이현우");
+    const roomId = "test";
+    const gameId = "1";
+    const playerNickname = "라이어 고양이";
     const [answered, setAnswered] = useState(false);
-    const roomId = useSelector((state) => state.openvidu.mySessionId);
-    const playerNickname = useSelector((state) => state.openvidu.myUserName);
+    const [userChoice, setUserChoice] = useState("positive"); // Set an initial value
     const handleUserChoice = (isPositive) => {
         setUserChoice(isPositive ? "positive" : "negative");
     };
 
     useEffect(() => {
-        if (answered) {
-            console.log(userChoice);
-            submitAnswer(roomId, playerNickname, userChoice);
-        }
-    }, [answered, roomId, playerNickname, userChoice]);
+        const handleAnswerSubmission = async () => {
+            try {
+                console.log("1단계", userChoice);
 
-    // useEffect(() => {
-    //     console.log(userChoice); // 여기에서 로그 찍기
-    // }, [userChoice]);
+                // Submit answer
+                await submitAnswer(roomId, playerNickname, userChoice);
+
+                console.log("2단계", roomId, playerNickname, userChoice);
+
+                // Fetch quiz result
+                await fetchQuizResult(roomId, gameId);
+
+                // Update state based on fetched result
+                setAnswerer(answerer);
+                console.log("3단계", answerer);
+                setShowChooseModal(true);
+            } catch (error) {
+                console.error("Error:", error);
+                // 에러 처리
+            }
+        };
+
+        if (answered) {
+            handleAnswerSubmission();
+        }
+    }, [
+        answered,
+        roomId,
+        playerNickname,
+        userChoice,
+        gameId,
+        setAnswerer,
+        setShowChooseModal,
+        answerer,
+    ]);
+
+    useEffect(() => {
+        if (showChooseModal) {
+            const modalTimer = setTimeout(() => {
+                setShowChooseModal(false);
+                onViewChange("Category");
+            }, 10000); // 10 seconds
+
+            return () => clearTimeout(modalTimer);
+        }
+    }, [setShowChooseModal, onViewChange, showChooseModal]);
     return (
         <Container>
             <Timer
@@ -73,6 +114,7 @@ const Quiz = (props) => {
                     {text2}
                 </Content>
             </Box>
+            {showChooseModal && <ChooseModal answerer={answerer} />}
         </Container>
     );
 };
