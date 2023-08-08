@@ -56,6 +56,7 @@ const Game = () => {
 
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
+
     useEffect(() => {
         const initializeSession = async () => {
             const session = state.OV.initSession();
