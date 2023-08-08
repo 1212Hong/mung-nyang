@@ -61,10 +61,8 @@ const Quiz = (props) => {
 
                 console.log("2단계", roomId, playerNickname, userChoice);
 
-                // Fetch quiz result
                 await fetchQuizResult(roomId, gameId);
 
-                // Update state based on fetched result
                 setAnswerer(answerer);
                 console.log("3단계", answerer);
                 setShowChooseModal(true);
