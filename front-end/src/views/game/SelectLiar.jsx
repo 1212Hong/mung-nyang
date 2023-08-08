@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import { selectLiar, selectedLiar } from "../../api/game";
 
 const SelectLiar = () => {
-    const setId = 1;
+    const [setId, setSetId] = useState(1);
     const userlist = [
         "댕댕이1",
         "댕댕이2",
@@ -35,11 +35,18 @@ const SelectLiar = () => {
             try {
                 const response = await selectLiar(setId, activeBox);
                 console.log(response);
+                console.log(setId);
 
                 const selectedLiarResponse = await selectedLiar(setId);
                 setMostVotedNicknames(selectedLiarResponse.data);
 
-                dispatch(changePhase({ phaseType: "SelectAns" }));
+                for (let i = 0; i < userlist.length; i++) {
+                    if (userlist[i] === MostVotedNicknames) {
+                        dispatch(changePhase({ phaseType: "SelectAns" }));
+                    } else {
+                        dispatch(changePhase({ phaseType: "OtherView" }));
+                    }
+                }
             } catch (error) {
                 console.error("Error sending data:", error);
             }
