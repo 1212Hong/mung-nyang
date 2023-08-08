@@ -47,6 +47,23 @@ export const openviduSlice = createSlice({
         deletePublisher: (state) => {
             state.publisher = undefined;
         },
+
+        createOpenvidu: (state, { payload }) => {
+            if (!state.OV) {
+                state.myUserName = payload.nickname;
+                state.mySessionId = payload.roomId;
+                state.OV = new OpenVidu();
+                state.session = state.OV.initSession();
+                state.devices = state.OV.getDevices();
+            }
+        },
+
+        createPublisher: (state, { payload }) => {
+            state.session.publish(payload.publisher);
+            state.currentVideoDevice = payload.currentVideoDevice;
+            state.mainStreamManager = payload.publisher;
+            state.publisher = payload.publisher;
+        },
         updateSubscribers: (state, { payload }) => {
             console.log(payload);
             state.subscribers = [...state.subscribers, payload];

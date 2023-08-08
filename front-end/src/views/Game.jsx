@@ -77,7 +77,8 @@ const Game = () => {
             });
 
             session.on("streamDestroyed", (event) => {
-                event.preventDefault();
+                console.log("파괴");
+                console.log(state.session);
                 deleteSubscriber(event.stream.streamManager);
             });
 
@@ -141,22 +142,24 @@ const Game = () => {
 
         initializeSession();
         return () => {
-            leaveSession();
+            window.addEventListener("beforeunload", leaveSession);
         };
     }, [state.OV, token]);
 
     const deleteSubscriber = (streamManager) => {
+        console.log("delete 호출");
         let subscribers = state.subscribers;
         let index = subscribers.indexOf(streamManager, 0);
         if (index > -1) {
             subscribers.splice(index, 1);
+
+            dispatch(ovActions.saveSubscribers(subscribers));
             this.setState({
                 subscribers: subscribers,
             });
-            dispatch(ovActions.saveSubscribers(subscribers));
         }
     };
-    const leaveSession = (streamManager) => {
+    const leaveSession = () => {
         const mySession = state.session;
         if (mySession) {
             mySession.disconnect();
@@ -172,7 +175,8 @@ const Game = () => {
             publisher: undefined,
             subscribers: [],
         });
-        dispatch(ovActions.leaveSession([...state]));
+        dispatch(ovActions.leaveSession(state));
+        console.log([...state]);
     };
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
