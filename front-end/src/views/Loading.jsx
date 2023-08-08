@@ -12,7 +12,7 @@ const Loading = () => {
 
     return (
         <Container>
-            <img width={1280} height={670} src={imgSrc} alt="" />
+            <img width={1000} height={670} src={imgSrc} alt="" />
             <TextBox>
                 <TipItem>Tip : 게임시작 전 간단한 스트레칭은 어떤가요?</TipItem>
                 <LoadingItem>
