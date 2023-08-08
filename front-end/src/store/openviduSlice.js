@@ -25,7 +25,9 @@ export const openviduSlice = createSlice({
             state.token = action.payload;
             console.log(state.token);
         },
-
+        saveUserName: (state, action) => {
+            state.myUserName = action.payload;
+        },
         saveSession: (state, action) => {
             state.session = action.payload; // payload에 생성된 session 전달
         },
