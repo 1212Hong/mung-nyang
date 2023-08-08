@@ -4,10 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
-public class VoteSetReq {
-
+public class RoomIdReq {
     private String roomId;
-
-    private int maxSet;
 }
