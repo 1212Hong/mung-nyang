@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class QuizServiceImpl implements QuizService{
+public class QuizServiceImpl implements QuizService {
 
     private final QuizRepository quizRepository;
     private final PlayerRepository playerRepository;
@@ -72,24 +72,24 @@ public class QuizServiceImpl implements QuizService{
 
         int positiveCount = positiveQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet()).size();
         int negativeCount = negativeQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet()).size();
-        log.info("positive : {} - negative : {}" , positiveQuizByRoom.get(roomId), negativeQuizByRoom.get(roomId));
+        log.info("positive : {} - negative : {}", positiveQuizByRoom.get(roomId), negativeQuizByRoom.get(roomId));
 
         String selectedPlayerNickname = null;
         int pickedAnswer;
         if (positiveCount > negativeCount) {
-            pickedAnswer=1;
+            pickedAnswer = 1;
 
             Set<String> positiveVoters = positiveQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
             selectedPlayerNickname = getRandomNickname(positiveVoters);
         } else if (negativeCount > positiveCount) {
-            pickedAnswer=2;
+            pickedAnswer = 2;
 
             Set<String> negativeVoters = negativeQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
             selectedPlayerNickname = getRandomNickname(negativeVoters);
         } else {
-            pickedAnswer=0; // 무승부
+            pickedAnswer = 0; // 무승부
             List<String> players = playerRepository.findPlayers(roomId);
-            log.info("[Draw] players : {}" , players);
+            log.info("[Draw] players : {}", players);
             int randomIndex = new Random().nextInt(players.size());
             selectedPlayerNickname = players.get(randomIndex);
         }
@@ -141,21 +141,21 @@ public class QuizServiceImpl implements QuizService{
         }
 
         Game game = gameRepository.findByGameId(gameId);
-        if(game==null){
+        if (game == null) {
             throw new GameNotExistException();
         }
 
         // GameSet 생성
-            GameSet gameSet = GameSet.builder()
-                    .answer(answer)
-                    .answerer(answerer)
-                    .category(category)
-                    .liar(liar)
-                    .wrongAnswer(wrongAnswer)
-                    .game(game)
-                    .build();
+        GameSet gameSet = GameSet.builder()
+                .answer(answer)
+                .answerer(answerer)
+                .category(category)
+                .liar(liar)
+                .wrongAnswer(wrongAnswer)
+                .game(game)
+                .build();
 
-            gameSetRepository.save(gameSet);
+        gameSetRepository.save(gameSet);
 
         Long setId = gameSet.getSetId();
 

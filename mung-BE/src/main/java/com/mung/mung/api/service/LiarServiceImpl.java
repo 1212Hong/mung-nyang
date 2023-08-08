@@ -105,6 +105,8 @@ public class LiarServiceImpl implements LiarService {
     }
 
     public void resetVote(long setId) {
+        log.info("Liar 투표 정보 삭제 : {}", setId);
+
         votingData.remove(setId);
     }
 }
