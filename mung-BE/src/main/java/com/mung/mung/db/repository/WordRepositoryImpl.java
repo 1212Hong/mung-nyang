@@ -20,7 +20,19 @@ public class WordRepositoryImpl implements WordRepositoryCustom{
                 .from(word)
                 .where(word.category.eq(category))
                 .orderBy(Expressions.stringTemplate("RAND()").asc())
+//               .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .limit(2)
+                .fetch();
+    }
+
+    @Override
+    public List<String> findRandomLiarAnswers(String category) {
+        return queryFactory
+                .select(word.title)
+                .from(word)
+                .where(word.category.eq(category))
+                .orderBy(Expressions.stringTemplate("RAND()").asc())
+                .limit(16)
                 .fetch();
     }
 }
