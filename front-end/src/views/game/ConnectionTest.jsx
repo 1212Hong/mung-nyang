@@ -60,9 +60,14 @@ function ConnectionTest() {
     }
 
     const refreshName = async () => {
-        dispatch(ovActions.saveUserName(`user` + Math.random() * 100));
-        // setUserName(await getNickname());
-        setUserName(myUserName);
+        try {
+            const nickname = await getNickname(mySessionId);
+            console.log(nickname);
+            setUserName(nickname);
+            dispatch(ovActions.saveUserName(nickname));
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     useEffect(() => {
