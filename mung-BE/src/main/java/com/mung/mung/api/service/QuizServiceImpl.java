@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
@@ -34,10 +35,13 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public QuizStartRes startQuiz(String roomId) {
 
-        Quiz quiz = quizRepository.findRandomQuiz();
-        if (quiz == null) {
+        List<Quiz> quizList = quizRepository.findAll();
+        if (quizList.isEmpty()) {
             throw new QuizNotFoundException();
         }
+
+        int randomIndex = ThreadLocalRandom.current().nextInt(quizList.size());
+        Quiz quiz = quizList.get(randomIndex);
 
         return QuizStartRes.builder()
                 .quiz(quiz)
