@@ -88,8 +88,8 @@ public class LiarServiceImpl implements LiarService {
 
         String category = gameSet.getCategory();
         List<String> randomAnswerOptions = wordRepository.findRandomLiarAnswers(category);
-
-        if (randomAnswerOptions == null) {
+        log.info("정답 예시들 : {}", randomAnswerOptions);
+        if (randomAnswerOptions.isEmpty()) {
             throw new LiarAnswerOptionsNotExistException();
         }
 

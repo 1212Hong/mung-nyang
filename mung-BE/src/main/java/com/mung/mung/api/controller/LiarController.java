@@ -37,12 +37,12 @@ public class LiarController {
 
     }
 
-    @DeleteMapping("/resetVote")
-    public ResponseEntity<Void> deleteLiarVoteResult(@RequestBody LiarSetIdReq liarSetIdReq) {
+    @DeleteMapping("/resetVote/{setId}")
+    public ResponseEntity<String> deleteLiarVoteResult(@PathVariable long setId) {
 
-        liarService.resetVote(liarSetIdReq.getSetId());
+        liarService.resetVote(setId);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(setId + " : liar 투표 정보 삭제");
 
     }
 

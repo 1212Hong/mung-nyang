@@ -10,8 +10,8 @@ public enum ExceptionMessage {
     SET_NOT_EXIST_MESSAGE("GameSet does not exist."),
     LIAR_VOTE_RESULT_NOT_FOUND_MESSAGE("라이어 투표 정보가 존재하지 않습니다"),
     LIAR_ANSWER_OPTIONS_NOT_EXIST_MESSAGE("정답 리스트가 존재하지 않습니다"),
-
-    PLAYER_NOT_EXIST_MESSAGE("Player does not exist.")
+    PLAYER_NOT_EXIST_MESSAGE("Player does not exist."),
+    VOTES_NOT_START_MESSAGE("투표가 시작되지 않았습니다")
 
     ;
 

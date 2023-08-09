@@ -6,6 +6,7 @@ import com.mung.mung.api.response.VoteCountRes;
 import com.mung.mung.api.response.VoteResultRes;
 import com.mung.mung.common.exception.custom.PlayerNotExistException;
 import com.mung.mung.common.exception.custom.RoomNotExistException;
+import com.mung.mung.common.exception.custom.VotesNotStartException;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.enums.GameProcessType;
@@ -47,7 +48,11 @@ public class VoteServiceImpl implements VoteService {
         }
         startedRooms.add(roomId);
 
-        int cntPlayers = gameRoomRepository.findByRoomId(roomId).getPlayers().size();
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        if (gameRoom == null) {
+            throw new RoomNotExistException();
+        }
+        int cntPlayers = gameRoom.getPlayers().size();
 
         if (cntPlayers == 0) {
             throw new PlayerNotExistException();
@@ -60,10 +65,10 @@ public class VoteServiceImpl implements VoteService {
 
     public VoteCountRes countVote(VoteCountReq voteCountReq) {
 
-        GameRoom gameRoom = gameRoomRepository.findByRoomId(voteCountReq.getRoomId());
+        Integer requiredVotes = roomPlayers.get(voteCountReq.getRoomId()); // 각 방에 필요한 투표 수
 
-        if (gameRoom == null) {
-            throw new RoomNotExistException();
+        if(requiredVotes==null){
+            throw new VotesNotStartException();
         }
 
         String voted = voteCountReq.getVoteMessage();
@@ -90,8 +95,15 @@ public class VoteServiceImpl implements VoteService {
             throw new RoomNotExistException();
         }
 
-        int requiredVotes = roomPlayers.get(roomId); // 각 방에 필요한 투표 수
+
+        Integer requiredVotes = roomPlayers.get(roomId); // 각 방에 필요한 투표 수
+
+        if(requiredVotes==null){
+            throw new VotesNotStartException();
+        }
+
         int votes = roomVotesMap.getOrDefault(roomId, 0);
+
         log.info("getVoteResult - requiredVotes : {} - votes : {}", requiredVotes, votes);
 
         if (votes >= requiredVotes) {
@@ -120,6 +132,12 @@ public class VoteServiceImpl implements VoteService {
 
     public void resetVote(String roomId) {
         log.info("시작 투표 정보 삭제 : {}", roomId);
+        Integer requiredVotes = roomPlayers.get(roomId); // 각 방에 필요한 투표 수
+
+        if(requiredVotes==null){
+            throw new VotesNotStartException();
+        }
+
         startedRooms.remove(roomId);
         roomVotesMap.remove(roomId);
         roomPlayers.remove(roomId);
