@@ -38,7 +38,7 @@ public class Game {
     @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
 
-    @OneToMany(mappedBy = "game" ,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
     private List<GameSet> gameSets = new ArrayList<>();
 
 

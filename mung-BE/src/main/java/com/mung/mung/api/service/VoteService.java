@@ -11,4 +11,6 @@ public interface VoteService {
     VoteCountRes countVote(VoteCountReq voteCountReq);
 
     VoteResultRes getVoteResult(VoteSetReq voteSetReq);
+
+    void resetVote(String roomId);
 }
