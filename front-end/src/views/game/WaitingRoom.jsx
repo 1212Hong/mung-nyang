@@ -23,17 +23,16 @@ import {
 } from "../../components/layout/waiting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
-import { ovActions } from "../../store/openviduSlice";
-import { startGameVote } from "../../api/game";
+import { signalStartGameVote, startGameVote } from "../../api/game";
 
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
     const [isMuted, setIsMuted] = useState(false);
 
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher, mySessionId } = openvidu;
+    const { subscribers, publisher, mySessionId, session } = openvidu;
     console.log(subscribers);
-
+    console.log(session);
     const dispatch = useDispatch();
 
     const openRuleBook = () => {
@@ -45,13 +44,16 @@ function WaitingRoom() {
         );
     };
     const openReadyModal = () => {
+        signalStartGameVote(session.sessionId);
         startGameVote(mySessionId);
-        dispatch(
-            openModal({
-                modalType: "ReadyModal",
-                isOpen: true,
-            }),
-        );
+        session.on("startGameVote", () => {
+            dispatch(
+                openModal({
+                    modalType: "ReadyModal",
+                    isOpen: true,
+                }),
+            );
+        });
     };
 
     function selectSet(idx) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     ReadyModalView,
     ModalViewDescDiv,
@@ -10,7 +10,7 @@ import {
 import Button from "../Button";
 import Timer from "../Timer";
 import { agreeVote, castGameVote, signalVote } from "../../api/game";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const ReadyModal = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -25,6 +25,7 @@ const ReadyModal = () => {
     console.log(session.streamManagers);
     const [wait, setWait] = useState(session.streamManagers.length);
     const [complete, setComplete] = useState(false);
+    const dispatch = useDispatch();
 
     // api 코드 작성할 곳.
     // const decideVote = async (flag) => {
@@ -38,6 +39,18 @@ const ReadyModal = () => {
     //     flag ? setAgree(agree + 1) : setDisagree(disagree + 1);
     //     setWait(wait - 1);
     // };
+    useEffect(() => {
+        session.on("agree", () => {
+            console.log("찬성");
+            setAgree(agree + 1);
+            setWait(wait - 1);
+        });
+        session.on("disagree", () => {
+            console.log("반대");
+            setDisagree(disagree + 1);
+            setWait(wait - 1);
+        });
+    }, [session]);
 
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
@@ -68,8 +81,6 @@ const ReadyModal = () => {
                                     res.data.voteMessage,
                                     session.sessionId,
                                 );
-                                setAgree(agree + 1);
-                                setWait(wait - 1);
                             }}
                         >
                             O
@@ -88,8 +99,6 @@ const ReadyModal = () => {
                                     res.data.voteMessage,
                                     session.sessionId,
                                 );
-                                setDisagree(disagree + 1);
-                                setWait(wait - 1);
                             }}
                         >
                             X
