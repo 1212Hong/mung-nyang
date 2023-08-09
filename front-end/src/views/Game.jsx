@@ -61,10 +61,9 @@ const Game = () => {
             const newSession = session;
 
             newSession.on("streamCreated", (event) => {
-                const subscriber = newSession.subscribe(
-                    event.stream,
-                    undefined,
-                );
+                const subscriber = newSession.subscribe(event.stream, {
+                    nickname: myUserName,
+                });
                 console.log(subscriber);
                 dispatch(
                     ovActions.updateSubscribers(...subscribersList, subscriber),

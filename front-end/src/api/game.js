@@ -9,6 +9,25 @@ export const startGameVote = (roomId) => {
         .catch((err) => console.log(err));
 };
 
+// 투표 시작 signal
+// 투표 수락 or 거절 post to openvidu
+export const signalStartGameVote = (sessionId) => {
+    API.post(
+        `/openvidu/api/signal`,
+        {
+            session: sessionId,
+            to: [],
+            type: "startGameVote",
+            data: "start game vote",
+        },
+        {
+            headers: { Authorization: `Basic ${btoa("OPENVIDUAPP:MUNG")}` },
+        },
+    )
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
+
 // 투표 수락 or 거절의사 보내기
 export const castGameVote = (roomId, check) => {
     return API.post(`/api/vote/count`, {
@@ -45,7 +64,7 @@ export const getVoteRes = (roomId, maxSet) => {
 
 // 투표 결과 delete
 export const deleteVote = (roomId) => {
-    API.post(`/api/vote/resetVote/${roomId}`)
+    API.post(`/api/vote/resetVote/${encodeURIComponent(roomId)}`)
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
 };
