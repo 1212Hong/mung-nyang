@@ -15,6 +15,11 @@ import { selectLiar, selectedLiar, deleteLiar } from "../../api/game";
 import { openviduSlice } from "../../store/openviduSlice";
 
 const SelectLiar = () => {
+    const openvidu = useSelector((state) => state.openvidu);
+    const { subscribers, publisher } = openvidu;
+    console.log(publisher.connection.session.data);
+    // console.log(publisher.myUserName);
+    console.log(subscribers);
     const setId = useSelector((state) => state.openvidu.setId);
     const userlist = [
         "리트리버",
@@ -85,17 +90,40 @@ const SelectLiar = () => {
         <Container>
             <Timer></Timer>
             <Box>
-                {userlist.map((boxIndex) => (
+                {publisher && (
                     <Item
-                        key={boxIndex}
-                        onClick={() => handleBoxClick(boxIndex)}
+                        onClick={() =>
+                            handleBoxClick(publisher.connection.session.data)
+                        }
                     >
-                        <ImageOverlay active={activeBox === boxIndex}>
+                        <ImageOverlay active={activeBox === publisher}>
                             <img src={imgSrc} alt="사진" width="100%" />
                         </ImageOverlay>
-                        <VideoComponent width="350px" height="320px" />
+                        <VideoComponent
+                            width="350px"
+                            height="320px"
+                            streamManager={publisher}
+                        />
                     </Item>
-                ))}
+                )}
+                {subscribers &&
+                    subscribers.map((subscriber, i) => (
+                        <React.Fragment key={i}>
+                            <Item
+                                key={i}
+                                onClick={() => handleBoxClick(subscriber)}
+                            >
+                                <ImageOverlay active={activeBox === subscriber}>
+                                    <img src={imgSrc} alt="사진" width="100%" />
+                                </ImageOverlay>
+                                <VideoComponent
+                                    width="350px"
+                                    height="320px"
+                                    streamManager={subscriber}
+                                />
+                            </Item>
+                        </React.Fragment>
+                    ))}
             </Box>
             <NotificationContainer show={showNotification}>
                 {text}
