@@ -1,5 +1,32 @@
 import API from "./base";
 
+// 게임 시작 투표 시작
+export const startGameVote = (roomId) => {
+    API.post(`/api/vote/start?roomId=${roomId}`)
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
+
+// 투표 수락 or 거절의사 보내기
+export const castGameVote = (roomId, check) => {
+    API.post(`/api/vote/count`, {
+        roomId: roomId,
+        voteCheck: check,
+    })
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
+
+// 투표 수락 or 거절 post to openvidu
+export const agreeVote = (check) => {
+    API.post(`/openvidu/api/signal`, {
+        session: "ses_YnDaGYNcd7",
+        to: ["con_Xnxg19tonh", "con_TNVdbuQCJF"],
+        type: "MY_TYPE",
+        data: "This is my signal data",
+    });
+};
+
 // 카테고리 내 제시어
 export const selectCategory = async (roomId, gameId, category, answerer) => {
     return await API.post(`api/quiz/category`, {

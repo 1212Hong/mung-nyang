@@ -20,7 +20,7 @@ public class ScoreController {
 
     private final ScoreService scoreService;
     @GetMapping("/get")
-    public ResponseEntity<HashMap<String,Integer>> returnScore(@RequestBody RoomIdReq roomIdReq){
-        return new ResponseEntity<>(scoreService.returnScore(roomIdReq.getRoomId()), HttpStatus.OK);
+    public ResponseEntity<HashMap<String,Integer>> returnScore(@RequestParam String roomId){
+        return new ResponseEntity<>(scoreService.returnScore(roomId), HttpStatus.OK);
     }
 }
