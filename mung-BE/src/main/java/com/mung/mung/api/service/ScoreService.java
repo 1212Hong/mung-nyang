@@ -4,6 +4,8 @@ package com.mung.mung.api.service;
 import com.mung.mung.api.request.EmergencyAnswerReq;
 import com.mung.mung.api.request.FinalAnswerReq;
 import com.mung.mung.api.request.LiarAnswerReq;
+import com.mung.mung.common.exception.custom.GameNotExistException;
+import com.mung.mung.common.exception.custom.PlayerNotExistException;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.entity.GameSet;
@@ -110,7 +112,13 @@ public class ScoreService {
     @Transactional
     public HashMap<String, Integer> returnScore(String roomId){
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        if (gameRoom ==null){
+            throw new GameNotExistException();
+        }
         HashMap<String, Integer> playerScore=new HashMap<>();
+        if (gameRoom.getPlayers().isEmpty()){
+            throw new PlayerNotExistException();
+        }
         for (Player player : gameRoom.getPlayers()){
             playerScore.put(player.getPlayerNickname(),player.getPlayerScore());
         }
