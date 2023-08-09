@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import Button from "../../components/Button";
 import VideoComponent from "../../components/VideoBoxing";
 import { OtherUsers, Container } from "../../components/layout/common";
@@ -15,11 +16,14 @@ import {
     Buttons,
     UsersBox,
 } from "../../components/layout/dance";
+import useDanceUrl from "../../hooks/dance";
 
-const Dance = (props) => {
-    const { userlist } = props;
+function Dance() {
+    const openvidu = useSelector((state) => state.openvidu);
+    const { publisher, subscribers } = openvidu;
+
     const [showNotification, setShowNotification] = useState(true);
-    const url = "https://www.youtube.com/embed/8vPs-hdMGWQ";
+    const danceUrl = useDanceUrl();
     const penalty = "허스키";
 
     useEffect(() => {
@@ -32,6 +36,11 @@ const Dance = (props) => {
         };
     }, []);
 
+    const nonPenaltyUsers = [...subscribers, publisher].filter(
+        (user) => user !== penalty,
+    );
+    const penaltyUser = subscribers.find((user) => user === penalty);
+
     return (
         <Container>
             <Timer />
@@ -41,17 +50,24 @@ const Dance = (props) => {
                         <iframe
                             width="330"
                             height="587"
-                            src={url}
+                            src={danceUrl}
                             title="벌칙영상"
                             allow="autoplay"
                         ></iframe>
                     </Video>
                 </LeftItem>
                 <RightItem>
-                    <VideoComponent
-                        width="800px"
-                        height="450px"
-                    ></VideoComponent>
+                    <VideoComponent width="800px" height="450px">
+                        {penaltyUser && (
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                src={penaltyUser.videoUrl}
+                                title="Penalty Video"
+                                allow="autoplay"
+                            ></iframe>
+                        )}
+                    </VideoComponent>
                 </RightItem>
                 <Buttons>
                     <Button
@@ -73,7 +89,7 @@ const Dance = (props) => {
                 </Buttons>
             </PenaltyBox>
             <UsersBox>
-                {userlist.map((index) => (
+                {nonPenaltyUsers.map((index) => (
                     <OtherUsers key={index}>
                         <VideoComponent width="230" height="200" />
                     </OtherUsers>
@@ -85,5 +101,5 @@ const Dance = (props) => {
             </NotificationContainer>
         </Container>
     );
-};
+}
 export default Dance;

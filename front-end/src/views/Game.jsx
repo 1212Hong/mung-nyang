@@ -41,10 +41,6 @@ const PHASE_COMPONENTS = [
         type: PHASES.Category,
         component: <TopBottomVideo />,
     },
-    {
-        type: PHASES.Desc,
-        component: <WordDescription />,
-    },
 ];
 
 const Game = () => {
