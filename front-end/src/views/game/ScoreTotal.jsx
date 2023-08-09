@@ -24,13 +24,13 @@ const ScoreTotal = () => {
     const title = "라이어 승리";
     const totalset = 5;
     const set = 3;
-    const roomId = "SessionC";
-    const [scoreData, setScoreData] = useState([]);
+    const roomId = "테스트";
+    const [scoreData, setScoreData] = useState({});
     const userlist = [
-        "댕댕이1",
-        "댕댕이2",
-        "댕댕이3",
-        "댕댕이4",
+        "리트리버",
+        "리트리버2",
+        "테스트유저2",
+        "테스트유저1",
         "댕댕이5",
         "댕댕이6",
     ];
@@ -39,6 +39,7 @@ const ScoreTotal = () => {
         score(roomId)
             .then((response) => {
                 setScoreData(response.data);
+                console.log(scoreData);
             })
             .catch((error) => {
                 console.error("Error fetching score:", error);
@@ -68,12 +69,13 @@ const ScoreTotal = () => {
                     <UpItem>오른 점수</UpItem>
                     <ScoreItem>총 점수</ScoreItem>
                 </Border>
+
                 {userlist.map((user, index) => (
                     <LineItem key={index}>
                         <RankItem>{index + 1}st</RankItem>
-                        <UserItem>{user}</UserItem>
-                        <UserItem>+{user.upscore}</UserItem>
-                        <UserItem>{scoreData.user}</UserItem>
+                        <UserItem>{user.username}d</UserItem>
+                        <UserItem>+{user.upscore}d</UserItem>
+                        <UserItem>{user.user}d</UserItem>
                     </LineItem>
                 ))}
             </RankBox>
