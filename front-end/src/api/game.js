@@ -68,9 +68,7 @@ export const selectedLiar = (setId) => {
 
 // 라이어 투표 내역 삭제
 export const deleteLiar = (setId) => {
-    return API.delete(`/api/liar/resetVote`, {
-        setId: setId,
-    });
+    return API.delete(`/api/liar/resetVote/?setId=${setId}`);
 };
 
 // 라이어 정답

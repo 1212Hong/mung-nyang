@@ -11,16 +11,17 @@ import {
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { liarAnswer } from "../../api/game";
+import { openviduSlice } from "../../store/openviduSlice";
 
 const OtherView = () => {
     const setId = useSelector((state) => state.openvidu.setId);
     // const roomId = useSelector((state) => state.openvidu.mySessionId);
     const roomId = "test";
-    const pickedLiar = "리트리버";
+    const pickedLiar = useSelector((state) => state.openvidu.selectedLiar);
+    console.log(pickedLiar);
     const selectedAnswer = "사과";
     const userlist = ["댕댕이1", "댕댕이2", "댕댕이3", "댕댕이4", "댕댕이5"];
     const dispatch = useDispatch();
-    const [result, setResult] = useState("");
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -33,8 +34,8 @@ const OtherView = () => {
                 );
                 console.log(response);
                 const result = response.data;
-                setResult(result);
                 console.log(result);
+                dispatch(openviduSlice.actions.updateResult(result));
                 dispatch(changePhase({ phaseType: "Wait" }));
             } catch (error) {
                 console.error("Error submitting liar answer:", error);
