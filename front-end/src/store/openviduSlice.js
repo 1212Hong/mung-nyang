@@ -44,8 +44,7 @@ export const openviduSlice = createSlice({
             state.session = action.payload; // payload에 생성된 session 전달
         },
         saveSubscribers: (state, action) => {
-            state.subscribers.push(action.payload);
-            console.log(state.subscribers);
+            state.subscribers = action.payload;
         },
         // Action to save the publisher in the state
         savePublisher: (state, action) => {
@@ -61,13 +60,13 @@ export const openviduSlice = createSlice({
         deletePublisher: (state) => {
             state.publisher = undefined;
         },
-
         updateSubscribers: (state, { payload }) => {
             console.log(payload);
             state.subscribers = [...state.subscribers, payload];
+            console.log(state.subscribers);
         },
-        leaveSession: (state, { payload }) => {
-            [...state] = [...payload];
+        leaveSession: (state) => {
+            state = initialState;
         },
         updateSelectedLiar: (state, action) => {
             state.selectedLiar = action.payload;
