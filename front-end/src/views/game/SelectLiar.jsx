@@ -17,18 +17,11 @@ import { openviduSlice } from "../../store/openviduSlice";
 const SelectLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher } = openvidu;
-    console.log(publisher.connection.session.data);
-    // console.log(publisher.myUserName);
+    console.log(publisher);
+    console.log(publisher.session.connection.data);
     console.log(subscribers);
+    console.log(subscribers[0].stream.connection.data);
     const setId = useSelector((state) => state.openvidu.setId);
-    const userlist = [
-        "리트리버",
-        "댕댕이2",
-        "댕댕이3",
-        "댕댕이4",
-        "댕댕이5",
-        "댕댕이6",
-    ];
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
     const text = "라이어를 선택하세요.";
@@ -57,8 +50,17 @@ const SelectLiar = () => {
 
                 await deleteLiar(setId);
 
-                for (let i = 0; i < userlist.length; i++) {
-                    if (userlist[i] === mostVotedNickname) {
+                if (publisher.session.connection.data === mostVotedNickname) {
+                    dispatch(changePhase({ phaseType: "SelectAns" }));
+                } else {
+                    dispatch(changePhase({ phaseType: "OtherView" }));
+                }
+
+                for (let i = 0; i < subscribers.length; i++) {
+                    if (
+                        subscribers[i].stream.connection.data ===
+                        mostVotedNickname
+                    ) {
                         dispatch(changePhase({ phaseType: "SelectAns" }));
                     } else {
                         dispatch(changePhase({ phaseType: "OtherView" }));
@@ -82,8 +84,8 @@ const SelectLiar = () => {
         };
     }, []);
 
-    const handleBoxClick = (boxIndex) => {
-        setActiveBox(boxIndex === activeBox ? null : boxIndex);
+    const handleBoxClick = (name) => {
+        setActiveBox(name === activeBox ? null : name);
     };
 
     return (
@@ -93,10 +95,16 @@ const SelectLiar = () => {
                 {publisher && (
                     <Item
                         onClick={() =>
-                            handleBoxClick(publisher.connection.session.data)
+                            handleBoxClick(
+                                publisher.session.connection.session.data,
+                            )
                         }
                     >
-                        <ImageOverlay active={activeBox === publisher}>
+                        <ImageOverlay
+                            active={
+                                activeBox === publisher.session.connection.data
+                            }
+                        >
                             <img src={imgSrc} alt="사진" width="100%" />
                         </ImageOverlay>
                         <VideoComponent
@@ -110,10 +118,18 @@ const SelectLiar = () => {
                     subscribers.map((subscriber, i) => (
                         <React.Fragment key={i}>
                             <Item
-                                key={i}
-                                onClick={() => handleBoxClick(subscriber)}
+                                onClick={() =>
+                                    handleBoxClick(
+                                        subscribers[i].stream.connection.data,
+                                    )
+                                }
                             >
-                                <ImageOverlay active={activeBox === subscriber}>
+                                <ImageOverlay
+                                    active={
+                                        activeBox ===
+                                        subscriber.stream.connection.data
+                                    }
+                                >
                                     <img src={imgSrc} alt="사진" width="100%" />
                                 </ImageOverlay>
                                 <VideoComponent
