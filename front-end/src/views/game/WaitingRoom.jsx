@@ -26,9 +26,6 @@ import { openModal } from "../../store/modalSlice";
 import { ovActions } from "../../store/openviduSlice";
 import { startGameVote } from "../../api/game";
 
-// const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
-// const host = "권영재";
-
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
     const [isMuted, setIsMuted] = useState(false);
@@ -64,7 +61,7 @@ function WaitingRoom() {
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
-    console.log(subscribers);
+
     return (
         <Container className="waiting-container">
             <Leftbox>
