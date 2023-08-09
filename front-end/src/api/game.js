@@ -1,4 +1,5 @@
 import API from "./base";
+import OPENVIDU from "./openvidu";
 
 // 게임 시작 투표 시작
 export const startGameVote = (roomId) => {
@@ -10,20 +11,13 @@ export const startGameVote = (roomId) => {
 };
 
 // 투표 시작 signal
-// 투표 수락 or 거절 post to openvidu
 export const signalStartGameVote = (sessionId) => {
-    API.post(
-        `/openvidu/api/signal`,
-        {
-            session: sessionId,
-            to: [],
-            type: "startGameVote",
-            data: "start game vote",
-        },
-        {
-            headers: { Authorization: `Basic ${btoa("OPENVIDUAPP:MUNG")}` },
-        },
-    )
+    OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: "startGameVote",
+        data: "start game vote",
+    })
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
 };
@@ -38,18 +32,12 @@ export const castGameVote = (roomId, check) => {
 
 // 투표 수락 or 거절 post to openvidu
 export const signalVote = (check, sessionId) => {
-    API.post(
-        `/openvidu/api/signal`,
-        {
-            session: sessionId,
-            to: [],
-            type: check === "T" ? "agree" : "disagree",
-            data: check,
-        },
-        {
-            headers: { Authorization: `Basic ${btoa("OPENVIDUAPP:MUNG")}` },
-        },
-    )
+    OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: check === "T" ? "agree" : "disagree",
+        data: check,
+    })
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
 };
