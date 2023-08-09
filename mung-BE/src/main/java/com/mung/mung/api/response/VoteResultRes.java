@@ -2,7 +2,6 @@ package com.mung.mung.api.response;
 
 import com.mung.mung.db.enums.GameProcessType;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
