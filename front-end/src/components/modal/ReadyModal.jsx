@@ -38,13 +38,6 @@ const ReadyModal = () => {
                     <ModalViewCompleteDiv>투표 완료</ModalViewCompleteDiv>
                 ) : (
                     <>
-                        <button
-                            onClick={() =>
-                                dispatch(changePhase({ phaseType: "Quiz" }))
-                            }
-                        >
-                            quiz가기
-                        </button>
                         <Button
                             onClick={() => {
                                 // api 코드 작성할 곳.
