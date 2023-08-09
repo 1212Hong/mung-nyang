@@ -7,7 +7,9 @@ const StyledButton = styled(motion.button)`
     width: ${(props) =>
         props.type !== "icon" && !props.width ? "200px" : props.width};
     height: ${(props) =>
-        props.type !== "icon" && !props.height ? "50px" : props.height};
+        props.type !== "icon" && !props.height
+            ? "50pxconsole.log(subscriber);"
+            : props.height};
     background: ${(props) =>
         props.background
             ? `var(--${props.background})`
@@ -29,10 +31,10 @@ const StyledButton = styled(motion.button)`
     &:hover {
         transition: all 0.8s;
         color: ${(props) =>
-            props.hoverColor ? `var(--${props.hoverColor})` : `var(--black)`};
+            props.hovercolor ? `var(--${props.hovercolor})` : `var(--black)`};
         background-color: ${(props) =>
-            props.hoverBgColor
-                ? `var(--${props.hoverBgColor})`
+            props.hoverbgcolor
+                ? `var(--${props.hoverbgcolor})`
                 : `var(--macciato)`};
     }
 `;
@@ -43,8 +45,8 @@ const Button = (props) => {
     const {
         width,
         height,
-        hoverColor,
-        hoverBgColor,
+        hovercolor,
+        hoverbgcolor,
         background,
         fontSize,
         color,
@@ -77,8 +79,8 @@ const Button = (props) => {
                 onClick && onClick();
             }}
             type={type}
-            hoverColor={hoverColor}
-            hoverBgColor={hoverBgColor}
+            hovercolor={hovercolor}
+            hoverbgcolor={hoverbgcolor}
             padding={padding}
             margin={margin}
         >
