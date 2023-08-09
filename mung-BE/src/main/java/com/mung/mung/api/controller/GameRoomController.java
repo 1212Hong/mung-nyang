@@ -60,11 +60,6 @@ public class GameRoomController {
     // 방과 Session을 매칭 시켜주기 위함 => 한글로 방 생성 가능
     private Map<String, String> sessionRoomConvert =new HashMap<>();
     private long convertNum=1;
-//    @Autowired
-//    public GameRoomController(GameRoomService gameRoomService){
-//        this.gameRoomService=gameRoomService;
-//    }
-
 
     @PostConstruct
     public void init() {
