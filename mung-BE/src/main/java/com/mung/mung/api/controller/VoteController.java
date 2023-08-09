@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -36,11 +39,22 @@ public class VoteController {
 
     }
 
-    @GetMapping("/result")
+    @PostMapping("/result")
     public ResponseEntity<VoteResultRes> getVoteResult(@RequestBody VoteSetReq voteSetReq) {
         VoteResultRes voteResultRes = voteService.getVoteResult(voteSetReq);
 
         return ResponseEntity.ok(voteResultRes);
+    }
+
+    @DeleteMapping("/resetVote/{roomId}")
+    public ResponseEntity<String> deleteVoteResult(@PathVariable String roomId) {
+
+        String deRoomId = URLDecoder.decode(roomId, StandardCharsets.UTF_8);
+
+        voteService.resetVote(deRoomId);
+
+        return ResponseEntity.ok(roomId + " : 시작 투표 정보 삭제");
+
     }
 
 
