@@ -59,7 +59,6 @@ const Game = () => {
     useEffect(() => {
         const initializeSession = async () => {
             const newSession = session;
-            let newSubs = subscribersList;
 
             newSession.on("streamCreated", (event) => {
                 const subscriber = newSession.subscribe(
@@ -67,8 +66,10 @@ const Game = () => {
                     undefined,
                 );
                 console.log(subscriber);
-                newSubs = [...subscribersList, subscriber];
-                console.log(newSubs);
+                dispatch(
+                    ovActions.updateSubscribers(...subscribersList, subscriber),
+                );
+                setSubscribersList(subscribers);
             });
 
             newSession.on("streamDestroyed", (event) => {
@@ -127,10 +128,10 @@ const Game = () => {
             }
 
             setSession(newSession); // 세션 객체 업데이트
-            setSubscribersList(newSubs);
-            console.log(subscribersList);
-            dispatch(ovActions.saveSubscribers(subscribersList));
             console.log(session);
+            console.log(subscribers);
+            setSubscribersList(subscribers);
+            console.log(subscribersList);
         };
 
         initializeSession();
