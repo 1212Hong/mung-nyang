@@ -14,11 +14,13 @@ import { liarAnswer } from "../../api/game";
 
 const OtherView = () => {
     const setId = useSelector((state) => state.openvidu.setId);
-    const roomId = useSelector((state) => state.openvidu.mySessionId);
-    const pickedLiar = "댕댕이1";
-    const selectedAnswer = "농구";
+    // const roomId = useSelector((state) => state.openvidu.mySessionId);
+    const roomId = "test";
+    const pickedLiar = "리트리버";
+    const selectedAnswer = "사과";
     const userlist = ["댕댕이1", "댕댕이2", "댕댕이3", "댕댕이4", "댕댕이5"];
     const dispatch = useDispatch();
+    const [result, setResult] = useState("");
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -29,10 +31,10 @@ const OtherView = () => {
                     pickedLiar,
                     selectedAnswer,
                 );
-                console.log(
-                    "Liar answer submitted successfully:",
-                    response.data,
-                );
+                console.log(response);
+                const result = response.data;
+                setResult(result);
+                console.log(result);
                 dispatch(changePhase({ phaseType: "Wait" }));
             } catch (error) {
                 console.error("Error submitting liar answer:", error);
