@@ -16,7 +16,7 @@ import javax.persistence.Id;
 public class Quiz {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String question;
@@ -24,8 +24,6 @@ public class Quiz {
     private String answer1;
 
     private String answer2;
-
-
 
 
 }

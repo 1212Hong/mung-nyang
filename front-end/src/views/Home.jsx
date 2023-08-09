@@ -10,7 +10,7 @@ import {
 import Button from "../components/Button";
 import { MainText, SubText } from "../components/layout/common";
 import Input from "../components/Input";
-import { makeRoom, joinRoom } from "../hooks/home";
+import { makeRoom, enterRoom } from "../hooks/home";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -36,12 +36,12 @@ const Home = () => {
     };
 
     const handleMakeRoom = async () => {
-        makeRoom(roomInfo);
+        await makeRoom(roomInfo);
         navigate("/test");
     };
 
     const handleJoinRoom = async () => {
-        const joinRoomResponse = await joinRoom(roomInfo);
+        const joinRoomResponse = await enterRoom(roomInfo);
         joinRoomResponse && joinRoomResponse.error
             ? console.log("Error:", joinRoomResponse.error)
             : navigate("/test");
@@ -100,6 +100,9 @@ const Home = () => {
                     <Button
                         text={view ? "입장하러가기" : "방생성하러가기"}
                         onClick={changeView}
+                        background="brown-white"
+                        hoverColor="dusty-pink-white"
+                        hoverBgColor="brown"
                         width="100px"
                         margin="20px"
                     />
