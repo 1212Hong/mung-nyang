@@ -39,12 +39,18 @@ const SelectLiar = () => {
 
                 const selectedLiarResponse = await selectedLiar(setId);
                 console.log(selectedLiarResponse);
+                if (selectedLiarResponse.data.gameProcessType === "LiarVote") {
+                    dispatch(changePhase({ phaseType: "LiarVote" }));
+                }
                 const mostVotedNickname =
                     selectedLiarResponse.data.mostVotedNicknames[0];
                 console.log(mostVotedNickname);
+
                 dispatch(
                     openviduSlice.actions.updateSelectedLiar(mostVotedNickname),
                 );
+
+                await deleteLiar(setId);
 
                 for (let i = 0; i < userlist.length; i++) {
                     if (userlist[i] === mostVotedNickname) {
@@ -53,7 +59,6 @@ const SelectLiar = () => {
                         dispatch(changePhase({ phaseType: "OtherView" }));
                     }
                 }
-                await deleteLiar(setId);
             } catch (error) {
                 console.error("Error sending data:", error);
             }
