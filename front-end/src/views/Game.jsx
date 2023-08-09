@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
+import { outRoom } from "../api/room";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -43,57 +44,47 @@ const PHASE_COMPONENTS = [
 
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, myUserName, token, mySessionId } = openvidu;
-    const [state, setState] = useState({
-        OV: new OpenVidu(),
-        mySessionId: mySessionId,
-        myUserName: myUserName,
-        session: undefined,
-        mainStreamManager: undefined,
-        publisher: undefined,
-        subscribers: subscribers,
-    });
+    const { subscribers, myUserName, token, mySessionId, playerId } = openvidu;
+    // State 업데이트를 더 잘 다루기 위해 여러 useState를 사용합니다.
+    const [OV, setOV] = useState(new OpenVidu());
+    const [session, setSession] = useState(OV.initSession());
+    const [mainStreamManager, setMainStreamManager] = useState(null);
+    const [publisher, setPublisher] = useState(null);
+    const [subscribersList, setSubscribersList] = useState([]);
 
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
+    const navigate = useNavigate();
 
     useEffect(() => {
         const initializeSession = async () => {
-            const session = state.OV.initSession();
+            const newSession = session;
 
-            session.on("streamCreated", (event) => {
-                const subscriber = session.subscribe(event.stream, undefined);
-                dispatch(
-                    ovActions.updateSubscribers([
-                        ...state.subscribers,
-                        subscriber,
-                    ]),
+            newSession.on("streamCreated", (event) => {
+                const subscriber = newSession.subscribe(
+                    event.stream,
+                    undefined,
                 );
-
-                setState((prevState) => ({
-                    ...prevState,
-                    subscribers: subscribers,
-                }));
+                console.log(subscriber);
+                dispatch(
+                    ovActions.updateSubscribers(...subscribersList, subscriber),
+                );
+                setSubscribersList(subscribers);
             });
 
-            session.on("streamDestroyed", (event) => {
+            newSession.on("streamDestroyed", (event) => {
                 console.log("파괴");
-                console.log(state.session);
+                console.log(session);
                 deleteSubscriber(event.stream.streamManager);
             });
 
-            session.on("exception", (exception) => {
+            newSession.on("exception", (exception) => {
                 console.warn(exception);
             });
 
-            setState((prevState) => ({
-                ...prevState,
-                session,
-            }));
-
             try {
-                await session.connect(token, myUserName);
-                const publisher = await state.OV.initPublisherAsync(undefined, {
+                await newSession.connect(token, myUserName);
+                const publisher = await OV.initPublisherAsync(undefined, {
                     audioSource: undefined,
                     videoSource: undefined,
                     publishAudio: true,
@@ -105,10 +96,10 @@ const Game = () => {
                 });
 
                 console.log(publisher);
-                session.publish(publisher);
+                newSession.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
 
-                var devices = await state.OV.getDevices();
+                var devices = await OV.getDevices();
 
                 var videoDevices = devices.filter(
                     (device) => device.kind === "videoinput",
@@ -125,12 +116,9 @@ const Game = () => {
                 dispatch(ovActions.saveCurrentVideoDevice(currentVideoDevice));
                 dispatch(ovActions.saveMainStreamManager(publisher));
 
-                setState((prevState) => ({
-                    ...prevState,
-                    currentVideoDevice: currentVideoDevice,
-                    mainStreamManager: publisher,
-                    publisher: publisher,
-                }));
+                setPublisher(publisher);
+
+                console.log(currentVideoDevice);
                 console.log("success connect to the session");
             } catch (error) {
                 console.log(
@@ -138,45 +126,58 @@ const Game = () => {
                     error,
                 );
             }
+
+            setSession(newSession); // 세션 객체 업데이트
+            console.log(session);
+            console.log(subscribers);
+            setSubscribersList(subscribers);
+            console.log(subscribersList);
         };
 
         initializeSession();
+    }, [OV, token]);
+
+    useEffect(() => {
+        // componentDidMount
+        console.log("didmount");
+        setSession(OV.initSession());
+        if (!mySessionId) navigate("/error");
+        window.addEventListener("beforeunload", leaveSession);
+
+        // componentWillUnmount
         return () => {
-            window.addEventListener("beforeunload", leaveSession);
+            console.log("willunmount");
+            window.removeEventListener("beforeunload", onbeforeunload);
         };
-    }, [state.OV, token]);
+    }, []);
 
     const deleteSubscriber = (streamManager) => {
         console.log("delete 호출");
-        let subscribers = state.subscribers;
-        let index = subscribers.indexOf(streamManager, 0);
-        if (index > -1) {
-            subscribers.splice(index, 1);
-
-            dispatch(ovActions.saveSubscribers(subscribers));
-            this.setState({
-                subscribers: subscribers,
-            });
-        }
+        console.log(streamManager);
+        console.log(subscribersList);
+        const updatedSubscribers = subscribersList.filter(
+            (sub) => sub.stream.streamId !== streamManager.stream.streamId,
+        );
+        console.log(updatedSubscribers);
+        setSubscribersList(updatedSubscribers);
+        dispatch(ovActions.saveSubscribers(updatedSubscribers));
+        outRoom(mySessionId, playerId);
+        console.log(subscribersList);
     };
     const leaveSession = () => {
-        const mySession = state.session;
+        const mySession = session;
+        console.log(mySession);
         if (mySession) {
             mySession.disconnect();
         }
-        state.OV = null;
 
-        setState({
-            OV: null,
-            mySessionId: undefined,
-            myUserName: undefined,
-            session: undefined,
-            mainStreamManager: undefined, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
-            publisher: undefined,
-            subscribers: [],
-        });
-        dispatch(ovActions.leaveSession(state));
-        console.log([...state]);
+        // 모든 state 업데이트 초기화
+        setOV(null);
+        setSession(undefined);
+        setMainStreamManager(undefined);
+        setPublisher(undefined);
+        setSubscribersList([]);
+        dispatch(ovActions.leaveSession());
     };
     const findPhase = PHASE_COMPONENTS.find(
         (phase) => phase.type === phaseType,
