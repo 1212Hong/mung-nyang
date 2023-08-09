@@ -14,6 +14,16 @@ export const connectRoom = (sessionId, roomPw) => {
 };
 
 // 방입장
-export const joinRoom = (sessionId, roomPw) => {
-    return API.post(`/api/roompw`);
+export const joinRoom = (sessionId, nickname) => {
+    return API.post(`/api/player/join`, {
+        roomId: sessionId,
+        playerNickname: nickname,
+    });
+};
+
+// 닉네임 가져오기
+export const getNickname = (sessionId) => {
+    return API.get(`/api/player/nickname`, {
+        roomId: sessionId,
+    });
 };
