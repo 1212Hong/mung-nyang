@@ -12,11 +12,12 @@ import {
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, deleteLiar } from "../../api/game";
+import { openviduSlice } from "../../store/openviduSlice";
 
 const SelectLiar = () => {
     const setId = useSelector((state) => state.openvidu.setId);
     const userlist = [
-        "댕댕이1",
+        "리트리버",
         "댕댕이2",
         "댕댕이3",
         "댕댕이4",
@@ -28,7 +29,6 @@ const SelectLiar = () => {
     const text = "라이어를 선택하세요.";
     const imgSrc = foot;
     const dispatch = useDispatch();
-    const [mostVotedNickname, setMostVotedNickname] = useState("");
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -42,9 +42,9 @@ const SelectLiar = () => {
                 const mostVotedNickname =
                     selectedLiarResponse.data.mostVotedNicknames[0];
                 console.log(mostVotedNickname);
-                setMostVotedNickname(mostVotedNickname);
-
-                await deleteLiar(setId);
+                dispatch(
+                    openviduSlice.actions.updateSelectedLiar(mostVotedNickname),
+                );
 
                 for (let i = 0; i < userlist.length; i++) {
                     if (userlist[i] === mostVotedNickname) {
@@ -53,6 +53,7 @@ const SelectLiar = () => {
                         dispatch(changePhase({ phaseType: "OtherView" }));
                     }
                 }
+                await deleteLiar(setId);
             } catch (error) {
                 console.error("Error sending data:", error);
             }

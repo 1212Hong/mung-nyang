@@ -15,6 +15,8 @@ const initialState = {
     score: 0,
     playerId: 0,
     setId: 1,
+    selectedLiar: undefined,
+    result: undefined,
 };
 
 export const openviduSlice = createSlice({
@@ -66,6 +68,12 @@ export const openviduSlice = createSlice({
         },
         leaveSession: (state, { payload }) => {
             [...state] = [...payload];
+        },
+        updateSelectedLiar: (state, action) => {
+            state.selectedLiar = action.payload;
+        },
+        updateResult: (state, action) => {
+            state.result = action.payload;
         },
     },
 });
