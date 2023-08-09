@@ -3,8 +3,6 @@ package com.mung.mung.api.controller;
 import com.mung.mung.api.request.*;
 import com.mung.mung.api.response.*;
 import com.mung.mung.api.service.LiarService;
-import com.mung.mung.api.service.QuizService;
-import com.mung.mung.api.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -31,24 +29,31 @@ public class LiarController {
     }
 
     @GetMapping("/result")
-    public ResponseEntity<LiarVoteResultRes> getLiarVoteResult(@RequestBody LiarSetIdReq liarSetIdReq) {
+    public ResponseEntity<LiarVoteResultRes> getLiarVoteResult(@RequestParam long setId) {
 
-        LiarVoteResultRes liarVoteResultRes = liarService.getLiarVoteResult(liarSetIdReq);
+        LiarVoteResultRes liarVoteResultRes = liarService.getLiarVoteResult(setId);
 
         return ResponseEntity.ok(liarVoteResultRes);
 
     }
 
-    @PostMapping("/options")
-    public ResponseEntity<LiarAnswerOptionsRes> getLiarAnswerOptions(@RequestBody LiarSetIdReq liarSetIdReq) {
+    @DeleteMapping("/resetVote/{setId}")
+    public ResponseEntity<String> deleteLiarVoteResult(@PathVariable long setId) {
 
-        LiarAnswerOptionsRes liarAnswerOptionsRes = liarService.getLiarAnswerOptions(liarSetIdReq);
+        liarService.resetVote(setId);
+
+        return ResponseEntity.ok(setId + " : liar 투표 정보 삭제");
+
+    }
+
+    @GetMapping("/options")
+    public ResponseEntity<LiarAnswerOptionsRes> getLiarAnswerOptions(@RequestParam long setId) {
+
+        LiarAnswerOptionsRes liarAnswerOptionsRes = liarService.getLiarAnswerOptions(setId);
 
         return ResponseEntity.ok(liarAnswerOptionsRes);
 
     }
-
-
 
 
 }
