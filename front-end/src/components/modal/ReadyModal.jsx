@@ -9,19 +9,35 @@ import {
 } from "../layout/modal";
 import Button from "../Button";
 import Timer from "../Timer";
-import { castGameVote } from "../../api/game";
+import { agreeVote, castGameVote, signalVote } from "../../api/game";
 import { useSelector } from "react-redux";
 
 const ReadyModal = () => {
-    // api 적용할 부분
+    const openvidu = useSelector((state) => state.openvidu);
+    const { mySessionId, session } = openvidu;
+
+    // api 통신을 위한 변수
+    const [check, setCheck] = useState(false);
+    // 찬반에 대한 카운트
     const [agree, setAgree] = useState(0);
     const [disagree, setDisagree] = useState(0);
     // 현재 방의 인원 수를 받아서 6 대신 적용.
-    const [wait, setWait] = useState(6);
+    console.log(session.streamManagers);
+    const [wait, setWait] = useState(session.streamManagers.length);
     const [complete, setComplete] = useState(false);
 
-    const openvidu = useSelector((state) => state.openvidu);
-    const { mySessionId } = openvidu;
+    // api 코드 작성할 곳.
+    // const decideVote = async (flag) => {
+    //     setCheck(flag);
+    //     console.log(check);
+    //     setComplete(flag);
+    //     const ticket = flag ? "T" : "F";
+    //     const res = await castGameVote(mySessionId, ticket);
+    //     console.log(res);
+    //     signalVote(res, session.sessionId);
+    //     flag ? setAgree(agree + 1) : setDisagree(disagree + 1);
+    //     setWait(wait - 1);
+    // };
 
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
@@ -39,11 +55,19 @@ const ReadyModal = () => {
                 ) : (
                     <>
                         <Button
-                            onClick={() => {
+                            onClick={async () => {
                                 // api 코드 작성할 곳.
+                                setCheck(true);
                                 setComplete(true);
-                                castGameVote(mySessionId, "T");
-                                // agreeVote();
+                                const res = await castGameVote(
+                                    mySessionId,
+                                    "T",
+                                );
+                                console.log(res);
+                                signalVote(
+                                    res.data.voteMessage,
+                                    session.sessionId,
+                                );
                                 setAgree(agree + 1);
                                 setWait(wait - 1);
                             }}
@@ -51,10 +75,19 @@ const ReadyModal = () => {
                             O
                         </Button>
                         <Button
-                            onClick={() => {
+                            onClick={async () => {
                                 // api 코드 작성할 곳.
+                                setCheck(false);
                                 setComplete(true);
-                                castGameVote(mySessionId, "F");
+                                const res = await castGameVote(
+                                    mySessionId,
+                                    "F",
+                                );
+                                console.log(res);
+                                signalVote(
+                                    res.data.voteMessage,
+                                    session.sessionId,
+                                );
                                 setDisagree(disagree + 1);
                                 setWait(wait - 1);
                             }}

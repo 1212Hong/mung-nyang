@@ -129,6 +129,7 @@ const Game = () => {
 
             setSession(newSession); // 세션 객체 업데이트
             console.log(session);
+            dispatch(ovActions.saveSession(session));
             console.log(subscribers);
             setSubscribersList(subscribers);
             console.log(subscribersList);
