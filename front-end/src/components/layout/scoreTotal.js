@@ -15,6 +15,7 @@ export const Border = styled.div`
     padding-bottom: 20px;
     border-bottom: 2px solid black;
     display: flex;
+    justify-content: space-around;
 `;
 
 export const LineItem = styled.div`
@@ -22,30 +23,26 @@ export const LineItem = styled.div`
     padding-bottom: 20px;
     border-bottom: 1px solid white;
     display: flex;
+    justify-content: space-around;
 `;
 
 export const UserItem = styled.div`
-    margin-left: 150px;
     font-size: 32px;
 `;
 
 export const RankItem = styled.div`
-    margin-left: 50px;
     font-size: 32px;
 `;
 
 export const NameItem = styled.div`
-    margin-left: 120px;
     font-size: 32px;
 `;
 
 export const UpItem = styled.div`
-    margin-left: 110px;
     font-size: 32px;
 `;
 
 export const ScoreItem = styled.div`
-    margin-left: 60px;
     font-size: 32px;
 `;
 
