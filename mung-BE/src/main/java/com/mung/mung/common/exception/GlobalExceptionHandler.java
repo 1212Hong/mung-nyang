@@ -109,4 +109,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiException, httpStatus);
     }
 
+    @ExceptionHandler(value = {VotesNotStartException.class})
+    public ResponseEntity<Object> handleVotesNotStartException(VotesNotStartException e){
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.VOTES_NOT_START_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
 }
