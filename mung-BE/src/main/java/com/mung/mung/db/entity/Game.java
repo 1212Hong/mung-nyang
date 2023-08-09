@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -39,7 +38,6 @@ public class Game {
     @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
 
-    @Builder.Default
     @OneToMany(mappedBy = "game" ,cascade = CascadeType.ALL)
     private List<GameSet> gameSets = new ArrayList<>();
 
