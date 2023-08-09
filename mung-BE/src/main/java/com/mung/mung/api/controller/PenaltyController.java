@@ -1,11 +1,8 @@
 package com.mung.mung.api.controller;
 
-import com.mung.mung.api.request.FinalAnswerReq;
 import com.mung.mung.api.response.DanceRes;
 import com.mung.mung.api.service.PenaltyService;
 import com.mung.mung.api.service.ScoreService;
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

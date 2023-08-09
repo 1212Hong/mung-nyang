@@ -15,8 +15,8 @@ import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.PlayerService;
 import com.mung.mung.api.service.ScoreService;
-import com.mung.mung.common.exception.custom.RoomAlreadyStartException;
-import com.mung.mung.common.exception.custom.SessionNotExistException;
+import com.mung.mung.common.exception.custom.*;
+import com.mung.mung.db.repository.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +115,7 @@ public class GameRoomController {
 //        [[[[[[[[[[[[[[[[[[[[여기부터 수정]]]]]]]]]]]]]]]]]]]]
         //
         if (!this.gameConnectionInfoMap.get(roomId).equals(gameRoomConnectReq.getRoomPw())){
-            return new ResponseEntity<>("비밀번호가 틀렸습니다.",HttpStatus.FORBIDDEN);
+            throw new RoomPasswordWrongException();
         }
 
 
@@ -123,11 +123,10 @@ public class GameRoomController {
         if (this.mapSessions.get(roomId)<LIMIT){
             this.mapSessions.put(roomId, this.mapSessions.get(roomId) + 1);
         } else{ // LIMIT이 됐다면 접근불가
-            return new ResponseEntity<>("방 인원이 다 찼습니다.",HttpStatus.FORBIDDEN);
+            throw new RoomAlreadyFullException();
         }
-        System.out.println(this.mapSessions);
 
-        //
+        // session 생성을 위해 Map으로 변환
         Map<String, String> gameInfoMap = new HashMap<>();
         gameInfoMap.put("customSessionId", this.sessionRoomConvert.get(roomId));
         // player pk 생성 필요.
@@ -144,14 +143,14 @@ public class GameRoomController {
         String roomId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
         // roomId와 playerId가 유효하지 않은 경우 예외 처리
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
-            return new ResponseEntity<>("roomId가 없거나 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
+            throw new RoomNotExistException();
         }
         // 테스트 창에서 나가는 경우 인원은 +1 된 상태이므로 roomId만 일치하면 leave가 들어올 경우 인원을 뺀다.
         this.mapSessions.put(roomId, this.mapSessions.get(roomId) - 1);
 
         // DB에서 playerData 삭제하기 전에 playerId가 DB에 있는지 확인합니다.
         if (!gameRoomService.isPlayerExists(playerId)) { // 있으면 true
-            return new ResponseEntity<>("플레이어가 존재하지 않거나, 생성되지 않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new PlayerNotExistException();
         }
 
         if (this.mapSessions.get(roomId)>0) {
@@ -171,11 +170,13 @@ public class GameRoomController {
     public ResponseEntity<String> roomInitialize(
             @RequestBody RoomIdReq roomIdReq){
         String roomId=roomIdReq.getRoomId();
+
         gameRoomService.roomInitialize(roomId);
         // All Player Initialize => 점수 초기화
         playerService.playerInitailize(roomId);
 
         return new ResponseEntity<>("방을 대기 중으로 변경 완료했습니다.",HttpStatus.OK);
+
     }
 
 }
