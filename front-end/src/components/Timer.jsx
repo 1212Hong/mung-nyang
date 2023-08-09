@@ -4,6 +4,7 @@ import { ProgressBar } from "react-step-progress-bar";
 import "../css/style/timer.css";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../store/modalSlice";
+
 const Timer = (props) => {
     const {
         time = typeof props.time === "undefined" ? 10 : props.time,
@@ -25,6 +26,7 @@ const Timer = (props) => {
             dispatch(closeModal());
         }, time * 1000);
     }, [time, decreaseRatio, dispatch]);
+
     return (
         <>
             <ProgressBar
