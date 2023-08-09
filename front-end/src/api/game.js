@@ -126,3 +126,8 @@ export const QuizAnswerNegative = async (roomId, playerNickname) => {
 export const QuizResult = (roomId) => {
     return API.get(`/api/quiz/result?roomId=${roomId}`);
 };
+
+// 벌칙으로 수행할 춤 영상이 담긴 url 제공
+export const DanceUrl = () => {
+    return API.get(`/api/penalty`);
+};
