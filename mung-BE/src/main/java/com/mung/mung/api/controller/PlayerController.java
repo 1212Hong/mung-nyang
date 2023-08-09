@@ -42,8 +42,7 @@ public class PlayerController {
 
     // 유저에게 랜덤으로 닉네임을 주기.
     @GetMapping("/nickname")
-    public ResponseEntity<String> giveNickname(@RequestBody RoomIdReq roomIdReq) {
-        String roomId=roomIdReq.getRoomId();
+    public ResponseEntity<String> giveNickname(@RequestParam("roomId") String roomId) {
         // player정보를 DB에 저장
         if (!gameRoomService.isRoomExists(roomId)){
             return new ResponseEntity<>("방이 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
@@ -57,10 +56,11 @@ public class PlayerController {
         // 저장 후 조회 해 Id를 보내 줌
     }
 
-    // 점수 보내주는 방법 수정 예정.
-//    @PostMapping("/score")
-//    public ResponseEntity<PlayerStatusRes> createConnection(@RequestBody PlayerJoinReq playerJoinReq)
-//            throws OpenViduJavaClientException, OpenViduHttpException {
-//        return new ResponseEntity<>(playerService.getPlayerStatus(playerId, playerNickname, roomId),HttpStatus.OK);
-//    }
+    @PutMapping("/owner") // Leave처리를 이미 했으므로 방장을 바꿔주기만 하면 됨
+    public ResponseEntity<String> changeOwner(@RequestBody RoomIdReq roomIdReq){
+        // return값이 String인 player Nickname임
+        String returnAns=playerService.changeOwner(roomIdReq);
+        return new ResponseEntity<>(returnAns,HttpStatus.OK);
+    }
+
 }
