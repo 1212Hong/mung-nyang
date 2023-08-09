@@ -8,6 +8,7 @@ export const TitleBox = styled.div`
 
 export const RankBox = styled.div`
     border: 2px solid black;
+    width: 800px;
 `;
 
 export const Border = styled.div`
@@ -16,6 +17,7 @@ export const Border = styled.div`
     border-bottom: 2px solid black;
     display: flex;
     justify-content: space-around;
+    font-size: 32px;
 `;
 
 export const LineItem = styled.div`
@@ -24,27 +26,18 @@ export const LineItem = styled.div`
     border-bottom: 1px solid white;
     display: flex;
     justify-content: space-around;
-`;
-
-export const UserItem = styled.div`
     font-size: 32px;
 `;
 
-export const RankItem = styled.div`
-    font-size: 32px;
-`;
+export const UserItem = styled.div``;
 
-export const NameItem = styled.div`
-    font-size: 32px;
-`;
+export const RankItem = styled.div``;
 
-export const UpItem = styled.div`
-    font-size: 32px;
-`;
+export const NameItem = styled.div``;
 
-export const ScoreItem = styled.div`
-    font-size: 32px;
-`;
+export const UpItem = styled.div``;
+
+export const ScoreItem = styled.div``;
 
 export const TitleItem = styled.div`
     margin-right: 50px;
