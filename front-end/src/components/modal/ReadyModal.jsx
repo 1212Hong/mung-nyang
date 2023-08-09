@@ -43,6 +43,7 @@ const ReadyModal = () => {
                                 // api 코드 작성할 곳.
                                 setComplete(true);
                                 castGameVote(mySessionId, "T");
+                                // agreeVote();
                                 setAgree(agree + 1);
                                 setWait(wait - 1);
                             }}
