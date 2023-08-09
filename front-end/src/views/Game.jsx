@@ -47,7 +47,7 @@ const Game = () => {
     const { subscribers, myUserName, token, mySessionId, playerId } = openvidu;
     // State 업데이트를 더 잘 다루기 위해 여러 useState를 사용합니다.
     const [OV, setOV] = useState(new OpenVidu());
-    const [session, setSession] = useState(null);
+    const [session, setSession] = useState(OV.initSession());
     const [mainStreamManager, setMainStreamManager] = useState(null);
     const [publisher, setPublisher] = useState(null);
     const [subscribersList, setSubscribersList] = useState([]);
@@ -58,36 +58,31 @@ const Game = () => {
 
     useEffect(() => {
         const initializeSession = async () => {
-            const newSession = OV.initSession();
-            setSession(newSession); // 세션 객체 업데이트
+            const newSession = session;
+            let newSubs = subscribersList;
 
-            console.log(session);
-            session.on("streamCreated", (event) => {
-                const subscriber = session.subscribe(event.stream, undefined);
-                dispatch(
-                    ovActions.updateSubscribers([
-                        ...subscribersList,
-                        subscriber,
-                    ]),
+            newSession.on("streamCreated", (event) => {
+                const subscriber = newSession.subscribe(
+                    event.stream,
+                    undefined,
                 );
-                setSubscribersList((prevSubscribers) => [
-                    ...prevSubscribers,
-                    subscriber,
-                ]);
+                console.log(subscriber);
+                newSubs = [...subscribersList, subscriber];
+                console.log(newSubs);
             });
 
-            session.on("streamDestroyed", (event) => {
+            newSession.on("streamDestroyed", (event) => {
                 console.log("파괴");
                 console.log(session);
                 deleteSubscriber(event.stream.streamManager);
             });
 
-            session.on("exception", (exception) => {
+            newSession.on("exception", (exception) => {
                 console.warn(exception);
             });
 
             try {
-                await session.connect(token, myUserName);
+                await newSession.connect(token, myUserName);
                 const publisher = await OV.initPublisherAsync(undefined, {
                     audioSource: undefined,
                     videoSource: undefined,
@@ -100,7 +95,7 @@ const Game = () => {
                 });
 
                 console.log(publisher);
-                session.publish(publisher);
+                newSession.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
 
                 var devices = await OV.getDevices();
@@ -130,6 +125,12 @@ const Game = () => {
                     error,
                 );
             }
+
+            setSession(newSession); // 세션 객체 업데이트
+            setSubscribersList(newSubs);
+            console.log(subscribersList);
+            dispatch(ovActions.saveSubscribers(subscribersList));
+            console.log(session);
         };
 
         initializeSession();
@@ -138,6 +139,7 @@ const Game = () => {
     useEffect(() => {
         // componentDidMount
         console.log("didmount");
+        setSession(OV.initSession());
         if (!mySessionId) navigate("/error");
         window.addEventListener("beforeunload", leaveSession);
 
@@ -151,17 +153,14 @@ const Game = () => {
     const deleteSubscriber = (streamManager) => {
         console.log("delete 호출");
         console.log(streamManager);
-
-        let subscribers = subscribersList;
-        let index = subscribers.indexOf(streamManager, 0);
-        console.log(index);
-        if (index > -1) {
-            subscribers.splice(index, 1);
-            console.log(subscribers);
-            setSubscribersList(subscribers);
-            dispatch(ovActions.saveSubscribers(subscribers));
-            outRoom(mySessionId, playerId);
-        }
+        console.log(subscribersList);
+        const updatedSubscribers = subscribersList.filter(
+            (sub) => sub.stream.streamId !== streamManager.stream.streamId,
+        );
+        console.log(updatedSubscribers);
+        setSubscribersList(updatedSubscribers);
+        dispatch(ovActions.saveSubscribers(updatedSubscribers));
+        outRoom(mySessionId, playerId);
         console.log(subscribersList);
     };
     const leaveSession = () => {
@@ -177,9 +176,6 @@ const Game = () => {
         setMainStreamManager(undefined);
         setPublisher(undefined);
         setSubscribersList([]);
-        dispatch(ovActions.saveSessionId(undefined));
-        dispatch(ovActions.saveSessionId(undefined));
-        dispatch(ovActions.saveUserName(undefined));
         dispatch(ovActions.leaveSession());
     };
     const findPhase = PHASE_COMPONENTS.find(
