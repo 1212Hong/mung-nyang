@@ -16,7 +16,7 @@ import { openviduSlice } from "../../store/openviduSlice";
 const OtherView = () => {
     const setId = useSelector((state) => state.openvidu.setId);
     // const roomId = useSelector((state) => state.openvidu.mySessionId);
-    const roomId = "test";
+    const roomId = "테스트";
     const pickedLiar = useSelector((state) => state.openvidu.selectedLiar);
     console.log(pickedLiar);
     const selectedAnswer = "사과";
@@ -35,6 +35,7 @@ const OtherView = () => {
                 console.log(response);
                 const result = response.data;
                 console.log(result);
+
                 dispatch(openviduSlice.actions.updateResult(result));
                 dispatch(changePhase({ phaseType: "Wait" }));
             } catch (error) {
