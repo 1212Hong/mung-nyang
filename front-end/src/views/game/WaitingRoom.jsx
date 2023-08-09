@@ -23,13 +23,15 @@ import {
 } from "../../components/layout/waiting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
+import { ovActions } from "../../store/openviduSlice";
+import { startGameVote } from "../../api/game";
 
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
     const [isMuted, setIsMuted] = useState(false);
 
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher } = openvidu;
+    const { subscribers, publisher, mySessionId } = openvidu;
     console.log(subscribers);
 
     const dispatch = useDispatch();
@@ -43,6 +45,7 @@ function WaitingRoom() {
         );
     };
     const openReadyModal = () => {
+        startGameVote(mySessionId);
         dispatch(
             openModal({
                 modalType: "ReadyModal",
@@ -58,7 +61,7 @@ function WaitingRoom() {
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
-    console.log(subscribers);
+
     return (
         <Container className="waiting-container">
             <Leftbox>

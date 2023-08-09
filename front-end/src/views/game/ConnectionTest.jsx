@@ -59,9 +59,9 @@ function ConnectionTest() {
         setIsOn(!isOn);
     }
 
-    const refreshName = () => {
+    const refreshName = async () => {
         dispatch(ovActions.saveUserName(`user` + Math.random() * 100));
-        // setUserName(getNickname());
+        // setUserName(await getNickname());
         setUserName(myUserName);
     };
 
