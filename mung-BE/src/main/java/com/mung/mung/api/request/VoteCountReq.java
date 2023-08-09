@@ -5,9 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuizPlayersRoleReq {
+public class VoteCountReq {
     private String roomId;
-    private Long gameId;
-    private String category;
-    private String answerer;
+    private String voteMessage;
 }

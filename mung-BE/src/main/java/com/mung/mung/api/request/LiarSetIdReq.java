@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuizResultReq {
-    private String roomId;
-    private Long gameId;
+public class LiarSetIdReq {
+    private long setId;
 }

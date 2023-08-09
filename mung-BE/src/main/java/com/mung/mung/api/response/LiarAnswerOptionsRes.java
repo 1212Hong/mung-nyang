@@ -2,11 +2,14 @@ package com.mung.mung.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 @Getter
+@Setter
 @AllArgsConstructor
-public class QuizResultRes {
+public class LiarAnswerOptionsRes {
 
-    private int pickedAnswer;
-    private String answerer;
+    List<String> answerOptions;
 }
