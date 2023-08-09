@@ -1,5 +1,8 @@
 package com.mung.mung.api.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,9 +11,11 @@ import javax.annotation.PostConstruct;
 
 import com.mung.mung.api.request.GameRoomConnectReq;
 import com.mung.mung.api.request.GameRoomCreateReq;
-import com.mung.mung.api.request.GameRoomLeaveReq;
 import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.service.GameRoomService;
+import com.mung.mung.api.service.PlayerService;
+import com.mung.mung.api.service.ScoreService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,11 +34,14 @@ import io.openvidu.java.client.SessionProperties;
 
 //@CrossOrigin(origins = "*")
 @Slf4j
+@RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/game-sessions")
 public class GameRoomController {
 
     private final int LIMIT = 6;
     private final GameRoomService gameRoomService;
+    private final PlayerService playerService;
 
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
@@ -52,17 +60,13 @@ public class GameRoomController {
     // 방과 Session을 매칭 시켜주기 위함 => 한글로 방 생성 가능
     private Map<String, String> sessionRoomConvert =new HashMap<>();
     private long convertNum=1;
-    @Autowired
-    public GameRoomController(GameRoomService gameRoomService){
-        this.gameRoomService=gameRoomService;
-    }
 
     @PostConstruct
     public void init() {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-    @PostMapping("/api/game-sessions")
+    @PostMapping("")
     public ResponseEntity<String> createRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
@@ -94,7 +98,7 @@ public class GameRoomController {
     }
 
 
-    @PostMapping("/api/game-sessions/connections")
+    @PostMapping("/connections")
     public ResponseEntity<String> createConnection(@RequestBody GameRoomConnectReq gameRoomConnectReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
         log.info("어떤 오류인지 로그 : {}",gameRoomConnectReq);
@@ -134,11 +138,10 @@ public class GameRoomController {
     }
 
 
-    @DeleteMapping("/api/game-sessions/leave")
-    public ResponseEntity<String> leaveRoom(@RequestBody GameRoomLeaveReq gameRoomLeaveReq) {
-
-        String roomId=gameRoomLeaveReq.getRoomId();
-        long playerId= gameRoomLeaveReq.getPlayerId();
+    @DeleteMapping("/leave/{encodeRoomId}/{playerId}")
+    public ResponseEntity<String> leaveRoom(@PathVariable("encodeRoomId") String encodeRoomId,
+                                            @PathVariable long playerId) throws UnsupportedEncodingException {
+        String roomId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
         // roomId와 playerId가 유효하지 않은 경우 예외 처리
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
             return new ResponseEntity<>("roomId가 없거나 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
@@ -164,12 +167,13 @@ public class GameRoomController {
         return new ResponseEntity<>("Leave 처리 성공",HttpStatus.OK);
     }
 
-    @PutMapping("/api/game-sessions/initialize")
+    @PutMapping("/initialize")
     public ResponseEntity<String> roomInitialize(
             @RequestBody RoomIdReq roomIdReq){
         String roomId=roomIdReq.getRoomId();
         gameRoomService.roomInitialize(roomId);
-        // All Player Initialize 추가해야함
+        // All Player Initialize => 점수 초기화
+        playerService.playerInitailize(roomId);
 
         return new ResponseEntity<>("방을 대기 중으로 변경 완료했습니다.",HttpStatus.OK);
     }
