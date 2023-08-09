@@ -30,7 +30,7 @@ export const makeRoom = async (roomInfo) => {
     }
 };
 
-export const joinRoom = async (roomInfo) => {
+export const enterRoom = async (roomInfo) => {
     console.log("생성된 방에 연결(테스트화면으로)");
     console.log(roomInfo);
     try {

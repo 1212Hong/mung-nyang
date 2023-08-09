@@ -1,62 +1,26 @@
-// @RequiredArgsConstructor
-// @RestController
-// @RequestMapping("/gamerooms")
-// public class GameRoomController {
-
-//     private final GameRoomRepository gameRoomRepository;
-
-//     @GetMapping("/search/{room-title}")
-//     public GameRoomDto searchMemberV1(@PathVariable("room-title") String roomtitle) {
-//         return gameRoomRepository.findByTitle(roomtitle);
-//         // find(엔터티_생략가능)By컬럼명
-//     }
-
-//     @ResponseBody
-//     @PostMapping(value="/create/{room-title}")
-//     public GameRoomDto createTest(@PathVariable("room-title") String roomTitle,
-//                                   @RequestBody GameRoomDto requestDto){
-//         // DAO를 만들 필요가 없음...... repository에서 이미 save등의 메소드가 구현되어 있기 때문에 controller에서 구현해도 됨;
-//         String pw = requestDto.getRoomPw();
-//         String url = requestDto.getRoomUrl();
-
-//         // 새로운 GameRoom 객체 생성 및 값 설정
-//         GameRoom newGameRoom = new GameRoom();
-//         newGameRoom.setRoomTitle(roomTitle);
-//         newGameRoom.setRoomPw(pw);
-//         newGameRoom.setRoomUrl(url);
-
-//         // 게임 방 저장
-//         gameRoomRepository.save(newGameRoom);
-
-//         // GameRoomDto로 변환하여 반환
-//         return new GameRoomDto(newGameRoom.getRoomTitle(), newGameRoom.getRoomPw(), newGameRoom.getRoomUrl());
-//     }
-
-
-// }
-
-
-
 package com.mung.mung.api.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 
-import com.google.gson.Gson;
 import com.mung.mung.api.request.GameRoomConnectReq;
 import com.mung.mung.api.request.GameRoomCreateReq;
+import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.PlayerService;
+import com.mung.mung.api.service.ScoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import io.openvidu.java.client.Connection;
@@ -66,16 +30,18 @@ import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
 import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
-import org.springframework.web.servlet.view.groovy.GroovyMarkupConfig;
 
 
 //@CrossOrigin(origins = "*")
 @Slf4j
+@RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/game-sessions")
 public class GameRoomController {
 
     private final int LIMIT = 6;
     private final GameRoomService gameRoomService;
+    private final PlayerService playerService;
 
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
@@ -90,17 +56,17 @@ public class GameRoomController {
 
     // 방 비밀번호 체크용이라서 HashMap사용, 동기화 필요 X
     private Map<String, String> gameConnectionInfoMap = new HashMap<>();
-    @Autowired
-    public GameRoomController(GameRoomService gameRoomService){
-        this.gameRoomService=gameRoomService;
-    }
+
+    // 방과 Session을 매칭 시켜주기 위함 => 한글로 방 생성 가능
+    private Map<String, String> sessionRoomConvert =new HashMap<>();
+    private long convertNum=1;
 
     @PostConstruct
     public void init() {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-    @PostMapping("/api/game-sessions")
+    @PostMapping("")
     public ResponseEntity<String> createRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
@@ -111,69 +77,71 @@ public class GameRoomController {
             String roomPw= gameRoomCreateReq.getRoomPw();
 
             this.mapSessions.put(roomId, 0);
-            // customSessionId를 한글로 할 수 없음 => 시간되면 한글로 바꾸기!
-            // Db에 customSessionId colum을 만들고 roomId를 아스키변환해 숫자로 저장해 사용할 수도 있음
-            // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
-            Map<String, String> gameInfoMap = new HashMap<>();
-            gameInfoMap.put("customSessionId", roomId);
-            gameInfoMap.put("roomPw", roomPw);
-//            System.out.println(gameInfoMap);
-
             // 방별로 Pw 저장해서 관리
             this.gameConnectionInfoMap.put(roomId,roomPw);
+            this.sessionRoomConvert.put(roomId,"Session"+this.convertNum);
+            this.convertNum+=1;
 
+            // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
+            Map<String, String> gameInfoMap = new HashMap<>();
+            gameInfoMap.put("customSessionId", this.sessionRoomConvert.get(roomId));
 
             SessionProperties properties = SessionProperties.fromJson(gameInfoMap).build();
 //        log.info("properties : ", String.valueOf(properties));
             Session session = openvidu.createSession(properties);
 //        log.info("session : ",String.valueOf(session));
 
-            return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
+            return new ResponseEntity<>(roomId, HttpStatus.OK);
         }else {
             return new ResponseEntity<>("방 생성에 실패했습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
 
-    @PostMapping("/api/game-sessions/{sessionId}/connections")
-    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId, // react의 create token method임
-                                                   @RequestBody GameRoomConnectReq gameRoomConnectReq)
+    @PostMapping("/connections")
+    public ResponseEntity<String> createConnection(@RequestBody GameRoomConnectReq gameRoomConnectReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
+        log.info("어떤 오류인지 로그 : {}",gameRoomConnectReq);
+        String roomId=gameRoomConnectReq.getRoomId();
+        String sessionId=sessionRoomConvert.get(roomId);
+        log.info("세션 아이디 확인 로그 : {}",sessionId);
         Session session = openvidu.getActiveSession(sessionId); // 이 부분에서 열린 session을 찾아옴
         if (session == null) {
             return new ResponseEntity<>("해당하는 방을 찾을 수 없습니다.",HttpStatus.NOT_FOUND);
         }
         // 방 게임이 이미 시작됐으면 접속 차단.
-        if (!gameRoomService.getRoomStatus(sessionId).equals("waiting")){
+        if (!gameRoomService.getRoomStatus(roomId).equals("waiting")){
             return new ResponseEntity<>("이미 게임이 시작 됐습니다.",HttpStatus.FORBIDDEN);
         }
 
-        if (!this.gameConnectionInfoMap.get(sessionId).equals(gameRoomConnectReq.getRoomPw())){
+        if (!this.gameConnectionInfoMap.get(roomId).equals(gameRoomConnectReq.getRoomPw())){
             return new ResponseEntity<>("비밀번호가 틀렸습니다.",HttpStatus.FORBIDDEN);
         }
 
 
         // 인원수가 LIMIT보다 작다면 인원수 1 추가
-        if (this.mapSessions.get(sessionId)<LIMIT){
-            this.mapSessions.put(sessionId, this.mapSessions.get(sessionId) + 1);
+        if (this.mapSessions.get(roomId)<LIMIT){
+            this.mapSessions.put(roomId, this.mapSessions.get(roomId) + 1);
         } else{ // LIMIT이 됐다면 접근불가
             return new ResponseEntity<>("방 인원이 다 찼습니다.",HttpStatus.FORBIDDEN);
         }
         System.out.println(this.mapSessions);
 
+        //
+        Map<String, String> gameInfoMap = new HashMap<>();
+        gameInfoMap.put("customSessionId", this.sessionRoomConvert.get(roomId));
         // player pk 생성 필요.
-
-
-
-        ConnectionProperties properties = ConnectionProperties.fromJson(gameConnectionInfoMap).build();
+        ConnectionProperties properties = ConnectionProperties.fromJson(gameInfoMap).build();
+//        ConnectionProperties properties = ConnectionProperties.fromJson(gameConnectionInfoMap).build();
         Connection connection = session.createConnection(properties); //이 부분이 연결을 담당하는 부분
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/api/game-sessions/leave/{roomId}/{playerId}")
-    public ResponseEntity<String> leaveRoom(@PathVariable("roomId") String roomId,
-                                            @PathVariable("playerId") long playerId){
 
+    @DeleteMapping("/leave/{encodeRoomId}/{playerId}")
+    public ResponseEntity<String> leaveRoom(@PathVariable("encodeRoomId") String encodeRoomId,
+                                            @PathVariable long playerId) throws UnsupportedEncodingException {
+        String roomId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
         // roomId와 playerId가 유효하지 않은 경우 예외 처리
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
             return new ResponseEntity<>("roomId가 없거나 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
@@ -193,10 +161,21 @@ public class GameRoomController {
             gameRoomService.deleteRoom(roomId);
             this.mapSessions.remove(roomId);
             this.gameConnectionInfoMap.remove(roomId);
+            this.sessionRoomConvert.remove(roomId); //roomId,SessionID 삭제
         }
 
+        return new ResponseEntity<>("Leave 처리 성공",HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PutMapping("/initialize")
+    public ResponseEntity<String> roomInitialize(
+            @RequestBody RoomIdReq roomIdReq){
+        String roomId=roomIdReq.getRoomId();
+        gameRoomService.roomInitialize(roomId);
+        // All Player Initialize => 점수 초기화
+        playerService.playerInitailize(roomId);
+
+        return new ResponseEntity<>("방을 대기 중으로 변경 완료했습니다.",HttpStatus.OK);
     }
 
 }

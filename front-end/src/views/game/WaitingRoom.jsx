@@ -24,17 +24,16 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { ovActions } from "../../store/openviduSlice";
-
-// const user_list = ["권영재", "김대홍", "손임현", "이민규", "이현우", "홍주영"];
-// const host = "권영재";
+import { startGameVote } from "../../api/game";
 
 function WaitingRoom() {
     const [setCnt, setSetCnt] = useState(3);
     const [isMuted, setIsMuted] = useState(false);
 
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher } = openvidu;
+    const { subscribers, publisher, mySessionId } = openvidu;
     console.log(subscribers);
+
     const dispatch = useDispatch();
 
     const openRuleBook = () => {
@@ -46,6 +45,7 @@ function WaitingRoom() {
         );
     };
     const openReadyModal = () => {
+        startGameVote(mySessionId);
         dispatch(
             openModal({
                 modalType: "ReadyModal",
@@ -75,26 +75,27 @@ function WaitingRoom() {
                             />
                         </Videobox>
                     )}
-                    {subscribers !== undefined
-                        ? subscribers.map((sub, i) => (
-                              <React.Fragment key={i}>
-                                  <Videobox>
-                                      <VideoComponent
-                                          width="380"
-                                          height="200"
-                                          streamManager={sub}
-                                      />
-                                  </Videobox>
-                              </React.Fragment>
-                          ))
-                        : null}
+                    {subscribers &&
+                        subscribers.map((sub, i) => (
+                            <React.Fragment key={i}>
+                                <Videobox>
+                                    <VideoComponent
+                                        width="380"
+                                        height="200"
+                                        streamManager={sub}
+                                    />
+                                </Videobox>
+                            </React.Fragment>
+                        ))}
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                {/* <Participant
-                    user_list={(subscribers, subscribers.id)}
+                {/* (
+                <Participant
+                    user_list={subscribers}
                     // host={host}
-                /> */}
+                />
+                ) */}
                 <ChattingBox>
                     <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>
@@ -104,7 +105,6 @@ function WaitingRoom() {
                         </Button>
                     </ChattingInputBox>
                 </ChattingBox>
-
                 <MenuBox>
                     {[
                         { icon: <QuestionIcon width="25" height="20" /> },
