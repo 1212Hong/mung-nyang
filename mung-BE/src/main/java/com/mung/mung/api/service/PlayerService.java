@@ -1,6 +1,7 @@
 package com.mung.mung.api.service;
 
 import com.mung.mung.api.request.PlayerJoinReq;
+import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.response.PlayerStatusRes;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.entity.Player;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
@@ -76,6 +78,27 @@ public class PlayerService {
         return playerStatusRes;
     }
 
+    // player 점수 초기화
+    @Transactional
+    public void playerInitailize(String roomId){
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        List <Player> players = gameRoom.getPlayers();
+        for (Player player : players){
+            player.changeScore(0);
+            playerRepository.save(player);
+        }
+    }
 
+    @Transactional
+    public String changeOwner(RoomIdReq roomIdReq){
+        String roomId = roomIdReq.getRoomId();
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        List<Player> players = gameRoom.getPlayers();
+        int playerCnt=players.size();
 
+        Random random = new Random();
+        int randomNumber = random.nextInt(playerCnt) + 1;
+        Player randomOwner=players.get(randomNumber);
+        return randomOwner.getPlayerNickname();
+    }
 }

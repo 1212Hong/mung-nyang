@@ -9,8 +9,8 @@ import {
 } from "../layout/modal";
 import Button from "../Button";
 import Timer from "../Timer";
-import { useDispatch } from "react-redux";
-import { changePhase } from "../../store/phaseSlice";
+import { castGameVote } from "../../api/game";
+import { useSelector } from "react-redux";
 
 const ReadyModal = () => {
     // api 적용할 부분
@@ -18,9 +18,11 @@ const ReadyModal = () => {
     const [disagree, setDisagree] = useState(0);
     // 현재 방의 인원 수를 받아서 6 대신 적용.
     const [wait, setWait] = useState(6);
-
     const [complete, setComplete] = useState(false);
-    const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
+
+    const openvidu = useSelector((state) => state.openvidu);
+    const { mySessionId } = openvidu;
+
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
             <Timer width={"80%"}></Timer>
@@ -47,6 +49,8 @@ const ReadyModal = () => {
                             onClick={() => {
                                 // api 코드 작성할 곳.
                                 setComplete(true);
+                                castGameVote(mySessionId, "T");
+                                // agreeVote();
                                 setAgree(agree + 1);
                                 setWait(wait - 1);
                             }}
@@ -57,6 +61,7 @@ const ReadyModal = () => {
                             onClick={() => {
                                 // api 코드 작성할 곳.
                                 setComplete(true);
+                                castGameVote(mySessionId, "F");
                                 setDisagree(disagree + 1);
                                 setWait(wait - 1);
                             }}

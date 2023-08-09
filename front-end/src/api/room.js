@@ -8,12 +8,32 @@ export const createRoom = (roomId, roomPw) => {
 // createRoom으로 만든 sessionId에 해당하는 방에 연결 -> 반환 : 토큰값
 export const connectRoom = (sessionId, roomPw) => {
     console.log(sessionId);
-    return API.post(`/api/game-sessions/${sessionId}/connections`, {
+    return API.post(`/api/game-sessions/connections`, {
+        roomId: sessionId,
         roomPw: roomPw,
     });
 };
 
 // 방입장
-export const joinRoom = (sessionId, roomPw) => {
-    return API.post(`/api/roompw`);
+export const joinRoom = (sessionId, nickname) => {
+    return API.post(`/api/player/join`, {
+        roomId: sessionId,
+        playerNickname: nickname,
+    });
+};
+
+// 닉네임 가져오기
+export const getNickname = (sessionId) => {
+    return API.get(`/api/player/nickname?roomID=${sessionId}`).then((data) =>
+        console.log(data).catch((err) => console.log(err)),
+    );
+};
+
+// 떠난 사용자 처리
+export const outRoom = (sessionId, playerId) => {
+    return API.delete(
+        `/api/game-sessions/leave/${encodeURIComponent(sessionId)}/${playerId}`,
+    )
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
 };

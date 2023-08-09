@@ -40,17 +40,17 @@ public class ScoreService {
         for (Player player : players) {
             if (player.getPlayerNickname().equals(liar)) {
                 // 라이어 점수 반영
-                player.setPlayerScore(player.getPlayerScore() + liarScore);
+                player.changeScore(player.getPlayerScore() + liarScore);
                 playerRepository.save(player);
 
             }else{
                 //시민 + 정답자 팀 점수 반영
-                player.setPlayerScore(player.getPlayerScore() + noLiarScore);
+                player.changeScore(player.getPlayerScore() + noLiarScore);
                 playerRepository.save(player);
             }
             // 비상정답 버튼 사람에 따른 점수 차별성 부여
             if (player.getPlayerNickname().equals(playerNickname)){
-                player.setPlayerScore(player.getPlayerScore() + elseScore);
+                player.changeScore(player.getPlayerScore() + elseScore);
                 playerRepository.save(player);
             }
         }
@@ -71,12 +71,12 @@ public class ScoreService {
         for (Player player : players) {
             if (!player.getPlayerNickname().equals(liar)) {
                 //시민 + 정답자 팀 점수 반영
-                player.setPlayerScore(player.getPlayerScore() + noLiarScore);
+                player.changeScore(player.getPlayerScore() + noLiarScore);
                 playerRepository.save(player);
             }
             // 정답자가 맞췄으므로 추가점수 부여할지 여부
             if (player.getPlayerNickname().equals(answerer)){
-                player.setPlayerScore(player.getPlayerScore() + answererScore);
+                player.changeScore(player.getPlayerScore() + answererScore);
                 playerRepository.save(player);
             }
         }
@@ -96,11 +96,11 @@ public class ScoreService {
         for (Player player : players) {
             if (player.getPlayerNickname().equals(liar)) {
                 //라이어 점수 반영
-                player.setPlayerScore(player.getPlayerScore() + liarScore);
+                player.changeScore(player.getPlayerScore() + liarScore);
                 playerRepository.save(player);
             }else {
                 //시민 + 정답자 팀 점수 반영
-                player.setPlayerScore(player.getPlayerScore() + noLiarScore);
+                player.changeScore(player.getPlayerScore() + noLiarScore);
                 playerRepository.save(player);
             }
         }
