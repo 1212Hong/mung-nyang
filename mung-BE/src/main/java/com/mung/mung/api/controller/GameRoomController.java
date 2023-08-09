@@ -1,5 +1,8 @@
 package com.mung.mung.api.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +35,8 @@ import io.openvidu.java.client.SessionProperties;
 //@CrossOrigin(origins = "*")
 @Slf4j
 @RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/game-sessions")
 public class GameRoomController {
 
     private final int LIMIT = 6;
@@ -66,7 +71,7 @@ public class GameRoomController {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-    @PostMapping("/api/game-sessions")
+    @PostMapping("")
     public ResponseEntity<String> createRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
@@ -98,7 +103,7 @@ public class GameRoomController {
     }
 
 
-    @PostMapping("/api/game-sessions/connections")
+    @PostMapping("/connections")
     public ResponseEntity<String> createConnection(@RequestBody GameRoomConnectReq gameRoomConnectReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
         log.info("어떤 오류인지 로그 : {}",gameRoomConnectReq);
@@ -138,10 +143,10 @@ public class GameRoomController {
     }
 
 
-    @DeleteMapping("/api/game-sessions/leave")
-    public ResponseEntity<String> leaveRoom(@RequestParam("roomId") String roomId,
-                                            @RequestParam("playerId") long playerId) {
-
+    @DeleteMapping("/leave/{encodeRoomId}/{playerId}")
+    public ResponseEntity<String> leaveRoom(@PathVariable("encodeRoomId") String encodeRoomId,
+                                            @PathVariable long playerId) throws UnsupportedEncodingException {
+        String roomId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
         // roomId와 playerId가 유효하지 않은 경우 예외 처리
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
             return new ResponseEntity<>("roomId가 없거나 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
@@ -167,7 +172,7 @@ public class GameRoomController {
         return new ResponseEntity<>("Leave 처리 성공",HttpStatus.OK);
     }
 
-    @PutMapping("/api/game-sessions/initialize")
+    @PutMapping("/initialize")
     public ResponseEntity<String> roomInitialize(
             @RequestBody RoomIdReq roomIdReq){
         String roomId=roomIdReq.getRoomId();
