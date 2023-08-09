@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +34,15 @@ public class GameRoomService {
             return false;
         } else
         { // 존재하지 않으면 roomId로 방 생성
+            ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+            ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
 
             System.out.println(roomId);
             GameRoom gameRoom = GameRoom.builder()
                     .roomId(roomId)
                     .roomPw(gameRoomCreateReq.getRoomPw())
                     .status("waiting")
-                    .startTime(LocalDateTime.now())
+                    .startTime(seoulTime.toLocalDateTime())
                     .build();
             gameRoomRepository.save(gameRoom);
             return true;
