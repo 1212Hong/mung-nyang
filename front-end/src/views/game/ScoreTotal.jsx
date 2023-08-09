@@ -73,9 +73,9 @@ const ScoreTotal = () => {
                 {userlist.map((user, index) => (
                     <LineItem key={index}>
                         <RankItem>{index + 1}st</RankItem>
-                        <UserItem>{user.username}d</UserItem>
-                        <UserItem>+{user.upscore}d</UserItem>
-                        <UserItem>{user.user}d</UserItem>
+                        <UserItem>{user}</UserItem>
+                        <UserItem>+{}d</UserItem>
+                        <UserItem>{}d</UserItem>
                     </LineItem>
                 ))}
             </RankBox>
