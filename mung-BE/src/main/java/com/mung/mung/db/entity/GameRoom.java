@@ -27,12 +27,10 @@ public class GameRoom {
 
     private LocalDateTime endTime;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL) // default : LAZY
+    @OneToMany(mappedBy = "gameRoom" ,cascade = CascadeType.ALL)// default : LAZY
     private List<Player> players = new ArrayList<>();
 
-    @Builder.Default
-    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL) // default : LAZY
+    @OneToMany(mappedBy = "gameRoom" ,cascade = CascadeType.ALL)// default : LAZY
     private List<Game> games = new ArrayList<>();
 
     public void updateOwner(String newOwner) {
