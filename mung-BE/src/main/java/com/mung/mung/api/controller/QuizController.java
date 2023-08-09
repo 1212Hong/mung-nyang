@@ -1,7 +1,6 @@
 package com.mung.mung.api.controller;
 
 import com.mung.mung.api.request.QuizCountReq;
-import com.mung.mung.api.request.QuizResultReq;
 import com.mung.mung.api.request.QuizPlayersRoleReq;
 import com.mung.mung.api.response.*;
 import com.mung.mung.api.service.QuizService;
@@ -18,7 +17,7 @@ public class QuizController {
 
     private final QuizService quizService;
 
-    @PostMapping("/start")
+    @GetMapping("/start")
     public ResponseEntity<QuizStartRes> startQuiz(@RequestParam String roomId) {
         QuizStartRes quizStartRes = quizService.startQuiz(roomId);
 
@@ -44,8 +43,8 @@ public class QuizController {
     }
 
     @GetMapping("/result")
-    public ResponseEntity<QuizResultRes> getQuizResult(@RequestBody QuizResultReq quizResultReq) {
-        QuizResultRes quizResultRes = quizService.getQuizResult(quizResultReq);
+    public ResponseEntity<QuizResultRes> getQuizResult(@RequestParam String roomId) {
+        QuizResultRes quizResultRes = quizService.getQuizResult(roomId);
 
         return ResponseEntity.ok(quizResultRes);
     }

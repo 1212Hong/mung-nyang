@@ -7,5 +7,7 @@ import lombok.Setter;
 @Setter
 public class VoteSetReq {
 
-    private int gameSet;
+    private String roomId;
+
+    private int maxSet;
 }

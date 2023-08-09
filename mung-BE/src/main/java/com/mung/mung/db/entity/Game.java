@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,7 +19,7 @@ import java.util.List;
 public class Game {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gameId;
 
     private int maxSet;
@@ -39,7 +38,7 @@ public class Game {
     @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
 
-    @OneToMany(mappedBy = "game" ,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
     private List<GameSet> gameSets = new ArrayList<>();
 
 

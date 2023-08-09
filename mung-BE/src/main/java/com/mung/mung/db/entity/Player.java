@@ -5,13 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
 @Getter
-@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -19,7 +17,7 @@ import javax.persistence.*;
 public class Player {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long playerId;
 
     private String playerNickname;
@@ -34,6 +32,9 @@ public class Player {
     @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
 
+    public void changeScore(int newScore){
+        this.playerScore=newScore;
+    }
 
 
 }
