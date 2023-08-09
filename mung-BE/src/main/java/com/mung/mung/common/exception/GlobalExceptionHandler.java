@@ -122,4 +122,44 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiException, httpStatus);
     }
 
+    @ExceptionHandler(value = {RoomAlreadyExistsException.class})
+    public ResponseEntity<Object> roomAlreadyExistsException(RoomAlreadyExistsException e){
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.ROOM_ALREADY_EXISTS_EXCEPTION,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+    
+    @ExceptionHandler(value = {RoomAlreadyStartException.class})
+    public ResponseEntity<Object> gameRoomAlreadyStartException(RoomAlreadyStartException e){
+        HttpStatus httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.ROOM_ALREADY_START_EXCEPTION,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+    
+    
+    @ExceptionHandler(value = {SessionNotExistException.class})
+    public ResponseEntity<Object> sessionNotExistException (SessionNotExistException e){
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.SESSION_NOT_EXIST_EXCEPTION,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
 }

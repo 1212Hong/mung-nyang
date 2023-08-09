@@ -11,8 +11,12 @@ public enum ExceptionMessage {
     LIAR_VOTE_RESULT_NOT_FOUND_MESSAGE("라이어 투표 정보가 존재하지 않습니다"),
     LIAR_ANSWER_OPTIONS_NOT_EXIST_MESSAGE("정답 리스트가 존재하지 않습니다"),
     PLAYER_NOT_EXIST_MESSAGE("Player does not exist."),
-    VOTES_NOT_START_MESSAGE("투표가 시작되지 않았습니다")
+    VOTES_NOT_START_MESSAGE("투표가 시작되지 않았습니다"),
 
+    
+    ROOM_ALREADY_START_EXCEPTION("이미 게임이 시작된 방입니다."),
+    ROOM_ALREADY_EXISTS_EXCEPTION("이미 같은 이름으로 생성된 방이 존재합니다"),
+    SESSION_NOT_EXIST_EXCEPTION("유효하지 않은 세션[ROOM_ID]입니다.")
     ;
 
     private final String message;

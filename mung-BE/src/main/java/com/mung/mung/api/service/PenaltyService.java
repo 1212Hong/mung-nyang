@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +38,22 @@ public class PenaltyService {
         return danceRes;
         }
     }
-
+    @Transactional
+    public String getPenaltyPlayer(HashMap<String,Integer> scoreMap){
+        Set<String> keySet = scoreMap.keySet();
+        int minScore=1000;
+        List<String> players= new ArrayList<String>();
+        for (String key : keySet) {
+            if (scoreMap.get(key)<minScore){
+                minScore=scoreMap.get(key);
+            }
+        }
+        for (String key : keySet) {
+            if (scoreMap.get(key).equals(minScore)){
+                players.add(key);
+            }
+        }
+        int playerCnt=players.size();
+        return players.get(new Random().nextInt(playerCnt));
+    }
 }

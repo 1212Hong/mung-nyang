@@ -41,9 +41,9 @@ public class PlayerService {
             }
             System.out.println(playerJoinReq);
             Player player = Player.builder()
-                .playerNickname(playerJoinReq.getPlayerNickname())
-                .gameRoom(gameRoom)
-                .build();
+                    .playerNickname(playerJoinReq.getPlayerNickname())
+                    .gameRoom(gameRoom)
+                    .build();
             playerRepository.save(player);
         }else{
             // gameRoom이 존재하지 않는 경우에 대한 처리
