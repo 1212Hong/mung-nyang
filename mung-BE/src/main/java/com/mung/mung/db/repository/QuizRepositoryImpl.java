@@ -1,6 +1,7 @@
 package com.mung.mung.db.repository;
 
 import com.mung.mung.db.entity.Quiz;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +24,9 @@ public class QuizRepositoryImpl implements QuizRepositoryCustom{
         return queryFactory
                 .select(quiz)
                 .from(quiz)
-                .where(quiz.id.eq(randomId))
+//                .where(quiz.id.eq(randomId))
+                .orderBy(Expressions.stringTemplate("RAND()").asc())
+
                 .fetchFirst();
     }
 }
