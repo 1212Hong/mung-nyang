@@ -11,7 +11,7 @@ import {
     Overlay,
 } from "../../components/layout/selectAnswer";
 import { liarAnswer } from "../../api/game";
-import { getLiarAnswer } from "../../hooks/quiz";
+
 const SelectAnswer = (props) => {
     const { time } = props;
     const [activeBox, setActiveBox] = useState(null);
