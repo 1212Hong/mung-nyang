@@ -52,7 +52,15 @@ const Footer = styled.div`
     display: flex;
     justify-content: space-between;
 `;
-
+const ErrorBox = styled.div`
+    padding: 20px;
+    padding-bottom: 40px;
+    width: 600px;
+    height: 300px;
+    background: ${`var(--macciato)`};
+    text-align: center;
+    border-radius: 5px;
+`;
 export {
     Container,
     HeaderBox,
@@ -61,4 +69,5 @@ export {
     Footer,
     AnswerBox,
     FooterBox,
+    ErrorBox,
 };
