@@ -27,6 +27,7 @@ import { signalStartGameVote, startGameVote } from "../../api/game";
 import Dropdown from "../../components/Dropdown";
 import { SmallText, SubText } from "../../components/layout/common";
 import { gameActions } from "../../store/gameSlice";
+import { changePhase } from "../../store/phaseSlice";
 
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
@@ -179,6 +180,11 @@ function WaitingRoom() {
                         >
                             START
                         </Button>
+                        <Button
+                            onClick={() => {
+                                dispatch(changePhase({ phaseType: "Dance" }));
+                            }}
+                        ></Button>
                     </StartnSetBox>
                 )}
             </Rightbox>
