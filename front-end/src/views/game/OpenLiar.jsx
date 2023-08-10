@@ -11,16 +11,14 @@ import {
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Result } from "../../api/game";
-import { openviduSlice } from "../../store/openviduSlice";
+import { gameActions } from "../../store/gameSlice";
 
 const OpenLiar = () => {
-    const setId = useSelector((state) => state.gameSlice.setId);
+    const setId = useSelector((state) => state.game.setId);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
-    const pickedLiar = useSelector((state) => state.gameSlice.selectedLiar);
+    const pickedLiar = useSelector((state) => state.game.selectedLiar);
     console.log(pickedLiar);
-    const selectedAnswer = useSelector(
-        (state) => state.gameSlice.selectedAnswer,
-    );
+    const selectedAnswer = useSelector((state) => state.game.selectedAnswer);
     console.log(selectedAnswer);
     const dispatch = useDispatch();
 
@@ -39,7 +37,7 @@ const OpenLiar = () => {
                 const result = response.data;
                 console.log(result);
 
-                dispatch(openviduSlice.actions.updateResult(result));
+                dispatch(gameActions.updateResult(result));
                 dispatch(changePhase({ phaseType: "Wait" }));
             } catch (error) {
                 console.error(error);

@@ -17,7 +17,7 @@ import { gameSlice } from "../../store/gameSlice";
 const SelectLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher } = openvidu;
-    const setId = useSelector((state) => state.gameSlice.setId);
+    const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
     const text = "라이어를 선택하세요.";
