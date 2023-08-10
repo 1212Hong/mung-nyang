@@ -11,6 +11,7 @@ const initialState = {
     playerId: "",
     roomId: "",
     result: "",
+    penaltyUser: "",
 };
 
 export const gameSlice = createSlice({
@@ -38,6 +39,9 @@ export const gameSlice = createSlice({
 
         saveResult: (state, action) => {
             state.result = action.payload;
+        },
+        savePenaltyUser: (state, action) => {
+            state.penaltyUser = action.payload;
         },
     },
 });
