@@ -28,27 +28,48 @@ export const agreeVote = (check) => {
 };
 
 // 카테고리 내 제시어
-export const selectCategory = (roomId, category) => {
-    return API.get(`api/quiz/category/${roomId}`, { category: category });
+export const selectCategory = async (roomId, gameId, category, answerer) => {
+    return await API.post(`api/quiz/category`, {
+        roomId,
+        gameId,
+        category,
+        answerer,
+    });
 };
 
 // 비상정답
-export const emergencyAnswer = (roomId, emergencyPlayerNickname, answer) => {
-    return API.post(`/api/answer/emergency`, {
-        roomId: roomId,
-        emergencyPlayerNickname: emergencyPlayerNickname,
-        answer: answer,
+export const emergencyAnswer = async (
+    setId,
+    roomId,
+
+    emergencyPlayerNickname,
+    answer,
+) => {
+    return await API.post(`/api/answer/emergency`, {
+        setId,
+        roomId,
+        emergencyPlayerNickname,
+        answer,
     });
 };
 
 // 최종정답
-export const FinalAnswer = (roomId, answer) => {
-    return API.post(`/api/answer/final`, { roomId: roomId, answer: answer });
+export const finalAnswer = async (setId, roomId, answer) => {
+    return await API.post(`/api/answer/final`, {
+        setId,
+        roomId,
+        answer,
+    });
 };
 
 // 제시어 정답 목록 요청
 export const listAnswer = (roomId) => {
     return API.get(`/pub/liar-category${roomId}`);
+};
+
+// 지목된 라이어에 정답 목록 표출
+export const liarAnswer = async (setId) => {
+    return await API.get(`api/liar/options?setId=${setId}`);
 };
 
 // 퀴즈 시작시 질문지와 answer 1,2 요청
