@@ -19,3 +19,7 @@ export const MidText = styled.span`
 export const SubText = styled.span`
     font-size: 24px;
 `;
+// 더 작은 텍스트
+export const SmallText = styled.span`
+    font-size: 16px;
+`;
