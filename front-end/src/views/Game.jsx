@@ -122,6 +122,7 @@ const Game = () => {
 
                 setPublisher(publisher);
 
+                session.signal({});
                 console.log(currentVideoDevice);
                 console.log("success connect to the session");
             } catch (error) {
