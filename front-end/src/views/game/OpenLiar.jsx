@@ -14,11 +14,14 @@ import { Result } from "../../api/game";
 import { openviduSlice } from "../../store/openviduSlice";
 
 const OtherView = () => {
-    const setId = useSelector((state) => state.openvidu.setId);
+    const setId = useSelector((state) => state.gameSlice.setId);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
-    const pickedLiar = useSelector((state) => state.openvidu.selectedLiar);
+    const pickedLiar = useSelector((state) => state.gameSlice.selectedLiar);
     console.log(pickedLiar);
-    const selectedAnswer = "사과";
+    const selectedAnswer = useSelector(
+        (state) => state.gameSlice.selectedAnswer,
+    );
+    console.log(selectedAnswer);
     const dispatch = useDispatch();
 
     const openvidu = useSelector((state) => state.openvidu);

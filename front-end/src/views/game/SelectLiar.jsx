@@ -21,7 +21,7 @@ const SelectLiar = () => {
     console.log(publisher.session.connection.data);
     console.log(subscribers);
     console.log(subscribers[0].stream.connection.data);
-    const setId = useSelector((state) => state.openvidu.setId);
+    const setId = useSelector((state) => state.gameSlice.setId);
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
     const text = "라이어를 선택하세요.";
