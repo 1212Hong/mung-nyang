@@ -85,10 +85,10 @@ function TopBottomVideo() {
                             </Footer>
                         </AnswerBox>
                     ) : (
-                        <div>퀴즈 정보를 불러오는 중...</div>
+                        <div>view접근이 잘못됨</div>
                     )
                 ) : (
-                    <div>퀴즈 정보를 불러오는 중...</div>
+                    <div>퀴즈 정보가 없음</div>
                 )}
             </StateBox>
             <FooterBox className="FooterBox">
