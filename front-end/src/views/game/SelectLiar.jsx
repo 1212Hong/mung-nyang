@@ -12,15 +12,11 @@ import {
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, deleteLiar } from "../../api/game";
-import { openviduSlice } from "../../store/openviduSlice";
+import { gameSlice } from "../../store/gameSlice";
 
 const SelectLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher } = openvidu;
-    console.log(publisher);
-    console.log(publisher.session.connection.data);
-    console.log(subscribers);
-    console.log(subscribers[0].stream.connection.data);
     const setId = useSelector((state) => state.gameSlice.setId);
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
@@ -33,7 +29,6 @@ const SelectLiar = () => {
             try {
                 const response = await selectLiar(setId, activeBox);
                 console.log(response);
-                console.log(setId);
 
                 const selectedLiarResponse = await selectedLiar(setId);
                 console.log(selectedLiarResponse);
@@ -43,9 +38,8 @@ const SelectLiar = () => {
                 const mostVotedNickname =
                     selectedLiarResponse.data.mostVotedNicknames[0];
                 console.log(mostVotedNickname);
-
                 dispatch(
-                    openviduSlice.actions.updateSelectedLiar(mostVotedNickname),
+                    gameSlice.actions.updateSelectedLiar(mostVotedNickname),
                 );
 
                 await deleteLiar(setId);
