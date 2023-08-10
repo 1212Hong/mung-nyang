@@ -58,12 +58,12 @@ export const deleteVote = (roomId) => {
 };
 
 // 카테고리 내 제시어
-export const selectCategory = async (roomId, gameId, category, answerer) => {
-    return await API.post(`api/quiz/category`, {
-        roomId,
-        gameId,
-        category,
-        answerer,
+export const selectCategory = (roomId, gameId, category, answerer) => {
+    return API.post(`api/quiz/category`, {
+        roomId: roomId,
+        gameId: gameId,
+        category: category,
+        answerer: answerer,
     });
 };
 

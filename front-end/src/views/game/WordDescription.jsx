@@ -81,7 +81,9 @@ function WordDescription(props) {
     const [curGameSetId, setCurGameSetId] = useState("");
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
+    const game = useSelector((state) => state.game);
     const { subscribers, publisher, mySessionId } = openvidu;
+    const { gameId, category, answerer } = game;
     console.log(subscribers);
 
     const openAnswerModal = () => {
@@ -95,10 +97,10 @@ function WordDescription(props) {
     useEffect(() => {
         const getFunc = async () => {
             const roleInfo = await fetchUserRole(
-                "테스트",
-                "1",
-                "과일",
-                "테스트유저1",
+                mySessionId,
+                gameId,
+                category,
+                answerer,
             );
             setCurGameSetId(roleInfo.setId);
             const playersRoleInfo = roleInfo.playersRoleInfo;
