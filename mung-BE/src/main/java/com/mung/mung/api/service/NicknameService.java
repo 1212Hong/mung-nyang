@@ -63,43 +63,4 @@ public class NicknameService {
         }
         return returnNickname;
     }
-//        String returnNickname="NotAllowNickname";
-//        String playerNickname="null";
-//        for (int i = 0; i < 10; i++) {
-//            ChangeCount += 1;
-//
-////            log.info("randomNumber 확인 : {}",this.randomNumber);
-//            Dog existingNickname = nicknameRepository.findByDogId(this.randomNumber);
-//            if (existingNickname !=null){
-//                playerNickname=existingNickname.getDogNickname();
-//            }else{
-//                log.info("여기 통과하니??? : {}", returnNickname);
-//                return returnNickname;
-//            }
-//            int playerNameCount = 0;
-//            for (Player player : players) {
-//                log.info("randomNumber 변화 확인 : {} ", this.randomNumber);
-//                if (player.getPlayerNickname().equals(playerNickname)) {
-//                    log.info("randomNumber 확인 : {} ", this.randomNumber, "returnNickname 확인 : {}", this.randomNumber);
-//                    this.randomNumber = (this.randomNumber) % nicknameCount+1;
-//                    break;
-//                }
-//                playerNameCount += 1;
-//            }
-//            if (playerNameCount == playerCount) {
-//                log.info("playerCount확인 : {} ", playerCount);
-//                log.info("randomNumber 변화 2 확인 : {} ", this.randomNumber);
-//                log.info("강아지 이름 : {}",playerNickname);
-//                returnNickname = playerNickname;
-////
-//                log.info("randomNumber 변화 3 확인 : {} ", this.randomNumber);
-//                return returnNickname;
-//            }
-//        }
-//        if (ChangeCount >= 10) {
-//            return returnNickname;
-//        } else {
-//            return returnNickname;
-//        }
-//    }
 }

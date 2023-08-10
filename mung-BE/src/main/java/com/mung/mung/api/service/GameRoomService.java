@@ -36,20 +36,19 @@ public class GameRoomService {
         if (existingGameRoom != null) {
             // 이미 해당 roomId가 존재하는 경우
             throw new RoomAlreadyExistsException();
-        } else
-        { // 존재하지 않으면 roomId로 방 생성
-            ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
-            ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
+        } 
+        // 존재하지 않으면 roomId로 방 생성
+        ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+        ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
 
-            System.out.println(roomId);
-            GameRoom gameRoom = GameRoom.builder()
-                    .roomId(roomId)
-                    .roomPw(gameRoomCreateReq.getRoomPw())
-                    .status("waiting")
-                    .startTime(seoulTime.toLocalDateTime())
-                    .build();
-            gameRoomRepository.save(gameRoom);
-        }
+        System.out.println(roomId);
+        GameRoom gameRoom = GameRoom.builder()
+                .roomId(roomId)
+                .roomPw(gameRoomCreateReq.getRoomPw())
+                .status("waiting")
+                .startTime(seoulTime.toLocalDateTime())
+                .build();
+        gameRoomRepository.save(gameRoom);
     }
 
     @Transactional
@@ -58,10 +57,9 @@ public class GameRoomService {
         Player existingPlayer = playerRepository.findByPlayerId(playerId);
         if (existingPlayer == null) {
             throw new PlayerNotExistException();
-        } else
-        {   // 있으면
-            return true;
-        }
+        } 
+
+        return true;
     }
 
     @Transactional
@@ -71,10 +69,9 @@ public class GameRoomService {
         if (existingRoom == null) {
             // 방이 없으면
             throw new RoomNotExistException();
-        } else
-        {
-            return true;
-        }
+        } 
+        return true;
+        
     }
 
     @Transactional
