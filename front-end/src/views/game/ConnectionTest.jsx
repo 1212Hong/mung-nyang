@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 import Error from "../Error";
 import Input from "../../components/Input";
 import VideoDeviceSelector from "../../components/test/VideoDeviceSelector";
-import { getNickname, joinRoom } from "../../api/room";
+import { getNickname } from "../../api/room";
 import Switch from "../../components/test/Switch";
 import { MidText } from "../../components/layout/common";
 import { ovActions } from "../../store/openviduSlice";
@@ -36,7 +36,7 @@ function ConnectionTest() {
     const [isOn, setIsOn] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const openvidu = useSelector((state) => state.openvidu);
-    const { mySessionId, myUserName } = openvidu;
+    const { mySessionId } = openvidu;
     const navigate = useNavigate();
     const audioRef = useRef(null);
     const audioContextRef = useRef(null);
@@ -60,9 +60,14 @@ function ConnectionTest() {
     }
 
     const refreshName = async () => {
-        dispatch(ovActions.saveUserName(`user` + Math.random() * 100));
-        // setUserName(await getNickname());
-        setUserName(myUserName);
+        try {
+            const nickname = await getNickname(mySessionId);
+            console.log(nickname);
+            setUserName(nickname);
+            dispatch(ovActions.saveUserName(nickname));
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     useEffect(() => {
