@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Result } from "../../api/game";
 import { openviduSlice } from "../../store/openviduSlice";
 
-const OtherView = () => {
+const OpenLiar = () => {
     const setId = useSelector((state) => state.gameSlice.setId);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const pickedLiar = useSelector((state) => state.gameSlice.selectedLiar);
@@ -82,4 +82,4 @@ const OtherView = () => {
     );
 };
 
-export default OtherView;
+export default OpenLiar;

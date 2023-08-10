@@ -12,8 +12,8 @@ import {
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const OtherView = (props) => {
-    const { text } = props;
+const OtherView = () => {
+    const text = "지목된 사람이 정답을 선택 중입니다.";
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher } = openvidu;

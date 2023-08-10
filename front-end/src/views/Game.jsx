@@ -33,10 +33,6 @@ const PHASES = {
     Paint: "Paint",
 };
 
-const roomId = 3;
-const selectAnswerText = "지목된 사람이 정답을 선택 중입니다.";
-const selectedAnswer = "축구공";
-
 const PHASE_COMPONENTS = [
     {
         type: PHASES.Wait,
@@ -52,7 +48,7 @@ const PHASE_COMPONENTS = [
     },
     {
         type: PHASES.LiarVote,
-        component: <SelectLiar roomId={roomId} />,
+        component: <SelectLiar />,
     },
     {
         type: PHASES.SelectAns,
@@ -60,11 +56,11 @@ const PHASE_COMPONENTS = [
     },
     {
         type: PHASES.OtherView,
-        component: <OtherView text={selectAnswerText} />,
+        component: <OtherView />,
     },
     {
         type: PHASES.OpenLiar,
-        component: <OpenLiar selectedAnswer={selectedAnswer} />,
+        component: <OpenLiar />,
     },
     {
         type: PHASES.Desc,
