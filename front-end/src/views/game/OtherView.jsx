@@ -10,12 +10,14 @@ import {
     UserBox,
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const OtherView = (props) => {
     const { text } = props;
-    const userlist = ["댕댕이1", "댕댕이2", "댕댕이3", "댕댕이4", "댕댕이5"];
     const dispatch = useDispatch();
+    const openvidu = useSelector((state) => state.openvidu);
+    const { subscribers, publisher } = openvidu;
+    console.log(subscribers);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -29,17 +31,30 @@ const OtherView = (props) => {
         <Container>
             <Timer />
             <AnswerBox>
-                <AnswerItem>
-                    <VideoComponent width="500px" height="400px" />
-                </AnswerItem>
+                {publisher && (
+                    <AnswerItem>
+                        <VideoComponent
+                            width="500px"
+                            height="400px"
+                            streamManager={publisher}
+                        />
+                    </AnswerItem>
+                )}
                 <Card imageSrc={imageSrc} description={text} />
             </AnswerBox>
             <UserBox>
-                {userlist.map((index) => (
-                    <OtherUsers key={index}>
-                        <VideoComponent width="232px" height="235px" />
-                    </OtherUsers>
-                ))}
+                {subscribers &&
+                    subscribers.map((sub, i) => (
+                        <React.Fragment key={i}>
+                            <OtherUsers>
+                                <VideoComponent
+                                    width="232px"
+                                    height="235px"
+                                    streamManager={sub}
+                                />
+                            </OtherUsers>
+                        </React.Fragment>
+                    ))}
             </UserBox>
         </Container>
     );

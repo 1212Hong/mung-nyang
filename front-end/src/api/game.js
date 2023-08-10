@@ -120,7 +120,7 @@ export const deleteLiar = (setId) => {
 };
 
 // 라이어 정답
-export const liarAnswer = (setId, roomId, pickedLiar, answer) => {
+export const Result = (setId, roomId, pickedLiar, answer) => {
     return API.post(`/api/answer/liar`, {
         setId: setId,
         roomId: roomId,
