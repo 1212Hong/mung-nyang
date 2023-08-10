@@ -44,15 +44,10 @@ public class PlayerController {
     @GetMapping("/nickname")
     public ResponseEntity<String> giveNickname(@RequestParam("roomId") String roomId) {
         // player정보를 DB에 저장
-        if (!gameRoomService.isRoomExists(roomId)){
-            return new ResponseEntity<>("방이 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
-        };
-
-        if (nicknameService.giveNickname(roomId).equals("NotAllowNickname")){
-            return new ResponseEntity<>("닉네임을 가져올 수 없습니다...",HttpStatus.BAD_REQUEST);
-        }else {
-            return new ResponseEntity<>(nicknameService.giveNickname(roomId),HttpStatus.OK);
-        }
+        // throw처리 내부에 잇음
+        gameRoomService.isRoomExists(roomId);
+        // 호출 여러번 하면 안됨 => 숫자 증가가 1이 아니라 2가 돼 안나오는 경우가 생길 수 있음
+        return new ResponseEntity<>(nicknameService.giveNickname(roomId),HttpStatus.OK);
         // 저장 후 조회 해 Id를 보내 줌
     }
 
