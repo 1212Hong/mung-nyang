@@ -18,6 +18,7 @@ import {
     BtnBox,
 } from "../../components/layout/scoreTotal";
 import { score } from "../../api/game";
+import { gameSlice } from "../../store/gameSlice";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
@@ -48,18 +49,23 @@ const ScoreTotal = () => {
                 console.error("Error fetching score:", error);
             });
     }, [roomId]);
-
     const information = [];
-
+    const beforeScore = useSelector((state) => state.gameSlice.score);
+    console.log(beforeScore);
     for (let i = 0; i < userlist.length; i++) {
         const username = userlist[i];
-        const newEntry = { username, upscore: 5, score: scoreData.username };
+        console.log(username);
+        const newEntry = {
+            username,
+            upscore: scoreData[username] - beforeScore[username],
+            score: scoreData[username],
+        };
         information.push(newEntry);
     }
-
     console.log(information);
 
     const Next = () => {
+        dispatch(gameSlice.actions.saveScore(scoreData));
         if (set === totalset) {
             dispatch(changePhase({ phaseType: "Wait" }));
         } else {

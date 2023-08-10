@@ -3,7 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     setCnt: 0,
     setId: 0,
-    score: 0,
+    score: {
+        리트리버: 0,
+        리트리버2: 0,
+        테스트유저2: 42,
+        테스트유저1: 1,
+    },
     selectedLiar: "",
     answerer: "",
     word: "",
@@ -20,7 +25,7 @@ export const gameSlice = createSlice({
             state.setId = action.setId;
         },
         saveScore: (state, action) => {
-            state.score += action.payload;
+            state.score = action.payload;
         },
         saveLiar: (state, action) => {
             state.selectedLiar = action.payload;
