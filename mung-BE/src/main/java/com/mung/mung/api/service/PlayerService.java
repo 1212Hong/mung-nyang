@@ -3,6 +3,9 @@ package com.mung.mung.api.service;
 import com.mung.mung.api.request.PlayerJoinReq;
 import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.response.PlayerStatusRes;
+import com.mung.mung.common.exception.custom.NicknameAlreadyExistException;
+import com.mung.mung.common.exception.custom.PlayerNotExistException;
+import com.mung.mung.common.exception.custom.RoomNotExistException;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.entity.Player;
 import com.mung.mung.db.repository.NicknameRepository;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -31,24 +35,32 @@ public class PlayerService {
     public boolean joinRoom(PlayerJoinReq playerJoinReq){
         boolean ownerCheck=false;
         GameRoom gameRoom = gameRoomRepository.findByRoomId(playerJoinReq.getRoomId());
-        if (gameRoom != null){
+        if (gameRoom == null){
+            throw new RoomNotExistException();
+        }
+        List<Player> players=gameRoom.getPlayers();
+        List<String> nicknameList = new ArrayList<>();
+        for (Player player : players){
+            nicknameList.add(player.getPlayerNickname());
+        }
+        if (nicknameList.contains(playerJoinReq.getPlayerNickname())){
+            throw new NicknameAlreadyExistException();
+        }
+        if(players.size()<1){
+            // 방에 아무도 입장을 안했다면, 처음 입장한 사람을 방장으로 선택
+            gameRoom.updateOwner(playerJoinReq.getPlayerNickname());
+            ownerCheck=true;
+            gameRoomRepository.save(gameRoom);
+        }
 
-            if(gameRoom.getPlayers().size()<1){
-                // 방에 아무도 입장을 안했다면, 처음 입장한 사람을 방장으로 선택
-                gameRoom.updateOwner(playerJoinReq.getPlayerNickname());
-                ownerCheck=true;
-                gameRoomRepository.save(gameRoom);
-            }
-            System.out.println(playerJoinReq);
-            Player player = Player.builder()
+        System.out.println(playerJoinReq);
+        Player player = Player.builder()
                 .playerNickname(playerJoinReq.getPlayerNickname())
                 .gameRoom(gameRoom)
+                .playerScore(0)
+                .playerVote(0)
                 .build();
-            playerRepository.save(player);
-        }else{
-            // gameRoom이 존재하지 않는 경우에 대한 처리
-            throw new IllegalArgumentException("Invalid roomId: " + playerJoinReq.getRoomId());
-        }
+        playerRepository.save(player);
         return ownerCheck;
     }
 
@@ -66,7 +78,7 @@ public class PlayerService {
     public PlayerStatusRes getPlayerStatus(long playerId, String playerNickname, String roomId, boolean owner){
         Player player = playerRepository.findByPlayerId(playerId);
         if (player == null) {
-            throw new NoSuchElementException("Player not found with ID: " + playerId);
+            throw new PlayerNotExistException();
         }
         PlayerStatusRes playerStatusRes = PlayerStatusRes.builder()
                 .playerId(playerId)
@@ -82,7 +94,13 @@ public class PlayerService {
     @Transactional
     public void playerInitailize(String roomId){
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        if (gameRoom==null){
+            throw new RoomNotExistException();
+        }
         List <Player> players = gameRoom.getPlayers();
+        if (players.isEmpty()){
+            throw new PlayerNotExistException();
+        }
         for (Player player : players){
             player.changeScore(0);
             playerRepository.save(player);
@@ -93,7 +111,13 @@ public class PlayerService {
     public String changeOwner(RoomIdReq roomIdReq){
         String roomId = roomIdReq.getRoomId();
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        if (gameRoom==null){
+            throw new RoomNotExistException();
+        }
         List<Player> players = gameRoom.getPlayers();
+        if (players.isEmpty()){
+            throw new PlayerNotExistException();
+        }
         int playerCnt=players.size();
 
         Random random = new Random();
