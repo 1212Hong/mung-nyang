@@ -15,8 +15,9 @@ import Select from "../../components/Select";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { fetchQuizInfo } from "../../hooks/quiz";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ChooseModal from "../../components/modal/ChooseModal";
+import { changePhase } from "../../store/phaseSlice";
 
 function TopBottomVideo() {
     const title = "제시어 카테고리";
@@ -25,23 +26,34 @@ function TopBottomVideo() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const { answerer } = game;
-    const { publisher, subscribers, mySessionId, myUserName } = openvidu;
-    const roomId = mySessionId;
+    const { publisher, subscribers, mySessionId, myUserName, session } =
+        openvidu;
     const [view, setView] = useState("Quiz");
     const upside_list = [
         ...subscribers.slice(0, Math.min(subscribers.length, 2)),
     ];
     const downside_list = subscribers;
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (session) {
+            session.on("startDesc", () => {
+                dispatch(changePhase({ phaseType: "Desc" }));
+            });
+        }
+    }, [session]);
+
     useEffect(() => {
         async function fetchAndSetQuizInfo() {
-            const info = await fetchQuizInfo(roomId);
+            const info = await fetchQuizInfo(mySessionId);
             setQuizInfo(info);
         }
         fetchAndSetQuizInfo();
-    }, [roomId]);
+    }, []);
     const onViewChange = (newView) => {
         setView(newView);
     };
+
     return (
         <Container className="Container">
             <HeaderBox className="HeaderBox">
