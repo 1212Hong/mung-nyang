@@ -53,7 +53,13 @@ const ReadyModal = () => {
             const response = await getVoteRes(mySessionId, setCnt);
             if (response) {
                 console.log(response);
-                setPhase(response.gameProcessType);
+
+                console.log(response.data.gameId);
+                setPhase(response.data.gameProcessType);
+                dispatch(
+                    changePhase({ phaseType: response.data.gameProcessType }),
+                );
+                dispatch(gameActions.saveGameId(response.data.gameId));
             }
 
             deleteVote(mySessionId);
@@ -61,7 +67,6 @@ const ReadyModal = () => {
             console.error("Error sending data:", error);
         }
         // dispatch(changePhase({ phaseType: phase }));
-        dispatch(changePhase({ phaseType: "Quiz" }));
     };
     useEffect(() => {
         session.on("agree", () => {

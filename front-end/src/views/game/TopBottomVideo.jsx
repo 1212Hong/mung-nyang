@@ -20,10 +20,12 @@ import ChooseModal from "../../components/modal/ChooseModal";
 
 function TopBottomVideo() {
     const title = "제시어 카테고리";
-    const list = ["음식", "스포츠", "카", "테", "고", "리"]; // 카테고리는 고정이므로 여기서 카테고리 다 넣어줌
+    const list = ["음식", "스포츠", "과일", "카", "테", "고", "리"]; // 카테고리는 고정이므로 여기서 카테고리 다 넣어줌
     const [quizInfo, setQuizInfo] = useState(null);
     const openvidu = useSelector((state) => state.openvidu);
-    const { publisher, subscribers, mySessionId } = openvidu;
+    const game = useSelector((state) => state.game);
+    const { answerer } = game;
+    const { publisher, subscribers, mySessionId, myUserName } = openvidu;
     const roomId = mySessionId;
     const [view, setView] = useState("Quiz");
     const upside_list = [
@@ -73,7 +75,11 @@ function TopBottomVideo() {
                             onViewChange={onViewChange}
                         />
                     ) : view === "Category" ? (
-                        <Select list={list} title={title} />
+                        answerer === myUserName ? (
+                            <Select list={list} title={title} />
+                        ) : (
+                            <>정답자가 카테고리 선정중</>
+                        )
                     ) : view === "EmgAns" ? (
                         <AnswerBox>
                             <h3>정답을 입력해 주세요.</h3>
