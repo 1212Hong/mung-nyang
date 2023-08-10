@@ -47,7 +47,7 @@ const Quiz = (props) => {
     const [userChoice, setUserChoice] = useState("");
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
-    const { mySessionId, myUserName } = openvidu;
+    const { mySessionId, myUserName, owner } = openvidu;
     const roomId = mySessionId;
     const playerNickname = myUserName;
     const [quizResultFetched, setQuizResultFetched] = useState(false);
@@ -73,7 +73,7 @@ const Quiz = (props) => {
         };
 
         if (answered) {
-            handleAnswerSubmission();
+            owner && handleAnswerSubmission();
         }
     }, [
         dispatch,
