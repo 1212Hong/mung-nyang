@@ -61,10 +61,9 @@ const SelectLiar = () => {
                     }
                 }
             } catch (error) {
-                console.error("Error sending data:", error);
+                console.error(error);
             }
         }, 7000);
-
         return () => clearTimeout(timer);
     }, [activeBox]);
 
