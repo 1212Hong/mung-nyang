@@ -122,4 +122,127 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiException, httpStatus);
     }
 
+    @ExceptionHandler(value = {RoomAlreadyExistsException.class})
+    public ResponseEntity<Object> roomAlreadyExistsException(RoomAlreadyExistsException e){
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.ROOM_ALREADY_EXISTS_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+    
+    @ExceptionHandler(value = {RoomAlreadyStartException.class})
+    public ResponseEntity<Object> gameRoomAlreadyStartException(RoomAlreadyStartException e){
+        HttpStatus httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.ROOM_ALREADY_START_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+    
+    
+    @ExceptionHandler(value = {SessionNotExistException.class})
+    public ResponseEntity<Object> sessionNotExistException (SessionNotExistException e){
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.SESSION_NOT_EXIST_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+    @ExceptionHandler(value = {RoomPasswordWrongException.class})
+    public ResponseEntity<Object> roomPasswordWrongException (RoomPasswordWrongException e){
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.ROOM_PASSWORD_WRONG_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+
+    @ExceptionHandler(value = {RoomAlreadyFullException.class})
+    public ResponseEntity<Object> roomAlreadyFullException (RoomAlreadyFullException e){
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.ROOM_ALREADY_FULL_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+
+    @ExceptionHandler(value = {PenaltyNotExistException.class})
+    public ResponseEntity<Object> penaltyNotExistException (PenaltyNotExistException e){
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.PENALTY_NOT_EXIST_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+
+    @ExceptionHandler(value = {NicknameNotExistException.class})
+    public ResponseEntity<Object> nicknameNotExistException (NicknameNotExistException e){
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.NICKNAME_NOT_EXIST_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+
+    @ExceptionHandler(value = {NicknameAlreadyExistException.class})
+    public ResponseEntity<Object> nicknameAlreadyExistException (NicknameAlreadyExistException e){
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.NICKNAME_ALREADY_EXIST_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+
+    @ExceptionHandler(value = {MapSessionNotExistException.class})
+    public ResponseEntity<Object> mapSessionExistException (MapSessionNotExistException e){
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.MAPSESSION_NOT_EXIST_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
 }

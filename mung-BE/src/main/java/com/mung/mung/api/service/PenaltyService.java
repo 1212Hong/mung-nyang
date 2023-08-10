@@ -1,6 +1,7 @@
 package com.mung.mung.api.service;
 
 import com.mung.mung.api.response.DanceRes;
+import com.mung.mung.common.exception.custom.PenaltyNotExistException;
 import com.mung.mung.db.entity.Dance;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.repository.DanceRepository;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,13 +22,8 @@ public class PenaltyService {
         long danceCnt=danceRepository.count();
         DanceRes danceRes;
         if (danceCnt == 0) {
-            danceRes = DanceRes.builder()
-                    .danceUrl("https://www.youtube.com/watch?v=Rvd2Viqkf8c")
-                    .difficulty("어려움")
-                    .build();
-            return danceRes;
+            throw new PenaltyNotExistException();
         }
-        else{
         Random random = new Random();
         long randomNumber = (long) random.nextInt((int) danceCnt) + 1;
         Dance dance = danceRepository.findByDanceId(randomNumber);
@@ -36,7 +32,24 @@ public class PenaltyService {
                 .difficulty(dance.getDifficulty())
                 .build();
         return danceRes;
-        }
-    }
 
+    }
+    @Transactional
+    public String getPenaltyPlayer(HashMap<String,Integer> scoreMap){
+        Set<String> keySet = scoreMap.keySet();
+        int minScore=1000;
+        List<String> players= new ArrayList<String>();
+        for (String key : keySet) {
+            if (scoreMap.get(key)<minScore){
+                minScore=scoreMap.get(key);
+            }
+        }
+        for (String key : keySet) {
+            if (scoreMap.get(key).equals(minScore)){
+                players.add(key);
+            }
+        }
+        int playerCnt=players.size();
+        return players.get(new Random().nextInt(playerCnt));
+    }
 }
