@@ -44,7 +44,7 @@ export const signalVote = (check, sessionId) => {
 
 // 투표 결과 요청
 export const getVoteRes = (roomId, maxSet) => {
-    API.post(`/api/vote/result`, {
+    return API.post(`/api/vote/result`, {
         roomId: roomId,
         maxSet: maxSet,
     });
