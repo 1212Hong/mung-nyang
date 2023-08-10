@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     ModalViewDescDiv,
     ModalViewResultDiv,
@@ -10,31 +10,46 @@ import {
 } from "../layout/modal";
 import Button from "../Button";
 import Timer from "../Timer";
-
+import { fetchEmergencyAnswerResponse } from "../../hooks/quiz";
 import { useSelector, useDispatch } from "react-redux";
-import { closeModal, selectModal } from "../../store/modalSlice";
+import { closeModal } from "../../store/modalSlice";
+import { gameActions } from "../../store/gameSlice";
 const AnswerModal = () => {
-    // api 적용할 부분
-    const [agree, setAgree] = useState(0);
-    const [disagree, setDisagree] = useState(0);
-    // 현재 방의 인원 수를 받아서 6 대신 적용.
-    const [wait, setWait] = useState(6);
-    const [complete, setComplete] = useState(false);
-
-    const openvidu = useSelector((state) => state.openvidu);
+    const [userAnswer, setUserAnswer] = useState("");
+    const [answerResult, setAnswerResult] = useState("");
+    const result = useSelector((state) => state.game.result);
     const dispatch = useDispatch();
+
+    const onChange = (e) => {
+        setUserAnswer(e.target.value);
+    };
+    const submitAnswer = async () => {
+        await fetchEmergencyAnswerResponse(
+            1,
+            "테스트",
+            "테스트유저2",
+            "석류",
+        ).then((response) => {
+            dispatch(gameActions.saveResult(response));
+        });
+        dispatch(closeModal());
+    };
     return (
         <AnswerModalView onClick={(e) => e.stopPropagation()}>
             <ModalViewDescDiv>비상 정답</ModalViewDescDiv>
             <ModalViewResultDiv>정답을 입력하세요.</ModalViewResultDiv>
             <ModalViewResultDiv>
                 <AnswerModalViewDiv>
-                    <AnswerModalInput></AnswerModalInput>
+                    <AnswerModalInput
+                        spellCheck="false"
+                        onChange={onChange}
+                        value={userAnswer}
+                    ></AnswerModalInput>
                 </AnswerModalViewDiv>
             </ModalViewResultDiv>
             <ModalViewResultDiv>
                 <AnswerModalViewDiv>
-                    <Button>제출</Button>
+                    <Button onClick={() => submitAnswer()}>제출</Button>
                     <Button
                         onClick={() => {
                             dispatch(closeModal());
