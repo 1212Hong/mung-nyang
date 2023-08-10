@@ -18,26 +18,35 @@ import {
     BtnBox,
 } from "../../components/layout/scoreTotal";
 import { score } from "../../api/game";
-import { gameSlice } from "../../store/gameSlice";
+import { gameActions } from "../../store/gameSlice";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
-    const title = "라이어 승리";
-    const totalset = 5;
-    const set = 3;
-    const roomId = "테스트";
+    const result = useSelector((state) => state.game.result);
+    if (result === "LiarWin_Success") {
+        result = "라이어 승리";
+    } else if (result === "LiarLose_Fail") {
+        result = "시민 승리";
+    } else if ((result = "LiarWin_NotLiar")) {
+        result = "라이어 승리";
+    }
+    const totalset = useSelector((state) => state.game.totalset);
+    const set = useSelector((state) => state.game.setId);
+    const roomId = useSelector((state) => state.openvidu.mySessionId);
     const [scoreData, setScoreData] = useState({});
-    const userlist = [
-        "리트리버",
-        "리트리버2",
-        "테스트유저2",
-        "테스트유저1",
-        "댕댕이5",
-        "댕댕이6",
-    ];
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher, mySessionId } = openvidu;
-    console.log(subscribers);
+    const { subscribers, publisher } = openvidu;
+
+    const userlist = [];
+    console.log(publisher.session.connection.data);
+    userlist.push(publisher.session.connection.data);
+    for (let i = 0; i < subscribers.length; i++) {
+        console.log(subscribers[i].stream.connection.data);
+    }
+    for (let i = 0; i < subscribers.length; i++) {
+        userlist.push(subscribers[i].stream.connection.data);
+    }
+    console.log(userlist);
 
     useEffect(() => {
         score(roomId)
@@ -50,7 +59,7 @@ const ScoreTotal = () => {
             });
     }, [roomId]);
     const information = [];
-    const beforeScore = useSelector((state) => state.gameSlice.score);
+    const beforeScore = useSelector((state) => state.game.score);
     console.log(beforeScore);
     for (let i = 0; i < userlist.length; i++) {
         const username = userlist[i];
@@ -63,20 +72,23 @@ const ScoreTotal = () => {
         information.push(newEntry);
     }
     console.log(information);
+    const sortedInformation = information
+        .slice()
+        .sort((a, b) => b.score - a.score);
 
     const Next = () => {
-        dispatch(gameSlice.actions.saveScore(scoreData));
+        dispatch(gameActions.saveScore(scoreData));
         if (set === totalset) {
-            dispatch(changePhase({ phaseType: "Wait" }));
+            dispatch(changePhase({ phaseType: "Dance" }));
         } else {
-            dispatch(changePhase({ phaseType: "Wait" }));
+            dispatch(changePhase({ phaseType: "Quiz" }));
         }
     };
 
     return (
         <Container>
             <TitleBox>
-                <TitleItem>{title}</TitleItem>
+                <TitleItem>{result}</TitleItem>
                 <SetItem>
                     세트 : {set} / {totalset}
                 </SetItem>
@@ -89,7 +101,7 @@ const ScoreTotal = () => {
                     <ScoreItem>총 점수</ScoreItem>
                 </Border>
 
-                {information.map((user, index) => (
+                {sortedInformation.map((user, index) => (
                     <LineItem key={index}>
                         <RankItem>{index + 1}st</RankItem>
                         <UserItem>{user.username}</UserItem>
