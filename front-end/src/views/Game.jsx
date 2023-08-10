@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import TopBottomVideo from "./game/TopBottomVideo";
+import WordDescription from "./game/WordDescription";
 import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
@@ -40,6 +41,10 @@ const PHASE_COMPONENTS = [
         type: PHASES.Category,
         component: <TopBottomVideo />,
     },
+    {
+        type: PHASES.Desc,
+        component: <WordDescription />,
+    },
 ];
 
 const Game = () => {
@@ -61,10 +66,9 @@ const Game = () => {
             const newSession = session;
 
             newSession.on("streamCreated", (event) => {
-                const subscriber = newSession.subscribe(
-                    event.stream,
-                    undefined,
-                );
+                const subscriber = newSession.subscribe(event.stream, {
+                    nickname: myUserName,
+                });
                 console.log(subscriber);
                 dispatch(
                     ovActions.updateSubscribers(...subscribersList, subscriber),
@@ -129,6 +133,7 @@ const Game = () => {
 
             setSession(newSession); // 세션 객체 업데이트
             console.log(session);
+            dispatch(ovActions.saveSession(session));
             console.log(subscribers);
             setSubscribersList(subscribers);
             console.log(subscribersList);

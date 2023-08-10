@@ -44,7 +44,7 @@ const VideoComponent = (props) => {
 
     // Automatically start video on component mount
     useEffect(() => {
-        console.log(streamManager);
+        // console.log(streamManager);
         if (streamManager && videoRef.current) {
             streamManager.addVideoElement(videoRef.current);
         } else {
