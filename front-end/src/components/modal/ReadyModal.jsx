@@ -9,7 +9,13 @@ import {
 } from "../layout/modal";
 import Button from "../Button";
 import Timer from "../Timer";
-import { agreeVote, castGameVote, signalVote } from "../../api/game";
+import {
+    agreeVote,
+    castGameVote,
+    deleteVote,
+    getVoteRes,
+    signalVote,
+} from "../../api/game";
 import { useDispatch, useSelector } from "react-redux";
 
 const ReadyModal = () => {
@@ -51,6 +57,21 @@ const ReadyModal = () => {
             setWait(wait - 1);
         });
     }, [session]);
+
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            try {
+                const response = await getVoteRes(mySessionId, 3); // 3은 방에서 정한 세트수
+                console.log(response);
+
+                await deleteVote(mySessionId);
+            } catch (error) {
+                console.error("Error sending data:", error);
+            }
+        }, 7000);
+
+        // return () => clearTimeout(timer);
+    }, []);
 
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
