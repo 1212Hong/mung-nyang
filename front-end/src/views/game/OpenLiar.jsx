@@ -15,13 +15,18 @@ import { openviduSlice } from "../../store/openviduSlice";
 
 const OtherView = () => {
     const setId = useSelector((state) => state.openvidu.setId);
-    // const roomId = useSelector((state) => state.openvidu.mySessionId);
-    const roomId = "테스트";
+    const roomId = useSelector((state) => state.openvidu.mySessionId);
     const pickedLiar = useSelector((state) => state.openvidu.selectedLiar);
     console.log(pickedLiar);
     const selectedAnswer = "사과";
-    const userlist = ["댕댕이1", "댕댕이2", "댕댕이3", "댕댕이4", "댕댕이5"];
     const dispatch = useDispatch();
+
+    const openvidu = useSelector((state) => state.openvidu);
+    const { subscribers, publisher } = openvidu;
+    console.log(publisher);
+    console.log(publisher.session.connection.data);
+    console.log(subscribers);
+    console.log(subscribers[0].stream.connection.data);
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -50,17 +55,30 @@ const OtherView = () => {
         <Container>
             <Timer />
             <AnswerBox>
-                <AnswerItem>
-                    <VideoComponent width="500px" height="400px" />
-                </AnswerItem>
+                {publisher && (
+                    <AnswerItem>
+                        <VideoComponent
+                            width="500px"
+                            height="400px"
+                            streamManager={publisher}
+                        />
+                    </AnswerItem>
+                )}
                 <Card description={selectedAnswer} />
             </AnswerBox>
             <UserBox>
-                {userlist.map((index) => (
-                    <OtherUsers key={index}>
-                        <VideoComponent width="232px" height="235px" />
-                    </OtherUsers>
-                ))}
+                {subscribers &&
+                    subscribers.map((sub, i) => (
+                        <React.Fragment key={i}>
+                            <OtherUsers>
+                                <VideoComponent
+                                    width="232px"
+                                    height="235px"
+                                    streamManager={sub}
+                                />
+                            </OtherUsers>
+                        </React.Fragment>
+                    ))}
             </UserBox>
         </Container>
     );
