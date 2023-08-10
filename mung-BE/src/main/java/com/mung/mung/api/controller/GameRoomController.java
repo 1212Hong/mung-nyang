@@ -14,12 +14,9 @@ import com.mung.mung.api.request.GameRoomCreateReq;
 import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.PlayerService;
-import com.mung.mung.api.service.ScoreService;
 import com.mung.mung.common.exception.custom.*;
-import com.mung.mung.db.repository.GameRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -112,8 +109,6 @@ public class GameRoomController {
             throw new RoomAlreadyStartException();
         }
         //
-//        [[[[[[[[[[[[[[[[[[[[여기부터 수정]]]]]]]]]]]]]]]]]]]]
-        //
         if (!this.gameConnectionInfoMap.get(roomId).equals(gameRoomConnectReq.getRoomPw())){
             throw new RoomPasswordWrongException();
         }
@@ -145,7 +140,11 @@ public class GameRoomController {
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
             throw new RoomNotExistException();
         }
+        log.info("roomId info : {}",roomId);
         // 테스트 창에서 나가는 경우 인원은 +1 된 상태이므로 roomId만 일치하면 leave가 들어올 경우 인원을 뺀다.
+        if (this.mapSessions.get(roomId)==null){
+            throw new MapSessionNotExistException();
+        }
         this.mapSessions.put(roomId, this.mapSessions.get(roomId) - 1);
 
         // DB에서 playerData 삭제하기 전에 playerId가 DB에 있는지 확인합니다.

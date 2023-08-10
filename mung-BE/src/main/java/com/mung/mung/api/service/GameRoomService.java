@@ -10,6 +10,7 @@ import com.mung.mung.db.entity.Player;
 import com.mung.mung.db.repository.GameRoomRepository;
 import com.mung.mung.db.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class GameRoomService {
     private final GameRoomRepository gameRoomRepository;
@@ -91,6 +93,7 @@ public class GameRoomService {
         if (playerRepository.findByPlayerId(playerId) == null){
             throw new PlayerNotExistException();
         }
+        log.info("player info : {}",playerId);
         playerRepository.deleteByPlayerId(playerId);
     }
 
