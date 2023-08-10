@@ -129,3 +129,13 @@ export const QuizResult = (roomId, gameId) => {
         gameId: gameId,
     });
 };
+
+// 채팅
+export const signalSendMessage = (sessionId, text) => {
+    OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: "chat",
+        data: text,
+    });
+};

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../components/Button";
 import { ReactComponent as LinkIcon } from "../../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../../assets/img/capture_image.svg";
@@ -23,7 +23,11 @@ import {
 } from "../../components/layout/waiting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
-import { signalStartGameVote, startGameVote } from "../../api/game";
+import {
+    signalStartGameVote,
+    startGameVote,
+    signalSendMessage,
+} from "../../api/game";
 import Dropdown from "../../components/Dropdown";
 import { SmallText, SubText } from "../../components/layout/common";
 import { gameActions } from "../../store/gameSlice";
@@ -31,12 +35,14 @@ import { gameActions } from "../../store/gameSlice";
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
     const [setCnt, setSetCnt] = useState(1); // redux에 저장해두고 getVoteRes에 넣어주기
+    const [userMessage, setUserMessage] = useState("");
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher, mySessionId, session, owner } = openvidu;
     console.log(subscribers);
     console.log(session);
-    const dispatch = useDispatch();
 
+    const dispatch = useDispatch();
+    let chatList = [];
     // ... 이전의 코드
 
     const onInputChange = (e) => {
@@ -65,10 +71,26 @@ function WaitingRoom() {
         dispatch(gameActions.saveSetCnt(setCnt));
     };
 
+    const typeUserMessage = (e) => {
+        setUserMessage(e.target.value);
+    };
+    const sendMessage = async () => {
+        signalSendMessage(
+            session.sessionId,
+            userMessage,
+            session.connection.data,
+        );
+    };
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
 
+    useEffect(() => {
+        session.on("signal:chat", (event) => {
+            const data = JSON.parse(event.data);
+            console.log(data);
+        });
+    });
     return (
         <Container className="waiting-container">
             <Leftbox>
@@ -106,8 +128,16 @@ function WaitingRoom() {
                 <ChattingBox>
                     <ChatBox>채팅내용...</ChatBox>
                     <ChattingInputBox>
-                        <Input width="200px" height="15px" />
-                        <Button type="icon" background={`var(--white)`}>
+                        <Input
+                            width="200px"
+                            height="15px"
+                            onChange={(e) => typeUserMessage(e)}
+                        />
+                        <Button
+                            type="icon"
+                            background={`var(--white)`}
+                            onClick={() => sendMessage()}
+                        >
                             <DogFootIcon width="15" height="15" />
                         </Button>
                     </ChattingInputBox>
