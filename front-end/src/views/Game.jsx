@@ -7,6 +7,10 @@ import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
 import ScoreTotal from "../views/game/ScoreTotal";
+import SelectLiar from "../views/game/SelectLiar";
+import SelectAnswer from "../views/game/SelectAnswer";
+import OtherView from "../views/game/OtherView";
+import OpenLiar from "../views/game/OpenLiar";
 import { outRoom } from "../api/room";
 
 const PHASES = {
@@ -21,6 +25,7 @@ const PHASES = {
     EmgAns: "EmgAns",
     LiarVote: "LiarVote",
     SelectAns: "SelectAns",
+    OtherView: "OtherView",
     OpenLiar: "OpenLiar",
     MidScore: "MidScore",
     FinScore: "FinScore",
@@ -45,6 +50,22 @@ const PHASE_COMPONENTS = [
     {
         type: PHASES.MidScore,
         component: <ScoreTotal />,
+    },
+    {
+        type: PHASES.LiarVote,
+        component: <SelectLiar />,
+    },
+    {
+        type: PHASES.SelectAns,
+        component: <SelectAnswer />,
+    },
+    {
+        type: PHASES.OtherView,
+        component: <OtherView />,
+    },
+    {
+        type: PHASES.OpenLiar,
+        component: <OpenLiar />,
     },
     {
         type: PHASES.Desc,
