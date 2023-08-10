@@ -10,7 +10,6 @@ import {
 import Button from "../Button";
 import Timer from "../Timer";
 import {
-    agreeVote,
     castGameVote,
     deleteVote,
     getVoteRes,
