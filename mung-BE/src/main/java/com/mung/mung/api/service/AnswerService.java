@@ -3,6 +3,8 @@ package com.mung.mung.api.service;
 import com.mung.mung.api.request.EmergencyAnswerReq;
 import com.mung.mung.api.request.FinalAnswerReq;
 import com.mung.mung.api.request.LiarAnswerReq;
+import com.mung.mung.common.exception.custom.LiarVoteResultNotFoundException;
+import com.mung.mung.common.exception.custom.SetNotExistException;
 import com.mung.mung.db.entity.GameSet;
 import com.mung.mung.db.repository.GameSetRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,14 @@ public class AnswerService {
     // 긴근정답에 따른 승패 여부 처리
     public String emergencyAnswer(EmergencyAnswerReq emergencyAnswerReq){
         long setId=emergencyAnswerReq.getSetId();
+
         String playerNickname=emergencyAnswerReq.getPlayerNickname();
         String answer=emergencyAnswerReq.getAnswer();
         GameSet gameSet=gameSetRepository.findBySetId(setId);
+        if (gameSet==null){
+            throw new SetNotExistException();
+        }
+
         if (gameSet.getAnswerer().equals(playerNickname))
         {
             if (gameSet.getAnswer().equals(answer)){
@@ -73,6 +80,11 @@ public class AnswerService {
     //정답자의 최종 정답 여부만 판별
     public  String finalAnswer(FinalAnswerReq finalAnswerReq){
         GameSet gameSet=gameSetRepository.findBySetId(finalAnswerReq.getSetId());
+
+        if (gameSet==null){
+            throw new SetNotExistException();
+        }
+
         if (gameSet.getAnswer().equals(finalAnswerReq.getAnswer())){
             return "LiarLose_Final";
         }else {
@@ -86,6 +98,10 @@ public class AnswerService {
         String pickedLiar=liarAnswerReq.getPickedLiar();
         String answer=liarAnswerReq.getAnswer();
         GameSet gameSet=gameSetRepository.findBySetId(setId);
+        if (gameSet==null){
+            throw new SetNotExistException();
+        }
+
         if (gameSet.getLiar().equals(pickedLiar)){
             // Liar를 맞췄을때
             if (gameSet.getAnswer().equals(answer)){
