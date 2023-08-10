@@ -71,14 +71,13 @@ export const selectCategory = async (roomId, gameId, category, answerer) => {
 export const emergencyAnswer = async (
     setId,
     roomId,
-
-    emergencyPlayerNickname,
+    playerNickname,
     answer,
 ) => {
     return await API.post(`/api/answer/emergency`, {
         setId,
         roomId,
-        emergencyPlayerNickname,
+        playerNickname,
         answer,
     });
 };
