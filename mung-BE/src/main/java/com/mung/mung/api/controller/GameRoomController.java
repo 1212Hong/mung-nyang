@@ -81,7 +81,7 @@ public class GameRoomController {
         this.convertNum+=1;
 
         // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
-        Map<String, String> gameInfoMap = new HashMap<>();
+        Map<String, Object> gameInfoMap = new HashMap<>();
         gameInfoMap.put("customSessionId", this.sessionRoomConvert.get(roomId));
 
         SessionProperties properties = SessionProperties.fromJson(gameInfoMap).build();
@@ -128,6 +128,8 @@ public class GameRoomController {
         ConnectionProperties properties = ConnectionProperties.fromJson(gameInfoMap).build();
 //        ConnectionProperties properties = ConnectionProperties.fromJson(gameConnectionInfoMap).build();
         Connection connection = session.createConnection(properties); //이 부분이 연결을 담당하는 부분
+        log.info("Connection 확인 : {} " ,connection);
+        log.info("Connection.token() 확인 : {} " ,connection.getToken());
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
 
