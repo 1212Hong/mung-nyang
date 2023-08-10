@@ -29,7 +29,7 @@ import { SmallText, SubText } from "../../components/layout/common";
 
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
-    const [setCnt, setSetCnt] = useState(0); // redux에 저장해두고 getVoteRes에 넣어주기
+    const [setCnt, setSetCnt] = useState(1); // redux에 저장해두고 getVoteRes에 넣어주기
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher, mySessionId, session, owner } = openvidu;
     console.log(subscribers);
