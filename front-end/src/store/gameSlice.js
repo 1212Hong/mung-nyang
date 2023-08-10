@@ -2,13 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     setCnt: 0,
+    totalSet: 0,
     setId: 0,
-    score: {
-        리트리버: 0,
-        리트리버2: 0,
-        테스트유저2: 42,
-        테스트유저1: 1,
-    },
+    score: {},
     selectedLiar: "",
     answerer: "",
     word: "",
@@ -25,6 +21,9 @@ export const gameSlice = createSlice({
         saveSetCnt: (state, action) => {
             state.setCnt = action.setCnt;
         },
+        saveTotalSet: (state, action) => {
+            state.totalSet = action.payload;
+        },
         saveSetId: (state, action) => {
             state.setId = action.setId;
         },
@@ -40,7 +39,6 @@ export const gameSlice = createSlice({
         saveWord: (state, action) => {
             state.word = action.word;
         },
-
         saveResult: (state, action) => {
             state.result = action.payload;
         },
