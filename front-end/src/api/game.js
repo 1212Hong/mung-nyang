@@ -42,6 +42,18 @@ export const signalVote = (check, sessionId) => {
         .catch((err) => console.log(err));
 };
 
+// 투표 수락 or 거절시 대기 인원 각자 화면에서 -1
+export const didVote = (sessionId) => {
+    return OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: "done",
+        data: "done",
+    })
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
+
 // 투표 결과 요청
 export const getVoteRes = (roomId, maxSet) => {
     return API.post(`/api/vote/result`, {

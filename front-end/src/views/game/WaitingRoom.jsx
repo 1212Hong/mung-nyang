@@ -62,9 +62,9 @@ function WaitingRoom() {
             }),
         );
     };
-    const openReadyModal = () => {
-        signalStartGameVote(session.sessionId);
+    const openReadyModal = async () => {
         startGameVote(mySessionId);
+        signalStartGameVote(session.sessionId);
 
         dispatch(gameActions.saveSetCnt(setCnt));
     };
