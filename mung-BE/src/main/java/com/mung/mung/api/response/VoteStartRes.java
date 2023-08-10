@@ -1,5 +1,6 @@
 package com.mung.mung.api.response;
 
+import com.mung.mung.db.enums.GameProcessType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class VoteStartRes {
 
-    private String roomId;
+    private GameProcessType gameProcessType;
 }
