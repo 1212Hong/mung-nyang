@@ -55,19 +55,18 @@ export const fetchUserRole = async (roomId, gameId, category, answerer) => {
 };
 
 export const fetchEmergencyAnswerResponse = async (
-    roomId,
     setId,
+    roomId,
     playerNickname,
     answer,
 ) => {
     try {
         const emergencyAnswerResponse = await emergencyAnswer(
-            roomId,
             setId,
+            roomId,
             playerNickname,
             answer,
         );
-        console.log(emergencyAnswerResponse.data);
         return emergencyAnswerResponse.data;
     } catch (error) {
         console.log(error);
