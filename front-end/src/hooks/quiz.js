@@ -18,24 +18,24 @@ export const fetchQuizInfo = async (roomId) => {
     }
 };
 
-export const submitAnswer = async (roomId, playerNickname, userChoice) => {
+export const submitAnswer = async (roomId, myUserName, userChoice) => {
     try {
         if (userChoice === "positive") {
-            await QuizAnswerPositive(roomId, playerNickname);
+            await QuizAnswerPositive(roomId, myUserName);
             console.log(QuizAnswerPositive);
-            console.log(roomId, playerNickname);
+            console.log(roomId, myUserName);
         } else if (userChoice === "negative") {
-            await QuizAnswerNegative(roomId, playerNickname);
+            await QuizAnswerNegative(roomId, myUserName);
         }
     } catch (error) {
         console.log(error);
     }
 };
 
-export const fetchQuizResult = async (roomId, gameId) => {
+export const fetchQuizResult = async (roomId) => {
     try {
-        console.log("테스트 :", roomId, gameId);
-        const quizResultresponse = await QuizResult(roomId, gameId);
+        console.log("테스트 :", roomId);
+        const quizResultresponse = await QuizResult(roomId);
         console.log("테스트 결과", quizResultresponse.data);
         return quizResultresponse.data;
     } catch (error) {

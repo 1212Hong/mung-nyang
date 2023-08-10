@@ -15,29 +15,30 @@ import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { fetchQuizInfo } from "../../hooks/quiz";
 import { useSelector } from "react-redux";
+import ChooseModal from "../../components/modal/ChooseModal";
 
 function TopBottomVideo() {
-    const title = "카테고리제목";
-    const list = ["임", "시", "카", "테", "고", "리"];
+    const title = "제시어 카테고리";
+    const list = ["음식", "스포츠", "카", "테", "고", "리"]; // 카테고리는 고정이므로 여기서 카테고리 다 넣어줌
     const [quizInfo, setQuizInfo] = useState(null);
     const openvidu = useSelector((state) => state.openvidu);
-    const { publisher, subscribers, roomId } = openvidu;
+    const { publisher, subscribers, mySessionId, myUserName } = openvidu;
+    const roomId = mySessionId;
     const [view, setView] = useState("Quiz");
     const upside_list = [
         ...subscribers.slice(0, Math.min(subscribers.length, 2)),
     ];
-    const downside_list = subscribers.slice(Math.min(subscribers.length, 2));
-    const handleViewChange = (newView) => {
-        setView(newView);
-    };
+    const downside_list = subscribers;
     useEffect(() => {
         async function fetchAndSetQuizInfo() {
             const info = await fetchQuizInfo(roomId);
             setQuizInfo(info);
         }
         fetchAndSetQuizInfo();
-    }, []);
-
+    }, [roomId]);
+    const onViewChange = (newView) => {
+        setView(newView);
+    };
     return (
         <Container className="Container">
             <HeaderBox className="HeaderBox">
@@ -67,7 +68,8 @@ function TopBottomVideo() {
                             title={quizInfo.question}
                             text1={quizInfo.answer1}
                             text2={quizInfo.answer2}
-                            onViewChange={handleViewChange}
+                            ChooseModal={ChooseModal}
+                            onViewChange={onViewChange}
                         />
                     ) : view === "Category" ? (
                         <Select list={list} title={title} />
@@ -82,7 +84,9 @@ function TopBottomVideo() {
                                 </Button>
                             </Footer>
                         </AnswerBox>
-                    ) : null
+                    ) : (
+                        <div>퀴즈 정보를 불러오는 중...</div>
+                    )
                 ) : (
                     <div>퀴즈 정보를 불러오는 중...</div>
                 )}
