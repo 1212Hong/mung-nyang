@@ -24,13 +24,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { signalStartGameVote, startGameVote } from "../../api/game";
+import Dropdown from "../../components/Dropdown";
 
 function WaitingRoom() {
-    const [setCnt, setSetCnt] = useState(3);
     const [isMuted, setIsMuted] = useState(false);
 
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher, mySessionId, session } = openvidu;
+    const { subscribers, publisher, mySessionId, session, owner } = openvidu;
     console.log(subscribers);
     console.log(session);
     const dispatch = useDispatch();
@@ -56,10 +56,6 @@ function WaitingRoom() {
         });
     };
 
-    function selectSet(idx) {
-        console.log(setCnt);
-        // setSetCnt(setArr[idx]);
-    }
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
@@ -109,13 +105,15 @@ function WaitingRoom() {
                 </ChattingBox>
                 <MenuBox>
                     {[
-                        { icon: <QuestionIcon width="25" height="20" /> },
-                        { icon: <LinkIcon width="25" height="20" /> },
-                        { icon: <CaptureIcon width="25" height="20" /> },
+                        { icon: <QuestionIcon width="23" height="23" /> },
+                        { icon: <LinkIcon width="23" height="23" /> },
+                        { icon: <CaptureIcon width="23" height="23" /> },
                     ].map((item, index) => (
                         <Button
                             key={index}
                             type="icon"
+                            width="55px"
+                            height="40px"
                             background={`var(--beige-dark)`}
                             onClick={() => {
                                 openRuleBook();
@@ -128,33 +126,39 @@ function WaitingRoom() {
                         <Button
                             key="mute"
                             type="icon"
+                            width="55px"
+                            height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
                         >
-                            <VolumeMuteIcon width="20" height="25" />
+                            <VolumeMuteIcon width="23" height="23" />
                         </Button>
                     ) : (
                         <Button
                             key="on"
                             type="icon"
+                            width="55px"
+                            height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
                         >
-                            <VolumeOnIcon width="20" height="25" />
+                            <VolumeOnIcon width="23" height="23" />
                         </Button>
                     )}
                 </MenuBox>
-                <StartnSetBox>
-                    <Button
-                        width="130"
-                        height="45"
-                        onClick={() => {
-                            openReadyModal();
-                        }}
-                    >
-                        START
-                    </Button>
-                </StartnSetBox>
+                {owner && (
+                    <StartnSetBox>
+                        <Button
+                            width="130px"
+                            onClick={() => {
+                                openReadyModal();
+                            }}
+                        >
+                            START
+                        </Button>
+                        <Dropdown />
+                    </StartnSetBox>
+                )}
             </Rightbox>
         </Container>
     );
