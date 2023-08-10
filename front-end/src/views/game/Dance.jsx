@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Button from "../../components/Button";
-import VideoComponent from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import { OtherUsers, Container } from "../../components/layout/common";
 import Timer from "../../components/Timer";
 import {
@@ -16,30 +16,31 @@ import {
     Buttons,
     UsersBox,
 } from "../../components/layout/dance";
-import useDanceUrl from "../../hooks/dance";
+import { usePenaltyUser, useDanceUrl } from "../../hooks/dance";
 
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
-    const { publisher, subscribers } = openvidu;
-
+    const { publisher, subscribers, mySessionId } = openvidu;
+    const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
     const danceUrl = useDanceUrl();
-    const penalty = "허스키";
+    const { fetchPenaltyUser, penaltyUser } = usePenaltyUser(openvidu.roomId);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowNotification(false);
+            fetchPenaltyUser();
+            console.log(penaltyUser);
         }, 3000);
 
         return () => {
             clearTimeout(timer);
         };
-    }, []);
+    }, [fetchPenaltyUser, penaltyUser]);
 
     const nonPenaltyUsers = [...subscribers, publisher].filter(
-        (user) => user !== penalty,
+        (user) => user !== penaltyUser,
     );
-    const penaltyUser = subscribers.find((user) => user === penalty);
 
     return (
         <Container>
@@ -97,7 +98,7 @@ function Dance() {
             </UsersBox>
             <Overlay show={showNotification} />
             <NotificationContainer show={showNotification}>
-                벌칙자 : {penalty}
+                벌칙자 : {penaltyUser}
             </NotificationContainer>
         </Container>
     );
