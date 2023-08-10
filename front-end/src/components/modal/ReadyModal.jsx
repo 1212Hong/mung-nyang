@@ -21,7 +21,7 @@ import { gameActions, gameSlice } from "../../store/gameSlice";
 
 const ReadyModal = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { mySessionId, session } = openvidu;
+    const { mySessionId, session, owner } = openvidu;
     const { setCnt } = gameSlice;
     // api 통신을 위한 변수
     const [check, setCheck] = useState(false);
@@ -62,7 +62,7 @@ const ReadyModal = () => {
                 dispatch(gameActions.saveGameId(response.data.gameId));
             }
 
-            deleteVote(mySessionId);
+            owner && deleteVote(mySessionId);
         } catch (error) {
             console.error("Error sending data:", error);
         }
