@@ -17,7 +17,6 @@ const OtherView = (props) => {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher } = openvidu;
-    console.log(subscribers);
 
     useEffect(() => {
         const timer = setTimeout(() => {

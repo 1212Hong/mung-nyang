@@ -26,10 +26,6 @@ const OtherView = () => {
 
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher } = openvidu;
-    console.log(publisher);
-    console.log(publisher.session.connection.data);
-    console.log(subscribers);
-    console.log(subscribers[0].stream.connection.data);
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -40,14 +36,13 @@ const OtherView = () => {
                     pickedLiar,
                     selectedAnswer,
                 );
-                console.log(response);
                 const result = response.data;
                 console.log(result);
 
                 dispatch(openviduSlice.actions.updateResult(result));
                 dispatch(changePhase({ phaseType: "Wait" }));
             } catch (error) {
-                console.error("Error submitting liar answer:", error);
+                console.error(error);
             }
         }, 7000);
 
