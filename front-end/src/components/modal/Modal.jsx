@@ -2,6 +2,7 @@ import React from "react";
 import RuleModal from "./RuleModal";
 import ReadyModal from "./ReadyModal";
 import ChooseModal from "./ChooseModal";
+import AnswerModal from "./AnswerModal";
 import { ModalBackdrop, ModalContainer } from "../layout/modal";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal, selectModal } from "../../store/modalSlice";
@@ -11,6 +12,7 @@ const MODAL_TYPES = {
     ReadyModal: "ReadyModal",
     ResultModal: "ResultModal",
     ChooseModal: "ChooseModal",
+    AnswerModal: "AnswerModal",
 };
 
 const MODAL_COMPONENTS = [
@@ -25,6 +27,10 @@ const MODAL_COMPONENTS = [
     {
         type: MODAL_TYPES.ChooseModal,
         component: <ChooseModal />,
+    },
+    {
+        type: MODAL_TYPES.AnswerModal,
+        component: <AnswerModal />,
     },
 ];
 
@@ -41,12 +47,13 @@ const Modal = () => {
     const renderModal = () => {
         return findModal.component;
     };
-    // 투표 modal 종료 방지
-    const readyModalCheck = modalType === "ReadyModal" ? true : false;
+    //modal 종료 방지
+    const maintainModal = ["ReadyModal", "AnswerModal"];
+    const ModalCheck = maintainModal.includes(modalType) ? true : false;
     return (
         <ModalContainer>
             <ModalBackdrop
-                onClick={() => (readyModalCheck ? {} : dispatch(closeModal()))}
+                onClick={() => (ModalCheck ? {} : dispatch(closeModal()))}
             >
                 {renderModal()}
             </ModalBackdrop>
