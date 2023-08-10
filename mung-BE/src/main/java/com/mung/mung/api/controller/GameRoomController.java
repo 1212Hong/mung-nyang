@@ -14,10 +14,9 @@ import com.mung.mung.api.request.GameRoomCreateReq;
 import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.PlayerService;
-import com.mung.mung.api.service.ScoreService;
+import com.mung.mung.common.exception.custom.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,30 +70,26 @@ public class GameRoomController {
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         // makeRoom에서 return으로 중복된 Id가 있는지 없는지를 판단 후 중복이라면 Data 생성 없이 false값을 return함
-        boolean createSuccess = gameRoomService.makeRoom(gameRoomCreateReq.getRoomId(), gameRoomCreateReq);
-        if (createSuccess) {
-            String roomId=gameRoomCreateReq.getRoomId();
-            String roomPw= gameRoomCreateReq.getRoomPw();
+        gameRoomService.makeRoom(gameRoomCreateReq.getRoomId(), gameRoomCreateReq);
+        String roomId=gameRoomCreateReq.getRoomId();
+        String roomPw= gameRoomCreateReq.getRoomPw();
 
-            this.mapSessions.put(roomId, 0);
-            // 방별로 Pw 저장해서 관리
-            this.gameConnectionInfoMap.put(roomId,roomPw);
-            this.sessionRoomConvert.put(roomId,"Session"+this.convertNum);
-            this.convertNum+=1;
+        this.mapSessions.put(roomId, 0);
+        // 방별로 Pw 저장해서 관리
+        this.gameConnectionInfoMap.put(roomId,roomPw);
+        this.sessionRoomConvert.put(roomId,"Mung"+this.convertNum);
+        this.convertNum+=1;
 
-            // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
-            Map<String, String> gameInfoMap = new HashMap<>();
-            gameInfoMap.put("customSessionId", this.sessionRoomConvert.get(roomId));
+        // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
+        Map<String, String> gameInfoMap = new HashMap<>();
+        gameInfoMap.put("customSessionId", this.sessionRoomConvert.get(roomId));
 
-            SessionProperties properties = SessionProperties.fromJson(gameInfoMap).build();
+        SessionProperties properties = SessionProperties.fromJson(gameInfoMap).build();
 //        log.info("properties : ", String.valueOf(properties));
-            Session session = openvidu.createSession(properties);
+        Session session = openvidu.createSession(properties);
 //        log.info("session : ",String.valueOf(session));
 
-            return new ResponseEntity<>(roomId, HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>("방 생성에 실패했습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        return new ResponseEntity<>(roomId, HttpStatus.OK);
     }
 
 
@@ -107,15 +102,15 @@ public class GameRoomController {
         log.info("세션 아이디 확인 로그 : {}",sessionId);
         Session session = openvidu.getActiveSession(sessionId); // 이 부분에서 열린 session을 찾아옴
         if (session == null) {
-            return new ResponseEntity<>("해당하는 방을 찾을 수 없습니다.",HttpStatus.NOT_FOUND);
+            throw new SessionNotExistException();
         }
         // 방 게임이 이미 시작됐으면 접속 차단.
         if (!gameRoomService.getRoomStatus(roomId).equals("waiting")){
-            return new ResponseEntity<>("이미 게임이 시작 됐습니다.",HttpStatus.FORBIDDEN);
+            throw new RoomAlreadyStartException();
         }
-
+        //
         if (!this.gameConnectionInfoMap.get(roomId).equals(gameRoomConnectReq.getRoomPw())){
-            return new ResponseEntity<>("비밀번호가 틀렸습니다.",HttpStatus.FORBIDDEN);
+            throw new RoomPasswordWrongException();
         }
 
 
@@ -123,11 +118,10 @@ public class GameRoomController {
         if (this.mapSessions.get(roomId)<LIMIT){
             this.mapSessions.put(roomId, this.mapSessions.get(roomId) + 1);
         } else{ // LIMIT이 됐다면 접근불가
-            return new ResponseEntity<>("방 인원이 다 찼습니다.",HttpStatus.FORBIDDEN);
+            throw new RoomAlreadyFullException();
         }
-        System.out.println(this.mapSessions);
 
-        //
+        // session 생성을 위해 Map으로 변환
         Map<String, String> gameInfoMap = new HashMap<>();
         gameInfoMap.put("customSessionId", this.sessionRoomConvert.get(roomId));
         // player pk 생성 필요.
@@ -144,14 +138,18 @@ public class GameRoomController {
         String roomId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
         // roomId와 playerId가 유효하지 않은 경우 예외 처리
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
-            return new ResponseEntity<>("roomId가 없거나 유효하지 않습니다.",HttpStatus.BAD_REQUEST);
+            throw new RoomNotExistException();
         }
+        log.info("roomId info : {}",roomId);
         // 테스트 창에서 나가는 경우 인원은 +1 된 상태이므로 roomId만 일치하면 leave가 들어올 경우 인원을 뺀다.
+        if (this.mapSessions.get(roomId)==null){
+            throw new MapSessionNotExistException();
+        }
         this.mapSessions.put(roomId, this.mapSessions.get(roomId) - 1);
 
         // DB에서 playerData 삭제하기 전에 playerId가 DB에 있는지 확인합니다.
         if (!gameRoomService.isPlayerExists(playerId)) { // 있으면 true
-            return new ResponseEntity<>("플레이어가 존재하지 않거나, 생성되지 않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new PlayerNotExistException();
         }
 
         if (this.mapSessions.get(roomId)>0) {
@@ -171,11 +169,13 @@ public class GameRoomController {
     public ResponseEntity<String> roomInitialize(
             @RequestBody RoomIdReq roomIdReq){
         String roomId=roomIdReq.getRoomId();
+
         gameRoomService.roomInitialize(roomId);
         // All Player Initialize => 점수 초기화
         playerService.playerInitailize(roomId);
 
         return new ResponseEntity<>("방을 대기 중으로 변경 완료했습니다.",HttpStatus.OK);
+
     }
 
 }
