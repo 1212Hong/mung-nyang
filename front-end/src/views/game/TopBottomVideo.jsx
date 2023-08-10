@@ -7,6 +7,7 @@ import {
     Footer,
     AnswerBox,
     FooterBox,
+    ErrorBox,
 } from "../../components/layout/topbottomvideo";
 import VideoComponent from "../../components/VideoComponent";
 import Quiz from "../../components/Quiz";
@@ -22,7 +23,7 @@ function TopBottomVideo() {
     const list = ["음식", "스포츠", "카", "테", "고", "리"]; // 카테고리는 고정이므로 여기서 카테고리 다 넣어줌
     const [quizInfo, setQuizInfo] = useState(null);
     const openvidu = useSelector((state) => state.openvidu);
-    const { publisher, subscribers, mySessionId, myUserName } = openvidu;
+    const { publisher, subscribers, mySessionId } = openvidu;
     const roomId = mySessionId;
     const [view, setView] = useState("Quiz");
     const upside_list = [
@@ -85,10 +86,10 @@ function TopBottomVideo() {
                             </Footer>
                         </AnswerBox>
                     ) : (
-                        <div>view접근이 잘못됨</div>
+                        <ErrorBox>view접근이 잘못됨</ErrorBox>
                     )
                 ) : (
-                    <div>퀴즈 정보가 없음</div>
+                    <ErrorBox>퀴즈 정보가 없음</ErrorBox>
                 )}
             </StateBox>
             <FooterBox className="FooterBox">

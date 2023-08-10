@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Timer from "./Timer";
 import { useEffect } from "react";
@@ -40,20 +40,16 @@ const Content = styled.button`
 `;
 
 const Quiz = (props) => {
-    const {
-        title,
-        text1,
-        text2,
-        onViewChange,
-        ChooseModal,
-        roomId,
-        myUserName,
-    } = props;
+    const { title, text1, text2, onViewChange, ChooseModal } = props;
     const [showChooseModal, setShowChooseModal] = useState(false);
     const [answerer, setAnswerer] = useState("");
     const [answered, setAnswered] = useState(false);
     const [userChoice, setUserChoice] = useState("");
     const dispatch = useDispatch();
+    const openvidu = useSelector((state) => state.openvidu);
+    const { mySessionId, myUserName } = openvidu;
+    const roomId = mySessionId;
+    const playerNickname = myUserName;
     const [quizResultFetched, setQuizResultFetched] = useState(false);
     const handleUserChoice = (isPositive) => {
         setUserChoice(isPositive ? "positive" : "negative");
@@ -62,8 +58,9 @@ const Quiz = (props) => {
     useEffect(() => {
         const handleAnswerSubmission = async () => {
             try {
-                await submitAnswer(roomId, myUserName, userChoice);
-
+                console.log(myUserName, playerNickname);
+                console.log(roomId, playerNickname, userChoice);
+                await submitAnswer(roomId, playerNickname, userChoice);
                 const quizResultResponse = await fetchQuizResult(roomId);
 
                 setAnswerer(quizResultResponse.answerer);
@@ -82,6 +79,7 @@ const Quiz = (props) => {
         dispatch,
         answered,
         roomId,
+        playerNickname,
         myUserName,
         userChoice,
         setAnswerer,
