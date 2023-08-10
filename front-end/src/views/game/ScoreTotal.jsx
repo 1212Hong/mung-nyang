@@ -27,7 +27,7 @@ const ScoreTotal = () => {
         result = "라이어 승리";
     } else if (result === "LiarLose_Fail") {
         result = "시민 승리";
-    } else if ((result = "LiarWin_NotLiar")) {
+    } else if (result === "LiarWin_NotLiar") {
         result = "라이어 승리";
     }
     const totalset = useSelector((state) => state.game.totalset);
