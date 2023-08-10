@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { changePhase } from "../../store/phaseSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Container } from "../../components/layout/common";
 import {
     TitleBox,
@@ -34,6 +34,9 @@ const ScoreTotal = () => {
         "댕댕이5",
         "댕댕이6",
     ];
+    const openvidu = useSelector((state) => state.openvidu);
+    const { subscribers, publisher, mySessionId } = openvidu;
+    console.log(subscribers);
 
     useEffect(() => {
         score(roomId)
@@ -45,6 +48,16 @@ const ScoreTotal = () => {
                 console.error("Error fetching score:", error);
             });
     }, [roomId]);
+
+    const information = [];
+
+    for (let i = 0; i < userlist.length; i++) {
+        const username = userlist[i];
+        const newEntry = { username, upscore: 5, score: scoreData.username };
+        information.push(newEntry);
+    }
+
+    console.log(information);
 
     const Next = () => {
         if (set === totalset) {
@@ -70,12 +83,12 @@ const ScoreTotal = () => {
                     <ScoreItem>총 점수</ScoreItem>
                 </Border>
 
-                {userlist.map((user, index) => (
+                {information.map((user, index) => (
                     <LineItem key={index}>
                         <RankItem>{index + 1}st</RankItem>
-                        <UserItem>{user}</UserItem>
-                        <UserItem>+{}d</UserItem>
-                        <UserItem>{}d</UserItem>
+                        <UserItem>{user.username}</UserItem>
+                        <UserItem>+{user.upscore}</UserItem>
+                        <UserItem>{user.score}</UserItem>
                     </LineItem>
                 ))}
             </RankBox>
