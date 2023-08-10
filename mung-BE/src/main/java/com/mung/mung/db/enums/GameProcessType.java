@@ -5,6 +5,7 @@ public enum GameProcessType {
     Test,
     Wait,
     GameVote,
+    startGameVote,
     Quiz,
     Category,
     Desc,
