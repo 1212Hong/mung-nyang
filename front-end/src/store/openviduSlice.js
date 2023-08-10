@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { OpenVidu } from "openvidu-browser";
 
 const initialState = {
     // OV: null,

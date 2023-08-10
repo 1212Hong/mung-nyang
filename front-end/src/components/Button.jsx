@@ -18,14 +18,14 @@ const StyledButton = styled(motion.button)`
     color: ${(props) =>
         props.color ? `var(--${props.color})` : `var(--white)`};
     font-weight: ${(props) => props.weight};
-    border-radius: ${(props) => props.border};
+    border-radius: ${(props) => (props.border ? props.border : "30px")};
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     object-fit: ${(props) => (props.type === "icon" ? "fill" : "none")};
-    padding: ${(props) => props.padding};
+    padding: ${(props) => (props.type === "icon" ? "0" : props.padding)};
     margin: ${(props) => props.margin};
     border: none;
     &:hover {
