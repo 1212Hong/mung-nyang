@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+    setCnt: 0,
     setId: 0,
     score: 0,
     selectedLiar: "",
@@ -16,6 +17,9 @@ export const gameSlice = createSlice({
     name: "game",
     initialState,
     reducers: {
+        saveSetCnt: (state, action) => {
+            state.setCnt = action.setCnt;
+        },
         saveSetId: (state, action) => {
             state.setId = action.setId;
         },

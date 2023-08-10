@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 const Container = styled.div`
     background-color: var(--beige-dark);
     border-radius: 20px;
-    height: 750px;
+    height: 720px;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -64,7 +64,7 @@ const ChattingInputBox = styled.div`
 `;
 const MenuBox = styled.div`
     height: 50px;
-    background-color: var(--beige-dark);
+    background-color: var(--beige-reverse);
     margin: 15px;
     border-radius: 20px;
     display: flex;
@@ -79,7 +79,8 @@ const StartnSetBox = styled.div`
     height: 50px;
     margin: 15px;
     border-radius: 20px;
-    display: grid;
+    display: flex;
+    justify-content: space-around;
     grid-template-columns: 135px 135px;
 `;
 
