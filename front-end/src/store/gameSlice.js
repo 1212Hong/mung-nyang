@@ -8,9 +8,12 @@ const initialState = {
     answerer: "",
     word: "",
     gameId: 0,
+    playerId: "",
+    roomId: "",
     selectedAnswer: "",
     result: "",
 };
+
 export const gameSlice = createSlice({
     name: "game",
     initialState,
@@ -33,8 +36,9 @@ export const gameSlice = createSlice({
         saveWord: (state, action) => {
             state.word = action.word;
         },
-        initGameState: (state) => {
-            state = initialState;
+
+        saveResult: (state, action) => {
+            state.result = action.payload;
         },
         updateSelectedLiar: (state, action) => {
             state.selectedLiar = action.payload;
