@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import Timer from "./Timer";
 import { useEffect } from "react";
 import { fetchQuizResult, submitAnswer } from "../hooks/quiz";
+import { gameActions } from "../store/gameSlice";
 
 const Container = styled.div`
     padding: 20px;
@@ -51,6 +53,7 @@ const Quiz = (props) => {
     const [answerer, setAnswerer] = useState("");
     const [answered, setAnswered] = useState(false);
     const [userChoice, setUserChoice] = useState("");
+    const dispatch = useDispatch();
     const [quizResultFetched, setQuizResultFetched] = useState(false);
     const handleUserChoice = (isPositive) => {
         setUserChoice(isPositive ? "positive" : "negative");
@@ -59,22 +62,16 @@ const Quiz = (props) => {
     useEffect(() => {
         const handleAnswerSubmission = async () => {
             try {
-                console.log("1단계", userChoice);
-
-                // Submit answer
                 await submitAnswer(roomId, myUserName, userChoice);
-
-                console.log("2단계", roomId, myUserName, userChoice);
 
                 const quizResultResponse = await fetchQuizResult(roomId);
 
                 setAnswerer(quizResultResponse.answerer);
-                console.log("3단계", answerer);
+                dispatch(gameActions.saveAnswerer(answerer));
                 setShowChooseModal(true);
                 setQuizResultFetched(true);
             } catch (error) {
                 console.error("Error:", error);
-                // 에러 처리
             }
         };
 
@@ -82,6 +79,7 @@ const Quiz = (props) => {
             handleAnswerSubmission();
         }
     }, [
+        dispatch,
         answered,
         roomId,
         myUserName,
