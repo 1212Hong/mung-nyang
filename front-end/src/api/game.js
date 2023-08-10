@@ -1,30 +1,60 @@
 import API from "./base";
+import OPENVIDU from "./openvidu";
 
 // 게임 시작 투표 시작
 export const startGameVote = (roomId) => {
-    API.post(`/api/vote/start?roomId=${roomId}`)
+    API.post(`/api/vote/start`, {
+        roomId: roomId,
+    })
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
+
+// 투표 시작 signal
+export const signalStartGameVote = (sessionId) => {
+    OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: "startGameVote",
+        data: "start game vote",
+    })
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
 };
 
 // 투표 수락 or 거절의사 보내기
 export const castGameVote = (roomId, check) => {
-    API.post(`/api/vote/count`, {
+    return API.post(`/api/vote/count`, {
         roomId: roomId,
-        voteCheck: check,
+        voteMessage: check,
+    });
+};
+
+// 투표 수락 or 거절 post to openvidu
+export const signalVote = (check, sessionId) => {
+    OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: check === "T" ? "agree" : "disagree",
+        data: check,
     })
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
 };
 
-// 투표 수락 or 거절 post to openvidu
-export const agreeVote = (check) => {
-    API.post(`/openvidu/api/signal`, {
-        session: "ses_YnDaGYNcd7",
-        to: ["con_Xnxg19tonh", "con_TNVdbuQCJF"],
-        type: "MY_TYPE",
-        data: "This is my signal data",
+// 투표 결과 요청
+export const getVoteRes = (roomId, maxSet) => {
+    return API.post(`/api/vote/result`, {
+        roomId: roomId,
+        maxSet: maxSet,
     });
+};
+
+// 투표 결과 delete
+export const deleteVote = (roomId) => {
+    API.delete(`/api/vote/resetVote/${encodeURIComponent(roomId)}`)
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
 };
 
 // 카테고리 내 제시어
