@@ -17,6 +17,7 @@ import {
     signalVote,
 } from "../../api/game";
 import { useDispatch, useSelector } from "react-redux";
+import { changePhase } from "../../store/phaseSlice";
 
 const ReadyModal = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -70,7 +71,10 @@ const ReadyModal = () => {
             }
         }, 7000);
 
-        // return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(timer);
+            dispatch(changePhase({ phaseType: "Quiz" }));
+        };
     }, []);
 
     return (
