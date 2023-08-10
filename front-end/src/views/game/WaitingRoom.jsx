@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "../../components/Button";
 import { ReactComponent as LinkIcon } from "../../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../../assets/img/capture_image.svg";
@@ -23,18 +23,25 @@ import {
 } from "../../components/layout/waiting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
-import { ovActions } from "../../store/openviduSlice";
-import { startGameVote } from "../../api/game";
+import { signalStartGameVote, startGameVote } from "../../api/game";
+import Dropdown from "../../components/Dropdown";
+import { SmallText, SubText } from "../../components/layout/common";
+import { gameActions } from "../../store/gameSlice";
 
 function WaitingRoom() {
-    const [setCnt, setSetCnt] = useState(3);
     const [isMuted, setIsMuted] = useState(false);
-
+    const [setCnt, setSetCnt] = useState(1); // redux에 저장해두고 getVoteRes에 넣어주기
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher, mySessionId } = openvidu;
+    const { subscribers, publisher, mySessionId, session, owner } = openvidu;
     console.log(subscribers);
-
+    console.log(session);
     const dispatch = useDispatch();
+
+    // ... 이전의 코드
+
+    const onInputChange = (e) => {
+        setSetCnt(e.target.value);
+    };
 
     const openRuleBook = () => {
         dispatch(
@@ -45,19 +52,19 @@ function WaitingRoom() {
         );
     };
     const openReadyModal = () => {
+        signalStartGameVote(session.sessionId);
         startGameVote(mySessionId);
-        dispatch(
-            openModal({
-                modalType: "ReadyModal",
-                isOpen: true,
-            }),
-        );
+        session.on("startGameVote", () => {
+            dispatch(
+                openModal({
+                    modalType: "ReadyModal",
+                    isOpen: true,
+                }),
+            );
+        });
+        dispatch(gameActions.saveSetCnt(setCnt));
     };
 
-    function selectSet(idx) {
-        console.log(setCnt);
-        // setSetCnt(setArr[idx]);
-    }
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
@@ -107,13 +114,15 @@ function WaitingRoom() {
                 </ChattingBox>
                 <MenuBox>
                     {[
-                        { icon: <QuestionIcon width="25" height="20" /> },
-                        { icon: <LinkIcon width="25" height="20" /> },
-                        { icon: <CaptureIcon width="25" height="20" /> },
+                        { icon: <QuestionIcon width="23" height="23" /> },
+                        { icon: <LinkIcon width="23" height="23" /> },
+                        { icon: <CaptureIcon width="23" height="23" /> },
                     ].map((item, index) => (
                         <Button
                             key={index}
                             type="icon"
+                            width="55px"
+                            height="40px"
                             background={`var(--beige-dark)`}
                             onClick={() => {
                                 openRuleBook();
@@ -126,33 +135,48 @@ function WaitingRoom() {
                         <Button
                             key="mute"
                             type="icon"
+                            width="55px"
+                            height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
                         >
-                            <VolumeMuteIcon width="20" height="25" />
+                            <VolumeMuteIcon width="23" height="23" />
                         </Button>
                     ) : (
                         <Button
                             key="on"
                             type="icon"
+                            width="55px"
+                            height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
                         >
-                            <VolumeOnIcon width="20" height="25" />
+                            <VolumeOnIcon width="23" height="23" />
                         </Button>
                     )}
                 </MenuBox>
-                <StartnSetBox>
-                    <Button
-                        width="130"
-                        height="45"
-                        onClick={() => {
-                            openReadyModal();
-                        }}
-                    >
-                        START
-                    </Button>
-                </StartnSetBox>
+                {owner && (
+                    <StartnSetBox>
+                        <Input
+                            // height="15px"
+                            width="130px"
+                            padding="5px"
+                            margin="8px"
+                            type="number"
+                            placeholder="세트 수 입력"
+                            value={setCnt}
+                            onChange={onInputChange}
+                        />
+                        <Button
+                            width="130px"
+                            onClick={() => {
+                                openReadyModal();
+                            }}
+                        >
+                            START
+                        </Button>
+                    </StartnSetBox>
+                )}
             </Rightbox>
         </Container>
     );
