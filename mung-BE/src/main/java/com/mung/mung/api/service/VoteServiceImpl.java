@@ -46,12 +46,15 @@ public class VoteServiceImpl implements VoteService {
         if (startedRooms.contains(roomId)) {
             resetVote(roomId); // 전에 투표 기록이 있으면 초기화
         }
-        startedRooms.add(roomId);
 
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         if (gameRoom == null) {
             throw new RoomNotExistException();
         }
+
+        startedRooms.add(roomId);
+
+        
         int cntPlayers = gameRoom.getPlayers().size();
 
         if (cntPlayers == 0) {

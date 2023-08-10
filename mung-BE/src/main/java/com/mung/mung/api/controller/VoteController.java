@@ -7,6 +7,7 @@ import com.mung.mung.api.response.VoteCountRes;
 import com.mung.mung.api.response.VoteResultRes;
 import com.mung.mung.api.response.VoteStartRes;
 import com.mung.mung.api.service.VoteService;
+import com.mung.mung.db.enums.GameProcessType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class VoteController {
     public ResponseEntity<VoteStartRes> startVote(@RequestBody RoomIdReq roomIdReq) {
         voteService.startVote(roomIdReq.getRoomId());
 
-        return ResponseEntity.ok(new VoteStartRes(roomIdReq.getRoomId()));
+        return ResponseEntity.ok(new VoteStartRes(GameProcessType.startGameVote));
     }
 
     @PostMapping("/count")
