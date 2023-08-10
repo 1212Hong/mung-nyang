@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Timer from "./Timer";
 import { useEffect } from "react";
-import ChooseModal from "../components/modal/ChooseModal";
 import { fetchQuizResult, submitAnswer } from "../hooks/quiz";
 
 const Container = styled.div`
@@ -39,14 +38,20 @@ const Content = styled.button`
 `;
 
 const Quiz = (props) => {
-    const { title, text1, text2, onViewChange } = props;
+    const {
+        title,
+        text1,
+        text2,
+        onViewChange,
+        ChooseModal,
+        roomId,
+        myUserName,
+    } = props;
     const [showChooseModal, setShowChooseModal] = useState(false);
-    const [answerer, setAnswerer] = useState("이현우");
-    const roomId = "test";
-    const gameId = "1";
-    const playerNickname = "라이어 고양이";
+    const [answerer, setAnswerer] = useState("");
     const [answered, setAnswered] = useState(false);
-    const [userChoice, setUserChoice] = useState("positive"); // Set an initial value
+    const [userChoice, setUserChoice] = useState("");
+    const [quizResultFetched, setQuizResultFetched] = useState(false);
     const handleUserChoice = (isPositive) => {
         setUserChoice(isPositive ? "positive" : "negative");
     };
@@ -57,15 +62,16 @@ const Quiz = (props) => {
                 console.log("1단계", userChoice);
 
                 // Submit answer
-                await submitAnswer(roomId, playerNickname, userChoice);
+                await submitAnswer(roomId, myUserName, userChoice);
 
-                console.log("2단계", roomId, playerNickname, userChoice);
+                console.log("2단계", roomId, myUserName, userChoice);
 
-                await fetchQuizResult(roomId, gameId);
+                const quizResultResponse = await fetchQuizResult(roomId);
 
-                setAnswerer(answerer);
+                setAnswerer(quizResultResponse.answerer);
                 console.log("3단계", answerer);
                 setShowChooseModal(true);
+                setQuizResultFetched(true);
             } catch (error) {
                 console.error("Error:", error);
                 // 에러 처리
@@ -78,9 +84,8 @@ const Quiz = (props) => {
     }, [
         answered,
         roomId,
-        playerNickname,
+        myUserName,
         userChoice,
-        gameId,
         setAnswerer,
         setShowChooseModal,
         answerer,
@@ -91,7 +96,7 @@ const Quiz = (props) => {
             const modalTimer = setTimeout(() => {
                 setShowChooseModal(false);
                 onViewChange("Category");
-            }, 10000); // 10 seconds
+            }, 5000);
 
             return () => clearTimeout(modalTimer);
         }
@@ -101,7 +106,7 @@ const Quiz = (props) => {
             <Timer
                 onTimerEnd={() => setAnswered(true)}
                 roomId={roomId}
-                playerNickname={playerNickname}
+                myUserName={myUserName}
             />
             <Title>{title}</Title>
             <Box>
@@ -112,7 +117,7 @@ const Quiz = (props) => {
                     {text2}
                 </Content>
             </Box>
-            {showChooseModal && <ChooseModal answerer={answerer} />}
+            {quizResultFetched && <ChooseModal answerer={answerer} />}
         </Container>
     );
 };

@@ -53,7 +53,7 @@ export const listAnswer = (roomId) => {
 
 // 퀴즈 시작시 질문지와 answer 1,2 요청
 export const QuizAnswer = (roomId) => {
-    return API.get(`/api/quiz/start/${roomId}`);
+    return API.get(`/api/quiz/start?roomId=${roomId}`);
 };
 
 // 퀴즈에서 사용자가 왼쪽 정답을 선택한 경우
@@ -74,5 +74,5 @@ export const QuizAnswerNegative = async (roomId, playerNickname) => {
 
 // 퀴즈의 결과(0 : 왼쪽, 1 : 오른쪽, 2: 무승부)와 정답자를 백에서 보내줌
 export const QuizResult = (roomId) => {
-    return API.get(`/api/quiz/result${roomId}`);
+    return API.get(`/api/quiz/result?roomId=${roomId}`);
 };
