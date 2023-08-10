@@ -72,6 +72,7 @@ const ReadyModal = () => {
         session.on("agree", () => {
             console.log("찬성");
             setAgree(agree + 1);
+            // 로컬 대기만 줄어듦 -> 모두의 화면이 줄어들도록 openvidu통신
             setWait(wait - 1);
         });
         session.on("disagree", () => {
