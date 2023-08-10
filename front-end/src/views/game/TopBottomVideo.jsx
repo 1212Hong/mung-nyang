@@ -14,10 +14,11 @@ import Quiz from "../../components/Quiz";
 import Select from "../../components/Select";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { fetchQuizInfo } from "../../hooks/quiz";
+import { fetchQuizInfo, fetchUserRole } from "../../hooks/quiz";
 import { useDispatch, useSelector } from "react-redux";
 import ChooseModal from "../../components/modal/ChooseModal";
 import { changePhase } from "../../store/phaseSlice";
+import { gameActions } from "../../store/gameSlice";
 
 function TopBottomVideo() {
     const title = "제시어 카테고리";
@@ -25,7 +26,7 @@ function TopBottomVideo() {
     const [quizInfo, setQuizInfo] = useState(null);
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { answerer } = game;
+    const { gameId, answerer } = game;
     const { publisher, subscribers, mySessionId, myUserName, session } =
         openvidu;
     const [view, setView] = useState("Quiz");
@@ -34,12 +35,33 @@ function TopBottomVideo() {
     ];
     const downside_list = subscribers;
     const dispatch = useDispatch();
+    let c = "";
 
+    const getFunc = async (category) => {
+        const roleInfo = await fetchUserRole(
+            mySessionId,
+            gameId,
+            category,
+            answerer,
+        );
+        console.log(roleInfo);
+        if (roleInfo) {
+            const playersRoleInfo = roleInfo.playersRoleInfo;
+            playersRoleInfo.map((item) => {
+                if (item.playerNickname === myUserName) {
+                    dispatch(gameActions.saveWord(item.word));
+                }
+            });
+        }
+    };
     useEffect(() => {
         if (session) {
             session.on("startDesc", () => {
                 dispatch(changePhase({ phaseType: "Desc" }));
             });
+            console.log(session.on("category", () => {}));
+
+            getFunc(c);
         }
     }, [session]);
 

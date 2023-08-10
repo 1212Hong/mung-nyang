@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategory, startDesc } from "../api/game";
+import { selectCategory, signalCategory, startDesc } from "../api/game";
 import { gameActions } from "../store/gameSlice";
 import { changePhase } from "../store/phaseSlice";
 
@@ -40,8 +40,9 @@ const Select = (props) => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session } = openvidu;
 
-    const goDesc = (category) => {
+    const goDesc = async (category) => {
         dispatch(gameActions.saveCategory(category));
+        await signalCategory(category, session.sessionId);
         startDesc(session.sessionId);
     };
 

@@ -10,6 +10,7 @@ import {
     fetchEmergencyAnswerResponse,
     fetchFinalAnswerResponse,
 } from "../../hooks/quiz";
+import { gameActions } from "../../store/gameSlice";
 const Container = styled.div`
     margin: 0;
 `;
@@ -76,14 +77,12 @@ const FinalAnswer = () => {
     };
 };
 function WordDescription(props) {
-    const curUserName = "테스트유저2";
-    const [userWord, setUserWord] = useState("");
     const [curGameSetId, setCurGameSetId] = useState("");
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { subscribers, publisher, mySessionId } = openvidu;
-    const { gameId, category, answerer } = game;
+    const { subscribers, publisher, mySessionId, myUserName } = openvidu;
+    const { gameId, category, answerer, word } = game;
     console.log(subscribers);
 
     const openAnswerModal = () => {
@@ -102,11 +101,11 @@ function WordDescription(props) {
                 category,
                 answerer,
             );
-            setCurGameSetId(roleInfo.setId);
+            // setCurGameSetId(roleInfo.setId);
             const playersRoleInfo = roleInfo.playersRoleInfo;
             playersRoleInfo.map((item) => {
-                if (item.playerNickname === curUserName) {
-                    setUserWord(item.word);
+                if (item.playerNickname === myUserName) {
+                    dispatch(gameActions.saveWord(item.word));
                 }
             });
         };
@@ -131,7 +130,7 @@ function WordDescription(props) {
                             <Button
                                 width={"100%"}
                                 height={"100%"}
-                                text={`제시어 : ${userWord}`}
+                                text={`제시어 : ${word}`}
                                 fontSize={"32px"}
                             ></Button>
                         </CurSubFunction>

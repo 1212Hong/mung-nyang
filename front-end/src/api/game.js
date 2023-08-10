@@ -57,6 +57,18 @@ export const deleteVote = (roomId) => {
         .catch((err) => console.log(err));
 };
 
+// 정답자가 선정한 카테고리 openvidu로 통신하기 위해 signal
+export const signalCategory = (category, sessionId) => {
+    return OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: "category",
+        data: category,
+    })
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
+
 // 카테고리 내 제시어
 export const selectCategory = (roomId, gameId, category, answerer) => {
     return API.post(`api/quiz/category`, {
