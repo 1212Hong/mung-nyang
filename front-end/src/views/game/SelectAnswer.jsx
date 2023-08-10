@@ -10,19 +10,23 @@ import {
     NotificationContainer,
     Overlay,
 } from "../../components/layout/selectAnswer";
+import { liarAnswer } from "../../api/game";
 
 const SelectAnswer = (props) => {
-    const { Answerlist, time } = props;
+    const { time } = props;
     const [activeBox, setActiveBox] = useState(null);
     const [showNotification, setShowNotification] = useState(true);
     const title = "아래 단어들 중 정답을 골라주세요.";
     const text = "라이어로 지목되었습니다. ";
     const imgSrc = foot2;
-
+    const [answerList, setAnswerList] = useState([]);
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowNotification(false);
         }, 3000);
+        liarAnswer(1).then((response) => {
+            setAnswerList(response.data.answerOptions);
+        });
 
         return () => {
             clearTimeout(timer);
@@ -38,7 +42,7 @@ const SelectAnswer = (props) => {
             <Timer time={time}></Timer>
             <Head>{title}</Head>
             <Line>
-                {Answerlist.map((item, index) => (
+                {answerList.map((item, index) => (
                     <Content
                         key={index}
                         onClick={() => handleContentClick(item)}
