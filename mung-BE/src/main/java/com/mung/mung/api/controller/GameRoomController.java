@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,20 +16,13 @@ import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.PlayerService;
 import com.mung.mung.common.exception.custom.*;
+import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import io.openvidu.java.client.Connection;
-import io.openvidu.java.client.ConnectionProperties;
-import io.openvidu.java.client.OpenVidu;
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
-import io.openvidu.java.client.Session;
-import io.openvidu.java.client.SessionProperties;
 
 
 //@CrossOrigin(origins = "*")
@@ -53,6 +47,7 @@ public class GameRoomController {
     // 방 관리
     private Map<String, Integer> mapSessions = new ConcurrentHashMap<>();
 
+    private Map<String, Boolean> sessionRecordings = new ConcurrentHashMap<>();
     // 방 비밀번호 체크용이라서 HashMap사용, 동기화 필요 X
     private Map<String, String> gameConnectionInfoMap = new HashMap<>();
 
@@ -180,4 +175,88 @@ public class GameRoomController {
 
     }
 
+    // 테스트용
+
+    @RequestMapping(value = "/api/recording/start", method = RequestMethod.POST)
+    public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) {
+        String sessionId = (String) params.get("session");
+//            Recording.OutputMode outputMode = Recording.OutputMode.valueOf((String) params.get("outputMode"));
+        Recording.OutputMode outputMode = Recording.OutputMode.COMPOSED;
+//            boolean hasAudio = (boolean) params.get("hasAudio");
+//            boolean hasVideo = (boolean) params.get("hasVideo");
+        boolean hasAudio = true;
+        boolean hasVideo = true;
+
+
+
+        RecordingProperties properties = new RecordingProperties.Builder().outputMode(outputMode).hasAudio(hasAudio)
+                .hasVideo(hasVideo).build();
+
+        System.out.println("Starting recording for session " + sessionId + " with properties {outputMode=" + outputMode
+                + ", hasAudio=" + hasAudio + ", hasVideo=" + hasVideo + "}");
+
+        try {
+            Recording recording = this.openvidu.startRecording(sessionId, properties);
+            this.sessionRecordings.put(sessionId, true);
+            return new ResponseEntity<>(recording, HttpStatus.OK);
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/api/recording/stop", method = RequestMethod.POST)
+    public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
+        String recordingId = (String) params.get("recording");
+
+        System.out.println("Stoping recording | {recordingId}=" + recordingId);
+
+        try {
+            Recording recording = this.openvidu.stopRecording(recordingId);
+            this.sessionRecordings.remove(recording.getSessionId());
+            return new ResponseEntity<>(recording, HttpStatus.OK);
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/api/recording/delete", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteRecording(@RequestBody Map<String, Object> params) {
+        String recordingId = (String) params.get("recording");
+
+        System.out.println("Deleting recording | {recordingId}=" + recordingId);
+
+        try {
+            this.openvidu.deleteRecording(recordingId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/api/recording/get/{recordingId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getRecording(@PathVariable(value = "recordingId") String recordingId) {
+
+        System.out.println("Getting recording | {recordingId}=" + recordingId);
+
+        try {
+            Recording recording = this.openvidu.getRecording(recordingId);
+            return new ResponseEntity<>(recording, HttpStatus.OK);
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/api/recording/list", method = RequestMethod.GET)
+    public ResponseEntity<?> listRecordings() {
+
+        System.out.println("Listing recordings");
+
+        try {
+            List<Recording> recordings = this.openvidu.listRecordings();
+
+            return new ResponseEntity<>(recordings, HttpStatus.OK);
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
