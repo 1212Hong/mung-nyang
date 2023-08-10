@@ -94,13 +94,16 @@ const ModalViewCompleteDiv = styled.div`
 `;
 
 const ChooseModalView = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
+    justify-content: center;
     align-items: center;
-    flex-direction: column;
-    border-radius: 20px;
-    width: 700px;
-    height: 500px;
-    background-color: var(--dusty-pink);
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 1000;
 `;
 const AnswerModalInput = styled.input`
     width: 100%;
