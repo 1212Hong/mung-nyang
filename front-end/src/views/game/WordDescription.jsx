@@ -1,11 +1,7 @@
-import React, {
-    useState,
-    useLayoutEffect,
-    useEffect,
-    useSelector,
-    useRef,
-} from "react";
+import React, { useState, useLayoutEffect, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { openModal } from "../../store/modalSlice";
 import VideoComponent from "../../components/VideoComponent";
 import Button from "../../components/Button";
 import CameraIcon from "../../assets/img/camera.png";
@@ -80,11 +76,22 @@ const FinalAnswer = () => {
     };
 };
 function WordDescription(props) {
-    const [userRole, setUserRole] = useState([]);
     const curUserName = "테스트유저2";
     const [userWord, setUserWord] = useState("");
     const [curGameSetId, setCurGameSetId] = useState("");
+    const dispatch = useDispatch();
+    const openvidu = useSelector((state) => state.openvidu);
+    const { subscribers, publisher, mySessionId } = openvidu;
+    console.log(subscribers);
 
+    const openAnswerModal = () => {
+        dispatch(
+            openModal({
+                modalType: "AnswerModal",
+                isOpen: true,
+            }),
+        );
+    };
     useEffect(() => {
         const getFunc = async () => {
             const roleInfo = await fetchUserRole(
@@ -106,18 +113,16 @@ function WordDescription(props) {
     return (
         <Container>
             <Participants>
-                <CurParticipants width={"60%"}>
-                    <VideoComponent
-                        width={"80%"}
-                        height={"80%"}
-                    ></VideoComponent>
-                </CurParticipants>
+                <CurParticipants width={"60%"}></CurParticipants>
                 <CurParticipants width={"40%"}>
                     <CurFunction>
-                        <VideoComponent
-                            width={"80%"}
-                            height={"60%"}
-                        ></VideoComponent>
+                        {publisher && (
+                            <VideoComponent
+                                width="380"
+                                height="200"
+                                streamManager={publisher}
+                            />
+                        )}
                     </CurFunction>
                     <CurFunction height={"36%"}>
                         <CurSubFunction>
@@ -133,7 +138,7 @@ function WordDescription(props) {
                                 <Button
                                     text={"정답"}
                                     fontSize={"32px"}
-                                    onClick={() => emergencyAnswer()}
+                                    onClick={() => openAnswerModal()}
                                 ></Button>
                             </CurSubBtn>
                             <CurSubBtn>
@@ -146,13 +151,16 @@ function WordDescription(props) {
                 </CurParticipants>
             </Participants>
             <Participants height={"200px"}>
-                {user_list.map((user, index) => (
-                    <WaitingParticipants>
-                        <VideoComponent key={index} width={"100%"}>
-                            {user}
-                        </VideoComponent>
-                    </WaitingParticipants>
-                ))}
+                {subscribers &&
+                    subscribers.map((sub, i) => (
+                        <React.Fragment key={i}>
+                            <VideoComponent
+                                width="380"
+                                height="200"
+                                streamManager={sub}
+                            />
+                        </React.Fragment>
+                    ))}
             </Participants>
         </Container>
     );
