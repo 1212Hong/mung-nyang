@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { ReactComponent as LinkIcon } from "../../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../../assets/img/capture_image.svg";
@@ -37,7 +37,18 @@ function WaitingRoom() {
     console.log(session);
     const dispatch = useDispatch();
 
-    // ... 이전의 코드
+    useEffect(() => {
+        if (session) {
+            session.on("startGameVote", () => {
+                dispatch(
+                    openModal({
+                        modalType: "ReadyModal",
+                        isOpen: true,
+                    }),
+                );
+            });
+        }
+    }, [session]);
 
     const onInputChange = (e) => {
         setSetCnt(e.target.value);
@@ -54,14 +65,7 @@ function WaitingRoom() {
     const openReadyModal = () => {
         signalStartGameVote(session.sessionId);
         startGameVote(mySessionId);
-        session.on("startGameVote", () => {
-            dispatch(
-                openModal({
-                    modalType: "ReadyModal",
-                    isOpen: true,
-                }),
-            );
-        });
+
         dispatch(gameActions.saveSetCnt(setCnt));
     };
 
