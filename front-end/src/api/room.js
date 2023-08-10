@@ -23,10 +23,15 @@ export const joinRoom = (sessionId, nickname) => {
 };
 
 // 닉네임 가져오기
-export const getNickname = (sessionId) => {
-    return API.get(`/api/player/nickname?roomID=${sessionId}`).then((data) =>
-        console.log(data).catch((err) => console.log(err)),
-    );
+export const getNickname = async (sessionId) => {
+    try {
+        const response = await API.get(
+            `/api/player/nickname?roomId=${encodeURIComponent(sessionId)}`,
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 // 떠난 사용자 처리
