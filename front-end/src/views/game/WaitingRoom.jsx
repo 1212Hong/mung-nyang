@@ -76,7 +76,7 @@ function WaitingRoom() {
     };
 
     const typeUserMessage = (e) => {
-        setUserMessage(e.target.value);
+        // setUserMessage(e.target.value);
     };
     const sendMessage = async () => {
         signalSendMessage(
@@ -89,12 +89,12 @@ function WaitingRoom() {
         setIsMuted((prevState) => !prevState);
     }
 
-    useEffect(() => {
-        session.on("signal:chat", (event) => {
-            const data = JSON.parse(event.data);
-            console.log(data);
-        });
-    });
+    // useEffect(() => {
+    //     session.on("signal:chat", (event) => {
+    //         const data = JSON.parse(event.data);
+    //         console.log(data);
+    //     });
+    // });
     return (
         <Container className="waiting-container">
             <Leftbox>

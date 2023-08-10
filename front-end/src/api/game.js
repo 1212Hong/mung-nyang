@@ -59,7 +59,7 @@ export const deleteVote = (roomId) => {
 
 // 정답자가 선정한 카테고리 openvidu로 통신하기 위해 signal
 export const signalCategory = (category, sessionId) => {
-    return OPENVIDU.post(`/openvidu/api/signal`, {
+    OPENVIDU.post(`/openvidu/api/signal`, {
         session: sessionId,
         to: [],
         type: "category",
@@ -80,17 +80,20 @@ export const selectCategory = (roomId, gameId, category, answerer) => {
 };
 
 // 정답자가 카테고리 선택시 제시어 설명으로 다함께 이동해야함
-export const startDesc = (sessionId) => {
-    OPENVIDU.post(`/openvidu/api/signal`, {
+export const startDesc = async (sessionId) => {
+    await OPENVIDU.post(`/openvidu/api/signal`, {
         session: sessionId,
         to: [],
         type: "startDesc",
         data: "move to Desc",
     })
-        .then((data) => console.log(data))
+        .then((data) => console.log(data.config.data))
         .catch((err) => console.log(err));
 };
-
+// 카테고리 선택 후 제시어 페이지 렌더링과 동시에 각 사용자의 제시어 요청
+export const getUserWord = async (playerId) => {
+    return await API.get(`api/quiz/role/${playerId}`);
+};
 // 비상정답
 export const emergencyAnswer = async (
     setId,
