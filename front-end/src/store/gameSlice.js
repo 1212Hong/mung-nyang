@@ -7,6 +7,9 @@ const initialState = {
     answerer: "",
     word: "",
     gameId: 0,
+    playerId: "",
+    roomId: "",
+    result: "",
 };
 const initState = {
     setId: 0,
@@ -15,6 +18,9 @@ const initState = {
     answerer: "",
     word: "",
     gameId: 0,
+    playerId: "",
+    roomId: "",
+    result: "",
 };
 export const gameSlice = createSlice({
     name: "game",
