@@ -38,7 +38,7 @@ const OpenLiar = () => {
                 console.log(result);
 
                 dispatch(gameActions.updateResult(result));
-                dispatch(changePhase({ phaseType: "Wait" }));
+                dispatch(changePhase({ phaseType: "MidScore" }));
             } catch (error) {
                 console.error(error);
             }
