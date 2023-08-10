@@ -25,15 +25,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { signalStartGameVote, startGameVote } from "../../api/game";
 import Dropdown from "../../components/Dropdown";
+import { SmallText, SubText } from "../../components/layout/common";
 
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
-
+    const [setCnt, setSetCnt] = useState(0); // redux에 저장해두고 getVoteRes에 넣어주기
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher, mySessionId, session, owner } = openvidu;
     console.log(subscribers);
     console.log(session);
     const dispatch = useDispatch();
+
+    // ... 이전의 코드
+
+    const onInputChange = (e) => {
+        setSetCnt(e.target.value);
+    };
 
     const openRuleBook = () => {
         dispatch(
@@ -148,6 +155,16 @@ function WaitingRoom() {
                 </MenuBox>
                 {owner && (
                     <StartnSetBox>
+                        <Input
+                            // height="15px"
+                            width="130px"
+                            padding="5px"
+                            margin="8px"
+                            type="number"
+                            placeholder="세트 수 입력"
+                            value={setCnt}
+                            onChange={onInputChange}
+                        />
                         <Button
                             width="130px"
                             onClick={() => {
@@ -156,7 +173,6 @@ function WaitingRoom() {
                         >
                             START
                         </Button>
-                        <Dropdown />
                     </StartnSetBox>
                 )}
             </Rightbox>
