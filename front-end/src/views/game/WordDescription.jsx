@@ -5,7 +5,9 @@ import React, {
     useSelector,
     useRef,
 } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { openModal } from "../../store/modalSlice";
 import VideoComponent from "../../components/VideoComponent";
 import Button from "../../components/Button";
 import CameraIcon from "../../assets/img/camera.png";
@@ -84,7 +86,15 @@ function WordDescription(props) {
     const curUserName = "테스트유저2";
     const [userWord, setUserWord] = useState("");
     const [curGameSetId, setCurGameSetId] = useState("");
-
+    const dispatch = useDispatch();
+    const openAnswerModal = () => {
+        dispatch(
+            openModal({
+                modalType: "AnswerModal",
+                isOpen: true,
+            }),
+        );
+    };
     useEffect(() => {
         const getFunc = async () => {
             const roleInfo = await fetchUserRole(
@@ -133,7 +143,7 @@ function WordDescription(props) {
                                 <Button
                                     text={"정답"}
                                     fontSize={"32px"}
-                                    onClick={() => emergencyAnswer()}
+                                    onClick={() => openAnswerModal()}
                                 ></Button>
                             </CurSubBtn>
                             <CurSubBtn>
