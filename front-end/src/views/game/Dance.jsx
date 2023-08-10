@@ -24,7 +24,9 @@ function Dance() {
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
     const danceUrl = useDanceUrl();
-    const { fetchPenaltyUser, penaltyUser } = usePenaltyUser(openvidu.roomId);
+    const { fetchPenaltyUser, penaltyUser } = usePenaltyUser(
+        openvidu.mySessionId,
+    );
 
     useEffect(() => {
         const timer = setTimeout(() => {
