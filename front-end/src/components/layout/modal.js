@@ -104,11 +104,18 @@ const ChooseModalView = styled.div`
 `;
 const AnswerModalInput = styled.input`
     width: 100%;
-    height: 20px;
+    height: 40px;
+    padding-left: 30px;
     border-radius: 5px;
     border: none;
     background-color: var(--vanilla-cream);
     opacity: 0.8;
+    font-size: 16px;
+    text-decoration: none;
+    &:focus {
+        outline: none;
+        text-decoration: none;
+    }
 `;
 const AnswerModalViewDiv = styled.div`
     width: 80%;
