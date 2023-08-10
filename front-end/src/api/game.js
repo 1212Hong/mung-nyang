@@ -67,6 +67,18 @@ export const selectCategory = (roomId, gameId, category, answerer) => {
     });
 };
 
+// 정답자가 카테고리 선택시 제시어 설명으로 다함께 이동해야함
+export const startDesc = (sessionId) => {
+    OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: "startDesc",
+        data: "move to Desc",
+    })
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
+
 // 비상정답
 export const emergencyAnswer = async (
     setId,

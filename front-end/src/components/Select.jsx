@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategory } from "../api/game";
+import { selectCategory, startDesc } from "../api/game";
 import { gameActions } from "../store/gameSlice";
 import { changePhase } from "../store/phaseSlice";
 
@@ -37,10 +37,12 @@ const Content = styled.button`
 const Select = (props) => {
     const { list, title } = props;
     const dispatch = useDispatch();
+    const openvidu = useSelector((state) => state.openvidu);
+    const { session } = openvidu;
 
     const goDesc = (category) => {
         dispatch(gameActions.saveCategory(category));
-        dispatch(changePhase({ phaseType: "Desc" }));
+        startDesc(session.sessionId);
     };
 
     return (
