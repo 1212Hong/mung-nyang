@@ -6,6 +6,8 @@ import com.mung.mung.api.request.FinalAnswerReq;
 import com.mung.mung.api.request.LiarAnswerReq;
 import com.mung.mung.common.exception.custom.GameNotExistException;
 import com.mung.mung.common.exception.custom.PlayerNotExistException;
+import com.mung.mung.common.exception.custom.RoomNotExistException;
+import com.mung.mung.common.exception.custom.SetNotExistException;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.entity.GameSet;
@@ -35,10 +37,21 @@ public class ScoreService {
         String playerNickname=emergencyAnswerReq.getPlayerNickname();
 
         GameSet gameSet=gameSetRepository.findBySetId(setId);
+        if (gameSet == null){
+            throw new SetNotExistException();
+        }
         String liar=gameSet.getLiar();
 
         GameRoom gameroom= gameRoomRepository.findByRoomId(roomId);
+        if (gameroom == null){
+            throw new RoomNotExistException();
+        }
+
         List<Player> players = gameroom.getPlayers();
+        if (players.isEmpty()){
+            throw new PlayerNotExistException();
+        }
+
         for (Player player : players) {
             if (player.getPlayerNickname().equals(liar)) {
                 // 라이어 점수 반영
@@ -65,11 +78,22 @@ public class ScoreService {
         String roomId= finalAnswerReq.getRoomId();
 
         GameSet gameSet=gameSetRepository.findBySetId(setId);
+        if (gameSet == null){
+            throw new SetNotExistException();
+        }
+
         String liar=gameSet.getLiar();
         String answerer=gameSet.getAnswerer();
 
         GameRoom gameRoom= gameRoomRepository.findByRoomId(roomId);
+        if (gameRoom == null){
+            throw new RoomNotExistException();
+        }
+
         List<Player> players = gameRoom.getPlayers();
+        if (players.isEmpty()){
+            throw new PlayerNotExistException();
+        }
         for (Player player : players) {
             if (!player.getPlayerNickname().equals(liar)) {
                 //시민 + 정답자 팀 점수 반영
@@ -90,10 +114,21 @@ public class ScoreService {
         String roomId= liarAnswerReq.getRoomId();
 
         GameSet gameSet=gameSetRepository.findBySetId(setId);
+        if (gameSet == null){
+            throw new SetNotExistException();
+        }
+
         String liar=gameSet.getLiar();
 
         GameRoom gameRoom=gameRoomRepository.findByRoomId(roomId);
+        if (gameRoom == null){
+            throw new RoomNotExistException();
+        }
+
         List<Player> players = gameRoom.getPlayers();
+        if (players.isEmpty()){
+            throw new PlayerNotExistException();
+        }
 
         for (Player player : players) {
             if (player.getPlayerNickname().equals(liar)) {
@@ -113,7 +148,7 @@ public class ScoreService {
     public HashMap<String, Integer> returnScore(String roomId){
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         if (gameRoom ==null){
-            throw new GameNotExistException();
+            throw new RoomNotExistException();
         }
         HashMap<String, Integer> playerScore=new HashMap<>();
         if (gameRoom.getPlayers().isEmpty()){

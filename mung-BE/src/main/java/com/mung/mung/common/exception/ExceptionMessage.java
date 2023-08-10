@@ -20,7 +20,9 @@ public enum ExceptionMessage {
     ROOM_PASSWORD_WRONG_MESSAGE("비밀번호가 유효하지 않습니다."),
     ROOM_ALREADY_FULL_MESSAGE("방에 인원이 다 찼습니다."),
     PENALTY_NOT_EXIST_MESSAGE("벌칙이 없습니다."),
-    NICK_NAME_NOT_EXIST_EXCEPTION("유효한 닉네임이 없습니다.")
+    NICKNAME_NOT_EXIST_MESSAGE("유효한 닉네임이 없습니다."),
+    NICKNAME_ALREADY_EXIST_MESSAGE("이미 존재하는 닉네임 입니다."),
+    MAPSESSION_NOT_EXIST_MESSAGE("JOIN & CONNECT의 횟수 동기화 오류입니다.")
     ;
 
     private final String message;
