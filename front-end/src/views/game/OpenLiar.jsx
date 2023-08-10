@@ -10,7 +10,7 @@ import {
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { liarAnswer } from "../../api/game";
+import { Result } from "../../api/game";
 import { openviduSlice } from "../../store/openviduSlice";
 
 const OtherView = () => {
@@ -31,7 +31,7 @@ const OtherView = () => {
     useEffect(() => {
         const timer = setTimeout(async () => {
             try {
-                const response = await liarAnswer(
+                const response = await Result(
                     setId,
                     roomId,
                     pickedLiar,
