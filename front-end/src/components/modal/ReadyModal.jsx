@@ -17,11 +17,12 @@ import {
 } from "../../api/game";
 import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../../store/phaseSlice";
+import { gameActions, gameSlice } from "../../store/gameSlice";
 
 const ReadyModal = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { mySessionId, session } = openvidu;
-
+    const { setCnt } = gameSlice;
     // api 통신을 위한 변수
     const [check, setCheck] = useState(false);
     // 찬반에 대한 카운트
@@ -32,6 +33,7 @@ const ReadyModal = () => {
     const [wait, setWait] = useState(session.streamManagers.length);
     const [complete, setComplete] = useState(false);
     const dispatch = useDispatch();
+    const [phase, setPhase] = useState("");
 
     // api 코드 작성할 곳.
     // const decideVote = async (flag) => {
@@ -45,6 +47,22 @@ const ReadyModal = () => {
     //     flag ? setAgree(agree + 1) : setDisagree(disagree + 1);
     //     setWait(wait - 1);
     // };
+
+    const handleEndVote = async () => {
+        try {
+            const response = await getVoteRes(mySessionId, setCnt);
+            if (response) {
+                console.log(response);
+                setPhase(response.gameProcessType);
+            }
+
+            deleteVote(mySessionId);
+        } catch (error) {
+            console.error("Error sending data:", error);
+        }
+        // dispatch(changePhase({ phaseType: phase }));
+        dispatch(changePhase({ phaseType: "Quiz" }));
+    };
     useEffect(() => {
         session.on("agree", () => {
             console.log("찬성");
@@ -60,19 +78,12 @@ const ReadyModal = () => {
 
     useEffect(() => {
         const timer = setTimeout(async () => {
-            try {
-                const response = await getVoteRes(mySessionId, 3); // 3은 방에서 정한 세트수
-                console.log(response);
-
-                await deleteVote(mySessionId);
-            } catch (error) {
-                console.error("Error sending data:", error);
-            }
+            // 타이머 흘러가는중
         }, 7000);
 
         return () => {
             clearTimeout(timer);
-            dispatch(changePhase({ phaseType: "Quiz" }));
+            handleEndVote();
         };
     }, []);
 

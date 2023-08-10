@@ -26,6 +26,7 @@ import { openModal } from "../../store/modalSlice";
 import { signalStartGameVote, startGameVote } from "../../api/game";
 import Dropdown from "../../components/Dropdown";
 import { SmallText, SubText } from "../../components/layout/common";
+import { gameActions } from "../../store/gameSlice";
 
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
@@ -61,6 +62,7 @@ function WaitingRoom() {
                 }),
             );
         });
+        dispatch(gameActions.saveSetCnt(setCnt));
     };
 
     function toggleVolume() {
