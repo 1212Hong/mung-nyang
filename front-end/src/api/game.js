@@ -52,7 +52,7 @@ export const getVoteRes = (roomId, maxSet) => {
 
 // 투표 결과 delete
 export const deleteVote = (roomId) => {
-    API.post(`/api/vote/resetVote/${encodeURIComponent(roomId)}`)
+    API.delete(`/api/vote/resetVote/${encodeURIComponent(roomId)}`)
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
 };

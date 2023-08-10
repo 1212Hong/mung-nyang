@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import VideoBoxing from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import Button from "../../components/Button";
 import CameraIcon from "../../assets/img/camera.png";
 const Container = styled.div`
@@ -48,11 +48,17 @@ function WordDescription() {
         <Container>
             <Participants>
                 <CurParticipants width={"60%"}>
-                    <VideoBoxing width={"80%"} height={"80%"}></VideoBoxing>
+                    <VideoComponent
+                        width={"80%"}
+                        height={"80%"}
+                    ></VideoComponent>
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
                     <CurFunction>
-                        <VideoBoxing width={"80%"} height={"60%"}></VideoBoxing>
+                        <VideoComponent
+                            width={"80%"}
+                            height={"60%"}
+                        ></VideoComponent>
                     </CurFunction>
                     <CurFunction height={"36%"}>
                         <CurSubFunction>
@@ -82,9 +88,9 @@ function WordDescription() {
             <Participants height={"200px"}>
                 {user_list.map((user, index) => (
                     <WaitingParticipants>
-                        <VideoBoxing key={index} width={"100%"}>
+                        <VideoComponent key={index} width={"100%"}>
                             {user}
-                        </VideoBoxing>
+                        </VideoComponent>
                     </WaitingParticipants>
                 ))}
             </Participants>
