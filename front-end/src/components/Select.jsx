@@ -1,7 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategory, signalCategory, startDesc } from "../api/game";
+import { selectCategory } from "../api/game";
+import { gameActions } from "../store/gameSlice";
 import { changePhase } from "../store/phaseSlice";
 
 const Container = styled.div`
