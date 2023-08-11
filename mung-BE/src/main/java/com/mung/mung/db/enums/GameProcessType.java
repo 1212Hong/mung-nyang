@@ -5,6 +5,7 @@ public enum GameProcessType {
     Test,
     Wait,
     GameVote,
+    startGameVote,
     Quiz,
     Category,
     Desc,
@@ -19,5 +20,6 @@ public enum GameProcessType {
     DupVote,// 최하위플레이어가 동점일때
     Dance,
     Paint,
+    NoLiar
 
 }

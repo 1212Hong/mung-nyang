@@ -3,10 +3,10 @@ package com.mung.mung.api.service;
 import com.mung.mung.api.request.QuizCountReq;
 import com.mung.mung.api.request.QuizPlayersRoleReq;
 import com.mung.mung.api.response.QuizPlayersRoleRes;
+import com.mung.mung.api.response.QuizPlayersWordRes;
 import com.mung.mung.api.response.QuizResultRes;
 import com.mung.mung.api.response.QuizStartRes;
-import com.mung.mung.common.exception.custom.GameNotExistException;
-import com.mung.mung.common.exception.custom.QuizNotFoundException;
+import com.mung.mung.common.exception.custom.*;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameSet;
 import com.mung.mung.db.entity.Quiz;
@@ -83,19 +83,37 @@ public class QuizServiceImpl implements QuizService {
         if (positiveCount > negativeCount) {
             pickedAnswer = 1;
 
-            Set<String> positiveVoters = positiveQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
+            Set<String> positiveVoters = positiveQuizByRoom.get(roomId);
+
             selectedPlayerNickname = getRandomNickname(positiveVoters);
         } else if (negativeCount > positiveCount) {
             pickedAnswer = 2;
 
-            Set<String> negativeVoters = negativeQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
+            Set<String> negativeVoters = negativeQuizByRoom.get(roomId);
             selectedPlayerNickname = getRandomNickname(negativeVoters);
-        } else {
-            pickedAnswer = 0; // 무승부
+        } else if(positiveCount==0 && negativeCount==0) {
+            // 아무도 투표 안했을 경우
+            pickedAnswer=3;
             List<String> players = playerRepository.findPlayers(roomId);
-            log.info("[Draw] players : {}", players);
+            log.info("[아무도 투표 안함] players : {}", players);
             int randomIndex = new Random().nextInt(players.size());
             selectedPlayerNickname = players.get(randomIndex);
+
+        } else {
+            // 무승부 났을 경우
+            pickedAnswer = 0; // 무승부
+            Set<String> positiveVoters = positiveQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
+            Set<String> negativeVoters = negativeQuizByRoom.getOrDefault(roomId, ConcurrentHashMap.newKeySet());
+
+            List<String> combinedVoters = new ArrayList<>();
+            combinedVoters.addAll(positiveVoters);
+            combinedVoters.addAll(negativeVoters);
+
+            log.info("[무승부] players : {}", combinedVoters);
+
+            int randomIndex = new Random().nextInt(combinedVoters.size());
+
+            selectedPlayerNickname = combinedVoters.get(randomIndex);
         }
 
         log.info("answerer : {}", selectedPlayerNickname);
@@ -112,42 +130,39 @@ public class QuizServiceImpl implements QuizService {
         String roomId = quizPlayersRoleReq.getRoomId();
         String answerer = quizPlayersRoleReq.getAnswerer();
 
-        // answerer 을 제외한 player 리스트
         List<String> players = playerRepository.findPlayers(roomId);
+        if (players.isEmpty()) {
+            throw new PlayerNotExistException();
+        }
+
+        // answerer 을 제외한 player 닉네임 리스트
         players.removeIf(s -> s.equals(answerer));
 
         // 해당 category 해당하는 제시어 2개 랜덤으로 가져오기
         String category = quizPlayersRoleReq.getCategory();
+
+        // 랜덤으로 제시어 2개 받아오기
         List<String> randomTitles = wordRepository.getRandomTitlesByCategory(category);
 
-        // 플레이어들 Role 저장
-        List<Map<String, String>> playersRoleInfo = new ArrayList<>();
+        if (randomTitles.isEmpty()) {
+            throw new WordNotFoundException();
+        }
 
-        // 랜덤하게 선택된 2개의 title
+
+        // 랜덤하게 선택된 2개의 제시어
         String answer = randomTitles.get(0);
         String wrongAnswer = randomTitles.get(1);
 
         // players 목록에서 한 명의 player 랜덤으로 liar로 선정
         String liar = players.get((int) (Math.random() * players.size()));
 
-        for (String player : players) {
-            Map<String, String> userInfo = new HashMap<>();
-
-            // liar만 wrongAnswer를 줌
-            if (player.equals(liar)) {
-                userInfo.put("playerNickname", player);
-                userInfo.put("word", wrongAnswer);
-            } else {
-                userInfo.put("playerNickname", player);
-                userInfo.put("word", answer);
-            }
-            playersRoleInfo.add(userInfo);
-        }
 
         Game game = gameRepository.findByGameId(gameId);
         if (game == null) {
             throw new GameNotExistException();
         }
+        // game curSet+1
+        game.updateCurSet();
 
         // GameSet 생성
         GameSet gameSet = GameSet.builder()
@@ -159,6 +174,7 @@ public class QuizServiceImpl implements QuizService {
                 .game(game)
                 .build();
 
+        gameRepository.save(game);
         gameSetRepository.save(gameSet);
 
         Long setId = gameSet.getSetId();
@@ -166,7 +182,23 @@ public class QuizServiceImpl implements QuizService {
         // 해당 room의 투표 정보 삭제
         resetVote(roomId);
 
-        return new QuizPlayersRoleRes(setId, playersRoleInfo, GameProcessType.Desc);
+        return new QuizPlayersRoleRes(setId, GameProcessType.Desc);
+    }
+
+    @Override
+    public QuizPlayersWordRes getPlayerWord(Long setId, String playerNick) {
+        GameSet curSet = gameSetRepository.findBySetId(setId);
+
+        if(curSet==null){
+            throw new SetNotExistException();
+        }
+        // 라이어일 경우
+        if (playerNick.equals(curSet.getLiar())) {
+            return new QuizPlayersWordRes(curSet.getWrongAnswer());
+        } else {
+            return new QuizPlayersWordRes(curSet.getAnswer());
+
+        }
     }
 
     private String getRandomNickname(Set<String> votersSet) {

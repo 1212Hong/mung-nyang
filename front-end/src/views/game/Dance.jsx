@@ -17,32 +17,37 @@ import {
     UsersBox,
 } from "../../components/layout/dance";
 import { usePenaltyUser, useDanceUrl } from "../../hooks/dance";
+import { signalStartPenalty } from "../../api/game";
 
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
-    const { publisher, subscribers, mySessionId } = openvidu;
-    const roomId = mySessionId;
+    const { session, owner, videoId } = openvidu;
     const [showNotification, setShowNotification] = useState(true);
-    const danceUrl = useDanceUrl();
     const { fetchPenaltyUser, penaltyUser } = usePenaltyUser(
         openvidu.mySessionId,
     );
-
+    const { fetchDanceUrl } = useDanceUrl(openvidu.videoId);
+    const danceInfo = [];
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowNotification(false);
             fetchPenaltyUser();
-            console.log(penaltyUser);
         }, 3000);
 
         return () => {
             clearTimeout(timer);
         };
-    }, [fetchPenaltyUser, penaltyUser]);
+    }, [fetchPenaltyUser, fetchDanceUrl]);
 
-    const nonPenaltyUsers = [...subscribers, publisher].filter(
-        (user) => user !== penaltyUser,
-    );
+    useEffect(() => {
+        const danceInfo = fetchDanceUrl();
+        console.log("test : ", danceInfo.videoId);
+        signalStartPenalty(session.sessionId, videoId);
+        console.log("세션에서 가져옴", session.sessionId, session.videoId);
+    });
+    const nonPenaltyUsers = session.streamManagers.filter((user) => {
+        return user.stream.connection.data !== penaltyUser;
+    });
 
     return (
         <Container>
@@ -53,7 +58,7 @@ function Dance() {
                         <iframe
                             width="330"
                             height="587"
-                            src={danceUrl}
+                            src={`https://www.youtube.com/embed/${danceInfo.videoId}?autoplay=1&loop=1&playlist=${danceInfo.videoId}`}
                             title="벌칙영상"
                             allow="autoplay"
                         ></iframe>
