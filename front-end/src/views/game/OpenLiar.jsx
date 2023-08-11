@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import VideoComponent from "../../components/VideoComponent";
 import Card from "../../components/Card";
-import imageSrc from "../../assets/img/clock.png";
 import Timer from "../../components/Timer";
 import { Container, OtherUsers } from "../../components/layout/common";
 import {
@@ -11,16 +10,40 @@ import {
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { Result } from "../../api/game";
+import { openviduSlice } from "../../store/openviduSlice";
 
-const OtherView = () => {
-    const text = "지목된 사람이 정답을 선택 중입니다.";
+const OpenLiar = () => {
+    const setId = useSelector((state) => state.gameSlice.setId);
+    const roomId = useSelector((state) => state.openvidu.mySessionId);
+    const pickedLiar = useSelector((state) => state.gameSlice.selectedLiar);
+    console.log(pickedLiar);
+    const selectedAnswer = useSelector(
+        (state) => state.gameSlice.selectedAnswer,
+    );
+    console.log(selectedAnswer);
     const dispatch = useDispatch();
+
     const openvidu = useSelector((state) => state.openvidu);
     const { subscribers, publisher } = openvidu;
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            dispatch(changePhase({ phaseType: "OpenLiar" }));
+        const timer = setTimeout(async () => {
+            try {
+                const response = await Result(
+                    setId,
+                    roomId,
+                    pickedLiar,
+                    selectedAnswer,
+                );
+                const result = response.data;
+                console.log(result);
+
+                dispatch(openviduSlice.actions.updateResult(result));
+                dispatch(changePhase({ phaseType: "Wait" }));
+            } catch (error) {
+                console.error(error);
+            }
         }, 7000);
 
         return () => clearTimeout(timer);
@@ -39,7 +62,7 @@ const OtherView = () => {
                         />
                     </AnswerItem>
                 )}
-                <Card imageSrc={imageSrc} description={text} />
+                <Card description={selectedAnswer} />
             </AnswerBox>
             <UserBox>
                 {subscribers &&
@@ -59,4 +82,4 @@ const OtherView = () => {
     );
 };
 
-export default OtherView;
+export default OpenLiar;
