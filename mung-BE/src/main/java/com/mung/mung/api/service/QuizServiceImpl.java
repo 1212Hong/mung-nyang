@@ -33,14 +33,19 @@ public class QuizServiceImpl implements QuizService {
     private final WordRepository wordRepository;
 
     @Override
-    public QuizStartRes startQuiz(String roomId) {
+    public QuizStartRes startQuiz(Long gameId) {
 
-        List<Quiz> quizList = quizRepository.findAll();
-        if (quizList.isEmpty()) {
-            throw new QuizNotFoundException();
+//        List<Quiz> quizList = quizRepository.findAll();
+//        if (quizList.isEmpty()) {
+//            throw new QuizNotFoundException();
+//        }
+//
+//        int randomIndex = ThreadLocalRandom.current().nextInt(quizList.size());
+        Game game = gameRepository.findByGameId(gameId);
+        if(game==null){
+            throw new GameNotExistException();
         }
 
-        int randomIndex = ThreadLocalRandom.current().nextInt(quizList.size());
         Quiz quiz = quizList.get(randomIndex);
 
         return QuizStartRes.builder()
