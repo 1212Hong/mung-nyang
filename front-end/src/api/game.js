@@ -10,10 +10,22 @@ export const startGameVote = (roomId) => {
         .catch((err) => console.log(err));
 };
 
-// 투표 시작 signal
-export const signalStartGameVote = (sessionId) => {
+// maxSet signal
+export const signalMaxSet = async (cnt, sessionId) => {
     OPENVIDU.post(`/openvidu/api/signal`, {
         session: sessionId,
+        to: [],
+        type: "maxSet",
+        data: `${cnt}`,
+    })
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
+
+// 투표 시작 signal
+export const signalStartGameVote = async (sessionId) => {
+    OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId, // session.sessionId
         to: [],
         type: "startGameVote",
         data: "start game vote",
@@ -30,20 +42,20 @@ export const castGameVote = (roomId, check) => {
     });
 };
 
-// 투표 수락 or 거절 post to openvidu
-export const signalVote = (check, sessionId) => {
+// 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현
+export const signalVote = async (check, sessionId, cnt) => {
     OPENVIDU.post(`/openvidu/api/signal`, {
         session: sessionId,
         to: [],
         type: check === "T" ? "agree" : "disagree",
-        data: check,
+        data: `${cnt}`,
     })
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
 };
 
 // 투표 수락 or 거절시 대기 인원 각자 화면에서 -1
-export const didVote = (sessionId) => {
+export const didVote = async (sessionId) => {
     return OPENVIDU.post(`/openvidu/api/signal`, {
         session: sessionId,
         to: [],
@@ -63,14 +75,14 @@ export const getVoteRes = (roomId, maxSet) => {
 };
 
 // 투표 결과 delete
-export const deleteVote = (roomId) => {
+export const deleteVote = async (roomId) => {
     API.delete(`/api/vote/resetVote/${encodeURIComponent(roomId)}`)
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
 };
 
 // 정답자가 선정한 카테고리 openvidu로 통신하기 위해 signal
-export const signalCategory = (category, sessionId) => {
+export const signalCategory = async (category, sessionId) => {
     return OPENVIDU.post(`/openvidu/api/signal`, {
         session: sessionId,
         to: [],
