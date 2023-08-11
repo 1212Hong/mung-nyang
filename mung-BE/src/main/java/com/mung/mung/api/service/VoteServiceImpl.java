@@ -52,16 +52,16 @@ public class VoteServiceImpl implements VoteService {
             throw new RoomNotExistException();
         }
 
-        startedRooms.add(roomId);
-
-        
         int cntPlayers = gameRoom.getPlayers().size();
 
         if (cntPlayers == 0) {
             throw new PlayerNotExistException();
         }
 
+        startedRooms.add(roomId);
+
         roomPlayers.put(roomId, cntPlayers);
+
         log.info("startVote - roomID : {} , Players : {}", roomId, cntPlayers);
 
     }
@@ -116,7 +116,7 @@ public class VoteServiceImpl implements VoteService {
             gameRoomRepository.save(gameRoom);
 
             Game game = Game.builder()
-                    .curSet(1)
+                    .curSet(0)
                     .maxSet(maxGameSet)
                     .startTime(LocalDateTime.now())
                     .gameRoom(gameRoom)
