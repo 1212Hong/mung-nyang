@@ -97,10 +97,9 @@ function WordDescription(props) {
     };
     useEffect(() => {
         const getFunc = async () => {
-            await getUserWord(game.PlayerId).then((response) =>
-                setWord(response),
-            );
-
+            // await getUserWord(game.PlayerId).then((response) =>
+            //     setWord(response),
+            // );
             // setCurGameSetId(roleInfo.setId);
         };
         getFunc();
