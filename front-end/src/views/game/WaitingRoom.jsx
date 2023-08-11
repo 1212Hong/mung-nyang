@@ -29,6 +29,7 @@ import Dropdown from "../../components/Dropdown";
 import { SmallText, SubText } from "../../components/layout/common";
 import { gameActions } from "../../store/gameSlice";
 import { ovActions } from "../../store/openviduSlice";
+import { changePhase } from "../../store/phaseSlice";
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
     const [setCnt, setSetCnt] = useState(1); // redux에 저장해두고 getVoteRes에 넣어주기
@@ -216,7 +217,7 @@ function WaitingRoom() {
                         </Button>
                         <Button
                             onClick={() => {
-                                dispatch(changePhase({ phaseType: "Dance" }));
+                                dispatch(changePhase("Dance"));
                             }}
                         ></Button>
                     </StartnSetBox>

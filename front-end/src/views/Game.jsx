@@ -71,6 +71,10 @@ const PHASE_COMPONENTS = [
         type: PHASES.Desc,
         component: <WordDescription />,
     },
+    {
+        type: PHASES.Dance,
+        component: <Dance />,
+    },
 ];
 
 const Game = () => {
