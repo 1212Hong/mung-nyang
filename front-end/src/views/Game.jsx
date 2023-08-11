@@ -11,6 +11,7 @@ import SelectAnswer from "../views/game/SelectAnswer";
 import OtherView from "../views/game/OtherView";
 import OpenLiar from "../views/game/OpenLiar";
 import { outRoom } from "../api/room";
+import Loading from "./Loading";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -166,7 +167,9 @@ const Game = () => {
     useEffect(() => {
         // componentDidMount
         console.log("didmount");
+
         setSession(OV.initSession());
+
         if (!mySessionId) navigate("/error");
         window.addEventListener("beforeunload", leaveSession);
 
