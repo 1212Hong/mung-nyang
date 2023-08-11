@@ -21,18 +21,21 @@ import { changePhase } from "../../store/phaseSlice";
 import { gameActions } from "../../store/gameSlice";
 
 function TopBottomVideo() {
-    const title = "제시어 카테고리";
-    const list = ["음식", "스포츠", "과일", "카", "테", "고", "리"]; // 카테고리는 고정이므로 여기서 카테고리 다 넣어줌
-    const [quizInfo, setQuizInfo] = useState(null);
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const { gameId, answerer } = game;
     const { publisher, subscribers, mySessionId, myUserName, session, owner } =
         openvidu;
+    const [quizInfo, setQuizInfo] = useState(null);
+
     const [view, setView] = useState("Quiz");
+    console.log(subscribers);
     const upside_list = [
         ...subscribers.slice(0, Math.min(subscribers.length, 2)),
     ];
+    const title = "제시어 카테고리";
+    const list = ["음식", "스포츠", "과일", "카", "테", "고", "리"]; // 카테고리는 고정이므로 여기서 카테고리 다 넣어줌
+
     const downside_list = subscribers;
     const dispatch = useDispatch();
     let c = "";

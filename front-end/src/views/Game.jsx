@@ -146,15 +146,17 @@ const Game = () => {
                 });
 
                 newSession.on("signal:agree", (event) => {
+                    console.log("찬성");
                     const newCnt = event.data;
-                    console.log(newCnt);
+                    console.log(event);
                     // 발도장 찍어야함 -> 찬성 수 리덕스로 저장하고 조회해갈까?
                     dispatch(gameActions.saveGameVoteCnt(newCnt + 1));
                 });
 
                 newSession.on("signal:disagree", (event) => {
-                    console.log("disagree");
+                    console.log("반대");
                     dispatch(closeModal());
+                    dispatch(gameActions.saveGameVoteCnt(1));
                 });
 
                 // // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현
@@ -224,6 +226,8 @@ const Game = () => {
 
         if (!mySessionId) navigate("/error");
         window.addEventListener("beforeunload", leaveSession);
+
+        if (!session) console.log("bye");
 
         // componentWillUnmount
         return () => {
