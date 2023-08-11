@@ -17,17 +17,16 @@ import {
     UsersBox,
 } from "../../components/layout/dance";
 import { usePenaltyUser, useDanceUrl } from "../../hooks/dance";
-import { signalStartPenalty } from "../../api/game";
-
+import { gameActions } from "../../store/gameSlice";
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
-    const { session, owner, videoId } = openvidu;
+    const game = useSelector((state) => state.game);
+    const { penaltyUser } = game;
+    const { session, owner, mySessionId } = openvidu;
+    const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
-    const { fetchPenaltyUser, penaltyUser } = usePenaltyUser(
-        openvidu.mySessionId,
-    );
-    const { fetchDanceUrl } = useDanceUrl(openvidu.videoId);
-    const danceInfo = [];
+    const danceInfo = useDanceUrl();
+    const { fetchPenaltyUser } = usePenaltyUser(roomId);
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowNotification(false);
@@ -37,14 +36,8 @@ function Dance() {
         return () => {
             clearTimeout(timer);
         };
-    }, [fetchPenaltyUser, fetchDanceUrl]);
+    }, [penaltyUser]);
 
-    useEffect(() => {
-        const danceInfo = fetchDanceUrl();
-        console.log("test : ", danceInfo.videoId);
-        signalStartPenalty(session.sessionId, videoId);
-        console.log("세션에서 가져옴", session.sessionId, session.videoId);
-    });
     const nonPenaltyUsers = session.streamManagers.filter((user) => {
         return user.stream.connection.data !== penaltyUser;
     });

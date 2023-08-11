@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { styled } from "styled-components";
 
 const StyledInput = styled.input`
@@ -17,7 +17,7 @@ const StyledInput = styled.input`
     }
 `;
 
-const Input = (props) => {
+const Input = forwardRef((props, ref) => {
     const {
         type,
         width,
@@ -43,8 +43,9 @@ const Input = (props) => {
             id={id}
             value={value}
             disabled={disabled}
+            ref={ref}
         />
     );
-};
+});
 
 export default Input;

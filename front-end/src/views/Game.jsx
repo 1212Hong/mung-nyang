@@ -189,8 +189,16 @@ const Game = () => {
 
                 setPublisher(publisher);
 
+                session.signal({});
                 console.log(currentVideoDevice);
                 console.log("success connect to the session");
+
+                newSession.on("signal:chat", (event) => {
+                    const userName = event.from.data;
+                    const userMessage = event.data;
+                    const messageData = { userName, userMessage };
+                    dispatch(ovActions.updateMessage(messageData));
+                });
             } catch (error) {
                 console.log(
                     "There was an error connecting to the session:",
