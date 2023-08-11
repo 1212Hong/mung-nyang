@@ -26,6 +26,7 @@ function Dance() {
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
     const danceInfo = useDanceUrl();
+    console.log("댄스 인포 : ", danceInfo);
     const { fetchPenaltyUser } = usePenaltyUser(roomId);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -36,7 +37,7 @@ function Dance() {
         return () => {
             clearTimeout(timer);
         };
-    }, [penaltyUser]);
+    }, [fetchPenaltyUser]);
 
     const nonPenaltyUsers = session.streamManagers.filter((user) => {
         return user.stream.connection.data !== penaltyUser;
