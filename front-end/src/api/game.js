@@ -181,13 +181,3 @@ export const Result = (setId, roomId, pickedLiar, answer) => {
         answer: answer,
     });
 };
-
-// 채팅
-export const signalSendMessage = (sessionId, text) => {
-    OPENVIDU.post(`/openvidu/api/signal`, {
-        session: sessionId,
-        to: [],
-        type: "chat",
-        data: text,
-    });
-};
