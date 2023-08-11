@@ -24,6 +24,7 @@ const SelectLiar = () => {
     const text = "라이어를 선택하세요.";
     const imgSrc = foot;
     const dispatch = useDispatch();
+    const roomId = useSelector((state) => state.openvidu.mySessionId);
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -56,13 +57,23 @@ const SelectLiar = () => {
                         }
                     }
                 } else {
+                    try {
+                        const response = await Result(setId, roomId, 0, 0);
+                        const result = response.data;
+                        console.log(result);
+
+                        dispatch(gameActions.updateResult(result));
+                        dispatch(changePhase({ phaseType: "MidScore" }));
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }
             } catch (error) {
                 console.error(error);
             }
         }, 10000);
         return () => clearTimeout(timer);
-    }, [activeBox]);
+    });
 
     useEffect(() => {
         const timer = setTimeout(() => {
