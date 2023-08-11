@@ -13,7 +13,7 @@ const initialState = {
     owner: false,
     score: 0,
     playerId: 0,
-    videoId: "",
+    messageList: [],
 };
 
 export const openviduSlice = createSlice({
@@ -65,8 +65,9 @@ export const openviduSlice = createSlice({
         leaveSession: (state) => {
             state = initialState;
         },
-        saveVideoId: (state, action) => {
-            state.videoId = action.payload;
+        updateMessage: (state, { payload }) => {
+            console.log(payload);
+            state.messageList.push(payload);
         },
     },
 });
