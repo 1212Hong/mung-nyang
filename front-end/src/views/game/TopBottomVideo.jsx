@@ -27,7 +27,7 @@ function TopBottomVideo() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const { gameId, answerer } = game;
-    const { publisher, subscribers, mySessionId, myUserName, session } =
+    const { publisher, subscribers, mySessionId, myUserName, session, owner } =
         openvidu;
     const [view, setView] = useState("Quiz");
     const upside_list = [
@@ -70,7 +70,7 @@ function TopBottomVideo() {
             const info = await fetchQuizInfo(mySessionId);
             setQuizInfo(info);
         }
-        fetchAndSetQuizInfo();
+        owner && fetchAndSetQuizInfo();
     }, []);
     const onViewChange = (newView) => {
         setView(newView);
