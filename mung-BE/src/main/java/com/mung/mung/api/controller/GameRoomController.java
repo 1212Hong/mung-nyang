@@ -65,6 +65,7 @@ public class GameRoomController {
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         // makeRoom에서 return으로 중복된 Id가 있는지 없는지를 판단 후 중복이라면 Data 생성 없이 false값을 return함
+
         gameRoomService.makeRoom(gameRoomCreateReq.getRoomId(), gameRoomCreateReq);
         String roomId=gameRoomCreateReq.getRoomId();
         String roomPw= gameRoomCreateReq.getRoomPw();
@@ -188,10 +189,11 @@ public class GameRoomController {
         boolean hasAudio = true;
         boolean hasVideo = true;
 
-
-
-        RecordingProperties properties = new RecordingProperties.Builder().outputMode(outputMode).hasAudio(hasAudio)
-                .hasVideo(hasVideo).build();
+        RecordingProperties properties = new RecordingProperties.Builder()
+                .outputMode(outputMode).hasAudio(hasAudio).hasVideo(hasVideo)
+                .resolution("640x480")
+                .frameRate(24)
+                .build();
 
         System.out.println("Starting recording for session " + sessionId + " with properties {outputMode=" + outputMode
                 + ", hasAudio=" + hasAudio + ", hasVideo=" + hasVideo + "}");
