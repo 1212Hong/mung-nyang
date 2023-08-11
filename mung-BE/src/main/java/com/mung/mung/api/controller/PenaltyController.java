@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class PenaltyController {
     }
 
     @GetMapping("/player") // penalty player 점수 기준으로 계산 후 반환
-    public ResponseEntity<String> penaltyPlayer(@RequestParam String roomId) {
+    public ResponseEntity<List<String>> penaltyPlayer(@RequestParam String roomId) {
         return new ResponseEntity<>(penaltyService.getPenaltyPlayer(scoreService.returnScore(roomId)),HttpStatus.OK);
     }
 
