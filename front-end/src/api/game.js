@@ -57,14 +57,38 @@ export const deleteVote = (roomId) => {
         .catch((err) => console.log(err));
 };
 
+// 정답자가 선정한 카테고리 openvidu로 통신하기 위해 signal
+export const signalCategory = (category, sessionId) => {
+    return OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: "category",
+        data: category,
+    })
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
+};
+
 // 카테고리 내 제시어
-export const selectCategory = async (roomId, gameId, category, answerer) => {
-    return await API.post(`api/quiz/category`, {
-        roomId,
-        gameId,
-        category,
-        answerer,
+export const selectCategory = (roomId, gameId, category, answerer) => {
+    return API.post(`api/quiz/category`, {
+        roomId: roomId,
+        gameId: gameId,
+        category: category,
+        answerer: answerer,
     });
+};
+
+// 정답자가 카테고리 선택시 제시어 설명으로 다함께 이동해야함
+export const startDesc = (sessionId) => {
+    OPENVIDU.post(`/openvidu/api/signal`, {
+        session: sessionId,
+        to: [],
+        type: "startDesc",
+        data: "move to Desc",
+    })
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
 };
 
 // 비상정답
@@ -125,4 +149,32 @@ export const QuizAnswerNegative = async (roomId, playerNickname) => {
 // 퀴즈의 결과(0 : 왼쪽, 1 : 오른쪽, 2: 무승부)와 정답자를 백에서 보내줌
 export const QuizResult = (roomId) => {
     return API.get(`/api/quiz/result?roomId=${roomId}`);
+};
+
+// 라이어 투표
+export const selectLiar = (setId, playerNickname) => {
+    return API.post(`/api/liar/vote`, {
+        setId: setId,
+        playerNickname: playerNickname,
+    });
+};
+
+// 라이어 투표 결과
+export const selectedLiar = (setId) => {
+    return API.get(`/api/liar/result/?setId=${setId}`);
+};
+
+// 라이어 투표 내역 삭제
+export const deleteLiar = (setId) => {
+    return API.delete(`/api/liar/resetVote/${setId}`);
+};
+
+// 라이어 정답
+export const Result = (setId, roomId, pickedLiar, answer) => {
+    return API.post(`/api/answer/liar`, {
+        setId: setId,
+        roomId: roomId,
+        pickedLiar: pickedLiar,
+        answer: answer,
+    });
 };

@@ -38,7 +38,9 @@ public class NicknameService {
 
     @Transactional
     public String giveNickname(String roomId) {
-
+        if (this.nicknameCount!=nicknameRepository.count()){
+            this.nicknameCount=nicknameRepository.count();
+        }
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         List<String> players = playerRepository.findPlayers(roomId);
         int playerCount = players.size();
