@@ -23,7 +23,7 @@ import {
 } from "../../components/layout/waiting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
-import { signalStartGameVote, startGameVote } from "../../api/game";
+import { startGameVote } from "../../api/game";
 import Dropdown from "../../components/Dropdown";
 import { SmallText, SubText } from "../../components/layout/common";
 import { gameActions } from "../../store/gameSlice";
@@ -37,21 +37,16 @@ function WaitingRoom() {
     console.log(session);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (session) {
-            session.on("startGameVote", () => {
-                dispatch(
-                    openModal({
-                        modalType: "ReadyModal",
-                        isOpen: true,
-                    }),
-                );
-            });
-        }
-    }, [session]);
-
     const onInputChange = (e) => {
         setSetCnt(e.target.value);
+    };
+
+    const signalStartGameVote = async () => {
+        session.signal({
+            data: "start",
+            to: [],
+            type: "startGameVote",
+        });
     };
 
     const openRuleBook = () => {
@@ -62,11 +57,21 @@ function WaitingRoom() {
             }),
         );
     };
-    const openReadyModal = () => {
-        signalStartGameVote(session.sessionId);
-        startGameVote(mySessionId);
-
-        dispatch(gameActions.saveSetCnt(setCnt));
+    const openReadyModal = async () => {
+        const memberCnt = session.streamManagers.length;
+        console.log(session.streamManagers.length);
+        if (memberCnt > 1) {
+            startGameVote(mySessionId);
+            await signalStartGameVote();
+            dispatch(gameActions.saveSetCnt(setCnt));
+        } else {
+            dispatch(
+                openModal({
+                    modalType: "NoReadyModal",
+                    isOpen: true,
+                }),
+            );
+        }
     };
 
     function toggleVolume() {
