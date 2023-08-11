@@ -13,7 +13,6 @@ import { castGameVote, deleteVote, getVoteRes } from "../../api/game";
 import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../../store/phaseSlice";
 import { gameActions } from "../../store/gameSlice";
-import { closeModal, modalSlice } from "../../store/modalSlice";
 import foot from "../../assets/img/foot.png";
 
 const ReadyModal = () => {
@@ -62,6 +61,7 @@ const ReadyModal = () => {
         } catch (error) {
             console.error("Error sending data:", error);
         }
+        owner && (await deleteVote(mySessionId));
     };
 
     useEffect(() => {
@@ -77,8 +77,7 @@ const ReadyModal = () => {
     useEffect(() => {
         const timer = setTimeout(async () => {
             // 타이머 흘러가는중
-            await handleEndVote();
-            owner && deleteVote(mySessionId);
+            handleEndVote();
         }, 7000);
 
         if (!modalFlag) {
@@ -88,7 +87,7 @@ const ReadyModal = () => {
         return () => {
             clearTimeout(timer);
         };
-    }, []);
+    }, [modalFlag]);
 
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>

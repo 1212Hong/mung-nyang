@@ -11,7 +11,7 @@ const Container = styled.div`
     padding-bottom: 40px;
     width: 600px;
     height: 300px;
-    background: ${`var(--macciato)`};
+    background: var(--macciato);
     text-align: center;
     border-radius: 5px;
 `;
@@ -21,7 +21,7 @@ const Title = styled.div`
     margin-bottom: 20px;
     text-align: center;
     font-size: 32px;
-    color: ${`var(--dusty-pink-dark)`};
+    color: var(--dusty-pink-dark);
 `;
 
 const Box = styled.div`
@@ -29,14 +29,24 @@ const Box = styled.div`
 `;
 
 const Content = styled.button`
-    background-color: ${`var(--white)`};
+    background-color: var(--white);
     margin-right: 10px;
     margin-left: 10px;
     width: 350px;
     height: 150px;
     border-radius: 5px;
     font-size: 32px;
-    color: ${`var(--beige-dark)`};
+    color: var(--beige-dark);
+    box-shadow: 3px 3px 3px var(--blacks);
+    transition-duration: 0.3s;
+    :active {
+        margin-left: 15px;
+        margin-top: 15px;
+        box-shadow: none;
+    }
+    :hover {
+        cursor: pointer;
+    }
 `;
 
 const Quiz = (props) => {
@@ -104,10 +114,16 @@ const Quiz = (props) => {
             />
             <Title>{title}</Title>
             <Box>
-                <Content onClick={() => handleUserChoice(true)}>
+                <Content
+                    onClick={() => handleUserChoice(true)}
+                    clicked={userChoice}
+                >
                     {text1}
                 </Content>
-                <Content onClick={() => handleUserChoice(false)}>
+                <Content
+                    onClick={() => handleUserChoice(false)}
+                    clicked={userChoice}
+                >
                     {text2}
                 </Content>
             </Box>
