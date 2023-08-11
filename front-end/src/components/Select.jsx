@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategory, signalCategory, startDesc } from "../api/game";
+import { selectCategory } from "../api/game";
 import { gameActions } from "../store/gameSlice";
 import { changePhase } from "../store/phaseSlice";
 
@@ -42,8 +42,6 @@ const Select = (props) => {
 
     const goDesc = async (category) => {
         dispatch(gameActions.saveCategory(category));
-        await signalCategory(category, session.sessionId);
-        startDesc(session.sessionId);
     };
 
     return (
