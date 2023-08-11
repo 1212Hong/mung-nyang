@@ -157,6 +157,15 @@ const Game = () => {
                     dispatch(closeModal());
                 });
 
+                newSession.on("publisherStartSpeaking", (event) => {
+                    console.log("on");
+                    console.log(event.type);
+                });
+
+                newSession.on("publisherStopSpeaking", (event) => {
+                    console.log("off");
+                    console.log(event);
+                });
                 // // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현
                 // export const signalVote = async (check, sessionId, cnt) => {
                 //     OPENVIDU.post(`/openvidu/api/signal`, {
