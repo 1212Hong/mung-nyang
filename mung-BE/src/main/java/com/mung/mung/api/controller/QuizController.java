@@ -58,5 +58,17 @@ public class QuizController {
 
     }
 
+    @GetMapping("/word/{setId}/{playerNick}")
+    public ResponseEntity<QuizPlayersWordRes> getQuizWord(@PathVariable Long setId, @PathVariable String playerNick) {
+
+
+        QuizPlayersWordRes quizPlayersWordRes = quizService.getPlayerWord(setId, playerNick);
+
+        return ResponseEntity.ok(quizPlayersWordRes);
+
+    }
+
+
+
 
 }

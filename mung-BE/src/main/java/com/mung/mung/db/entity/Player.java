@@ -25,8 +25,10 @@ public class Player {
     @ColumnDefault("0")
     private int playerScore;
 
-    @ColumnDefault("0")
-    private int playerVote;
+//    @ColumnDefault("0")
+//    private int playerVote;
+
+    private String playerWord;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
