@@ -156,7 +156,7 @@ const Game = () => {
                 newSession.on("signal:disagree", (event) => {
                     console.log("반대");
                     dispatch(closeModal());
-                    dispatch(gameActions.saveGameVoteCnt(1));
+                    dispatch(gameActions.saveGameVoteCnt(0));
                 });
 
                 // // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현
