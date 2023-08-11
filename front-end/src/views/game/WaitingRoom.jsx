@@ -23,7 +23,11 @@ import {
 } from "../../components/layout/waiting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
-import { signalStartGameVote, startGameVote } from "../../api/game";
+import {
+    signalMaxSet,
+    signalStartGameVote,
+    startGameVote,
+} from "../../api/game";
 import Dropdown from "../../components/Dropdown";
 import { SmallText, SubText } from "../../components/layout/common";
 import { gameActions } from "../../store/gameSlice";
@@ -39,6 +43,14 @@ function WaitingRoom() {
 
     useEffect(() => {
         if (session) {
+            session.on("startGameVote", () => {
+                dispatch(
+                    openModal({
+                        modalType: "ReadyModal",
+                        isOpen: true,
+                    }),
+                );
+            });
             session.on("startGameVote", () => {
                 dispatch(
                     openModal({
@@ -63,10 +75,23 @@ function WaitingRoom() {
         );
     };
     const openReadyModal = async () => {
-        startGameVote(mySessionId);
-        signalStartGameVote(session.sessionId);
+        // maxSet 방장만 알아서 다른 인원에게도 보내주고 받아서 알아채야함
+        await signalMaxSet(setCnt, session.sessionId);
+        const memberCnt = session.streamManagers.length;
+        console.log(session.streamManagers.length);
+        if (memberCnt > 3) {
+            startGameVote(mySessionId);
+            signalStartGameVote(session.sessionId);
 
-        dispatch(gameActions.saveSetCnt(setCnt));
+            dispatch(gameActions.saveSetCnt(setCnt));
+        } else {
+            dispatch(
+                openModal({
+                    modalType: "NoReadyModal",
+                    isOpen: true,
+                }),
+            );
+        }
     };
 
     function toggleVolume() {

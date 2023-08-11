@@ -18,6 +18,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../../store/phaseSlice";
 import { gameActions, gameSlice } from "../../store/gameSlice";
+import { closeModal } from "../../store/modalSlice";
+import { ImageOverlay } from "../layout/selectLiar";
+import foot from "../../assets/img/foot.png";
 
 const ReadyModal = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -25,60 +28,48 @@ const ReadyModal = () => {
     const { setCnt } = gameSlice;
     // api 통신을 위한 변수
     const [check, setCheck] = useState(false);
+    // 반대 누르면 타이머 강제종료 위한 state
+    const [close, setClose] = useState(false);
     // 찬반에 대한 카운트
-    const [agree, setAgree] = useState(0);
-    const [disagree, setDisagree] = useState(0);
+    const [voteCnt, setVoteCnt] = useState(0);
     // 현재 방의 인원 수를 받아서 6 대신 적용.
     console.log(session.streamManagers);
-    const [wait, setWait] = useState(session.streamManagers.length);
+    // const [wait, setWait] = useState(session.streamManagers.length);
     const [complete, setComplete] = useState(false);
     const dispatch = useDispatch();
-    const [phase, setPhase] = useState("");
-
-    // api 코드 작성할 곳.
-    // const decideVote = async (flag) => {
-    //     setCheck(flag);
-    //     console.log(check);
-    //     setComplete(flag);
-    //     const ticket = flag ? "T" : "F";
-    //     const res = await castGameVote(mySessionId, ticket);
-    //     console.log(res);
-    //     signalVote(res, session.sessionId);
-    //     flag ? setAgree(agree + 1) : setDisagree(disagree + 1);
-    //     setWait(wait - 1);
-    // };
+    const imgSrc = foot;
 
     const handleEndVote = async () => {
         try {
-            const response = await getVoteRes(mySessionId, setCnt);
+            const response = owner && (await getVoteRes(mySessionId, setCnt));
             if (response) {
                 console.log(response);
 
                 console.log(response.data.gameId);
-                setPhase(response.data.gameProcessType);
                 dispatch(
                     changePhase({ phaseType: response.data.gameProcessType }),
                 );
                 dispatch(gameActions.saveGameId(response.data.gameId));
+                owner && (await deleteVote(mySessionId));
             }
-
-            owner && deleteVote(mySessionId);
+            console.log(owner);
         } catch (error) {
             console.error("Error sending data:", error);
         }
-        // dispatch(changePhase({ phaseType: phase }));
     };
     useEffect(() => {
-        session.on("agree", () => {
+        session.on("agree", (e) => {
             console.log("찬성");
-            setAgree(agree + 1);
+            console.log(e.data);
+            setVoteCnt(`${(e.data *= 1) + 1}`);
             // 로컬 대기만 줄어듦 -> 모두의 화면이 줄어들도록 openvidu통신
-            setWait(wait - 1);
+            // setWait(wait - 1);
         });
         session.on("disagree", () => {
             console.log("반대");
-            setDisagree(disagree + 1);
-            setWait(wait - 1);
+            dispatch(closeModal());
+            owner && deleteVote(mySessionId);
+            setClose(true);
         });
     }, [session]);
 
@@ -87,21 +78,33 @@ const ReadyModal = () => {
             // 타이머 흘러가는중
         }, 7000);
 
+        if (close) clearTimeout(timer);
+
         return () => {
             clearTimeout(timer);
             handleEndVote();
         };
     }, []);
 
+    const renderAgrees = (n) => {
+        for (let index = 0; index < n; index++) {
+            return (
+                <div>
+                    <img src={imgSrc} alt="사진" width="60px" height="60px" />
+                </div>
+            );
+        }
+    };
+
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
             <Timer width={"80%"}></Timer>
             <ModalViewDescDiv>게임 시작 투표</ModalViewDescDiv>
 
-            <ModalViewResultDiv>
-                <ModalViewResultBox>찬성 : {agree}</ModalViewResultBox>
-                <ModalViewResultBox>반대 : {disagree}</ModalViewResultBox>
-                <ModalViewResultBox>대기 : {wait}</ModalViewResultBox>
+            <ModalViewResultDiv className="vote-res-div">
+                <ModalViewResultBox>찬성cnt : {voteCnt}</ModalViewResultBox>
+                {voteCnt ? renderAgrees(voteCnt) : null}
+                {/* <ModalViewResultBox>대기 : {wait}</ModalViewResultBox> */}
             </ModalViewResultDiv>
             <ModalViewButtonDiv>
                 {complete ? (
@@ -121,6 +124,7 @@ const ReadyModal = () => {
                                 signalVote(
                                     res.data.voteMessage,
                                     session.sessionId,
+                                    voteCnt,
                                 );
                             }}
                         >
