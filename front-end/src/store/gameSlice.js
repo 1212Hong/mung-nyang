@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    setCnt: 0,
+    setCnt: 0, // 방장이 정한 게임 총 세트 수
+    gameVoteCnt: 0, // 게임 시작투표에 대한 누적 카운트
     setId: 0,
     score: 0,
     selectedLiar: "",
@@ -10,8 +11,9 @@ const initialState = {
     gameId: 0,
     playerId: "",
     roomId: "",
+    selectedAnswer: "",
     result: "",
-    penaltyUser: "",
+    category: "",
 };
 
 export const gameSlice = createSlice({
@@ -19,10 +21,13 @@ export const gameSlice = createSlice({
     initialState,
     reducers: {
         saveSetCnt: (state, action) => {
-            state.setCnt = action.setCnt;
+            state.setCnt = action.payload;
+        },
+        saveGameVoteCnt: (state, action) => {
+            state.gameVoteCnt = action.payload;
         },
         saveSetId: (state, action) => {
-            state.setId = action.setId;
+            state.setId = action.payload;
         },
         saveScore: (state, action) => {
             state.score += action.payload;
@@ -34,14 +39,25 @@ export const gameSlice = createSlice({
             state.answerer = action.payload;
         },
         saveWord: (state, action) => {
-            state.word = action.word;
+            state.word = action.payload;
         },
-
+        saveGameId: (state, action) => {
+            state.gameId = action.payload;
+        },
         saveResult: (state, action) => {
             state.result = action.payload;
         },
-        savePenaltyUser: (state, action) => {
-            state.penaltyUser = action.payload;
+        saveCategory: (state, action) => {
+            state.category = action.payload;
+        },
+        updateSelectedLiar: (state, action) => {
+            state.selectedLiar = action.payload;
+        },
+        updateSelectedAnswer: (state, action) => {
+            state.selectedAnswer = action.payload;
+        },
+        updateResult: (state, action) => {
+            state.result = action.payload;
         },
     },
 });

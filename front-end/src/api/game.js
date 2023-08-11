@@ -1,5 +1,4 @@
 import API from "./base";
-import OPENVIDU from "./openvidu";
 
 // 게임 시작 투표 시작
 export const startGameVote = (roomId) => {
@@ -10,36 +9,24 @@ export const startGameVote = (roomId) => {
         .catch((err) => console.log(err));
 };
 
-// 투표 시작 signal
-export const signalStartGameVote = (sessionId) => {
-    OPENVIDU.post(`/openvidu/api/signal`, {
-        session: sessionId,
-        to: [],
-        type: "startGameVote",
-        data: "start game vote",
-    })
-        .then((data) => console.log(data))
-        .catch((err) => console.log(err));
-};
+// // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현
+// export const signalVote = async (check, sessionId, cnt) => {
+//     OPENVIDU.post(`/openvidu/api/signal`, {
+//         session: sessionId,
+//         to: [],
+//         type: check === "T" ? "agree" : "disagree",
+//         data: `${cnt + 1}`,
+//     })
+//         .then((data) => console.log(data))
+//         .catch((err) => console.log(err));
+// };
 
 // 투표 수락 or 거절의사 보내기
-export const castGameVote = (roomId, check) => {
+export const castGameVote = async (roomId, check) => {
     return API.post(`/api/vote/count`, {
         roomId: roomId,
         voteMessage: check,
     });
-};
-
-// 투표 수락 or 거절 post to openvidu
-export const signalVote = (check, sessionId) => {
-    OPENVIDU.post(`/openvidu/api/signal`, {
-        session: sessionId,
-        to: [],
-        type: check === "T" ? "agree" : "disagree",
-        data: check,
-    })
-        .then((data) => console.log(data))
-        .catch((err) => console.log(err));
 };
 
 // 투표 결과 요청
@@ -51,19 +38,19 @@ export const getVoteRes = (roomId, maxSet) => {
 };
 
 // 투표 결과 delete
-export const deleteVote = (roomId) => {
+export const deleteVote = async (roomId) => {
     API.delete(`/api/vote/resetVote/${encodeURIComponent(roomId)}`)
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
 };
 
 // 카테고리 내 제시어
-export const selectCategory = async (roomId, gameId, category, answerer) => {
-    return await API.post(`api/quiz/category`, {
-        roomId,
-        gameId,
-        category,
-        answerer,
+export const selectCategory = (roomId, gameId, category, answerer) => {
+    return API.post(`api/quiz/category`, {
+        roomId: roomId,
+        gameId: gameId,
+        category: category,
+        answerer: answerer,
     });
 };
 
@@ -127,12 +114,30 @@ export const QuizResult = (roomId) => {
     return API.get(`/api/quiz/result?roomId=${roomId}`);
 };
 
-// 벌칙으로 수행할 춤 영상이 담긴 url 제공
-export const getPenaltyUser = (roomId) => {
-    return API.get(`/api/penalty/player?roomId=${roomId}`);
+// 라이어 투표
+export const selectLiar = (setId, playerNickname) => {
+    return API.post(`/api/liar/vote`, {
+        setId: setId,
+        playerNickname: playerNickname,
+    });
 };
 
-// 벌칙으로 수행할 춤 영상이 담긴 url 제공
-export const DanceUrl = () => {
-    return API.get(`/api/penalty`);
+// 라이어 투표 결과
+export const selectedLiar = (setId) => {
+    return API.get(`/api/liar/result/?setId=${setId}`);
+};
+
+// 라이어 투표 내역 삭제
+export const deleteLiar = (setId) => {
+    return API.delete(`/api/liar/resetVote/${setId}`);
+};
+
+// 라이어 정답
+export const Result = (setId, roomId, pickedLiar, answer) => {
+    return API.post(`/api/answer/liar`, {
+        setId: setId,
+        roomId: roomId,
+        pickedLiar: pickedLiar,
+        answer: answer,
+    });
 };

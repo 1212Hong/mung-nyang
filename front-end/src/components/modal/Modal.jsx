@@ -6,6 +6,7 @@ import AnswerModal from "./AnswerModal";
 import { ModalBackdrop, ModalContainer } from "../layout/modal";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal, selectModal } from "../../store/modalSlice";
+import NoReadyModal from "./NoReadyModal";
 
 const MODAL_TYPES = {
     RuleModal: "RuleModal",
@@ -13,6 +14,7 @@ const MODAL_TYPES = {
     ResultModal: "ResultModal",
     ChooseModal: "ChooseModal",
     AnswerModal: "AnswerModal",
+    NoReadyModal: "NoReadyModal",
 };
 
 const MODAL_COMPONENTS = [
@@ -31,6 +33,10 @@ const MODAL_COMPONENTS = [
     {
         type: MODAL_TYPES.AnswerModal,
         component: <AnswerModal />,
+    },
+    {
+        type: MODAL_TYPES.NoReadyModal,
+        component: <NoReadyModal />,
     },
 ];
 

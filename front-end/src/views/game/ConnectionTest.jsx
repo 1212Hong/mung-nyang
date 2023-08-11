@@ -27,6 +27,7 @@ import Switch from "../../components/test/Switch";
 import { MidText } from "../../components/layout/common";
 import { ovActions } from "../../store/openviduSlice";
 import { enterGameRoom } from "../../hooks/testView";
+import Loading from "../Loading";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
 
@@ -36,11 +37,12 @@ function ConnectionTest() {
     const [isOn, setIsOn] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const openvidu = useSelector((state) => state.openvidu);
-    const { mySessionId } = openvidu;
+    const { mySessionId, myUserName } = openvidu;
     const navigate = useNavigate();
     const audioRef = useRef(null);
     const audioContextRef = useRef(null);
-    const [userName, setUserName] = useState("닉네임");
+    const [userName, setUserName] = useState(myUserName);
+    const [ready, setReady] = useState(true);
     const dispatch = useDispatch();
 
     const handleChange = (e) => {
@@ -71,6 +73,14 @@ function ConnectionTest() {
     };
 
     useEffect(() => {
+        // didmount
+
+        setTimeout(() => {
+            setReady(false);
+        }, 1000);
+        // 방정보 없으면 에러로
+        if (!mySessionId) navigate("/Error");
+
         // AudioContext 생성
         const audioContext = new (window.AudioContext ||
             window.webkitAudioContext)();
@@ -172,7 +182,9 @@ function ConnectionTest() {
     }
     return (
         <>
-            {mySessionId ? (
+            {ready ? (
+                <Loading />
+            ) : (
                 <Container>
                     <ContainerBody>
                         <LeftBox className="LeftBox">
@@ -266,8 +278,6 @@ function ConnectionTest() {
                         <audio ref={audioRef} src={TestSound} loop={false} />
                     </ContainerBody>
                 </Container>
-            ) : (
-                <Error />
             )}
         </>
     );

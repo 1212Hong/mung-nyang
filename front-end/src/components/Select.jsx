@@ -1,5 +1,9 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { selectCategory } from "../api/game";
+import { gameActions } from "../store/gameSlice";
+import { changePhase } from "../store/phaseSlice";
 
 const Container = styled.div`
     padding: 20px;
@@ -32,12 +36,27 @@ const Content = styled.button`
 
 const Select = (props) => {
     const { list, title } = props;
+    const dispatch = useDispatch();
+    const openvidu = useSelector((state) => state.openvidu);
+    const { session } = openvidu;
+
+    const goDesc = async (category) => {
+        dispatch(gameActions.saveCategory(category));
+    };
+
     return (
         <Container>
             <Head>{title}</Head>
             <Line>
                 {list.map((item, index) => (
-                    <Content key={index}>{item}</Content>
+                    <Content
+                        key={index}
+                        onClick={() => {
+                            goDesc(item);
+                        }}
+                    >
+                        {item}
+                    </Content>
                 ))}
             </Line>
         </Container>

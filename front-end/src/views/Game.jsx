@@ -7,7 +7,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
+import SelectLiar from "../views/game/SelectLiar";
+import SelectAnswer from "../views/game/SelectAnswer";
+import OtherView from "../views/game/OtherView";
+import OpenLiar from "../views/game/OpenLiar";
 import { outRoom } from "../api/room";
+import Loading from "./Loading";
+import { gameActions } from "../store/gameSlice";
+import { closeModal, openModal } from "../store/modalSlice";
+import { deleteVote } from "../api/game";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -21,6 +29,7 @@ const PHASES = {
     EmgAns: "EmgAns",
     LiarVote: "LiarVote",
     SelectAns: "SelectAns",
+    OtherView: "OtherView",
     OpenLiar: "OpenLiar",
     MidScore: "MidScore",
     FinScore: "FinScore",
@@ -43,14 +52,33 @@ const PHASE_COMPONENTS = [
         component: <TopBottomVideo />,
     },
     {
-        type: PHASES.Dance,
-        component: <Dance />,
+        type: PHASES.LiarVote,
+        component: <SelectLiar />,
+    },
+    {
+        type: PHASES.SelectAns,
+        component: <SelectAnswer />,
+    },
+    {
+        type: PHASES.OtherView,
+        component: <OtherView />,
+    },
+    {
+        type: PHASES.OpenLiar,
+        component: <OpenLiar />,
+    },
+    {
+        type: PHASES.Desc,
+        component: <WordDescription />,
     },
 ];
 
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, myUserName, token, mySessionId, playerId } = openvidu;
+    const game = useSelector((state) => state.game);
+    const { subscribers, myUserName, token, mySessionId, playerId, owner } =
+        openvidu;
+    const { gameVoteCnt } = game;
     // State 업데이트를 더 잘 다루기 위해 여러 useState를 사용합니다.
     const [OV, setOV] = useState(new OpenVidu());
     const [session, setSession] = useState(OV.initSession());
@@ -104,6 +132,44 @@ const Game = () => {
                 newSession.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
 
+                newSession.on("signal:startGameVote", () => {
+                    dispatch(
+                        openModal({
+                            modalType: "ReadyModal",
+                            isOpen: true,
+                        }),
+                    );
+                });
+
+                newSession.on("signal:gameId", (event) => {
+                    const gameId = event.data;
+                    dispatch(gameActions.saveGameId(gameId));
+                });
+
+                newSession.on("signal:agree", (event) => {
+                    const newCnt = event.data;
+                    console.log(newCnt);
+                    // 발도장 찍어야함 -> 찬성 수 리덕스로 저장하고 조회해갈까?
+                    dispatch(gameActions.saveGameVoteCnt(newCnt + 1));
+                });
+
+                newSession.on("signal:disagree", (event) => {
+                    console.log("disagree");
+                    dispatch(closeModal());
+                });
+
+                // // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현
+                // export const signalVote = async (check, sessionId, cnt) => {
+                //     OPENVIDU.post(`/openvidu/api/signal`, {
+                //         session: sessionId,
+                //         to: [],
+                //         type: check === "T" ? "agree" : "disagree",
+                //         data: `${cnt + 1}`,
+                //     })
+                //         .then((data) => console.log(data))
+                //         .catch((err) => console.log(err));
+                // };
+
                 var devices = await OV.getDevices();
 
                 var videoDevices = devices.filter(
@@ -146,7 +212,9 @@ const Game = () => {
     useEffect(() => {
         // componentDidMount
         console.log("didmount");
+
         setSession(OV.initSession());
+
         if (!mySessionId) navigate("/error");
         window.addEventListener("beforeunload", leaveSession);
 
