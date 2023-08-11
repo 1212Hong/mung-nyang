@@ -58,7 +58,6 @@ public class PlayerService {
                 .playerNickname(playerJoinReq.getPlayerNickname())
                 .gameRoom(gameRoom)
                 .playerScore(0)
-                .playerVote(0)
                 .build();
         playerRepository.save(player);
         return ownerCheck;

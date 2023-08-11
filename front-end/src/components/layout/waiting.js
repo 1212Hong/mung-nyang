@@ -53,6 +53,16 @@ const ChattingBox = styled.div`
 `;
 const ChatBox = styled.div`
     height: 250px;
+    overflow: scroll;
+`;
+const ChatItem = styled.div`
+    padding: 5px 10px;
+
+    width: 200px;
+    height: 40px;
+    font-size: 16px;
+    color: white;
+    background-color: black;
 `;
 const ChattingInputBox = styled.div`
     height: 30px;
@@ -95,4 +105,5 @@ export {
     ChattingInputBox,
     MenuBox,
     StartnSetBox,
+    ChatItem,
 };

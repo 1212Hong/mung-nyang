@@ -73,17 +73,15 @@ const Quiz = (props) => {
         };
 
         if (answered) {
-            owner && handleAnswerSubmission();
+            handleAnswerSubmission();
         }
     }, [
-        dispatch,
         answered,
         roomId,
         playerNickname,
         myUserName,
         userChoice,
-        setAnswerer,
-        setShowChooseModal,
+        showChooseModal,
         answerer,
     ]);
 
