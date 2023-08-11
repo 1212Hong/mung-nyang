@@ -16,7 +16,8 @@ import { gameSlice } from "../../store/gameSlice";
 
 const SelectLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher } = openvidu;
+    const { session } = openvidu;
+    console.log(session.streamManagers);
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
@@ -44,15 +45,9 @@ const SelectLiar = () => {
 
                 await deleteLiar(setId);
 
-                if (publisher.session.connection.data === mostVotedNickname) {
-                    dispatch(changePhase({ phaseType: "SelectAns" }));
-                } else {
-                    dispatch(changePhase({ phaseType: "OtherView" }));
-                }
-
-                for (let i = 0; i < subscribers.length; i++) {
+                for (let i = 0; i < session.streamManagers.length; i++) {
                     if (
-                        subscribers[i].stream.connection.data ===
+                        session.streamManagers[i].stream.connection.data ===
                         mostVotedNickname
                     ) {
                         dispatch(changePhase({ phaseType: "SelectAns" }));
@@ -85,35 +80,14 @@ const SelectLiar = () => {
         <Container>
             <Timer></Timer>
             <Box>
-                {publisher && (
-                    <Item
-                        onClick={() =>
-                            handleBoxClick(
-                                publisher.session.connection.session.data,
-                            )
-                        }
-                    >
-                        <ImageOverlay
-                            active={
-                                activeBox === publisher.session.connection.data
-                            }
-                        >
-                            <img src={imgSrc} alt="사진" width="100%" />
-                        </ImageOverlay>
-                        <VideoComponent
-                            width="350px"
-                            height="320px"
-                            streamManager={publisher}
-                        />
-                    </Item>
-                )}
-                {subscribers &&
-                    subscribers.map((subscriber, i) => (
+                {session.streamManagers &&
+                    session.streamManagers.map((subscriber, i) => (
                         <React.Fragment key={i}>
                             <Item
                                 onClick={() =>
                                     handleBoxClick(
-                                        subscribers[i].stream.connection.data,
+                                        session.streamManagers[i].stream
+                                            .connection.data,
                                     )
                                 }
                             >
