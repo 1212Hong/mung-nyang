@@ -1,6 +1,7 @@
 import store from "../store/";
 import { connectRoom, createRoom } from "../api";
 import { ovActions } from "../store/openviduSlice";
+import { getNickname } from "../api/room";
 
 export const makeRoom = async (roomInfo) => {
     console.log("방생성 api호출");
@@ -22,8 +23,13 @@ export const makeRoom = async (roomInfo) => {
             roomInfo.roomPw,
         );
         console.log(connectRoomResponse);
+
         store.dispatch(ovActions.saveSessionId(sessionId));
         store.dispatch(ovActions.saveToken(connectRoomResponse.data));
+
+        const firstNickName = await getNickname(sessionId);
+        console.log(firstNickName);
+        store.dispatch(ovActions.saveUserName(firstNickName));
         // 여기에서 sessionId와 connectRoomResponse 등을 필요에 따라 처리할 수 있음
     } catch (error) {
         console.log(error);
@@ -33,6 +39,8 @@ export const makeRoom = async (roomInfo) => {
 export const enterRoom = async (roomInfo) => {
     console.log("생성된 방에 연결(테스트화면으로)");
     console.log(roomInfo);
+    const firstNickName = await getNickname(roomInfo.roomId);
+    store.dispatch(ovActions.saveUserName(firstNickName));
     try {
         const res = await connectRoom(roomInfo.roomId, roomInfo.roomPw);
         console.log(res);
