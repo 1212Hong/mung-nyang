@@ -13,6 +13,7 @@ const initialState = {
     owner: false,
     score: 0,
     playerId: 0,
+    messageList: [],
 };
 
 export const openviduSlice = createSlice({
@@ -63,6 +64,10 @@ export const openviduSlice = createSlice({
         },
         leaveSession: (state) => {
             state = initialState;
+        },
+        updateMessage: (state, { payload }) => {
+            console.log(payload);
+            state.messageList.push(payload);
         },
     },
 });
