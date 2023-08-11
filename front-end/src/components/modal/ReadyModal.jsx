@@ -19,21 +19,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../../store/phaseSlice";
 import { gameActions, gameSlice } from "../../store/gameSlice";
 import { closeModal } from "../../store/modalSlice";
-import { ImageOverlay } from "../layout/selectLiar";
 import foot from "../../assets/img/foot.png";
 
 const ReadyModal = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { mySessionId, session, owner } = openvidu;
     const { setCnt } = gameSlice;
-    // api 통신을 위한 변수
-    const [check, setCheck] = useState(false);
+
     // 반대 누르면 타이머 강제종료 위한 state
     const [close, setClose] = useState(false);
     // 찬반에 대한 카운트
     const [voteCnt, setVoteCnt] = useState(0);
+    const [footDivEls, setFootDivEls] = useState([]);
     // 현재 방의 인원 수를 받아서 6 대신 적용.
-    console.log(session.streamManagers);
+    // console.log(session.streamManagers);
     // const [wait, setWait] = useState(session.streamManagers.length);
     const [complete, setComplete] = useState(false);
     const dispatch = useDispatch();
@@ -41,7 +40,7 @@ const ReadyModal = () => {
 
     const handleEndVote = async () => {
         try {
-            const response = owner && (await getVoteRes(mySessionId, setCnt));
+            const response = await getVoteRes(mySessionId, setCnt);
             if (response) {
                 console.log(response);
 
@@ -61,40 +60,41 @@ const ReadyModal = () => {
         session.on("agree", (e) => {
             console.log("찬성");
             console.log(e.data);
-            setVoteCnt(`${(e.data *= 1) + 1}`);
+            setVoteCnt(`${Number(e.data)}`);
             // 로컬 대기만 줄어듦 -> 모두의 화면이 줄어들도록 openvidu통신
             // setWait(wait - 1);
         });
         session.on("disagree", () => {
             console.log("반대");
             dispatch(closeModal());
-            owner && deleteVote(mySessionId);
             setClose(true);
         });
     }, [session]);
 
     useEffect(() => {
+        const newFootDivEl = (
+            <div key={voteCnt}>
+                <img src={imgSrc} alt="사진" width="55px" height="55px" />
+            </div>
+        );
+        setFootDivEls((prevDivs) => [...prevDivs, newFootDivEl]);
+    }, [voteCnt]);
+
+    useEffect(() => {
         const timer = setTimeout(async () => {
             // 타이머 흘러가는중
+            handleEndVote();
         }, 7000);
 
-        if (close) clearTimeout(timer);
+        if (close) {
+            clearTimeout(timer);
+            owner && deleteVote(mySessionId);
+        }
 
         return () => {
             clearTimeout(timer);
-            handleEndVote();
         };
     }, []);
-
-    const renderAgrees = (n) => {
-        for (let index = 0; index < n; index++) {
-            return (
-                <div>
-                    <img src={imgSrc} alt="사진" width="60px" height="60px" />
-                </div>
-            );
-        }
-    };
 
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
@@ -102,9 +102,9 @@ const ReadyModal = () => {
             <ModalViewDescDiv>게임 시작 투표</ModalViewDescDiv>
 
             <ModalViewResultDiv className="vote-res-div">
-                <ModalViewResultBox>찬성cnt : {voteCnt}</ModalViewResultBox>
-                {voteCnt ? renderAgrees(voteCnt) : null}
+                {/* <ModalViewResultBox>찬성cnt : {voteCnt}</ModalViewResultBox> */}
                 {/* <ModalViewResultBox>대기 : {wait}</ModalViewResultBox> */}
+                <ModalViewResultBox>{footDivEls}</ModalViewResultBox>
             </ModalViewResultDiv>
             <ModalViewButtonDiv>
                 {complete ? (
@@ -114,7 +114,6 @@ const ReadyModal = () => {
                         <Button
                             onClick={async () => {
                                 // api 코드 작성할 곳.
-                                setCheck(true);
                                 setComplete(true);
                                 const res = await castGameVote(
                                     mySessionId,
@@ -133,7 +132,6 @@ const ReadyModal = () => {
                         <Button
                             onClick={async () => {
                                 // api 코드 작성할 곳.
-                                setCheck(false);
                                 setComplete(true);
                                 const res = await castGameVote(
                                     mySessionId,
@@ -143,6 +141,7 @@ const ReadyModal = () => {
                                 signalVote(
                                     res.data.voteMessage,
                                     session.sessionId,
+                                    0,
                                 );
                             }}
                         >

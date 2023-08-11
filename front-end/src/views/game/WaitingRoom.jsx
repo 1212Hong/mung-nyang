@@ -79,7 +79,7 @@ function WaitingRoom() {
         await signalMaxSet(setCnt, session.sessionId);
         const memberCnt = session.streamManagers.length;
         console.log(session.streamManagers.length);
-        if (memberCnt > 3) {
+        if (memberCnt > 2) {
             startGameVote(mySessionId);
             signalStartGameVote(session.sessionId);
 

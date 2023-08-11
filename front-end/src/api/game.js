@@ -48,7 +48,7 @@ export const signalVote = async (check, sessionId, cnt) => {
         session: sessionId,
         to: [],
         type: check === "T" ? "agree" : "disagree",
-        data: `${cnt}`,
+        data: `${cnt + 1}`,
     })
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
