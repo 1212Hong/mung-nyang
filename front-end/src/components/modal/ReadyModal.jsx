@@ -12,15 +12,16 @@ import Timer from "../Timer";
 import { castGameVote, deleteVote, getVoteRes } from "../../api/game";
 import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../../store/phaseSlice";
-import { gameActions, gameSlice } from "../../store/gameSlice";
+import { gameActions } from "../../store/gameSlice";
 import { closeModal, modalSlice } from "../../store/modalSlice";
 import foot from "../../assets/img/foot.png";
 
 const ReadyModal = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const modalFlag = useSelector((state) => state.modal.isOpen);
+    const game = useSelector((state) => state.game);
     const { mySessionId, session, owner } = openvidu;
-    const { setCnt, gameVoteCnt } = gameSlice;
+    const { setCnt, gameVoteCnt } = game;
     const [footDivEls, setFootDivEls] = useState([]);
     // 현재 방의 인원 수를 받아서 6 대신 적용.
     // console.log(session.streamManagers);
@@ -40,7 +41,7 @@ const ReadyModal = () => {
     const signalVote = async (check) => {
         console.log(gameVoteCnt);
         await session.signal({
-            data: `${gameVoteCnt + 1}`,
+            data: `${Number(gameVoteCnt) + 1}`,
             to: [],
             type: check === "T" ? "agree" : "disagree",
         });
@@ -55,43 +56,33 @@ const ReadyModal = () => {
                 console.log(response.data.gameId);
                 await getGameId(response.data.gameId);
                 dispatch(gameActions.saveGameId(response.data.gameId));
-                dispatch(
-                    changePhase({ phaseType: response.data.gameProcessType }),
-                );
+                dispatch(changePhase(response.data.gameProcessType));
             }
             console.log(owner);
         } catch (error) {
             console.error("Error sending data:", error);
         }
     };
-    session.on("agree", (e) => {
-        console.log("찬성");
-        console.log(e.data);
-        dispatch(gameActions.saveGameVoteCnt(`${Number(e.data)}`));
+
+    useEffect(() => {
         // 로컬 대기만 줄어듦 -> 모두의 화면이 줄어들도록 openvidu통신
-        const newFootDivEl = (
+        const newFootDivEl = gameVoteCnt ? (
             <div key={gameVoteCnt}>
                 <img src={imgSrc} alt="사진" width="55px" height="55px" />
             </div>
-        );
+        ) : null;
         setFootDivEls((prevDivs) => [...prevDivs, newFootDivEl]);
-    });
-    session.on("disagree", () => {
-        console.log("반대");
-        dispatch(closeModal());
-    });
-
-    useEffect(() => {}, [gameVoteCnt]);
+    }, [gameVoteCnt]);
 
     useEffect(() => {
         const timer = setTimeout(async () => {
             // 타이머 흘러가는중
-            handleEndVote();
+            await handleEndVote();
+            owner && deleteVote(mySessionId);
         }, 7000);
 
         if (!modalFlag) {
             clearTimeout(timer);
-            owner && deleteVote(mySessionId);
         }
 
         return () => {

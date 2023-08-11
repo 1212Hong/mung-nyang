@@ -25,8 +25,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { startGameVote } from "../../api/game";
-import Dropdown from "../../components/Dropdown";
-import { SmallText, SubText } from "../../components/layout/common";
 import { gameActions } from "../../store/gameSlice";
 import { ovActions } from "../../store/openviduSlice";
 function WaitingRoom() {
