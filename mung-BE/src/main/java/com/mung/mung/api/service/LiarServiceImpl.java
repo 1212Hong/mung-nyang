@@ -51,8 +51,11 @@ public class LiarServiceImpl implements LiarService {
         log.info("setId : {} 투표 현황 : {}", setId, votingData.get(setId));
         Map<String, Integer> setVotingData = votingData.get(setId);
 
+        // 아무도 투표 하지 않았을 경우
         if (setVotingData == null || setVotingData.isEmpty()) {
-            throw new LiarVoteResultNotFoundException();
+            //라이어가 이김
+            return new LiarVoteResultRes(new ArrayList<>(), GameProcessType.NoLiar);
+
         }
 
         List<String> mostVotedNicknames = new ArrayList<>();
