@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/game-sessions")
+@RequestMapping("/api")
 public class GameRoomController {
 
     private final int LIMIT = 6;
@@ -60,7 +60,7 @@ public class GameRoomController {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-    @PostMapping("")
+    @PostMapping("/game-sessions")
     public ResponseEntity<String> createRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
@@ -88,7 +88,7 @@ public class GameRoomController {
     }
 
 
-    @PostMapping("/connections")
+    @PostMapping("/game-sessions/connections")
     public ResponseEntity<String> createConnection(@RequestBody GameRoomConnectReq gameRoomConnectReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
         log.info("어떤 오류인지 로그 : {}",gameRoomConnectReq);
@@ -129,7 +129,7 @@ public class GameRoomController {
     }
 
 
-    @DeleteMapping("/leave/{encodeRoomId}/{playerId}")
+    @DeleteMapping("/game-sessions/leave/{encodeRoomId}/{playerId}")
     public ResponseEntity<String> leaveRoom(@PathVariable("encodeRoomId") String encodeRoomId,
                                             @PathVariable long playerId) throws UnsupportedEncodingException {
         String roomId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
@@ -162,7 +162,7 @@ public class GameRoomController {
         return new ResponseEntity<>("Leave 처리 성공",HttpStatus.OK);
     }
 
-    @PutMapping("/initialize")
+    @PutMapping("/game-sessions/initialize")
     public ResponseEntity<String> roomInitialize(
             @RequestBody RoomIdReq roomIdReq){
         String roomId=roomIdReq.getRoomId();
@@ -177,9 +177,10 @@ public class GameRoomController {
 
     // 테스트용
 
-    @RequestMapping(value = "/api/recording/start", method = RequestMethod.POST)
+    @RequestMapping(value = "/room/recording/start", method = RequestMethod.POST)
     public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) {
-        String sessionId = (String) params.get("session");
+        // Session으로 반환
+        String sessionId = sessionRoomConvert.get((String) params.get("session"));
 //            Recording.OutputMode outputMode = Recording.OutputMode.valueOf((String) params.get("outputMode"));
         Recording.OutputMode outputMode = Recording.OutputMode.COMPOSED;
 //            boolean hasAudio = (boolean) params.get("hasAudio");
@@ -204,9 +205,9 @@ public class GameRoomController {
         }
     }
 
-    @RequestMapping(value = "/api/recording/stop", method = RequestMethod.POST)
+    @RequestMapping(value = "/room/recording/stop", method = RequestMethod.POST)
     public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
-        String recordingId = (String) params.get("recording");
+        String recordingId = sessionRoomConvert.get((String) params.get("recording"));
 
         System.out.println("Stoping recording | {recordingId}=" + recordingId);
 
@@ -219,9 +220,9 @@ public class GameRoomController {
         }
     }
 
-    @RequestMapping(value = "/api/recording/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/room/recording/delete", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteRecording(@RequestBody Map<String, Object> params) {
-        String recordingId = (String) params.get("recording");
+        String recordingId = sessionRoomConvert.get((String) params.get("recording"));
 
         System.out.println("Deleting recording | {recordingId}=" + recordingId);
 
@@ -233,20 +234,20 @@ public class GameRoomController {
         }
     }
 
-    @RequestMapping(value = "/api/recording/get/{recordingId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/room/recording/get/{recordingId}", method = RequestMethod.GET)
     public ResponseEntity<?> getRecording(@PathVariable(value = "recordingId") String recordingId) {
 
         System.out.println("Getting recording | {recordingId}=" + recordingId);
-
+        String realRecordingId=sessionRoomConvert.get(recordingId);
         try {
-            Recording recording = this.openvidu.getRecording(recordingId);
+            Recording recording = this.openvidu.getRecording(realRecordingId);
             return new ResponseEntity<>(recording, HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @RequestMapping(value = "/api/recording/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/room/recording/list", method = RequestMethod.GET)
     public ResponseEntity<?> listRecordings() {
 
         System.out.println("Listing recordings");
