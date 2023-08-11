@@ -10,7 +10,9 @@ const initialState = {
     gameId: 0,
     playerId: "",
     roomId: "",
+    selectedAnswer: "",
     result: "",
+    category: "",
 };
 
 export const gameSlice = createSlice({
@@ -18,10 +20,10 @@ export const gameSlice = createSlice({
     initialState,
     reducers: {
         saveSetCnt: (state, action) => {
-            state.setCnt = action.setCnt;
+            state.setCnt = action.payload;
         },
         saveSetId: (state, action) => {
-            state.setId = action.setId;
+            state.setId = action.payload;
         },
         saveScore: (state, action) => {
             state.score += action.payload;
@@ -33,10 +35,24 @@ export const gameSlice = createSlice({
             state.answerer = action.payload;
         },
         saveWord: (state, action) => {
-            state.word = action.word;
+            state.word = action.payload;
         },
-
+        saveGameId: (state, action) => {
+            state.gameId = action.payload;
+        },
         saveResult: (state, action) => {
+            state.result = action.payload;
+        },
+        saveCategory: (state, action) => {
+            state.category = action.payload;
+        },
+        updateSelectedLiar: (state, action) => {
+            state.selectedLiar = action.payload;
+        },
+        updateSelectedAnswer: (state, action) => {
+            state.selectedAnswer = action.payload;
+        },
+        updateResult: (state, action) => {
             state.result = action.payload;
         },
     },
