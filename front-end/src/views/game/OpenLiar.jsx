@@ -23,7 +23,7 @@ const OpenLiar = () => {
     const dispatch = useDispatch();
 
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher } = openvidu;
+    const { session } = openvidu;
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -51,28 +51,36 @@ const OpenLiar = () => {
         <Container>
             <Timer />
             <AnswerBox>
-                {publisher && (
-                    <AnswerItem>
-                        <VideoComponent
-                            width="500px"
-                            height="400px"
-                            streamManager={publisher}
-                        />
-                    </AnswerItem>
-                )}
+                <Card description={selectedAnswer} />
+                {session.streamManagers &&
+                    session.streamManagers.map((sub, i) => (
+                        <React.Fragment key={i}>
+                            {sub.stream.connection.data === pickedLiar && (
+                                <AnswerItem>
+                                    <VideoComponent
+                                        width="500px"
+                                        height="400px"
+                                        streamManager={sub}
+                                    />
+                                </AnswerItem>
+                            )}
+                        </React.Fragment>
+                    ))}
                 <Card description={selectedAnswer} />
             </AnswerBox>
             <UserBox>
-                {subscribers &&
-                    subscribers.map((sub, i) => (
+                {session.streamManagers &&
+                    session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
-                            <OtherUsers>
-                                <VideoComponent
-                                    width="232px"
-                                    height="235px"
-                                    streamManager={sub}
-                                />
-                            </OtherUsers>
+                            {sub.stream.connection.data !== pickedLiar && (
+                                <OtherUsers>
+                                    <VideoComponent
+                                        width="232px"
+                                        height="235px"
+                                        streamManager={sub}
+                                    />
+                                </OtherUsers>
+                            )}
                         </React.Fragment>
                     ))}
             </UserBox>
