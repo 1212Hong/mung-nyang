@@ -42,7 +42,7 @@ const OpenLiar = () => {
             } catch (error) {
                 console.error(error);
             }
-        }, 7000);
+        }, 10000);
 
         return () => clearTimeout(timer);
     }, []);
@@ -51,7 +51,6 @@ const OpenLiar = () => {
         <Container>
             <Timer />
             <AnswerBox>
-                <Card description={selectedAnswer} />
                 {session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
