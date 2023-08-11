@@ -11,8 +11,8 @@ import {
 } from "../../components/layout/selectLiar";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectLiar, selectedLiar, deleteLiar } from "../../api/game";
-import { gameSlice } from "../../store/gameSlice";
+import { selectLiar, selectedLiar, deleteLiar, Result } from "../../api/game";
+import { gameActions } from "../../store/gameSlice";
 
 const SelectLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -35,30 +35,32 @@ const SelectLiar = () => {
                 console.log(selectedLiarResponse);
                 if (selectedLiarResponse.data.gameProcessType === "LiarVote") {
                     dispatch(changePhase({ phaseType: "LiarVote" }));
-                }
-                const mostVotedNickname =
-                    selectedLiarResponse.data.mostVotedNicknames[0];
-                console.log(mostVotedNickname);
-                dispatch(
-                    gameSlice.actions.updateSelectedLiar(mostVotedNickname),
-                );
+                } else if (
+                    selectedLiarResponse.data.gameProcessType === "SelectAns"
+                ) {
+                    const mostVotedNickname =
+                        selectedLiarResponse.data.mostVotedNicknames[0];
+                    console.log(mostVotedNickname);
 
-                await deleteLiar(setId);
+                    dispatch(gameActions.updateSelectedLiar(mostVotedNickname));
 
-                for (let i = 0; i < session.streamManagers.length; i++) {
-                    if (
-                        session.streamManagers[i].stream.connection.data ===
-                        mostVotedNickname
-                    ) {
-                        dispatch(changePhase({ phaseType: "SelectAns" }));
-                    } else {
-                        dispatch(changePhase({ phaseType: "OtherView" }));
+                    await deleteLiar(setId);
+                    for (let i = 0; i < session.streamManagers.length; i++) {
+                        if (
+                            session.streamManagers[i].stream.connection.data ===
+                            mostVotedNickname
+                        ) {
+                            dispatch(changePhase({ phaseType: "SelectAns" }));
+                        } else {
+                            dispatch(changePhase({ phaseType: "OtherView" }));
+                        }
                     }
+                } else {
                 }
             } catch (error) {
                 console.error(error);
             }
-        }, 7000);
+        }, 10000);
         return () => clearTimeout(timer);
     }, [activeBox]);
 
