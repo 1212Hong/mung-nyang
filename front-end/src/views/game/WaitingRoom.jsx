@@ -29,6 +29,7 @@ import Dropdown from "../../components/Dropdown";
 import { SmallText, SubText } from "../../components/layout/common";
 import { gameActions } from "../../store/gameSlice";
 import { ovActions } from "../../store/openviduSlice";
+import { changePhase } from "../../store/phaseSlice";
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
     const [setCnt, setSetCnt] = useState(1); // redux에 저장해두고 getVoteRes에 넣어주기
@@ -63,20 +64,21 @@ function WaitingRoom() {
         );
     };
     const openReadyModal = async () => {
-        const memberCnt = session.streamManagers.length;
-        console.log(session.streamManagers.length);
-        if (memberCnt > 1) {
-            startGameVote(mySessionId);
-            await signalStartGameVote();
-            dispatch(gameActions.saveSetCnt(setCnt));
-        } else {
-            dispatch(
-                openModal({
-                    modalType: "NoReadyModal",
-                    isOpen: true,
-                }),
-            );
-        }
+        // const memberCnt = session.streamManagers.length;
+        // console.log(session.streamManagers.length);
+        // if (memberCnt > 1) {
+        //     startGameVote(mySessionId);
+        //     await signalStartGameVote();
+        //     dispatch(gameActions.saveSetCnt(setCnt));
+        // } else {
+        //     dispatch(
+        //         openModal({
+        //             modalType: "NoReadyModal",
+        //             isOpen: true,
+        //         }),
+        //     );
+        // }
+        dispatch(changePhase("Desc"));
     };
 
     const sendMessage = async () => {
