@@ -77,7 +77,7 @@ public class VoteServiceImpl implements VoteService {
 
         Integer requiredVotes = roomPlayers.get(voteCountReq.getRoomId()); // 각 방에 필요한 투표 수
 
-        if(requiredVotes==null){
+        if (requiredVotes == null) {
             throw new VotesNotStartException();
         }
 
@@ -108,7 +108,7 @@ public class VoteServiceImpl implements VoteService {
 
         Integer requiredVotes = roomPlayers.get(roomId); // 각 방에 필요한 투표 수
 
-        if(requiredVotes==null){
+        if (requiredVotes == null) {
             throw new VotesNotStartException();
         }
 
@@ -122,7 +122,8 @@ public class VoteServiceImpl implements VoteService {
 
             gameRoomRepository.save(gameRoom);
 
-            int quizId = randomQuiz();
+            // Game 테이블에 Quiz 정보 미리 저장
+            Long quizId = (long) randomQuiz();
 
             Game game = Game.builder()
                     .curSet(0)
@@ -147,7 +148,7 @@ public class VoteServiceImpl implements VoteService {
         log.info("시작 투표 정보 삭제 : {}", roomId);
         Integer requiredVotes = roomPlayers.get(roomId); // 각 방에 필요한 투표 수
 
-        if(requiredVotes==null){
+        if (requiredVotes == null) {
             throw new VotesNotStartException();
         }
 
@@ -158,14 +159,13 @@ public class VoteServiceImpl implements VoteService {
 
     }
 
-    private int randomQuiz(){
+    private int randomQuiz() {
         List<Quiz> quizList = quizRepository.findAll();
         if (quizList.isEmpty()) {
             throw new QuizNotFoundException();
         }
-        int randomIndex = ThreadLocalRandom.current().nextInt(quizList.size());
 
-        return randomIndex;
+        return ThreadLocalRandom.current().nextInt(quizList.size()) + 1;
     }
 
 
