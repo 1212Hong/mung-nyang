@@ -35,7 +35,7 @@ const SelectLiar = () => {
                 const selectedLiarResponse = await selectedLiar(setId);
                 console.log(selectedLiarResponse);
                 if (selectedLiarResponse.data.gameProcessType === "LiarVote") {
-                    dispatch(changePhase({ phaseType: "LiarVote" }));
+                    dispatch(changePhase("LiarVote"));
                 } else if (
                     selectedLiarResponse.data.gameProcessType === "SelectAns"
                 ) {
@@ -51,9 +51,9 @@ const SelectLiar = () => {
                             session.streamManagers[i].stream.connection.data ===
                             mostVotedNickname
                         ) {
-                            dispatch(changePhase({ phaseType: "SelectAns" }));
+                            dispatch(changePhase("SelectAns"));
                         } else {
-                            dispatch(changePhase({ phaseType: "OtherView" }));
+                            dispatch(changePhase("OtherView"));
                         }
                     }
                 } else {
@@ -63,7 +63,7 @@ const SelectLiar = () => {
                         console.log(result);
 
                         dispatch(gameActions.updateResult(result));
-                        dispatch(changePhase({ phaseType: "MidScore" }));
+                        dispatch(changePhase("MidScore"));
                     } catch (error) {
                         console.error(error);
                     }
