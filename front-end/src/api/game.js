@@ -46,6 +46,7 @@ export const deleteVote = async (roomId) => {
 
 // 카테고리 내 제시어
 export const selectCategory = (roomId, gameId, category, answerer) => {
+    console.log(roomId, gameId, category, answerer);
     return API.post(`api/quiz/category`, {
         roomId: roomId,
         gameId: gameId,

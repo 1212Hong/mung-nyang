@@ -6,7 +6,7 @@ const initialState = {
     setId: 0,
     score: 0,
     selectedLiar: "",
-    answerer: "",
+    answerer: "리트리버",
     word: "",
     gameId: 0,
     playerId: "",
