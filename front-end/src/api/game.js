@@ -144,10 +144,10 @@ export const Result = (setId, roomId, pickedLiar, answer) => {
 
 // Dance Url 요청
 export const DanceUrl = () => {
-    return API.post(`/api/penalty`);
+    return API.get(`/api/penalty`);
 };
 
 // Penalty User 요청
-export const getPenaltyUser = (roomId) => {
+export const PenaltyUser = (roomId) => {
     return API.get(`/api/penalty/player?roomId=${roomId}`);
 };
