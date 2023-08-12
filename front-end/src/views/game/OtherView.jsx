@@ -21,7 +21,7 @@ const OtherView = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            dispatch(changePhase({ phaseType: "OpenLiar" }));
+            dispatch(changePhase("OpenLiar"));
         }, 10000);
 
         return () => clearTimeout(timer);
