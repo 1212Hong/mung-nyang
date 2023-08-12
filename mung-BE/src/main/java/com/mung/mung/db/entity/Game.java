@@ -34,7 +34,7 @@ public class Game {
 
     private LocalDateTime endTime;
 
-    private int ranQuiz;
+    private Long ranQuiz;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
