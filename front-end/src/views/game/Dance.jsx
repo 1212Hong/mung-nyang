@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import store from "../../store";
 import { useSelector } from "react-redux";
 import Button from "../../components/Button";
 import VideoComponent from "../../components/VideoComponent";
@@ -16,7 +17,7 @@ import {
     Buttons,
     UsersBox,
 } from "../../components/layout/dance";
-import { usePenaltyUser, useDanceUrl } from "../../hooks/dance";
+import { getPenaltyUser, getDanceUrl } from "../../hooks/dance";
 import { gameActions } from "../../store/gameSlice";
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
@@ -25,19 +26,37 @@ function Dance() {
     const { session, owner, mySessionId } = openvidu;
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
-    const danceInfo = useDanceUrl();
-    console.log("댄스 인포 : ", danceInfo);
-    const { fetchPenaltyUser } = usePenaltyUser(roomId);
+    const [videoId, setVideoId] = useState("");
+    useEffect(() => {
+        const fetchDanceUrl = async () => {
+            try {
+                const info = await getDanceUrl();
+                setVideoId(info.danceUrl.split("/shorts/")[1]);
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        };
+        fetchDanceUrl();
+
+        const fetchPenaltyUser = async (roomId) => {
+            try {
+                await getPenaltyUser(roomId);
+                store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
+            } catch (error) {
+                console.log("Error:", error);
+            }
+        };
+        fetchPenaltyUser(roomId);
+    }, [penaltyUser, roomId]);
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowNotification(false);
-            fetchPenaltyUser();
         }, 3000);
 
         return () => {
             clearTimeout(timer);
         };
-    }, [fetchPenaltyUser]);
+    }, []);
 
     const nonPenaltyUsers = session.streamManagers.filter((user) => {
         return user.stream.connection.data !== penaltyUser;
@@ -49,13 +68,15 @@ function Dance() {
             <PenaltyBox>
                 <LeftItem>
                     <Video>
-                        <iframe
-                            width="330"
-                            height="587"
-                            src={`https://www.youtube.com/embed/${danceInfo.videoId}?autoplay=1&loop=1&playlist=${danceInfo.videoId}`}
-                            title="벌칙영상"
-                            allow="autoplay"
-                        ></iframe>
+                        {videoId && (
+                            <iframe
+                                width="330"
+                                height="587"
+                                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}`}
+                                title="벌칙영상"
+                                allow="autoplay"
+                            ></iframe>
+                        )}
                     </Video>
                 </LeftItem>
                 <RightItem>

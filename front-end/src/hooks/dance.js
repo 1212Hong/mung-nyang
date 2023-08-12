@@ -1,36 +1,20 @@
-import store from "../store/";
-import { DanceUrl, getPenaltyUser } from "../api/game";
-import { gameActions } from "../store/gameSlice";
-import { ovActions } from "../store/openviduSlice";
+import { DanceUrl, PenaltyUser } from "../api/game";
 
-export const useDanceUrl = () => {
-    const fetchDanceUrl = async () => {
-        try {
-            const danceResponse = await DanceUrl();
-            const { danceUrl, difficulty } = danceResponse.data;
-            console.log("URL 확인 :", danceUrl, difficulty);
-            const videoId = danceUrl.split("/shorts/")[1];
-            store.dispatch(ovActions.saveVideoId(videoId));
-            return { videoId, difficulty };
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    return { fetchDanceUrl };
+export const getDanceUrl = async () => {
+    try {
+        const danceResponse = await DanceUrl();
+        console.log("리턴값 :", danceResponse.data);
+        return danceResponse.data;
+    } catch (error) {
+        console.log(error);
+    }
 };
 
-export const usePenaltyUser = (roomId) => {
-    const fetchPenaltyUser = async () => {
-        try {
-            const penaltyUser = await getPenaltyUser(roomId);
-            if (penaltyUser) {
-                store.dispatch(gameActions.savePenaltyUser(penaltyUser));
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    return { fetchPenaltyUser };
+export const getPenaltyUser = async (roomId) => {
+    try {
+        const penaltyUser = await PenaltyUser(roomId);
+        return penaltyUser;
+    } catch (error) {
+        console.log(error);
+    }
 };
