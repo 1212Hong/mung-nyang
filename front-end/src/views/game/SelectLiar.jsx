@@ -16,7 +16,7 @@ import { gameActions } from "../../store/gameSlice";
 
 const SelectLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { session } = openvidu;
+    const { session, publisher } = openvidu;
     console.log(session.streamManagers);
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
@@ -46,15 +46,14 @@ const SelectLiar = () => {
                     dispatch(gameActions.updateSelectedLiar(mostVotedNickname));
 
                     await deleteLiar(setId);
-                    for (let i = 0; i < session.streamManagers.length; i++) {
-                        if (
-                            session.streamManagers[i].stream.connection.data ===
-                            mostVotedNickname
-                        ) {
-                            dispatch(changePhase("SelectAns"));
-                        } else {
-                            dispatch(changePhase("OtherView"));
-                        }
+                    console.log(mostVotedNickname);
+
+                    if (
+                        publisher.stream.connection.data === mostVotedNickname
+                    ) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
                     }
                 } else {
                     try {
