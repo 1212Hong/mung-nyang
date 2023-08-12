@@ -8,7 +8,7 @@ import com.mung.mung.api.response.QuizPlayersRoleRes;
 import com.mung.mung.api.response.QuizStartRes;
 
 public interface QuizService {
-    QuizStartRes startQuiz(String roomId);
+    QuizStartRes startQuiz(Long gameId);
 
     void submitPositiveQuiz(QuizCountReq quizCountReq);
 
