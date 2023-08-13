@@ -14,20 +14,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 
-const SelectLiar = () => {
+const DupLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session, publisher } = openvidu;
     console.log(session.streamManagers);
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
-    const text = "라이어를 선택하세요.";
+    const text = "이들 중 라이어를 다시 지목하세요.";
     const imgSrc = foot;
     const dispatch = useDispatch();
     const roomId = useSelector((state) => state.openvidu.mySessionId);
+    const updatedDupLiars = useSelector((state) => state.game.dupLiars);
 
     useEffect(() => {
-        const timer = setTimeout(async () => {
+        const runSelectLiarPhase = async () => {
             try {
                 const response = await selectLiar(setId, activeBox || "");
                 console.log(response);
@@ -43,8 +44,7 @@ const SelectLiar = () => {
                                 selectedLiarResponse.data.mostVotedNicknames;
                             console.log(dupliars);
                             dispatch(gameActions.updateDupLiars(dupliars));
-                            // await deleteLiar(setId);
-                            dispatch(changePhase("DupLiar"));
+                            runSelectLiarPhase();
                         } else if (
                             selectedLiarResponse.data.gameProcessType ===
                             "SelectAns"
@@ -59,7 +59,6 @@ const SelectLiar = () => {
                                 ),
                             );
 
-                            // await deleteLiar(setId);
                             console.log(mostVotedNickname);
 
                             if (
@@ -94,7 +93,8 @@ const SelectLiar = () => {
             } catch (error) {
                 console.error(error);
             }
-        }, 10000);
+        };
+        const timer = setTimeout(runSelectLiarPhase, 10000);
         return () => clearTimeout(timer);
     });
 
@@ -117,32 +117,37 @@ const SelectLiar = () => {
             <Timer></Timer>
             <Box>
                 {session.streamManagers &&
-                    session.streamManagers.map((subscriber, i) => (
-                        <React.Fragment key={i}>
-                            <Item
-                                onClick={() =>
-                                    handleBoxClick(
-                                        session.streamManagers[i].stream
-                                            .connection.data,
-                                    )
-                                }
-                            >
-                                <ImageOverlay
-                                    active={
-                                        activeBox ===
-                                        subscriber.stream.connection.data
-                                    }
-                                >
-                                    <img src={imgSrc} alt="사진" width="100%" />
-                                </ImageOverlay>
-                                <VideoComponent
-                                    width="350px"
-                                    height="320px"
-                                    streamManager={subscriber}
-                                />
-                            </Item>
-                        </React.Fragment>
-                    ))}
+                    session.streamManagers.map((subscriber, i) => {
+                        const nickname = subscriber.stream.connection.data;
+                        const isDisplayed = updatedDupLiars.includes(nickname);
+
+                        if (isDisplayed) {
+                            return (
+                                <React.Fragment key={i}>
+                                    <Item
+                                        onClick={() => handleBoxClick(nickname)}
+                                    >
+                                        <ImageOverlay
+                                            active={activeBox === nickname}
+                                        >
+                                            <img
+                                                src={imgSrc}
+                                                alt="사진"
+                                                width="100%"
+                                            />
+                                        </ImageOverlay>
+                                        <VideoComponent
+                                            width="350px"
+                                            height="320px"
+                                            streamManager={subscriber}
+                                        />
+                                    </Item>
+                                </React.Fragment>
+                            );
+                        }
+
+                        return null;
+                    })}
             </Box>
             <NotificationContainer show={showNotification}>
                 {text}
@@ -151,4 +156,4 @@ const SelectLiar = () => {
     );
 };
 
-export default SelectLiar;
+export default DupLiar;
