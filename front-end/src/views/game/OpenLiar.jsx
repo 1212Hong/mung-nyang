@@ -10,7 +10,7 @@ import {
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { Result } from "../../api/game";
+import { Result, deleteLiar } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 
 const OpenLiar = () => {
@@ -38,6 +38,7 @@ const OpenLiar = () => {
                 console.log(result);
 
                 dispatch(gameActions.updateResult(result));
+                await deleteLiar(setId);
                 dispatch(changePhase("MidScore"));
             } catch (error) {
                 console.error(error);

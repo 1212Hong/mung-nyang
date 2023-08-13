@@ -15,6 +15,7 @@ import Loading from "./Loading";
 import { gameActions } from "../store/gameSlice";
 import { closeModal, openModal } from "../store/modalSlice";
 import { deleteVote } from "../api/game";
+import DupLiar from "./game/DupLiar";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -27,6 +28,7 @@ const PHASES = {
     Ans: "Ans",
     EmgAns: "EmgAns",
     LiarVote: "LiarVote",
+    DupLiar: "DupLiar",
     SelectAns: "SelectAns",
     OtherView: "OtherView",
     OpenLiar: "OpenLiar",
@@ -69,6 +71,10 @@ const PHASE_COMPONENTS = [
     {
         type: PHASES.Desc,
         component: <WordDescription />,
+    },
+    {
+        type: PHASES.DupLiar,
+        component: <DupLiar />,
     },
 ];
 
