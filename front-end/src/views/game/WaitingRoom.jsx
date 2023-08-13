@@ -89,17 +89,13 @@ function WaitingRoom() {
             to: [],
             type: "chat",
         });
+        userMessage.current.value = "";
     };
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
     console.log(openvidu.messageList.length);
-    useEffect(() => {
-        // session.on("signal:chat", (event) => {
-        //     const data = JSON.parse(event.data);
-        //     console.log(data);
-        // });
-    });
+
     return (
         <Container className="waiting-container">
             <Leftbox>
@@ -128,10 +124,7 @@ function WaitingRoom() {
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                {/* <Participant
-                    user_list={subscribers}
-                    // host={host}
-                /> */}
+                <Participant />
 
                 <ChattingBox>
                     <ChatBox>
