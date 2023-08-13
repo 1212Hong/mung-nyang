@@ -64,21 +64,20 @@ function WaitingRoom() {
         );
     };
     const openReadyModal = async () => {
-        // const memberCnt = session.streamManagers.length;
-        // console.log(session.streamManagers.length);
-        // if (memberCnt > 1) {
-        //     startGameVote(mySessionId);
-        //     await signalStartGameVote();
-        //     dispatch(gameActions.saveSetCnt(setCnt));
-        // } else {
-        //     dispatch(
-        //         openModal({
-        //             modalType: "NoReadyModal",
-        //             isOpen: true,
-        //         }),
-        //     );
-        // }
-        dispatch(changePhase("Desc"));
+        const memberCnt = session.streamManagers.length;
+        console.log(session.streamManagers.length);
+        if (memberCnt > 1) {
+            startGameVote(mySessionId);
+            await signalStartGameVote();
+            dispatch(gameActions.saveSetCnt(setCnt));
+        } else {
+            dispatch(
+                openModal({
+                    modalType: "NoReadyModal",
+                    isOpen: true,
+                }),
+            );
+        }
     };
 
     const sendMessage = async () => {
@@ -126,12 +125,12 @@ function WaitingRoom() {
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                {/* (
+                (
                 <Participant
                     user_list={subscribers}
                     // host={host}
                 />
-                ) */}
+                )
                 <ChattingBox>
                     <ChatBox>
                         {openvidu.messageList.map((item, index) => (
