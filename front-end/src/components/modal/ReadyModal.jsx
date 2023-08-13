@@ -40,7 +40,7 @@ const ReadyModal = () => {
     const signalVote = async (check) => {
         console.log(gameVoteCnt);
         await session.signal({
-            data: `${Number(gameVoteCnt) + 1}`,
+            data: `${Number(gameVoteCnt + 1)}`,
             to: [],
             type: check === "T" ? "agree" : "disagree",
         });
@@ -75,6 +75,10 @@ const ReadyModal = () => {
     }, [gameVoteCnt]);
 
     useEffect(() => {
+        if (!modalFlag) {
+            owner && deleteVote(mySessionId);
+            return;
+        }
         const timer = setTimeout(async () => {
             // 타이머 흘러가는중
             owner
@@ -85,10 +89,6 @@ const ReadyModal = () => {
                       dispatch(changePhase("Quiz"));
                   });
         }, 7000);
-
-        if (!modalFlag) {
-            clearTimeout(timer);
-        }
 
         return () => {
             clearTimeout(timer);
