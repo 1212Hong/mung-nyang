@@ -8,6 +8,7 @@ import { Container, Content, FlexBox, Title } from "./layout/quiz";
 
 const Quiz = (props) => {
     const { title, text1, text2, onViewChange, ChooseModal } = props;
+    const openvidu = useSelector((state) => state.openvidu);
     const { mySessionId, myUserName, owner } = openvidu;
     const [showChooseModal, setShowChooseModal] = useState(false);
     const [answerer, setAnswerer] = useState("");
@@ -15,7 +16,6 @@ const Quiz = (props) => {
     const [userChoice, setUserChoice] = useState("");
     const [quizResultFetched, setQuizResultFetched] = useState(false);
     const dispatch = useDispatch();
-    const openvidu = useSelector((state) => state.openvidu);
     const roomId = mySessionId;
     const playerNickname = myUserName;
 
@@ -44,13 +44,8 @@ const Quiz = (props) => {
             handleAnswerSubmission();
         }
     }, [
-        answered,
-        roomId,
-        playerNickname,
-        myUserName,
+        // answered,
         userChoice,
-        showChooseModal,
-        answerer,
     ]);
 
     useEffect(() => {
@@ -70,13 +65,13 @@ const Quiz = (props) => {
             <FlexBox>
                 <Content
                     onClick={() => handleUserChoice(true)}
-                    clicked={userChoice}
+                    clicked={userChoice === "positive" ? true : false}
                 >
                     {text1}
                 </Content>
                 <Content
                     onClick={() => handleUserChoice(false)}
-                    clicked={userChoice}
+                    clicked={userChoice === "negative" ? true : false}
                 >
                     {text2}
                 </Content>
