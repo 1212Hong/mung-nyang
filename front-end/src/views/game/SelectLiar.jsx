@@ -27,11 +27,7 @@ const SelectLiar = () => {
     const roomId = useSelector((state) => state.openvidu.mySessionId);
 
     useEffect(() => {
-        const notificationTimer = setTimeout(() => {
-            setShowNotification(false);
-        }, 3000);
-
-        const gameTimer = setTimeout(async () => {
+        const timer = setTimeout(async () => {
             try {
                 const response = await selectLiar(setId, activeBox || "");
                 console.log(response);
@@ -47,6 +43,7 @@ const SelectLiar = () => {
                                 selectedLiarResponse.data.mostVotedNicknames;
                             console.log(dupliars);
                             dispatch(gameActions.updateDupLiars(dupliars));
+                            // await deleteLiar(setId);
                             dispatch(changePhase("DupLiar"));
                         } else if (
                             selectedLiarResponse.data.gameProcessType ===
@@ -98,10 +95,16 @@ const SelectLiar = () => {
                 console.error(error);
             }
         }, 10000);
+        return () => clearTimeout(timer);
+    });
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowNotification(false);
+        }, 3000);
 
         return () => {
-            clearTimeout(notificationTimer);
-            clearTimeout(gameTimer);
+            clearTimeout(timer);
         };
     }, []);
 
