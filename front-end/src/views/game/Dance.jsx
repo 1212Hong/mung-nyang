@@ -27,16 +27,29 @@ function Dance() {
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
     const [videoId, setVideoId] = useState("");
+
+    const sendVideoId = async (videoIdToSend) => {
+        session.signal({
+            data: JSON.stringify({ type: "videoId", value: videoIdToSend }),
+            to: [],
+            type: "videoData",
+        });
+    };
+
     useEffect(() => {
         const fetchDanceUrl = async () => {
             try {
                 const info = await getDanceUrl();
-                setVideoId(info.danceUrl.split("/shorts/")[1]);
+                console.log(info);
+                const newVideoId = info.danceUrl.split("/shorts/")[1];
+                setVideoId(newVideoId);
+                sendVideoId(newVideoId);
             } catch (error) {
                 console.error("Error:", error);
             }
         };
-        fetchDanceUrl();
+
+        owner && fetchDanceUrl();
 
         const fetchPenaltyUser = async (roomId) => {
             try {
@@ -47,7 +60,8 @@ function Dance() {
             }
         };
         fetchPenaltyUser(roomId);
-    }, [penaltyUser, roomId]);
+    }, []);
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowNotification(false);
@@ -61,6 +75,25 @@ function Dance() {
     const nonPenaltyUsers = session.streamManagers.filter((user) => {
         return user.stream.connection.data !== penaltyUser;
     });
+
+    useEffect(() => {
+        const handleSignalEvent = (event) => {
+            const { type, data } = event;
+            if (type === "signal:videoData") {
+                const message = JSON.parse(data);
+                if (message.type === "videoId") {
+                    setVideoId(message.value);
+                    console.log("Received videoId:", videoId);
+                }
+            }
+        };
+
+        session.on("signal", handleSignalEvent);
+
+        return () => {
+            session.off("signal", handleSignalEvent);
+        };
+    }, [session, videoId]);
 
     return (
         <Container>
@@ -112,8 +145,8 @@ function Dance() {
                 </Buttons>
             </PenaltyBox>
             <UsersBox>
-                {nonPenaltyUsers.map((index) => (
-                    <OtherUsers key={index}>
+                {nonPenaltyUsers.map((user) => (
+                    <OtherUsers key={user.stream.connection.data}>
                         <VideoComponent width="230" height="200" />
                     </OtherUsers>
                 ))}
