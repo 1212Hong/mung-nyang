@@ -70,7 +70,7 @@ function TopBottomVideo() {
 
     useEffect(() => {
         async function fetchAndSetQuizInfo() {
-            const info = await fetchQuizInfo(mySessionId);
+            const info = await fetchQuizInfo(gameId);
             setQuizInfo(info);
         }
         owner && fetchAndSetQuizInfo();
