@@ -28,98 +28,83 @@ const DupLiar = () => {
     const updatedDupLiars = useSelector((state) => state.game.dupLiars);
 
     useEffect(() => {
-        const notificationTimer = setTimeout(() => {
-            setShowNotification(false);
-        }, 3000);
-
-        const gameTimer = setTimeout(async () => {
+        const runSelectLiarPhase = async () => {
             try {
-                const runSelectLiarPhase = async () => {
+                const response = await selectLiar(setId, activeBox || "");
+                console.log(response);
+                setTimeout(async () => {
                     try {
-                        const response = await selectLiar(
-                            setId,
-                            activeBox || "",
-                        );
-                        console.log(response);
-                        setTimeout(async () => {
+                        const selectedLiarResponse = await selectedLiar(setId);
+                        console.log(selectedLiarResponse);
+                        if (
+                            selectedLiarResponse.data.gameProcessType ===
+                            "LiarVote"
+                        ) {
+                            const dupliars =
+                                selectedLiarResponse.data.mostVotedNicknames;
+                            console.log(dupliars);
+                            dispatch(gameActions.updateDupLiars(dupliars));
+                            runSelectLiarPhase();
+                        } else if (
+                            selectedLiarResponse.data.gameProcessType ===
+                            "SelectAns"
+                        ) {
+                            const mostVotedNickname =
+                                selectedLiarResponse.data.mostVotedNicknames[0];
+                            console.log(mostVotedNickname);
+
+                            dispatch(
+                                gameActions.updateSelectedLiar(
+                                    mostVotedNickname,
+                                ),
+                            );
+
+                            console.log(mostVotedNickname);
+
+                            if (
+                                publisher.stream.connection.data ===
+                                mostVotedNickname
+                            ) {
+                                dispatch(changePhase("SelectAns"));
+                            } else {
+                                dispatch(changePhase("OtherView"));
+                            }
+                        } else {
                             try {
-                                const selectedLiarResponse = await selectedLiar(
+                                const response = await Result(
                                     setId,
+                                    roomId,
+                                    0,
+                                    0,
                                 );
-                                console.log(selectedLiarResponse);
-                                if (
-                                    selectedLiarResponse.data
-                                        .gameProcessType === "LiarVote"
-                                ) {
-                                    const dupliars =
-                                        selectedLiarResponse.data
-                                            .mostVotedNicknames;
-                                    console.log(dupliars);
-                                    dispatch(
-                                        gameActions.updateDupLiars(dupliars),
-                                    );
-                                    runSelectLiarPhase();
-                                } else if (
-                                    selectedLiarResponse.data
-                                        .gameProcessType === "SelectAns"
-                                ) {
-                                    const mostVotedNickname =
-                                        selectedLiarResponse.data
-                                            .mostVotedNicknames[0];
-                                    console.log(mostVotedNickname);
+                                const result = response.data;
+                                console.log(result);
 
-                                    dispatch(
-                                        gameActions.updateSelectedLiar(
-                                            mostVotedNickname,
-                                        ),
-                                    );
-
-                                    console.log(mostVotedNickname);
-
-                                    if (
-                                        publisher.stream.connection.data ===
-                                        mostVotedNickname
-                                    ) {
-                                        dispatch(changePhase("SelectAns"));
-                                    } else {
-                                        dispatch(changePhase("OtherView"));
-                                    }
-                                } else {
-                                    try {
-                                        const response = await Result(
-                                            setId,
-                                            roomId,
-                                            0,
-                                            0,
-                                        );
-                                        const result = response.data;
-                                        console.log(result);
-
-                                        dispatch(
-                                            gameActions.updateResult(result),
-                                        );
-                                        dispatch(changePhase("MidScore"));
-                                    } catch (error) {
-                                        console.error(error);
-                                    }
-                                }
+                                dispatch(gameActions.updateResult(result));
+                                dispatch(changePhase("MidScore"));
                             } catch (error) {
                                 console.error(error);
                             }
-                        }, 5000);
+                        }
                     } catch (error) {
                         console.error(error);
                     }
-                };
-                runSelectLiarPhase();
+                }, 5000);
             } catch (error) {
                 console.error(error);
             }
-        }, 10000);
+        };
+        const timer = setTimeout(runSelectLiarPhase, 10000);
+        return () => clearTimeout(timer);
+    });
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowNotification(false);
+        }, 3000);
 
         return () => {
-            clearTimeout(notificationTimer);
-            clearTimeout(gameTimer);
+            clearTimeout(timer);
         };
     }, []);
 

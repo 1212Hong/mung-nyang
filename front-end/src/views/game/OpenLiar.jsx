@@ -43,7 +43,8 @@ const OpenLiar = () => {
             } catch (error) {
                 console.error(error);
             }
-        }, []);
+        }, 10000);
+
         return () => clearTimeout(timer);
     }, []);
 
