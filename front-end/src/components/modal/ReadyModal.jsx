@@ -29,7 +29,7 @@ const ReadyModal = () => {
     const dispatch = useDispatch();
     const imgSrc = foot;
 
-    const getGameId = async (gameId) => {
+    const signalGameId = async (gameId) => {
         session.signal({
             data: gameId,
             to: [],
@@ -53,7 +53,7 @@ const ReadyModal = () => {
                 console.log(response);
 
                 console.log(response.data.gameId);
-                await getGameId(response.data.gameId);
+                await signalGameId(response.data.gameId);
                 dispatch(gameActions.saveGameId(response.data.gameId));
                 dispatch(changePhase(response.data.gameProcessType));
             }
@@ -77,7 +77,13 @@ const ReadyModal = () => {
     useEffect(() => {
         const timer = setTimeout(async () => {
             // 타이머 흘러가는중
-            handleEndVote();
+            owner
+                ? handleEndVote()
+                : session.on("gameId", (e) => {
+                      console.log(e.data);
+                      dispatch(gameActions.saveGameId(e.data));
+                      dispatch(changePhase("Quiz"));
+                  });
         }, 7000);
 
         if (!modalFlag) {
