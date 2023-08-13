@@ -215,11 +215,6 @@ function WaitingRoom() {
                         >
                             START
                         </Button>
-                        <Button
-                            onClick={() => {
-                                dispatch(changePhase("Dance"));
-                            }}
-                        ></Button>
                     </StartnSetBox>
                 )}
             </Rightbox>
