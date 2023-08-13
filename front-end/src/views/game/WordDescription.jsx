@@ -13,6 +13,7 @@ import {
 import { getUserWord } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import Timer from "../../components/Timer";
+import { changePhase } from "../../store/phaseSlice";
 const Container = styled.div`
     margin: 0;
 `;
@@ -52,40 +53,22 @@ const WaitingParticipants = styled.div`
     margin: 5px;
     border-radius: 5px;
 `;
-const user_list = ["권영재", "김대홍", "손임현", "이민규", "홍주영"];
 
-const emergencyAnswer = () => {
-    const getFunc = async () => {
-        const emergencyReturn = await fetchEmergencyAnswerResponse(
-            "1",
-            "테스트",
-            "테스트유저2",
-            "석류",
-        );
-        // 결과
-
-        console.log(emergencyReturn);
-    };
-    getFunc();
-};
-const FinalAnswer = () => {
-    const getFunc = async () => {
-        const finalReturn = await fetchFinalAnswerResponse(
-            "1",
-            "SessionC",
-            "testAns",
-        );
-        console.log(finalReturn);
-    };
-};
 function WordDescription(props) {
     const [curGameSetId, setCurGameSetId] = useState("");
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { subscribers, publisher, mySessionId, myUserName, session, owner } =
-        openvidu;
-    const { gameId, category, answerer } = game;
+    const {
+        subscribers,
+        publisher,
+        mySessionId,
+        myUserName,
+        session,
+        owner,
+        mainStreamManager,
+    } = openvidu;
+    const { gameId, category, answerer, setId, roomId, playerId } = game;
     const [word, setWord] = useState("");
 
     const openAnswerModal = () => {
@@ -96,19 +79,24 @@ function WordDescription(props) {
             }),
         );
     };
+
     const [answererStream, setAnswererStream] = useState({});
     const [otherUserStream, setOtherUserStream] = useState([]);
     const [descUserNickname, setDescUserNickname] = useState([""]);
     const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
+    const [timerKey, setTimerKey] = useState(0);
     const streams = session.streamManagers;
     // 초기 세팅
     useEffect(() => {
         const getFunc = async () => {
-            // await getUserWord(game.PlayerId).then((response) =>
-            //     setWord(response),
-            // );
-            // setCurGameSetId(roleInfo.setId);
+            console.log(myUserName);
+            console.log(playerId);
+            //setId 때문에 404 오류 생길 수 있음.
+            await getUserWord(setId, myUserName).then((response) => {
+                setWord(response.data.playerWord);
+                console.log(response);
+            });
         };
         const getUserStream = async () => {
             setAnswererStream(
@@ -129,13 +117,19 @@ function WordDescription(props) {
                         setDescUserNickname((prev) => [...prev, nickname]);
                 }
             }
+            console.log(descUserNickname);
         };
+        getFunc();
         getUserStream();
     }, []);
-
+    const startTimer = () => {
+        setTimerKey((prevKey) => prevKey + 1);
+    };
     const getNextDescIndex = () => {
-        if (descIndex < streams.length - 2) setDescIndex(descIndex + 1);
-        else console.log("순회 종료");
+        if (descIndex < streams.length - 1) {
+            setDescIndex(descIndex + 1);
+            startTimer();
+        } else dispatch(changePhase("QnA"));
     };
 
     useEffect(() => {
@@ -149,32 +143,36 @@ function WordDescription(props) {
                 console.log(descUserNickname[descIndex]);
             }
         };
+        setSignal();
     }, [descIndex]);
+
     useEffect(() => {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
-            console.log(event.data);
         });
     });
     return (
         <Container>
             {}
-            <Timer onTimerEnd={() => getNextDescIndex()}></Timer>
+            <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()}></Timer>
             <Participants>
-                <CurParticipants width={"60%"}>
+                <CurParticipants width={"100%"}>
                     <VideoComponent
                         streamManager={otherUserStream.find(
                             (stream) =>
                                 stream.stream.connection.data ===
                                 curDescUserNickname,
                         )}
+                        width={"80%"}
+                        height={"80%"}
                     />
+                    {curDescUserNickname}
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
                     <CurFunction>
                         <VideoComponent
-                            width="380"
-                            height="200"
+                            width="380px"
+                            height="250px"
                             streamManager={answererStream.stream}
                         />
                     </CurFunction>
@@ -208,7 +206,7 @@ function WordDescription(props) {
                 {otherUserStream.map((stream, i) => (
                     <React.Fragment key={i}>
                         <VideoComponent
-                            width="380"
+                            width="250"
                             height="200"
                             streamManager={stream}
                         />
