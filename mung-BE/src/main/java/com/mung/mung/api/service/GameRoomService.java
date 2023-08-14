@@ -1,6 +1,7 @@
 package com.mung.mung.api.service;
 
 import com.mung.mung.api.request.GameRoomCreateReq;
+import com.mung.mung.common.exception.custom.GameNotExistException;
 import com.mung.mung.common.exception.custom.PlayerNotExistException;
 import com.mung.mung.common.exception.custom.RoomAlreadyExistsException;
 import com.mung.mung.common.exception.custom.RoomNotExistException;
@@ -119,6 +120,9 @@ public class GameRoomService {
     @Transactional // Video URL을 game에 저장
     public void saveRecording(long gameId, String newVideoURL){
         Game game = gameRepository.findByGameId(gameId);
+        if (game == null){
+            throw new GameNotExistException();
+        }
         game.updateGameVideoUrl(newVideoURL);
         gameRepository.save(game);
     }

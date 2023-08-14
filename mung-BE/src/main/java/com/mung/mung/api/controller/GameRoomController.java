@@ -183,12 +183,17 @@ public class GameRoomController {
 
     }
 
-    // 테스트용
+    // 동영상 기록
 
-    @PostMapping(value = "/room/recording/start")
+    @PostMapping("/room/recording/start")
     public ResponseEntity<?> startRecording(@RequestBody RecordingStartReq recordingStartReq) {
         // Session으로 반환
         String sessionId = sessionRoomConvert.get(recordingStartReq.getRoomId());
+        log.info("sessionId {}",sessionId);
+        log.info("sessionRoomConvert : {}", sessionRoomConvert);
+        if (sessionId == null) {
+            throw new RoomNotExistException();
+        }
 //            Recording.OutputMode outputMode = Recording.OutputMode.valueOf((String) params.get("outputMode"));
         Recording.OutputMode outputMode = Recording.OutputMode.COMPOSED;
 //            boolean hasAudio = (boolean) params.get("hasAudio");
@@ -207,17 +212,23 @@ public class GameRoomController {
             this.sessionRecordings.put(sessionId, true);
             this.sessionRecordMap.put(sessionId,recording.getId());
 
-            return new ResponseEntity<>(recording, HttpStatus.OK);
+            return new ResponseEntity<>("Recording Start", HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping(value = "/room/recording/stop")
+    @PostMapping("/room/recording/stop")
     public ResponseEntity<?> stopRecording(@RequestBody RecordingStopReq recordingStopReq) {
         String sessionId = sessionRoomConvert.get(recordingStopReq.getRoomId());
+        if (sessionId == null) {
+            throw new RoomNotExistException();
+        }
         String recordingId = this.sessionRecordMap.get(sessionId);
-        long gameId= recordingStopReq.getGameId();
+        if (recordingId == null) {
+            throw new RecordingNotStartedException();
+        }
+        long gameId = recordingStopReq.getGameId();
         log.info("Stoping recording | {}=", recordingId);
 
         try {
@@ -227,18 +238,16 @@ public class GameRoomController {
             // 확인 후 제거
             this.sessionRecordMap.remove(sessionId);
             gameRoomService.saveRecording(gameId,recording.getUrl());
-            return new ResponseEntity<>(recording, HttpStatus.OK);
+            return new ResponseEntity<>("Recording Over", HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @DeleteMapping (value = "/room/recording/delete")
+    @DeleteMapping ("/room/recording/delete")
     public ResponseEntity<?> deleteRecording(@RequestBody Map<String, Object> params) {
         // 삭제가 필요한 경우
         String recordingId = sessionRoomConvert.get((String) params.get("recording"));
-
-        System.out.println("Deleting recording | {recordingId}=" + recordingId);
 
         try {
             this.openvidu.deleteRecording(recordingId);
@@ -248,7 +257,7 @@ public class GameRoomController {
         }
     }
 
-    @RequestMapping(value = "/room/recording/get/{encodeRoomId}", method = RequestMethod.GET)
+    @GetMapping("/room/recording/get/{encodeRoomId}")
     public ResponseEntity<?> getRecording(@PathVariable String encodeRoomId) {
         String roomId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
         // 동영상 url로 반환
