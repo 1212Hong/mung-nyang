@@ -8,7 +8,7 @@ import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
 import ScoreTotal from "../views/game/ScoreTotal";
-import SelectLiar from "../views/game/SelectLiar";
+import LiarVote from "./game/LiarVote";
 import SelectAnswer from "../views/game/SelectAnswer";
 import OtherView from "../views/game/OtherView";
 import OpenLiar from "../views/game/OpenLiar";
@@ -61,7 +61,7 @@ const PHASE_COMPONENTS = [
     },
     {
         type: PHASES.LiarVote,
-        component: <SelectLiar />,
+        component: <LiarVote />,
     },
     {
         type: PHASES.SelectAns,
