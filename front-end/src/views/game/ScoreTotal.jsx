@@ -67,8 +67,7 @@ const ScoreTotal = () => {
         console.log(username);
         const newEntry = {
             username,
-            // upscore: scoreData[username] - beforeScore[username],
-            upscore: 3 - 2,
+            upscore: scoreData[username] - beforeScore[username],
             score: scoreData[username],
         };
         information.push(newEntry);

@@ -24,8 +24,7 @@ const LiarVote = () => {
     const imgSrc = foot;
     const dispatch = useDispatch();
     const roomId = useSelector((state) => state.openvidu.mySessionId);
-    // const answerer = useSelector((state) => state.game.answerer);
-    const answerer = "거센 말티즈";
+    const answerer = useSelector((state) => state.game.answerer);
 
     useEffect(() => {
         const timer = setTimeout(async () => {
