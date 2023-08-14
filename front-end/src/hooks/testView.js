@@ -11,9 +11,9 @@ export const enterGameRoom = async (sessionId, nickname) => {
         const playerInfo = res.data;
         store.dispatch(
             ovActions.savePlayerInfo({
+                owner: playerInfo.owner,
                 playerId: playerInfo.playerId,
                 score: playerInfo.playerScore,
-                owner: playerInfo.owner,
             }),
         );
     } catch (error) {
