@@ -5,8 +5,6 @@ import { useEffect } from "react";
 import { fetchQuizResult, submitAnswer } from "../hooks/quiz";
 import { gameActions } from "../store/gameSlice";
 import { Container, Content, FlexBox, Title } from "./layout/quiz";
-import { closeModal, openModal } from "../store/modalSlice";
-import { changePhase } from "../store/phaseSlice";
 
 const Quiz = (props) => {
     const { title, text1, text2 } = props;
@@ -53,13 +51,13 @@ const Quiz = (props) => {
             <FlexBox>
                 <Content
                     onClick={() => handleUserChoice(true)}
-                    clicked={userChoice === "positive" ? true : false}
+                    choice={userChoice === "positive"}
                 >
                     {text1}
                 </Content>
                 <Content
                     onClick={() => handleUserChoice(false)}
-                    clicked={userChoice === "negative" ? true : false}
+                    choice={userChoice === "negative"}
                 >
                     {text2}
                 </Content>
