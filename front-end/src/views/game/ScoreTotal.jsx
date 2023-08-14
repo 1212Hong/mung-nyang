@@ -28,7 +28,7 @@ const ScoreTotal = () => {
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const [scoreData, setScoreData] = useState({});
     const openvidu = useSelector((state) => state.openvidu);
-    const { session } = openvidu;
+    const { session, owner } = openvidu;
 
     const userlist = [];
     for (let i = 0; i < session.streamManagers.length; i++) {
@@ -46,6 +46,15 @@ const ScoreTotal = () => {
                 .catch((error) => {
                     console.error("Error fetching score:", error);
                 });
+            // signal 받기
+            session.on("signal:startDance", (event) => {
+                console.log(event.data);
+                dispatch(changePhase(event.data));
+            });
+            session.on("signal:startQuiz", (event) => {
+                console.log(event.data);
+                dispatch(changePhase(event.data));
+            });
         });
         return () => clearTimeout(timer);
     }, []);
@@ -68,12 +77,30 @@ const ScoreTotal = () => {
         .slice()
         .sort((a, b) => b.score - a.score);
 
+    // signal 적용
+    const signalDance = async () => {
+        session.signal({
+            data: "Dance",
+            to: [],
+            type: "startDance",
+        });
+    };
+    const signalQuiz = async () => {
+        session.signal({
+            data: "Quiz",
+            to: [],
+            type: "startQuiz",
+        });
+    };
+
     const Next = () => {
         dispatch(gameActions.saveScore(scoreData));
         if (set === setCnt) {
-            dispatch(changePhase({ phaseType: "Dance" }));
+            signalDance();
+            dispatch(changePhase("Dance"));
         } else {
-            dispatch(changePhase({ phaseType: "Quiz" }));
+            signalQuiz();
+            dispatch(changePhase("Quiz"));
         }
     };
 
@@ -102,15 +129,17 @@ const ScoreTotal = () => {
                     </LineItem>
                 ))}
             </RankBox>
-            <BtnBox>
-                <Button
-                    fontSize="32px"
-                    fontColor="var(--brown-dark)"
-                    onClick={Next}
-                >
-                    다음
-                </Button>
-            </BtnBox>
+            {owner && (
+                <BtnBox>
+                    <Button
+                        fontSize="32px"
+                        fontColor="var(--brown-dark)"
+                        onClick={Next}
+                    >
+                        다음
+                    </Button>
+                </BtnBox>
+            )}
         </Container>
     );
 };
