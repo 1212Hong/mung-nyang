@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 const Container = styled.div`
     padding: 20px;
     padding-bottom: 40px;
-    width: 600px;
+    width: 700px;
     height: 300px;
     background: var(--macciato);
     text-align: center;
@@ -23,7 +23,7 @@ const FlexBox = styled.div`
 `;
 
 const Content = styled.button`
-    background-color: ${(props) => props.clicked && `var(--beige-reverse)`};
+    background-color: var(--white);
     margin-right: 10px;
     margin-left: 10px;
     width: 350px;
@@ -38,8 +38,11 @@ const Content = styled.button`
         margin-top: 15px;
         box-shadow: none;
     }
-    :hover {
+    &:hover {
         cursor: pointer;
+    }
+    &.active {
+        background-color: var(--beige-reverse);
     }
 `;
 
