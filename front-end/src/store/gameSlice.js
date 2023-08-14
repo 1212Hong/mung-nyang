@@ -10,7 +10,6 @@ const initialState = {
     word: "",
     gameId: 0,
     playerId: "",
-    roomId: "",
     selectedAnswer: "",
     result: "",
     category: "",

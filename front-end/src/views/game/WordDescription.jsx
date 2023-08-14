@@ -68,7 +68,7 @@ function WordDescription(props) {
         owner,
         mainStreamManager,
     } = openvidu;
-    const { gameId, category, answerer, setId, roomId, playerId } = game;
+    const { gameId, category, answerer, setId, playerId } = game;
     const [word, setWord] = useState("");
 
     const openAnswerModal = () => {
