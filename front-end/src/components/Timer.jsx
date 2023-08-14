@@ -13,8 +13,8 @@ const Timer = (props) => {
         text,
         onTimerEnd,
     } = props;
-
-    const decreaseRatio = 10 / time;
+    const [initialTime, setInitialTime] = useState(time);
+    const decreaseRatio = 10 / initialTime;
     const [progress, setProgress] = useState(100);
     const dispatch = useDispatch();
     useEffect(() => {
