@@ -10,22 +10,19 @@ import {
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { Result } from "../../api/game";
-import { openviduSlice } from "../../store/openviduSlice";
+import { Result, deleteLiar } from "../../api/game";
+import { gameActions } from "../../store/gameSlice";
 
 const OpenLiar = () => {
-    const setId = useSelector((state) => state.gameSlice.setId);
+    const setId = useSelector((state) => state.game.setId);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
-    const pickedLiar = useSelector((state) => state.gameSlice.selectedLiar);
+    const pickedLiar = useSelector((state) => state.game.selectedLiar);
     console.log(pickedLiar);
-    const selectedAnswer = useSelector(
-        (state) => state.gameSlice.selectedAnswer,
-    );
+    const selectedAnswer = useSelector((state) => state.game.selectedAnswer);
     console.log(selectedAnswer);
     const dispatch = useDispatch();
-
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher } = openvidu;
+    const { session } = openvidu;
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -38,14 +35,13 @@ const OpenLiar = () => {
                 );
                 const result = response.data;
                 console.log(result);
-
-                dispatch(openviduSlice.actions.updateResult(result));
-                dispatch(changePhase({ phaseType: "Wait" }));
+                dispatch(gameActions.updateResult(result));
+                await deleteLiar(setId);
+                dispatch(changePhase("MidScore"));
             } catch (error) {
                 console.error(error);
             }
-        }, 7000);
-
+        }, []);
         return () => clearTimeout(timer);
     }, []);
 
@@ -53,28 +49,35 @@ const OpenLiar = () => {
         <Container>
             <Timer />
             <AnswerBox>
-                {publisher && (
-                    <AnswerItem>
-                        <VideoComponent
-                            width="500px"
-                            height="400px"
-                            streamManager={publisher}
-                        />
-                    </AnswerItem>
-                )}
+                {session.streamManagers &&
+                    session.streamManagers.map((sub, i) => (
+                        <React.Fragment key={i}>
+                            {sub.stream.connection.data === pickedLiar && (
+                                <AnswerItem>
+                                    <VideoComponent
+                                        width="500px"
+                                        height="400px"
+                                        streamManager={sub}
+                                    />
+                                </AnswerItem>
+                            )}
+                        </React.Fragment>
+                    ))}
                 <Card description={selectedAnswer} />
             </AnswerBox>
             <UserBox>
-                {subscribers &&
-                    subscribers.map((sub, i) => (
+                {session.streamManagers &&
+                    session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
-                            <OtherUsers>
-                                <VideoComponent
-                                    width="232px"
-                                    height="235px"
-                                    streamManager={sub}
-                                />
-                            </OtherUsers>
+                            {sub.stream.connection.data !== pickedLiar && (
+                                <OtherUsers>
+                                    <VideoComponent
+                                        width="232px"
+                                        height="235px"
+                                        streamManager={sub}
+                                    />
+                                </OtherUsers>
+                            )}
                         </React.Fragment>
                     ))}
             </UserBox>
