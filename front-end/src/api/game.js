@@ -149,3 +149,8 @@ export const DanceUrl = () => {
 export const PenaltyUser = (roomId) => {
     return API.get(`/api/penalty/player?roomId=${roomId}`);
 };
+
+// 벌칙 영상 전부 가져오기
+export const getPenaltyLink = (roomId) => {
+    return API.get(`/api/room/recording/get/${roomId}`);
+};
