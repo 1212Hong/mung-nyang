@@ -30,7 +30,7 @@ const ScoreTotal = () => {
     } else if (result === "LiarWin_NotLiar") {
         result = "라이어 승리";
     }
-    const totalset = useSelector((state) => state.game.totalset);
+    const setCnt = useSelector((state) => state.game.setCnt);
     const set = useSelector((state) => state.game.setId);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const [scoreData, setScoreData] = useState({});
@@ -78,7 +78,7 @@ const ScoreTotal = () => {
 
     const Next = () => {
         dispatch(gameActions.saveScore(scoreData));
-        if (set === totalset) {
+        if (set === setCnt) {
             dispatch(changePhase({ phaseType: "Dance" }));
         } else {
             dispatch(changePhase({ phaseType: "Quiz" }));
@@ -90,7 +90,7 @@ const ScoreTotal = () => {
             <TitleBox>
                 <TitleItem>{result}</TitleItem>
                 <SetItem>
-                    세트 : {set} / {totalset}
+                    세트 : {set} / {setCnt}
                 </SetItem>
             </TitleBox>
             <RankBox>
