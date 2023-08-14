@@ -150,3 +150,24 @@ export const InitializedData = (roomId) => {
         roomId: roomId,
     });
 };
+
+// 녹화 시작 요청
+export const RecordStart = (roomId, gameId) => {
+    return API.post(`/api/room/recording/start`, {
+        roomId: roomId,
+        gameId: gameId,
+    });
+};
+
+// 녹화 중단 요청
+export const RecordStop = (roomId, gameId) => {
+    return API.post(`/api/room/recording/stop`, {
+        roomId: roomId,
+        gameId: gameId,
+    });
+};
+
+// 저장된 녹화 영상들 가져오기
+export const getRecords = (roomId) => {
+    API.get(`/api/room/recording/get/${encodeURIComponent(roomId)}`);
+};

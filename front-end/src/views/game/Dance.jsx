@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import Button from "../../components/Button";
 import VideoComponent from "../../components/VideoComponent";
 import { OtherUsers, Container } from "../../components/layout/common";
-import Timer from "../../components/Timer";
 import {
     NotificationContainer,
     Overlay,
@@ -25,49 +24,60 @@ import { InitializedData } from "../../api/game";
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { penaltyUser } = game;
+    const { penaltyUser, passCnt } = game;
     const { session, owner, mySessionId } = openvidu;
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
     const [videoId, setVideoId] = useState("");
+    const [complete, setComplete] = useState(false);
     const dispatch = useDispatch();
 
-    const sendVideoId = async (videoIdToSend) => {
+    const sendVideoId = async (videoId) => {
         session.signal({
-            data: JSON.stringify({ type: "videoId", value: videoIdToSend }),
+            data: videoId,
             to: [],
             type: "videoData",
         });
     };
-    const handleTimerEnd = async () => {
-        // setGameEnd(true);
+    const sendGameEnd = async () => {
+        session.signal({
+            data: "",
+            to: [],
+            type: "resetInfo",
+        });
+    };
+    const signalPassVote = async (passCnt) => {
+        await session.signal({
+            data: `${String(Number(passCnt) + 1)}`,
+            to: [],
+            type: passCnt,
+        });
+    };
+    const passVoteEnd = async () => {
         await InitializedData(roomId);
-        dispatch(gameActions.reset());
+        sendGameEnd();
         console.log("초기화 확인 : ", game);
-        dispatch(changePhase("Wait"));
+        session.on("signal:resetInfo", () => {
+            dispatch(gameActions.reset());
+            dispatch(changePhase("Wait"));
+        });
     };
     useEffect(() => {
         const fetchDanceUrl = async () => {
-            try {
-                const info = await getDanceUrl();
-                console.log(info);
-                const newVideoId = info.danceUrl.split("/shorts/")[1];
-                setVideoId(newVideoId);
-                sendVideoId(newVideoId);
-            } catch (error) {
-                console.error("Error:", error);
-            }
+            const info = await getDanceUrl();
+            console.log(info);
+            const newVideoId = info.danceUrl.split("/shorts/")[1];
+            sendVideoId(newVideoId);
         };
 
         owner && fetchDanceUrl();
+        session.on("signal:videoData", (event) => {
+            setVideoId(event.data);
+        });
 
         const fetchPenaltyUser = async (roomId) => {
-            try {
-                await getPenaltyUser(roomId);
-                store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
-            } catch (error) {
-                console.log("Error:", error);
-            }
+            await getPenaltyUser(roomId);
+            store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
         };
         fetchPenaltyUser(roomId);
     }, []);
@@ -82,32 +92,17 @@ function Dance() {
         };
     }, []);
 
+    useEffect(() => {
+        if (passCnt === session.streamManagers.length) {
+            passVoteEnd();
+        }
+    }, []);
+
     const nonPenaltyUsers = session.streamManagers.filter((user) => {
         return user.stream.connection.data !== penaltyUser;
     });
-
-    useEffect(() => {
-        const handleSignalEvent = (event) => {
-            const { type, data } = event;
-            if (type === "signal:videoData") {
-                const message = JSON.parse(data);
-                if (message.type === "videoId") {
-                    setVideoId(message.value);
-                    console.log("Received videoId:", videoId);
-                }
-            }
-        };
-
-        session.on("signal", handleSignalEvent);
-
-        return () => {
-            session.off("signal", handleSignalEvent);
-        };
-    }, [session, videoId]);
-
     return (
         <Container>
-            <Timer onTimerEnd={handleTimerEnd} />
             <PenaltyBox>
                 <LeftItem>
                     <Video>
@@ -136,22 +131,23 @@ function Dance() {
                     </VideoComponent>
                 </RightItem>
                 <Buttons>
-                    <Button
-                        width="100px"
-                        height="150px"
-                        color="black"
-                        fontSize="32px"
-                    >
-                        PASS
-                    </Button>
-                    <Button
-                        width="100px"
-                        height="150px"
-                        color="black"
-                        fontSize="32px"
-                    >
-                        FAIL
-                    </Button>
+                    {complete ? (
+                        <div>투표완료</div>
+                    ) : (
+                        <Button
+                            width="100px"
+                            height="150px"
+                            color="black"
+                            fontSize="32px"
+                            onClick={async () => {
+                                setComplete(true);
+                                signalPassVote();
+                            }}
+                        >
+                            PASS
+                        </Button>
+                    )}
+                    찬성 : {passCnt}
                 </Buttons>
             </PenaltyBox>
             <UsersBox>
