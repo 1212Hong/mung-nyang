@@ -26,8 +26,6 @@ public class Game {
 
     private int curSet;
 
-    private String imageUrl;
-
     private String videoUrl;
 
     private LocalDateTime startTime;
@@ -41,5 +39,8 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
     private List<GameSet> gameSets = new ArrayList<>();
 
+    public void updateGameVideoUrl(String newVideoUrl) {
+        this.videoUrl = newVideoUrl;
+    }
 
 }
