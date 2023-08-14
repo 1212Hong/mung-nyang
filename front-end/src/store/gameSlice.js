@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     setCnt: 0, // 방장이 정한 게임 총 세트 수
-    lastRound: 0,
+    lastRound: false,
     gameVoteCnt: 0, // 게임 시작투표에 대한 누적 카운트
     setId: 0,
     score: 0,

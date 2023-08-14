@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 const Container = styled.div`
     padding: 20px;
     padding-bottom: 40px;
-    width: 600px;
+    width: 700px;
     height: 300px;
     background: var(--macciato);
     text-align: center;
@@ -41,7 +41,7 @@ const Content = styled.button`
     :hover {
         cursor: pointer;
     }
-    .active {
+    &.active {
         background-color: var(--beige-reverse);
     }
 `;

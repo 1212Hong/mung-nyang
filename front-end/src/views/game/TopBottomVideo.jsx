@@ -16,7 +16,6 @@ import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { fetchQuizInfo } from "../../hooks/quiz";
 import { useDispatch, useSelector } from "react-redux";
-import ChooseModal from "../../components/modal/ChooseModal";
 import { changePhase } from "../../store/phaseSlice";
 import { SmallText, SubText } from "../../components/layout/common";
 import { closeModal } from "../../store/modalSlice";
@@ -27,9 +26,8 @@ function TopBottomVideo() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const { gameId, answerer } = game;
-    const { publisher, subscribers, myUserName, session, owner } = openvidu;
+    const { myUserName, session, owner } = openvidu;
     const [quizInfo, setQuizInfo] = useState(null);
-    const dispatch = useDispatch();
 
     const title = "제시어 카테고리";
     const streams = session.streamManagers;
@@ -101,14 +99,14 @@ function TopBottomVideo() {
                 {downside_list !== undefined
                     ? downside_list.map((sub, index) => (
                           <VideoBox key={index}>
-                              <SmallText>
-                                  {sub.stream.connection.data}
-                              </SmallText>
                               <VideoComponent
                                   width={"280px"}
                                   height={"150px"}
                                   streamManger={sub}
                               />
+                              <SmallText>
+                                  {sub.stream.connection.data}
+                              </SmallText>
                           </VideoBox>
                       ))
                     : null}
