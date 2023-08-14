@@ -17,7 +17,6 @@ import { gameActions } from "../../store/gameSlice";
 const DupLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session, publisher } = openvidu;
-    console.log(session.streamManagers);
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
