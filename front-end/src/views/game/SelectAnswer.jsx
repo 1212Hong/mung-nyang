@@ -24,6 +24,8 @@ const SelectAnswer = (props) => {
     const imgSrc = foot2;
     const [answerList, setAnswerList] = useState([]);
     const dispatch = useDispatch();
+    const openvidu = useSelector((state) => state.openvidu);
+    const { session } = openvidu;
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -50,6 +52,15 @@ const SelectAnswer = (props) => {
         const timer = setTimeout(() => {
             dispatch(gameActions.updateSelectedAnswer(activeBox));
             console.log(activeBox);
+            // signal 적용
+            const signalSelectLiar = async () => {
+                session.signal({
+                    data: activeBox,
+                    to: [],
+                    type: "startOpenLiar",
+                });
+            };
+            signalSelectLiar();
             dispatch(changePhase("OpenLiar"));
         }, 10000);
         return () => {

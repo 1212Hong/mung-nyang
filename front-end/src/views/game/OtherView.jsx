@@ -11,6 +11,7 @@ import {
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { gameActions } from "../../store/gameSlice";
 
 const OtherView = () => {
     const text = "지목된 사람이 정답을 선택 중입니다.";
@@ -21,7 +22,12 @@ const OtherView = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            dispatch(changePhase("OpenLiar"));
+            // siganl 받기
+            session.on("signal:startOpenLiar", (event) => {
+                console.log(event.data);
+                dispatch(gameActions.updateSelectedAnswer(event.data));
+                dispatch(changePhase("OpenLiar"));
+            });
         }, 10000);
 
         return () => clearTimeout(timer);
