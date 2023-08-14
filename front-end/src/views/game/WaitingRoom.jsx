@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { startGameVote } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
+import { changePhase } from "../../store/phaseSlice";
 
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
@@ -61,6 +62,22 @@ function WaitingRoom() {
             type: "startGameVote",
         });
     };
+    const handlePhase = async (phase) => {
+        await session.signal({
+            data: phase,
+            to: [],
+            type: "dancePhase",
+        });
+        dispatch(changePhase("Dance"));
+    };
+    useEffect(() => {
+        const handleDancePhaseSignal = (event) => {
+            dispatch(changePhase("Dance"));
+        };
+        if (session) {
+            session.on("signal:dancePhase", handleDancePhaseSignal);
+        }
+    }, [dispatch, session]);
 
     const openRuleBook = () => {
         dispatch(
@@ -102,6 +119,7 @@ function WaitingRoom() {
         script.src = "https://developers.kakao.com/sdk/js/kakao.js";
         script.async = true;
         document.body.appendChild(script);
+
         return () => document.body.removeChild(script);
     }, []);
 
@@ -283,6 +301,11 @@ function WaitingRoom() {
                         >
                             START
                         </Button>
+                        <Button
+                            onClick={() => {
+                                handlePhase("Dance");
+                            }}
+                        ></Button>
                     </StartnSetBox>
                 )}
             </Rightbox>

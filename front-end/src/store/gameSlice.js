@@ -70,7 +70,7 @@ export const gameSlice = createSlice({
         reset(state) {
             Object.assign(state, initialState);
         },
-        savePassCnt: (state, action) => {
+        updatePassCnt: (state, action) => {
             state.passCnt = action.payload;
         },
     },
