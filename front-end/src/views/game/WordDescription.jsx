@@ -9,7 +9,8 @@ import { getUserWord } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import Timer from "../../components/Timer";
 import { changePhase } from "../../store/phaseSlice";
-import { SmallText } from "../../components/layout/common";
+import { SmallText, SubText } from "../../components/layout/common";
+import { ModalBackdrop, ModalViewDescDiv } from "../../components/layout/modal";
 
 const Container = styled.div`
     margin: 0;
@@ -151,7 +152,7 @@ function WordDescription() {
             <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()}></Timer>
             <Participants>
                 <CurParticipants width={"100%"}>
-                    {curDescUserNickname && (
+                    {curDescUserNickname ? (
                         <VideoComponent
                             streamManager={otherUserStreams.find(
                                 (streamManager) =>
@@ -161,6 +162,15 @@ function WordDescription() {
                             width={"80%"}
                             height={"80%"}
                         />
+                    ) : (
+                        <ModalBackdrop>
+                            <ModalViewDescDiv>
+                                <SubText>
+                                    잠시 후 제시어 설명이 시작됩니다. 순서대로
+                                    자신의 제시어를 설명해보세요!
+                                </SubText>
+                            </ModalViewDescDiv>
+                        </ModalBackdrop>
                     )}
                     <SmallText>{curDescUserNickname}</SmallText>
                 </CurParticipants>
@@ -177,8 +187,12 @@ function WordDescription() {
                             <Button
                                 width={"100%"}
                                 height={"100%"}
-                                text={`제시어 : ${word}`}
-                                fontSize={"32px"}
+                                text={
+                                    answerer
+                                        ? "정답을 맞춰보세요"
+                                        : `제시어 : ${word}`
+                                }
+                                fontSize={"28px"}
                             ></Button>
                         </CurSubFunction>
                         <CurSubFunction>

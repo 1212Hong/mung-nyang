@@ -40,7 +40,7 @@ const ReadyModal = () => {
     const signalVote = async (check) => {
         console.log(gameVoteCnt);
         await session.signal({
-            data: `${String(Number(gameVoteCnt) + 1)}`,
+            data: `${String(Number(gameVoteCnt + 1))}`,
             to: [],
             type: check === "T" ? "agree" : "disagree",
         });
