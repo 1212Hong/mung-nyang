@@ -144,3 +144,9 @@ export const DanceUrl = () => {
 export const PenaltyUser = (roomId) => {
     return API.get(`/api/penalty/player?roomId=${roomId}`);
 };
+// Game 끝난 후 초기화
+export const InitializedData = (roomId) => {
+    return API.put(`/api/game-sessions/initialize`, {
+        roomId: roomId,
+    });
+};
