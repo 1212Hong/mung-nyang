@@ -33,15 +33,18 @@ public class QuizServiceImpl implements QuizService {
     private final WordRepository wordRepository;
 
     @Override
-    public QuizStartRes startQuiz(String roomId) {
+    public QuizStartRes startQuiz(Long gameId) {
 
-        List<Quiz> quizList = quizRepository.findAll();
-        if (quizList.isEmpty()) {
-            throw new QuizNotFoundException();
+        Game game = gameRepository.findByGameId(gameId);
+        if (game == null) {
+            throw new GameNotExistException();
         }
 
-        int randomIndex = ThreadLocalRandom.current().nextInt(quizList.size());
-        Quiz quiz = quizList.get(randomIndex);
+        Quiz quiz = quizRepository.findQuizById(game.getRanQuiz());
+
+        if (quiz == null) {
+            throw new QuizNotFoundException();
+        }
 
         return QuizStartRes.builder()
                 .quiz(quiz)
@@ -91,9 +94,9 @@ public class QuizServiceImpl implements QuizService {
 
             Set<String> negativeVoters = negativeQuizByRoom.get(roomId);
             selectedPlayerNickname = getRandomNickname(negativeVoters);
-        } else if(positiveCount==0 && negativeCount==0) {
+        } else if (positiveCount == 0 && negativeCount == 0) {
             // 아무도 투표 안했을 경우
-            pickedAnswer=3;
+            pickedAnswer = 3;
             List<String> players = playerRepository.findPlayers(roomId);
             log.info("[아무도 투표 안함] players : {}", players);
             int randomIndex = new Random().nextInt(players.size());
@@ -189,7 +192,7 @@ public class QuizServiceImpl implements QuizService {
     public QuizPlayersWordRes getPlayerWord(Long setId, String playerNick) {
         GameSet curSet = gameSetRepository.findBySetId(setId);
 
-        if(curSet==null){
+        if (curSet == null) {
             throw new SetNotExistException();
         }
         // 라이어일 경우

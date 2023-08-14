@@ -145,3 +145,13 @@ export const Result = (setId, roomId, pickedLiar, answer) => {
         answer: answer,
     });
 };
+
+// Dance Url 요청
+export const DanceUrl = () => {
+    return API.get(`/api/penalty`);
+};
+
+// Penalty User 요청
+export const PenaltyUser = (roomId) => {
+    return API.get(`/api/penalty/player?roomId=${roomId}`);
+};
