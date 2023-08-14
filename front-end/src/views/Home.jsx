@@ -12,6 +12,7 @@ import { MainText, SubText } from "../components/layout/common";
 import Input from "../components/Input";
 import { makeRoom, enterRoom } from "../hooks/home";
 import { useNavigate } from "react-router-dom";
+import mainBgm from "../assets/audio/mainBgm.wav";
 
 const Home = () => {
     const [view, setView] = useState(false);
@@ -49,6 +50,9 @@ const Home = () => {
 
     return (
         <HomeContainer>
+            <audio autoPlay loop>
+                <source src={mainBgm} type="audio/wav" />
+            </audio>
             <LeftBox className="leftbox">
                 <HeaderBox>
                     <MainText>멍 마을의 냥</MainText>

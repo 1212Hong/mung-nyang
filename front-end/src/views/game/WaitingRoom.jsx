@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, forwardRef } from "react";
 import Button from "../../components/Button";
+import mainBgm from "../../assets/audio/mainBgm.wav";
 import { ReactComponent as LinkIcon } from "../../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../../assets/img/capture_image.svg";
 import { ReactComponent as DogFootIcon } from "../../assets/img/dog_foot.svg";
@@ -88,8 +89,21 @@ function WaitingRoom() {
     };
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
+        const bgmAudio = document.querySelector("audio");
+        if (bgmAudio) {
+            bgmAudio.muted = !bgmAudio.muted;
+        }
     }
     console.log(openvidu.messageList.length);
+    useEffect(() => {
+        const bgmAudio = new Audio(mainBgm);
+        bgmAudio.preload = "auto";
+
+        bgmAudio.oncanplay = () => {
+            bgmAudio.volume = 0.2;
+            bgmAudio.play();
+        };
+    }, []);
     useEffect(() => {
         // session.on("signal:chat", (event) => {
         //     const data = JSON.parse(event.data);
@@ -98,6 +112,9 @@ function WaitingRoom() {
     });
     return (
         <Container className="waiting-container">
+            <audio loop>
+                <source src={mainBgm} type="audio/wav" />
+            </audio>
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
                     {publisher && (
@@ -170,29 +187,20 @@ function WaitingRoom() {
                             {item.icon}
                         </Button>
                     ))}
-                    {isMuted ? (
-                        <Button
-                            key="mute"
-                            type="icon"
-                            width="55px"
-                            height="40px"
-                            background={`var(--beige-dark)`}
-                            onClick={toggleVolume}
-                        >
+                    <Button
+                        key="mute"
+                        type="icon"
+                        width="55px"
+                        height="40px"
+                        background={`var(--beige-dark)`}
+                        onClick={toggleVolume}
+                    >
+                        {isMuted ? (
                             <VolumeMuteIcon width="23" height="23" />
-                        </Button>
-                    ) : (
-                        <Button
-                            key="on"
-                            type="icon"
-                            width="55px"
-                            height="40px"
-                            background={`var(--beige-dark)`}
-                            onClick={toggleVolume}
-                        >
+                        ) : (
                             <VolumeOnIcon width="23" height="23" />
-                        </Button>
-                    )}
+                        )}
+                    </Button>
                 </MenuBox>
                 {owner && (
                     <StartnSetBox>
