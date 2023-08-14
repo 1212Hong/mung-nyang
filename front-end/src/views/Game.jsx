@@ -15,7 +15,7 @@ import { outRoom } from "../api/room";
 import Loading from "./Loading";
 import { gameActions } from "../store/gameSlice";
 import { closeModal, openModal } from "../store/modalSlice";
-import { deleteVote } from "../api/game";
+import DupLiar from "./game/DupLiar";
 import QnAPage from "./game/QnAPage";
 import { changePhase } from "../store/phaseSlice";
 
@@ -30,6 +30,7 @@ const PHASES = {
     Ans: "Ans",
     EmgAns: "EmgAns",
     LiarVote: "LiarVote",
+    DupLiar: "DupLiar",
     SelectAns: "SelectAns",
     OtherView: "OtherView",
     OpenLiar: "OpenLiar",
@@ -72,6 +73,10 @@ const PHASE_COMPONENTS = [
     {
         type: PHASES.Desc,
         component: <WordDescription />,
+    },
+    {
+        type: PHASES.DupLiar,
+        component: <DupLiar />,
     },
     {
         type: PHASES.QnA,
