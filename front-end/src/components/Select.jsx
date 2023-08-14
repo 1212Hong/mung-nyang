@@ -54,23 +54,26 @@ const Select = (props) => {
     const { session, mySessionId, myUserName, answerer } = openvidu;
 
     const goDesc = async (category) => {
-        const roleInfo = await selectCategory(
+        const setInfo = await selectCategory(
             mySessionId,
             gameId,
             category,
             answerer,
         );
-        // roomId, gameId, category, answerer
-        // 접근 실패 시 symbol 타입으로 접근
-
-        console.log(roleInfo);
-        if (roleInfo) {
-            const playersRoleInfo = roleInfo.playersRoleInfo;
-            playersRoleInfo.map((item) => {
-                if (item.playerNickname === myUserName) {
-                    dispatch(gameActions.saveWord(item.word));
-                }
+        console.log(setInfo);
+        if (setInfo) {
+            const setId = setInfo.setId;
+            dispatch(gameActions.saveSetId(setId));
+            session.signal({
+                data: setId,
+                to: [],
+                type: "setId",
             });
+            // playersRoleInfo.map((item) => {
+            //     if (item.playerNickname === myUserName) {
+            //         dispatch(gameActions.saveWord(item.word));
+            //     }
+            // });
         }
         dispatch(changePhase("Desc"));
     };
