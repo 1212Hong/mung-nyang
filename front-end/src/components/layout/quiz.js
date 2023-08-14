@@ -38,7 +38,7 @@ const Content = styled.button`
         margin-top: 15px;
         box-shadow: none;
     }
-    :hover {
+    &:hover {
         cursor: pointer;
     }
     &.active {
