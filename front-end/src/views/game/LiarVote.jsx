@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 
-const SelectLiar = () => {
+const LiarVote = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session, publisher } = openvidu;
     const setId = useSelector((state) => state.game.setId);
@@ -24,6 +24,8 @@ const SelectLiar = () => {
     const imgSrc = foot;
     const dispatch = useDispatch();
     const roomId = useSelector((state) => state.openvidu.mySessionId);
+    // const answerer = useSelector((state) => state.game.answerer);
+    const answerer = "짓궂은 진돗개";
 
     useEffect(() => {
         const timer = setTimeout(async () => {
@@ -110,32 +112,61 @@ const SelectLiar = () => {
             <Timer></Timer>
             <Box>
                 {session.streamManagers &&
-                    session.streamManagers.map((subscriber, i) => (
-                        <React.Fragment key={i}>
-                            <Item
-                                onClick={() =>
-                                    handleBoxClick(
-                                        session.streamManagers[i].stream
-                                            .connection.data,
-                                    )
-                                }
-                            >
-                                <ImageOverlay
-                                    active={
-                                        activeBox ===
-                                        subscriber.stream.connection.data
-                                    }
-                                >
-                                    <img src={imgSrc} alt="사진" width="100%" />
-                                </ImageOverlay>
-                                <VideoComponent
-                                    width="350px"
-                                    height="320px"
-                                    streamManager={subscriber}
-                                />
-                            </Item>
-                        </React.Fragment>
-                    ))}
+                    session.streamManagers.map((subscriber, i) => {
+                        if (subscriber.stream.connection.data === answerer) {
+                            return (
+                                <React.Fragment key={i}>
+                                    <Item>
+                                        정답자 : {answerer}
+                                        <VideoComponent
+                                            width="350px"
+                                            height="320px"
+                                            streamManager={subscriber}
+                                        />
+                                    </Item>
+                                </React.Fragment>
+                            );
+                        }
+                        return null;
+                    })}
+
+                {session.streamManagers &&
+                    session.streamManagers.map((subscriber, i) => {
+                        if (subscriber.stream.connection.data !== answerer) {
+                            return (
+                                <React.Fragment key={i}>
+                                    <Item
+                                        onClick={() =>
+                                            handleBoxClick(
+                                                session.streamManagers[i].stream
+                                                    .connection.data,
+                                            )
+                                        }
+                                    >
+                                        <ImageOverlay
+                                            active={
+                                                activeBox ===
+                                                subscriber.stream.connection
+                                                    .data
+                                            }
+                                        >
+                                            <img
+                                                src={imgSrc}
+                                                alt="사진"
+                                                width="100%"
+                                            />
+                                        </ImageOverlay>
+                                        <VideoComponent
+                                            width="350px"
+                                            height="320px"
+                                            streamManager={subscriber}
+                                        />
+                                    </Item>
+                                </React.Fragment>
+                            );
+                        }
+                        return null;
+                    })}
             </Box>
             <NotificationContainer show={showNotification}>
                 {text}
@@ -144,4 +175,4 @@ const SelectLiar = () => {
     );
 };
 
-export default SelectLiar;
+export default LiarVote;
