@@ -167,6 +167,15 @@ const Game = () => {
                 newSession.on("signal:answerer", (e) => {
                     console.log("받아온 정답자 : ", e.data);
                     dispatch(gameActions.saveAnswerer(e.data));
+                    dispatch(
+                        openModal({
+                            modalType: "ChooseModal",
+                            isOpen: true,
+                        }),
+                    );
+                    setTimeout(() => {
+                        dispatch(changePhase("Category"));
+                    }, 5000);
                 });
 
                 // // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현

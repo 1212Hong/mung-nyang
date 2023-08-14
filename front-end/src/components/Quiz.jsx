@@ -7,12 +7,9 @@ import { gameActions } from "../store/gameSlice";
 import { Container, Content, FlexBox, Title } from "./layout/quiz";
 
 const Quiz = (props) => {
-    const { title, text1, text2, onViewChange, ChooseModal } = props;
+    const { title, text1, text2, ChooseModal } = props;
     const openvidu = useSelector((state) => state.openvidu);
-    const game = useSelector((state) => state.game);
-    const { answerer } = game;
     const { session, mySessionId, myUserName, owner } = openvidu;
-    const [showChooseModal, setShowChooseModal] = useState(false);
     const [answered, setAnswered] = useState(false);
     const [userChoice, setUserChoice] = useState("");
     const [quizResultFetched, setQuizResultFetched] = useState(false);
@@ -38,7 +35,6 @@ const Quiz = (props) => {
                     to: [],
                     type: "answerer",
                 });
-                setShowChooseModal(true);
                 setQuizResultFetched(true);
             } catch (error) {
                 console.error("Error:", error);
@@ -50,16 +46,6 @@ const Quiz = (props) => {
         }
     }, [answered, userChoice]);
 
-    useEffect(() => {
-        if (quizResultFetched && showChooseModal) {
-            const modalTimer = setTimeout(() => {
-                setShowChooseModal(false);
-                onViewChange("Category");
-            }, 5000);
-
-            return () => clearTimeout(modalTimer);
-        }
-    }, [onViewChange, showChooseModal]);
     return (
         <Container>
             <Timer onTimerEnd={() => setAnswered(true)} />
@@ -78,7 +64,7 @@ const Quiz = (props) => {
                     {text2}
                 </Content>
             </FlexBox>
-            {quizResultFetched && <ChooseModal answerer={answerer} />}
+            {quizResultFetched && <ChooseModal />}
         </Container>
     );
 };

@@ -14,30 +14,29 @@ import Quiz from "../../components/Quiz";
 import Select from "../../components/Select";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { fetchQuizInfo, fetchUserRole } from "../../hooks/quiz";
+import { fetchQuizInfo } from "../../hooks/quiz";
 import { useDispatch, useSelector } from "react-redux";
 import ChooseModal from "../../components/modal/ChooseModal";
 import { changePhase } from "../../store/phaseSlice";
-import { gameActions } from "../../store/gameSlice";
+import { SubText } from "../../components/layout/common";
+import { closeModal } from "../../store/modalSlice";
 
 function TopBottomVideo() {
+    const phase = useSelector((state) => state.phase);
+    const { phaseType } = phase;
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const { gameId, answerer } = game;
-    const { publisher, subscribers, mySessionId, myUserName, session, owner } =
-        openvidu;
+    const { publisher, subscribers, myUserName, session, owner } = openvidu;
     const [quizInfo, setQuizInfo] = useState(null);
+    const dispatch = useDispatch();
 
-    const [view, setView] = useState("Quiz");
-    console.log(subscribers);
+    const title = "제시어 카테고리";
+    const list = ["음식", "스포츠", "과일", "카", "테", "고", "리"]; // 카테고리는 고정이므로 여기서 카테고리 다 넣어줌
     const upside_list = [
         ...subscribers.slice(0, Math.min(subscribers.length, 2)),
     ];
-    const title = "제시어 카테고리";
-    const list = ["음식", "스포츠", "과일", "카", "테", "고", "리"]; // 카테고리는 고정이므로 여기서 카테고리 다 넣어줌
-
     const downside_list = subscribers;
-    const dispatch = useDispatch();
 
     useEffect(() => {
         if (session) {
@@ -55,9 +54,10 @@ function TopBottomVideo() {
         }
         fetchAndSetQuizInfo();
     }, []);
-    const onViewChange = (newView) => {
-        setView(newView);
-    };
+
+    useEffect(() => {
+        closeModal();
+    }, phaseType);
 
     return (
         <Container className="Container">
@@ -83,21 +83,20 @@ function TopBottomVideo() {
             </HeaderBox>
             <StateBox>
                 {quizInfo ? (
-                    view === "Quiz" ? (
+                    phaseType === "Quiz" ? (
                         <Quiz
                             title={quizInfo.question}
                             text1={quizInfo.answer1}
                             text2={quizInfo.answer2}
                             ChooseModal={ChooseModal}
-                            onViewChange={onViewChange}
                         />
-                    ) : view === "Category" ? (
+                    ) : phaseType === "Category" ? (
                         answerer === myUserName ? (
                             <Select list={list} title={title} />
                         ) : (
-                            <>정답자가 카테고리 선정중</>
+                            <SubText>정답자가 카테고리 선정중</SubText>
                         )
-                    ) : view === "EmgAns" ? (
+                    ) : phaseType === "EmgAns" ? (
                         <AnswerBox>
                             <h3>정답을 입력해 주세요.</h3>
                             <br />
