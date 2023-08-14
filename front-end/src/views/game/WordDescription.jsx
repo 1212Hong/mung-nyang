@@ -110,17 +110,17 @@ function WordDescription(props) {
                     (stream) => stream.stream.connection.data !== answerer,
                 ),
             );
-            if (owner) {
-                for (let i = 0; i < streams.length; i++) {
-                    let nickname = streams[i].stream.connection.data;
-                    if (nickname !== answerer)
-                        setDescUserNickname((prev) => [...prev, nickname]);
-                }
-            }
             console.log(descUserNickname);
         };
         getFunc();
         getUserStream();
+
+        if (owner) {
+            for (let i = 0; i < otherUserStream.length; i++) {
+                let nickname = otherUserStream[i].stream.connection.data;
+                setDescUserNickname((prev) => [...prev, nickname]);
+            }
+        }
     }, []);
     const startTimer = () => {
         setTimerKey((prevKey) => prevKey + 1);
@@ -150,7 +150,7 @@ function WordDescription(props) {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
         });
-    });
+    }, [timerKey]);
     return (
         <Container>
             {}
