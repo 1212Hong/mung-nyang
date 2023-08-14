@@ -46,6 +46,7 @@ export const deleteVote = async (roomId) => {
 
 // 카테고리 내 제시어
 export const selectCategory = (roomId, gameId, category, answerer) => {
+    console.log(roomId, gameId, category, answerer);
     return API.post(`api/quiz/category`, {
         roomId: roomId,
         gameId: gameId,
@@ -53,7 +54,10 @@ export const selectCategory = (roomId, gameId, category, answerer) => {
         answerer: answerer,
     });
 };
-
+// 해당 플레이어 제시어
+export const getUserWord = (setId, playerNick) => {
+    return API.get(`/api/quiz/word/${setId}/${playerNick}`);
+};
 // 비상정답
 export const emergencyAnswer = async (
     setId,
