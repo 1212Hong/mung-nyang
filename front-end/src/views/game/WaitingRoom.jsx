@@ -24,6 +24,7 @@ import {
     ChatItemName,
     ChatItemMessage,
 } from "../../components/layout/waiting";
+import { SmallText } from "../../components/layout/common";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { startGameVote } from "../../api/game";
@@ -149,13 +150,16 @@ function WaitingRoom() {
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
                     {publisher && (
-                        <Videobox>
-                            <VideoComponent
-                                width="380"
-                                height="200"
-                                streamManager={publisher}
-                            />
-                        </Videobox>
+                        <>
+                            <Videobox>
+                                <SmallText>{myUserName}</SmallText>
+                                <VideoComponent
+                                    width="380"
+                                    height="200"
+                                    streamManager={publisher}
+                                />
+                            </Videobox>
+                        </>
                     )}
                     {subscribers &&
                         subscribers.map((sub, i) => (
