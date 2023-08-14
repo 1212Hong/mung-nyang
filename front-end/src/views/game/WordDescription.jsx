@@ -137,7 +137,6 @@ function WordDescription() {
 
     useEffect(() => {
         session.on("signal:descIndex", (event) => {
-            console.log(event.data);
             setCurDescUserNickname(event.data);
         });
     }, [timerKey]);
