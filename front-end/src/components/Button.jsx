@@ -60,6 +60,7 @@ const Button = (props) => {
         // -> url props로는 못줄거같고 특정 사운드 후보들 미리 저장해두고 바꿔쓰기는 가능
         padding,
         margin,
+        disabled,
     } = props;
 
     // const test = new Audio(audioURL && "");
@@ -83,6 +84,7 @@ const Button = (props) => {
             hoverbgcolor={hoverbgcolor}
             padding={padding}
             margin={margin}
+            disabled={disabled}
         >
             {text}
             {children}
