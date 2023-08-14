@@ -55,19 +55,10 @@ const WaitingParticipants = styled.div`
 `;
 
 function WordDescription(props) {
-    const [curGameSetId, setCurGameSetId] = useState("");
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const {
-        subscribers,
-        publisher,
-        mySessionId,
-        myUserName,
-        session,
-        owner,
-        mainStreamManager,
-    } = openvidu;
+    const { myUserName, session, owner } = openvidu;
     const { gameId, category, answerer, setId, playerId } = game;
     const [word, setWord] = useState("");
 
@@ -100,27 +91,23 @@ function WordDescription(props) {
         };
         const getUserStream = async () => {
             setAnswererStream(
-                streams.find(
-                    (stream) => stream.stream.connection.data === answerer,
-                ),
+                streams.find((stream) => stream.connection.data === answerer),
             );
 
             setOtherUserStream(
-                streams.filter(
-                    (stream) => stream.stream.connection.data !== answerer,
-                ),
+                streams.filter((stream) => stream.connection.data !== answerer),
             );
-            if (owner) {
-                for (let i = 0; i < streams.length; i++) {
-                    let nickname = streams[i].stream.connection.data;
-                    if (nickname !== answerer)
-                        setDescUserNickname((prev) => [...prev, nickname]);
-                }
-            }
             console.log(descUserNickname);
         };
         getFunc();
         getUserStream();
+
+        if (owner) {
+            for (let i = 0; i < otherUserStream.length; i++) {
+                let nickname = otherUserStream[i].connection.data;
+                setDescUserNickname((prev) => [...prev, nickname]);
+            }
+        }
     }, []);
     const startTimer = () => {
         setTimerKey((prevKey) => prevKey + 1);
@@ -150,7 +137,7 @@ function WordDescription(props) {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
         });
-    });
+    }, [timerKey]);
     return (
         <Container>
             {}
@@ -160,8 +147,7 @@ function WordDescription(props) {
                     <VideoComponent
                         streamManager={otherUserStream.find(
                             (stream) =>
-                                stream.stream.connection.data ===
-                                curDescUserNickname,
+                                stream.connection.data === curDescUserNickname,
                         )}
                         width={"80%"}
                         height={"80%"}
@@ -173,7 +159,7 @@ function WordDescription(props) {
                         <VideoComponent
                             width="380px"
                             height="250px"
-                            streamManager={answererStream.stream}
+                            streamManager={answererStream}
                         />
                     </CurFunction>
                     <CurFunction height={"36%"}>
