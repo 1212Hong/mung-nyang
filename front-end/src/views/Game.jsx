@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import TopBottomVideo from "./game/TopBottomVideo";
+import Dance from "./game/Dance";
 import WordDescription from "./game/WordDescription";
 import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
@@ -69,6 +70,10 @@ const PHASE_COMPONENTS = [
     {
         type: PHASES.Desc,
         component: <WordDescription />,
+    },
+    {
+        type: PHASES.Dance,
+        component: <Dance />,
     },
 ];
 
