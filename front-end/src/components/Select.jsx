@@ -63,10 +63,9 @@ const Select = (props) => {
         );
         console.log(setInfo);
         if (setInfo) {
-            const setId = setInfo.setId;
-            dispatch(gameActions.saveSetId(setId));
+            dispatch(gameActions.saveSetId(setInfo.setId));
             session.signal({
-                data: setId,
+                data: setInfo.setId,
                 to: [],
                 type: "setId",
             });
