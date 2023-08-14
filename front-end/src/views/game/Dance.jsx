@@ -24,8 +24,9 @@ import { InitializedData } from "../../api/game";
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { penaltyUser, passCnt } = game;
-    const { session, owner, mySessionId } = openvidu;
+    const { passCnt } = game;
+    const penaltyUser = "깊은 치와와";
+    const { session, owner, mySessionId, myUserName } = openvidu;
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
     const [videoId, setVideoId] = useState("");
@@ -50,16 +51,20 @@ function Dance() {
         await session.signal({
             data: `${String(Number(passCnt) + 1)}`,
             to: [],
-            type: passCnt,
+            type: "addPassCnt",
         });
     };
     const passVoteEnd = async () => {
-        await InitializedData(roomId);
-        sendGameEnd();
-        console.log("초기화 확인 : ", game);
+        owner && (await InitializedData(roomId));
+        owner && sendGameEnd();
         session.on("signal:resetInfo", () => {
             dispatch(gameActions.reset());
             dispatch(changePhase("Wait"));
+        });
+    };
+    const addCount = async (passCnt) => {
+        session.on("signal:addPassCnt", (event) => {
+            dispatch(gameActions.updatePassCnt(event.data));
         });
     };
     useEffect(() => {
@@ -75,12 +80,20 @@ function Dance() {
             setVideoId(event.data);
         });
 
-        const fetchPenaltyUser = async (roomId) => {
-            await getPenaltyUser(roomId);
-            store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
-        };
-        fetchPenaltyUser(roomId);
+        // const fetchPenaltyUser = async (roomId) => {
+        //     await getPenaltyUser(roomId);
+        //     store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
+        // };
+        // fetchPenaltyUser(roomId);
     }, []);
+
+    useEffect(() => {
+        console.log("비교 :", session.streamManagers.length - 1, passCnt);
+        if (Number(passCnt) === session.streamManagers.length - 1) {
+            passVoteEnd();
+        }
+        addCount(passCnt);
+    }, [passCnt]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -91,16 +104,10 @@ function Dance() {
             clearTimeout(timer);
         };
     }, []);
-
-    useEffect(() => {
-        if (passCnt === session.streamManagers.length) {
-            passVoteEnd();
-        }
-    }, []);
-
     const nonPenaltyUsers = session.streamManagers.filter((user) => {
         return user.stream.connection.data !== penaltyUser;
     });
+    console.log(nonPenaltyUsers);
     return (
         <Container>
             <PenaltyBox>
@@ -131,23 +138,31 @@ function Dance() {
                     </VideoComponent>
                 </RightItem>
                 <Buttons>
-                    {complete ? (
-                        <div>투표완료</div>
-                    ) : (
-                        <Button
-                            width="100px"
-                            height="150px"
-                            color="black"
-                            fontSize="32px"
-                            onClick={async () => {
+                    <Button
+                        width="100px"
+                        height="150px"
+                        color="black"
+                        fontSize="32px"
+                        disabled={myUserName === penaltyUser || complete}
+                        onClick={async () => {
+                            if (myUserName !== penaltyUser && !complete) {
                                 setComplete(true);
-                                signalPassVote();
-                            }}
-                        >
-                            PASS
-                        </Button>
-                    )}
-                    찬성 : {passCnt}
+                                await signalPassVote(passCnt);
+                                addCount(passCnt);
+                            }
+                        }}
+                    >
+                        {complete ? "완료" : "PASS"}
+                    </Button>
+                    <Button
+                        width="100px"
+                        height="150px"
+                        color="black"
+                        fontSize="32px"
+                        disabled={true}
+                    >
+                        찬성 {passCnt}/{session.streamManagers.length - 1}
+                    </Button>
                 </Buttons>
             </PenaltyBox>
             <UsersBox>
