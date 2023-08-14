@@ -30,13 +30,13 @@ const AnswerModal = (type) => {
             myUserName,
             ans,
         ).then((data) => {
-            dispatch(gameActions.saveResult(data.resultReturn));
+            dispatch(gameActions.saveResult(data));
         });
         dispatch(closeModal());
         session.signal({
             data: result,
             to: [],
-            type: "emgAnswered",
+            type: "emgAnswered", // 비상 정답 누르면 신호 보냄 -> 받는 거 체크 필요
         });
         console.log(result);
     };
