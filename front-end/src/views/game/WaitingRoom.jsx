@@ -124,7 +124,12 @@ function WaitingRoom() {
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                <Participant />
+                {publisher && subscribers && (
+                    <Participant
+                        publisher={publisher}
+                        subscribers={subscribers}
+                    />
+                )}
 
                 <ChattingBox>
                     <ChatBox>
