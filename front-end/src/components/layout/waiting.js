@@ -46,13 +46,56 @@ const VideoboxGrid = styled.div`
 const ChattingBox = styled.div`
     height: 280px;
     background-color: var(--beige-dark);
+    padding: 5px 10px;
     margin: 15px;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
+    ::-webkit-scrollbar {
+        width: 10px;
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+        height: 20%;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+    }
 `;
 const ChatBox = styled.div`
-    height: 250px;
+    padding: 5px;
+    overflow: auto;
+    height: 100%;
+`;
+const ChatItem = styled.div`
+    padding: 0px 15px 0px 10px;
+    font-size: 16px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    align-items: ${(props) =>
+        props.align === undefined ? "flex-start" : "flex-end"};
+    > div {
+        margin-bottom: 10px;
+    }
+`;
+const ChatItemName = styled.div`
+    font-size: 16px;
+`;
+const ChatItemMessage = styled.div`
+    max-width: 100%;
+    width: fit-content;
+    padding: 8px;
+    border-radius: ${(props) =>
+        props.align === undefined
+            ? "0px 10px 10px 10px"
+            : "10px 0px 10px 10px"};
+    background-color: var(--macciato);
+    overflow-wrap: break-word;
 `;
 const ChattingInputBox = styled.div`
     height: 30px;
@@ -95,4 +138,7 @@ export {
     ChattingInputBox,
     MenuBox,
     StartnSetBox,
+    ChatItem,
+    ChatItemName,
+    ChatItemMessage,
 };

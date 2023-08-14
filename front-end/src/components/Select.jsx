@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectCategory, signalCategory, startDesc } from "../api/game";
-import { gameActions } from "../store/gameSlice";
 import { changePhase } from "../store/phaseSlice";
+import { closeModal, openModal } from "../store/modalSlice";
+import { gameActions } from "../store/gameSlice";
 
 const Container = styled.div`
     padding: 20px;
@@ -35,15 +36,41 @@ const Content = styled.button`
 `;
 
 const Select = (props) => {
-    const { list, title } = props;
+    const { title } = props;
+    const list = [
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+    ];
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
-    const { session } = openvidu;
-
+    const game = useSelector((state) => state.game);
+    const { gameId, answerer } = game;
+    const { session, mySessionId } = openvidu;
+    console.log(answerer);
     const goDesc = async (category) => {
-        dispatch(gameActions.saveCategory(category));
-        await signalCategory(category, session.sessionId);
-        startDesc(session.sessionId);
+        const setInfo = await selectCategory(
+            mySessionId,
+            gameId,
+            category,
+            answerer,
+        );
+        console.log(setInfo);
+        if (setInfo) {
+            dispatch(gameActions.saveSetId(setInfo.data.setId));
+            session.signal({
+                data: setInfo.data.setId,
+                to: [],
+                type: "setId",
+            });
+        }
+        dispatch(changePhase("Desc"));
     };
 
     return (
@@ -54,7 +81,7 @@ const Select = (props) => {
                     <Content
                         key={index}
                         onClick={() => {
-                            goDesc(item);
+                            answerer && goDesc(item);
                         }}
                     >
                         {item}

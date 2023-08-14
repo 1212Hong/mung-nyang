@@ -32,6 +32,8 @@ public class Game {
 
     private LocalDateTime endTime;
 
+    private Long ranQuiz;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
@@ -41,6 +43,9 @@ public class Game {
 
     public void updateGameVideoUrl(String newVideoUrl) {
         this.videoUrl = newVideoUrl;
+    }
+    public void updateCurSet() {
+        this.curSet = this.curSet+1;
     }
 
 }

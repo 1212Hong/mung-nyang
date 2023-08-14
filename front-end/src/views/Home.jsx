@@ -36,7 +36,7 @@ const Home = () => {
     };
 
     const handleMakeRoom = async () => {
-        await makeRoom(roomInfo);
+        await makeRoom(roomInfo).catch((err) => navigate("/error"));
         navigate("/test");
     };
 

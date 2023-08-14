@@ -9,44 +9,51 @@ import {
 } from "../layout/modal";
 import Button from "../Button";
 import Timer from "../Timer";
-import {
-    castGameVote,
-    deleteVote,
-    getVoteRes,
-    signalVote,
-} from "../../api/game";
+import { castGameVote, deleteVote, getVoteRes } from "../../api/game";
 import { useDispatch, useSelector } from "react-redux";
 import { changePhase } from "../../store/phaseSlice";
-import { gameActions, gameSlice } from "../../store/gameSlice";
+import { gameActions } from "../../store/gameSlice";
+import foot from "../../assets/img/foot.png";
 
 const ReadyModal = () => {
     const openvidu = useSelector((state) => state.openvidu);
+    const modalFlag = useSelector((state) => state.modal.isOpen);
+    const game = useSelector((state) => state.game);
     const { mySessionId, session, owner } = openvidu;
-    const { setCnt } = gameSlice;
-    // api 통신을 위한 변수
-    const [check, setCheck] = useState(false);
-    // 찬반에 대한 카운트
-    const [agree, setAgree] = useState(0);
-    const [disagree, setDisagree] = useState(0);
+    const { setCnt, gameVoteCnt } = game;
+    const [footDivEls, setFootDivEls] = useState([]);
     // 현재 방의 인원 수를 받아서 6 대신 적용.
-    console.log(session.streamManagers);
-    const [wait, setWait] = useState(session.streamManagers.length);
+    // console.log(session.streamManagers);
+    // const [wait, setWait] = useState(session.streamManagers.length);
     const [complete, setComplete] = useState(false);
     const dispatch = useDispatch();
-    const [phase, setPhase] = useState("");
+    const imgSrc = foot;
 
-    // api 코드 작성할 곳.
-    // const decideVote = async (flag) => {
-    //     setCheck(flag);
-    //     console.log(check);
-    //     setComplete(flag);
-    //     const ticket = flag ? "T" : "F";
-    //     const res = await castGameVote(mySessionId, ticket);
-    //     console.log(res);
-    //     signalVote(res, session.sessionId);
-    //     flag ? setAgree(agree + 1) : setDisagree(disagree + 1);
-    //     setWait(wait - 1);
-    // };
+    const signalGameId = async (gameId) => {
+        session.signal({
+            data: gameId,
+            to: [],
+            type: "gameId",
+        });
+    };
+
+    const signalVote = async (check) => {
+        console.log(gameVoteCnt);
+        await session.signal({
+            data: `${String(Number(gameVoteCnt) + 1)}`,
+            to: [],
+            type: check === "T" ? "agree" : "disagree",
+        });
+    };
+
+    const signalGoQuiz = async (phase) => {
+        console.log(phase);
+        await session.signal({
+            data: phase,
+            to: [],
+            type: phase,
+        });
+    };
 
     const handleEndVote = async () => {
         try {
@@ -55,52 +62,66 @@ const ReadyModal = () => {
                 console.log(response);
 
                 console.log(response.data.gameId);
-                setPhase(response.data.gameProcessType);
-                dispatch(
-                    changePhase({ phaseType: response.data.gameProcessType }),
-                );
-                dispatch(gameActions.saveGameId(response.data.gameId));
-            }
+                await signalGameId(response.data.gameId);
 
-            owner && deleteVote(mySessionId);
+                dispatch(gameActions.saveGameId(response.data.gameId));
+                await signalGoQuiz(response.data.gameProcessType);
+                dispatch(changePhase(response.data.gameProcessType));
+            }
+            console.log(owner);
         } catch (error) {
             console.error("Error sending data:", error);
         }
-        // dispatch(changePhase({ phaseType: phase }));
+        owner && (await deleteVote(mySessionId));
     };
-    useEffect(() => {
-        session.on("agree", () => {
-            console.log("찬성");
-            setAgree(agree + 1);
-            setWait(wait - 1);
-        });
-        session.on("disagree", () => {
-            console.log("반대");
-            setDisagree(disagree + 1);
-            setWait(wait - 1);
-        });
-    }, [session]);
 
     useEffect(() => {
+        // 로컬 대기만 줄어듦 -> 모두의 화면이 줄어들도록 openvidu통신
+        const newFootDivEl = gameVoteCnt ? (
+            <div key={gameVoteCnt}>
+                <img src={imgSrc} alt="사진" width="55px" height="55px" />
+            </div>
+        ) : null;
+        setFootDivEls((prevDivs) => [...prevDivs, newFootDivEl]);
+    }, [gameVoteCnt]);
+
+    useEffect(() => {
+        if (!modalFlag) {
+            owner && deleteVote(mySessionId);
+            return;
+        }
         const timer = setTimeout(async () => {
             // 타이머 흘러가는중
+            owner
+                ? handleEndVote()
+                : session.on("signal:gameId", (e) => {
+                      console.log(e.data);
+                      dispatch(gameActions.saveGameId(e.data));
+                      dispatch(changePhase("Quiz"));
+                  });
         }, 7000);
 
         return () => {
-            clearTimeout(timer);
-            handleEndVote();
+            session.on("signal:gameId", (e) => {
+                console.log(e.data);
+                dispatch(gameActions.saveGameId(e.data));
+                dispatch(changePhase("Quiz"));
+            });
+            session.on("signal:refuseVote", (e) => {
+                clearTimeout(timer);
+            });
         };
-    }, []);
+    }, [modalFlag]);
 
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
-            <Timer width={"80%"}></Timer>
+            <Timer width={"80%"} time={8}></Timer>
             <ModalViewDescDiv>게임 시작 투표</ModalViewDescDiv>
 
-            <ModalViewResultDiv>
-                <ModalViewResultBox>찬성 : {agree}</ModalViewResultBox>
-                <ModalViewResultBox>반대 : {disagree}</ModalViewResultBox>
-                <ModalViewResultBox>대기 : {wait}</ModalViewResultBox>
+            <ModalViewResultDiv className="vote-res-div">
+                {/* <ModalViewResultBox>찬성cnt : {voteCnt}</ModalViewResultBox> */}
+                {/* <ModalViewResultBox>대기 : {wait}</ModalViewResultBox> */}
+                <ModalViewResultBox>{footDivEls}</ModalViewResultBox>
             </ModalViewResultDiv>
             <ModalViewButtonDiv>
                 {complete ? (
@@ -110,17 +131,13 @@ const ReadyModal = () => {
                         <Button
                             onClick={async () => {
                                 // api 코드 작성할 곳.
-                                setCheck(true);
                                 setComplete(true);
                                 const res = await castGameVote(
                                     mySessionId,
                                     "T",
                                 );
                                 console.log(res);
-                                signalVote(
-                                    res.data.voteMessage,
-                                    session.sessionId,
-                                );
+                                signalVote(res.data.voteMessage);
                             }}
                         >
                             O
@@ -128,17 +145,18 @@ const ReadyModal = () => {
                         <Button
                             onClick={async () => {
                                 // api 코드 작성할 곳.
-                                setCheck(false);
                                 setComplete(true);
                                 const res = await castGameVote(
                                     mySessionId,
                                     "F",
                                 );
                                 console.log(res);
-                                signalVote(
-                                    res.data.voteMessage,
-                                    session.sessionId,
-                                );
+                                signalVote(res.data.voteMessage);
+                                await session.signal({
+                                    data: "",
+                                    to: [],
+                                    type: "refuseVote",
+                                });
                             }}
                         >
                             X

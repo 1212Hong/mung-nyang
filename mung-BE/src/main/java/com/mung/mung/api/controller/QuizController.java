@@ -17,9 +17,9 @@ public class QuizController {
 
     private final QuizService quizService;
 
-    @GetMapping("/start")
-    public ResponseEntity<QuizStartRes> startQuiz(@RequestParam String roomId) {
-        QuizStartRes quizStartRes = quizService.startQuiz(roomId);
+    @GetMapping("/start/{gameId}")
+    public ResponseEntity<QuizStartRes> startQuiz(@PathVariable Long gameId) {
+        QuizStartRes quizStartRes = quizService.startQuiz(gameId);
 
         return ResponseEntity.ok(quizStartRes);
     }
@@ -57,6 +57,18 @@ public class QuizController {
         return ResponseEntity.ok(quizPlayersRoleRes);
 
     }
+
+    @GetMapping("/word/{setId}/{playerNick}")
+    public ResponseEntity<QuizPlayersWordRes> getQuizWord(@PathVariable Long setId, @PathVariable String playerNick) {
+
+
+        QuizPlayersWordRes quizPlayersWordRes = quizService.getPlayerWord(setId, playerNick);
+
+        return ResponseEntity.ok(quizPlayersWordRes);
+
+    }
+
+
 
 
 }
