@@ -10,11 +10,11 @@ const initialState = {
     word: "",
     gameId: 0,
     playerId: "",
-    roomId: "",
     selectedAnswer: "",
     result: "",
     category: "",
     dupLiars: [],
+    penaltyUser: "",
 };
 
 export const gameSlice = createSlice({
@@ -62,6 +62,9 @@ export const gameSlice = createSlice({
         },
         updateDupLiars: (state, action) => {
             state.dupLiars = action.payload;
+        },
+        updatePenaltyUser: (state, action) => {
+            state.penaltyUser = action.payload;
         },
     },
 });

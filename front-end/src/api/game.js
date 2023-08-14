@@ -9,18 +9,6 @@ export const startGameVote = (roomId) => {
         .catch((err) => console.log(err));
 };
 
-// // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현
-// export const signalVote = async (check, sessionId, cnt) => {
-//     OPENVIDU.post(`/openvidu/api/signal`, {
-//         session: sessionId,
-//         to: [],
-//         type: check === "T" ? "agree" : "disagree",
-//         data: `${cnt + 1}`,
-//     })
-//         .then((data) => console.log(data))
-//         .catch((err) => console.log(err));
-// };
-
 // 투표 수락 or 거절의사 보내기
 export const castGameVote = async (roomId, check) => {
     return API.post(`/api/vote/count`, {
@@ -46,6 +34,7 @@ export const deleteVote = async (roomId) => {
 
 // 카테고리 내 제시어
 export const selectCategory = (roomId, gameId, category, answerer) => {
+    console.log(roomId, gameId, category, answerer);
     return API.post(`api/quiz/category`, {
         roomId: roomId,
         gameId: gameId,
@@ -53,7 +42,10 @@ export const selectCategory = (roomId, gameId, category, answerer) => {
         answerer: answerer,
     });
 };
-
+// 해당 플레이어 제시어
+export const getUserWord = (setId, playerNick) => {
+    return API.get(`/api/quiz/word/${setId}/${playerNick}`);
+};
 // 비상정답
 export const emergencyAnswer = async (
     setId,
@@ -88,9 +80,10 @@ export const liarAnswer = async (setId) => {
     return await API.get(`api/liar/options?setId=${setId}`);
 };
 
-// 퀴즈 시작시 질문지와 answer 1,2 요청
-export const QuizAnswer = (roomId) => {
-    return API.get(`/api/quiz/start?roomId=${roomId}`);
+// 퀴즈 시작시 질문지와 answer 1,2 요청 -> 이거 요청시 계속 랜덤으로 돌아가서 6명 다른 질문지 받게됨
+// -> 그래서 게임시작투표 패스되면 그때 퀴즈 랜덤으로 선출된거 백에서 저장후 그 세트의 질문은 고정으로 get요청으로 가져올예정
+export const QuizAnswer = (gameId) => {
+    return API.get(`/api/quiz/start/${gameId}`);
 };
 
 // 퀴즈에서 사용자가 왼쪽 정답을 선택한 경우
@@ -140,4 +133,14 @@ export const Result = (setId, roomId, pickedLiar, answer) => {
         pickedLiar: pickedLiar,
         answer: answer,
     });
+};
+
+// Dance Url 요청
+export const DanceUrl = () => {
+    return API.get(`/api/penalty`);
+};
+
+// Penalty User 요청
+export const PenaltyUser = (roomId) => {
+    return API.get(`/api/penalty/player?roomId=${roomId}`);
 };
