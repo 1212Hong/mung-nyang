@@ -143,8 +143,10 @@ function WordDescription() {
     }, [timerKey]);
 
     useEffect(() => {
-        session.on("signal:result", (e) => {
+        // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
+        session.on("signal:emgAnswered", (e) => {
             console.log(e.data);
+            dispatch(gameActions.saveResult(e.data));
         });
     });
 
