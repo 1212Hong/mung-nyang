@@ -28,19 +28,13 @@ const ScoreTotal = () => {
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const [scoreData, setScoreData] = useState({});
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher } = openvidu;
+    const { session } = openvidu;
 
     const userlist = [];
-    console.log(publisher.session.connection.data);
-    userlist.push(publisher.session.connection.data);
-    for (let i = 0; i < subscribers.length; i++) {
-        console.log(subscribers[i].stream.connection.data);
-    }
-    for (let i = 0; i < subscribers.length; i++) {
-        userlist.push(subscribers[i].stream.connection.data);
+    for (let i = 0; i < session.streamManagers.length; i++) {
+        userlist.push(session.streamManagers[i].stream.connection.data);
     }
     console.log(userlist);
-    console.log(roomId);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -102,9 +96,9 @@ const ScoreTotal = () => {
                 {sortedInformation.map((user, index) => (
                     <LineItem key={index}>
                         <RankItem>{index + 1}st</RankItem>
-                        <UserItem>{user.username}</UserItem>
-                        <UserItem>+{user.upscore}</UserItem>
-                        <UserItem>{user.score}</UserItem>
+                        <NameItem>{user.username}</NameItem>
+                        <UpItem>+{user.upscore}</UpItem>
+                        <ScoreItem>{user.score}</ScoreItem>
                     </LineItem>
                 ))}
             </RankBox>
