@@ -4,11 +4,12 @@ export const TitleBox = styled.div`
     display: flex;
     padding: 20px;
     font-size: 64px;
+    justify-content: space-between;
 `;
 
 export const RankBox = styled.div`
     border: 2px solid black;
-    width: 800px;
+    width: 900px;
 `;
 
 export const Border = styled.div`
@@ -16,7 +17,7 @@ export const Border = styled.div`
     padding-bottom: 20px;
     border-bottom: 2px solid black;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     font-size: 32px;
 `;
 
@@ -39,13 +40,11 @@ export const UpItem = styled.div``;
 
 export const ScoreItem = styled.div``;
 
-export const TitleItem = styled.div`
-    margin-right: 50px;
-`;
+export const TitleItem = styled.div``;
 
 export const SetItem = styled.div`
     padding: 5px;
-    margin: 35px 0px 0px 670px;
+
     font-size: 32px;
     background-color: var(--beige-dark);
     border-radius: 20px;

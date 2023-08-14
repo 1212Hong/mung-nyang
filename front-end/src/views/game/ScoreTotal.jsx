@@ -23,13 +23,6 @@ import { gameActions } from "../../store/gameSlice";
 const ScoreTotal = () => {
     const dispatch = useDispatch();
     const result = useSelector((state) => state.game.result);
-    if (result === "LiarWin_Success") {
-        result = "라이어 승리";
-    } else if (result === "LiarLose_Fail") {
-        result = "시민 승리";
-    } else if (result === "LiarWin_NotLiar") {
-        result = "라이어 승리";
-    }
     const setCnt = useSelector((state) => state.game.setCnt);
     const set = useSelector((state) => state.game.setId);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
