@@ -21,7 +21,6 @@ const OpenLiar = () => {
     const selectedAnswer = useSelector((state) => state.game.selectedAnswer);
     console.log(selectedAnswer);
     const dispatch = useDispatch();
-
     const openvidu = useSelector((state) => state.openvidu);
     const { session } = openvidu;
 
@@ -36,7 +35,6 @@ const OpenLiar = () => {
                 );
                 const result = response.data;
                 console.log(result);
-
                 dispatch(gameActions.updateResult(result));
                 await deleteLiar(setId);
                 dispatch(changePhase("MidScore"));

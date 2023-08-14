@@ -17,7 +17,6 @@ import { gameActions } from "../../store/gameSlice";
 const SelectLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session, publisher } = openvidu;
-    console.log(session.streamManagers);
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
     const [activeBox, setActiveBox] = useState(null);
@@ -43,7 +42,6 @@ const SelectLiar = () => {
                                 selectedLiarResponse.data.mostVotedNicknames;
                             console.log(dupliars);
                             dispatch(gameActions.updateDupLiars(dupliars));
-                            // await deleteLiar(setId);
                             dispatch(changePhase("DupLiar"));
                         } else if (
                             selectedLiarResponse.data.gameProcessType ===
@@ -52,16 +50,11 @@ const SelectLiar = () => {
                             const mostVotedNickname =
                                 selectedLiarResponse.data.mostVotedNicknames[0];
                             console.log(mostVotedNickname);
-
                             dispatch(
                                 gameActions.updateSelectedLiar(
                                     mostVotedNickname,
                                 ),
                             );
-
-                            // await deleteLiar(setId);
-                            console.log(mostVotedNickname);
-
                             if (
                                 publisher.stream.connection.data ===
                                 mostVotedNickname
