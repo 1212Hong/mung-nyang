@@ -7,12 +7,11 @@ import { gameActions } from "../store/gameSlice";
 import { Container, Content, FlexBox, Title } from "./layout/quiz";
 
 const Quiz = (props) => {
-    const { title, text1, text2, ChooseModal } = props;
+    const { title, text1, text2 } = props;
     const openvidu = useSelector((state) => state.openvidu);
     const { session, mySessionId, myUserName, owner } = openvidu;
     const [answered, setAnswered] = useState(false);
     const [userChoice, setUserChoice] = useState("");
-    const [quizResultFetched, setQuizResultFetched] = useState(false);
     const dispatch = useDispatch();
     const roomId = mySessionId;
     const playerNickname = myUserName;
@@ -35,7 +34,6 @@ const Quiz = (props) => {
                     to: [],
                     type: "answerer",
                 });
-                setQuizResultFetched(true);
             } catch (error) {
                 console.error("Error:", error);
             }
@@ -64,7 +62,6 @@ const Quiz = (props) => {
                     {text2}
                 </Content>
             </FlexBox>
-            {quizResultFetched && <ChooseModal />}
         </Container>
     );
 };

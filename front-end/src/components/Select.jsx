@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectCategory } from "../api/game";
 import { gameActions } from "../store/gameSlice";
 import { changePhase } from "../store/phaseSlice";
+import { closeModal } from "../store/modalSlice";
 
 const Container = styled.div`
     padding: 20px;
@@ -51,7 +52,7 @@ const Select = (props) => {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const { gameId } = game;
-    const { session, mySessionId, myUserName, answerer } = openvidu;
+    const { session, mySessionId, answerer } = openvidu;
 
     const goDesc = async (category) => {
         const setInfo = await selectCategory(
@@ -69,11 +70,6 @@ const Select = (props) => {
                 to: [],
                 type: "setId",
             });
-            // playersRoleInfo.map((item) => {
-            //     if (item.playerNickname === myUserName) {
-            //         dispatch(gameActions.saveWord(item.word));
-            //     }
-            // });
         }
         dispatch(changePhase("Desc"));
     };
