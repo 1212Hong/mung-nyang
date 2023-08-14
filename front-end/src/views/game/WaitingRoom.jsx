@@ -28,7 +28,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { startGameVote } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
-import { changePhase } from "../../store/phaseSlice";
 
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
@@ -62,27 +61,20 @@ function WaitingRoom() {
             type: "startGameVote",
         });
     };
-    const handlePhase = async (phase) => {
-        await session.signal({
-            data: phase,
-            to: [],
-            type: "dancePhase",
-        });
-        dispatch(changePhase("Dance"));
-    };
-    useEffect(() => {
-        const handleDancePhaseSignal = (event) => {
-            dispatch(changePhase("Dance"));
-        };
-        if (session) {
-            session.on("signal:dancePhase", handleDancePhaseSignal);
-        }
-    }, [dispatch, session]);
 
     const openRuleBook = () => {
         dispatch(
             openModal({
                 modalType: "RuleModal",
+                isOpen: true,
+            }),
+        );
+    };
+    const openPenaltyLink = () => {
+        console.log("?");
+        dispatch(
+            openModal({
+                modalType: "PenaltyLinkModal",
                 isOpen: true,
             }),
         );
@@ -119,7 +111,6 @@ function WaitingRoom() {
         script.src = "https://developers.kakao.com/sdk/js/kakao.js";
         script.async = true;
         document.body.appendChild(script);
-
         return () => document.body.removeChild(script);
     }, []);
 
@@ -231,24 +222,27 @@ function WaitingRoom() {
                 </ChattingBox>
 
                 <MenuBox>
-                    {[
-                        { icon: <QuestionIcon width="23" height="23" /> },
-                        { icon: <LinkIcon width="23" height="23" /> },
-                        { icon: <CaptureIcon width="23" height="23" /> },
-                    ].map((item, index) => (
-                        <Button
-                            key={index}
-                            type="icon"
-                            width="55px"
-                            height="40px"
-                            background={`var(--beige-dark)`}
-                            onClick={() => {
-                                openRuleBook();
-                            }}
-                        >
-                            {item.icon}
-                        </Button>
-                    ))}
+                    <Button
+                        width="55px"
+                        height="40px"
+                        onClick={() => {
+                            openRuleBook();
+                        }}
+                    >
+                        <QuestionIcon></QuestionIcon>
+                    </Button>
+                    <Button
+                        width="55px"
+                        height="40px"
+                        onClick={() => {
+                            openPenaltyLink();
+                        }}
+                    >
+                        <LinkIcon></LinkIcon>
+                    </Button>
+                    <Button width="55px" height="40px">
+                        <CaptureIcon></CaptureIcon>
+                    </Button>
                     {isMuted ? (
                         <Button
                             key="mute"
@@ -301,11 +295,6 @@ function WaitingRoom() {
                         >
                             START
                         </Button>
-                        <Button
-                            onClick={() => {
-                                handlePhase("Dance");
-                            }}
-                        ></Button>
                     </StartnSetBox>
                 )}
             </Rightbox>
