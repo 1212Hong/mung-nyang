@@ -15,6 +15,7 @@ import Loading from "./Loading";
 import { gameActions } from "../store/gameSlice";
 import { closeModal, openModal } from "../store/modalSlice";
 import { deleteVote } from "../api/game";
+import { changePhase } from "../store/phaseSlice";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -157,6 +158,15 @@ const Game = () => {
                     console.log("반대");
                     dispatch(closeModal());
                     dispatch(gameActions.saveGameVoteCnt(0));
+                });
+
+                newSession.on("signal:Quiz", (e) => {
+                    dispatch(changePhase(e.data));
+                });
+
+                newSession.on("signal:answerer", (e) => {
+                    console.log("받아온 정답자 : ", e.data);
+                    dispatch(gameActions.saveAnswerer(e.data));
                 });
 
                 // // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현

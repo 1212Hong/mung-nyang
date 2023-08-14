@@ -50,12 +50,28 @@ const Select = (props) => {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const phase = useSelector((state) => state.phase);
-    const { session } = openvidu;
+    const { gameId } = game;
+    const { session, mySessionId, myUserName, answerer } = openvidu;
 
     const goDesc = async (category) => {
-        await selectCategory("테스트", "1", category, "테스트유저1");
+        const roleInfo = await selectCategory(
+            mySessionId,
+            gameId,
+            category,
+            answerer,
+        );
+        // roomId, gameId, category, answerer
         // 접근 실패 시 symbol 타입으로 접근
+
+        console.log(roleInfo);
+        if (roleInfo) {
+            const playersRoleInfo = roleInfo.playersRoleInfo;
+            playersRoleInfo.map((item) => {
+                if (item.playerNickname === myUserName) {
+                    dispatch(gameActions.saveWord(item.word));
+                }
+            });
+        }
         dispatch(changePhase("Desc"));
     };
 

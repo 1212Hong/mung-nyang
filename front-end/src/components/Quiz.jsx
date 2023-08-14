@@ -9,9 +9,10 @@ import { Container, Content, FlexBox, Title } from "./layout/quiz";
 const Quiz = (props) => {
     const { title, text1, text2, onViewChange, ChooseModal } = props;
     const openvidu = useSelector((state) => state.openvidu);
-    const { mySessionId, myUserName, owner } = openvidu;
+    const game = useSelector((state) => state.game);
+    const { answerer } = game;
+    const { session, mySessionId, myUserName, owner } = openvidu;
     const [showChooseModal, setShowChooseModal] = useState(false);
-    const [answerer, setAnswerer] = useState("");
     const [answered, setAnswered] = useState(false);
     const [userChoice, setUserChoice] = useState("");
     const [quizResultFetched, setQuizResultFetched] = useState(false);
@@ -31,8 +32,12 @@ const Quiz = (props) => {
                 await submitAnswer(roomId, playerNickname, userChoice);
                 const quizResultResponse = await fetchQuizResult(roomId);
 
-                setAnswerer(quizResultResponse.answerer);
-                dispatch(gameActions.saveAnswerer(answerer));
+                dispatch(gameActions.saveAnswerer(quizResultResponse.answerer));
+                session.signal({
+                    data: quizResultResponse.answerer,
+                    to: [],
+                    type: "answerer",
+                });
                 setShowChooseModal(true);
                 setQuizResultFetched(true);
             } catch (error) {
@@ -41,15 +46,12 @@ const Quiz = (props) => {
         };
 
         if (answered) {
-            handleAnswerSubmission();
+            owner && handleAnswerSubmission();
         }
-    }, [
-        // answered,
-        userChoice,
-    ]);
+    }, [answered, userChoice]);
 
     useEffect(() => {
-        if (showChooseModal) {
+        if (quizResultFetched && showChooseModal) {
             const modalTimer = setTimeout(() => {
                 setShowChooseModal(false);
                 onViewChange("Category");
@@ -57,7 +59,7 @@ const Quiz = (props) => {
 
             return () => clearTimeout(modalTimer);
         }
-    }, [setShowChooseModal, onViewChange, showChooseModal]);
+    }, [onViewChange, showChooseModal]);
     return (
         <Container>
             <Timer onTimerEnd={() => setAnswered(true)} />
