@@ -40,7 +40,7 @@ const ReadyModal = () => {
     const signalVote = async (check) => {
         console.log(gameVoteCnt);
         await session.signal({
-            data: `${Number(gameVoteCnt + 1)}`,
+            data: `${String(Number(gameVoteCnt) + 1)}`,
             to: [],
             type: check === "T" ? "agree" : "disagree",
         });
@@ -94,7 +94,7 @@ const ReadyModal = () => {
             // 타이머 흘러가는중
             owner
                 ? handleEndVote()
-                : session.on("gameId", (e) => {
+                : session.on("signal:gameId", (e) => {
                       console.log(e.data);
                       dispatch(gameActions.saveGameId(e.data));
                       dispatch(changePhase("Quiz"));
@@ -102,18 +102,20 @@ const ReadyModal = () => {
         }, 7000);
 
         return () => {
-            clearTimeout(timer);
-            session.on("gameId", (e) => {
+            session.on("signal:gameId", (e) => {
                 console.log(e.data);
                 dispatch(gameActions.saveGameId(e.data));
                 dispatch(changePhase("Quiz"));
+            });
+            session.on("signal:refuseVote", (e) => {
+                clearTimeout(timer);
             });
         };
     }, [modalFlag]);
 
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
-            <Timer width={"80%"}></Timer>
+            <Timer width={"80%"} time={8}></Timer>
             <ModalViewDescDiv>게임 시작 투표</ModalViewDescDiv>
 
             <ModalViewResultDiv className="vote-res-div">
@@ -150,6 +152,11 @@ const ReadyModal = () => {
                                 );
                                 console.log(res);
                                 signalVote(res.data.voteMessage);
+                                await session.signal({
+                                    data: "",
+                                    to: [],
+                                    type: "refuseVote",
+                                });
                             }}
                         >
                             X
