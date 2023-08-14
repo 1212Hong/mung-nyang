@@ -175,24 +175,14 @@ const Game = () => {
                     );
                     setTimeout(() => {
                         dispatch(changePhase("Category"));
+                        dispatch(closeModal());
                     }, 5000);
                 });
 
-                newSession.on("setId", (e) => {
+                newSession.on("signal:setId", (e) => {
                     dispatch(gameActions.saveSetId(e.data));
                     dispatch(changePhase("Desc"));
                 });
-                // // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현
-                // export const signalVote = async (check, sessionId, cnt) => {
-                //     OPENVIDU.post(`/openvidu/api/signal`, {
-                //         session: sessionId,
-                //         to: [],
-                //         type: check === "T" ? "agree" : "disagree",
-                //         data: `${cnt + 1}`,
-                //     })
-                //         .then((data) => console.log(data))
-                //         .catch((err) => console.log(err));
-                // };
 
                 var devices = await OV.getDevices();
 

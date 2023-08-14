@@ -55,10 +55,6 @@ function TopBottomVideo() {
         fetchAndSetQuizInfo();
     }, []);
 
-    useEffect(() => {
-        closeModal();
-    }, phaseType);
-
     return (
         <Container className="Container">
             <HeaderBox className="HeaderBox">
@@ -88,7 +84,6 @@ function TopBottomVideo() {
                             title={quizInfo.question}
                             text1={quizInfo.answer1}
                             text2={quizInfo.answer2}
-                            ChooseModal={ChooseModal}
                         />
                     ) : phaseType === "Category" ? (
                         answerer === myUserName ? (
