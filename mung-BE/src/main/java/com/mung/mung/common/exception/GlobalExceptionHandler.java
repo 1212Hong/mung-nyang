@@ -258,4 +258,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiException, httpStatus);
     }
 
+
+    @ExceptionHandler(value = {RecordingNotStartedException.class})
+    public ResponseEntity<Object> recordingNotStartedException (RecordingNotStartedException e){
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+
+        ApiException apiException = new ApiException(
+                ExceptionMessage.RECORDING_NOT_STARTED_MESSAGE,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
 }
