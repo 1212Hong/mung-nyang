@@ -72,6 +72,15 @@ function WaitingRoom() {
             }),
         );
     };
+    const openPenaltyLink = () => {
+        console.log("?");
+        dispatch(
+            openModal({
+                modalType: "PenaltyLinkModal",
+                isOpen: true,
+            }),
+        );
+    };
     const openReadyModal = async () => {
         const memberCnt = session.streamManagers.length;
         console.log(session.streamManagers.length);
@@ -223,24 +232,27 @@ function WaitingRoom() {
                 </ChattingBox>
 
                 <MenuBox>
-                    {[
-                        { icon: <QuestionIcon width="23" height="23" /> },
-                        { icon: <LinkIcon width="23" height="23" /> },
-                        { icon: <CaptureIcon width="23" height="23" /> },
-                    ].map((item, index) => (
-                        <Button
-                            key={index}
-                            type="icon"
-                            width="55px"
-                            height="40px"
-                            background={`var(--beige-dark)`}
-                            onClick={() => {
-                                openRuleBook();
-                            }}
-                        >
-                            {item.icon}
-                        </Button>
-                    ))}
+                    <Button
+                        width="55px"
+                        height="40px"
+                        onClick={() => {
+                            openRuleBook();
+                        }}
+                    >
+                        <QuestionIcon></QuestionIcon>
+                    </Button>
+                    <Button
+                        width="55px"
+                        height="40px"
+                        onClick={() => {
+                            openPenaltyLink();
+                        }}
+                    >
+                        <LinkIcon></LinkIcon>
+                    </Button>
+                    <Button width="55px" height="40px">
+                        <CaptureIcon></CaptureIcon>
+                    </Button>
                     {isMuted ? (
                         <Button
                             key="mute"
