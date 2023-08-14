@@ -47,17 +47,21 @@ const ScoreTotal = () => {
         userlist.push(subscribers[i].stream.connection.data);
     }
     console.log(userlist);
+    console.log(roomId);
 
     useEffect(() => {
-        score(roomId)
-            .then((response) => {
-                setScoreData(response.data);
-                console.log(scoreData);
-            })
-            .catch((error) => {
-                console.error("Error fetching score:", error);
-            });
-    }, [roomId]);
+        const timer = setTimeout(() => {
+            score(roomId)
+                .then((response) => {
+                    setScoreData(response.data);
+                    console.log(scoreData);
+                })
+                .catch((error) => {
+                    console.error("Error fetching score:", error);
+                });
+        });
+        return () => clearTimeout(timer);
+    }, []);
     const information = [];
     const beforeScore = useSelector((state) => state.game.score);
     console.log(beforeScore);
@@ -66,7 +70,8 @@ const ScoreTotal = () => {
         console.log(username);
         const newEntry = {
             username,
-            upscore: scoreData[username] - beforeScore[username],
+            // upscore: scoreData[username] - beforeScore[username],
+            upscore: 3 - 2,
             score: scoreData[username],
         };
         information.push(newEntry);
