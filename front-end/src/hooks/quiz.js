@@ -8,9 +8,9 @@ import {
     finalAnswer,
 } from "../api/game";
 
-export const fetchQuizInfo = async (roomId) => {
+export const fetchQuizInfo = async (gameId) => {
     try {
-        const quizAnswerResponse = await QuizAnswer(roomId);
+        const quizAnswerResponse = await QuizAnswer(gameId);
         console.log("테스트");
         console.log("퀴즈입장 데이터 : ", quizAnswerResponse.data);
         const { question, answer1, answer2 } = quizAnswerResponse.data;
@@ -43,20 +43,6 @@ export const fetchQuizResult = async (roomId) => {
         return quizResultresponse.data;
     } catch (error) {
         console.log(error.response);
-    }
-};
-export const fetchUserRole = async (roomId, gameId, category, answerer) => {
-    try {
-        const userRoleResponse = await selectCategory(
-            roomId,
-            gameId,
-            category,
-            answerer,
-        );
-        console.log(userRoleResponse.data.playersRoleInfo);
-        return userRoleResponse.data;
-    } catch (error) {
-        console.log(error);
     }
 };
 
