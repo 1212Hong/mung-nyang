@@ -41,5 +41,8 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
     private List<GameSet> gameSets = new ArrayList<>();
 
+    public void updateCurSet() {
+        this.curSet = this.curSet+1;
+    }
 
 }

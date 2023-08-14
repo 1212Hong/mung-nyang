@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    setCnt: 0,
-    totalSet: 0,
+    setCnt: 0, // 방장이 정한 게임 총 세트 수
+    gameVoteCnt: 0, // 게임 시작투표에 대한 누적 카운트
     setId: 0,
     score: {},
     selectedLiar: "",
@@ -23,8 +23,8 @@ export const gameSlice = createSlice({
         saveSetCnt: (state, action) => {
             state.setCnt = action.payload;
         },
-        saveTotalSet: (state, action) => {
-            state.totalSet = action.payload;
+        saveGameVoteCnt: (state, action) => {
+            state.gameVoteCnt = action.payload;
         },
         saveSetId: (state, action) => {
             state.setId = action.payload;

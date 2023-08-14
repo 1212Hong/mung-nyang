@@ -9,7 +9,7 @@ export const phaseSlice = createSlice({
     initialState,
     reducers: {
         changePhase: (state, actions) => {
-            const { phaseType } = actions.payload;
+            const phaseType = actions.payload;
             console.log(phaseType);
             state.phaseType = phaseType;
         },
