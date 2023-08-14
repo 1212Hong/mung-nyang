@@ -19,6 +19,7 @@ import {
 } from "../../components/layout/dance";
 import { getPenaltyUser, getDanceUrl } from "../../hooks/dance";
 import { gameActions } from "../../store/gameSlice";
+
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);

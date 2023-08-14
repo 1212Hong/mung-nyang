@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { selectCategory, signalCategory, startDesc } from "../api/game";
 import { changePhase } from "../store/phaseSlice";
 import { closeModal } from "../store/modalSlice";
+import { gameActions } from "../store/gameSlice";
 
 const Container = styled.div`
     padding: 20px;
