@@ -171,3 +171,8 @@ export const RecordStop = (roomId, gameId) => {
 export const getRecords = (roomId) => {
     API.get(`/api/room/recording/get/${encodeURIComponent(roomId)}`);
 };
+
+// 벌칙 영상 전부 가져오기
+export const getPenaltyLink = (roomId) => {
+    return API.get(`/api/room/recording/get/${roomId}`);
+};
