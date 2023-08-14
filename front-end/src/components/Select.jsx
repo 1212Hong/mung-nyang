@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectCategory, signalCategory, startDesc } from "../api/game";
 import { changePhase } from "../store/phaseSlice";
-import { closeModal } from "../store/modalSlice";
+import { closeModal, openModal } from "../store/modalSlice";
 import { gameActions } from "../store/gameSlice";
 
 const Container = styled.div`
@@ -51,9 +51,9 @@ const Select = (props) => {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { gameId } = game;
-    const { session, mySessionId, answerer } = openvidu;
-
+    const { gameId, answerer } = game;
+    const { session, mySessionId } = openvidu;
+    console.log(answerer);
     const goDesc = async (category) => {
         const setInfo = await selectCategory(
             mySessionId,
@@ -63,9 +63,9 @@ const Select = (props) => {
         );
         console.log(setInfo);
         if (setInfo) {
-            dispatch(gameActions.saveSetId(setInfo.setId));
+            dispatch(gameActions.saveSetId(setInfo.data.setId));
             session.signal({
-                data: setInfo.setId,
+                data: setInfo.data.setId,
                 to: [],
                 type: "setId",
             });
@@ -81,7 +81,7 @@ const Select = (props) => {
                     <Content
                         key={index}
                         onClick={() => {
-                            goDesc(item);
+                            answerer && goDesc(item);
                         }}
                     >
                         {item}
