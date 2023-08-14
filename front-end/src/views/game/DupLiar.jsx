@@ -29,7 +29,7 @@ const DupLiar = () => {
     useEffect(() => {
         const runSelectLiarPhase = async () => {
             try {
-                const response = await selectLiar(setId, activeBox || "");
+                const response = await selectLiar(setId, activeBox);
                 console.log(response);
                 setTimeout(async () => {
                     try {
@@ -135,6 +135,27 @@ const DupLiar = () => {
                                                 width="100%"
                                             />
                                         </ImageOverlay>
+                                        <VideoComponent
+                                            width="350px"
+                                            height="320px"
+                                            streamManager={subscriber}
+                                        />
+                                    </Item>
+                                </React.Fragment>
+                            );
+                        }
+
+                        return null;
+                    })}
+                {session.streamManagers &&
+                    session.streamManagers.map((subscriber, i) => {
+                        const nickname = subscriber.stream.connection.data;
+                        const isDisplayed = updatedDupLiars.includes(nickname);
+
+                        if (!isDisplayed) {
+                            return (
+                                <React.Fragment key={i}>
+                                    <Item>
                                         <VideoComponent
                                             width="350px"
                                             height="320px"

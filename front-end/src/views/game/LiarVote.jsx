@@ -25,12 +25,12 @@ const LiarVote = () => {
     const dispatch = useDispatch();
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     // const answerer = useSelector((state) => state.game.answerer);
-    const answerer = "짓궂은 진돗개";
+    const answerer = "거센 말티즈";
 
     useEffect(() => {
         const timer = setTimeout(async () => {
             try {
-                const response = await selectLiar(setId, activeBox || "");
+                const response = await selectLiar(setId, activeBox);
                 console.log(response);
                 setTimeout(async () => {
                     try {
