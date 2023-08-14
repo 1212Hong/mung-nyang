@@ -30,7 +30,7 @@ function Dance() {
 
     const sendVideoId = async (videoIdToSend) => {
         session.signal({
-            data: JSON.stringify({ type: "videoId", value: videoIdToSend }),
+            data: videoIdToSend,
             to: [],
             type: "videoData",
         });
@@ -77,22 +77,11 @@ function Dance() {
     });
 
     useEffect(() => {
-        const handleSignalEvent = (event) => {
-            const { type, data } = event;
-            if (type === "signal:videoData") {
-                const message = JSON.parse(data);
-                if (message.type === "videoId") {
-                    setVideoId(message.value);
-                    console.log("Received videoId:", videoId);
-                }
-            }
-        };
+        session.on("videoData", (e) => {
+            const videoId = e.data;
 
-        session.on("signal", handleSignalEvent);
-
-        return () => {
-            session.off("signal", handleSignalEvent);
-        };
+            setVideoId(videoId);
+        });
     }, [session, videoId]);
 
     return (
