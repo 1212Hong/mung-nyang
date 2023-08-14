@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import store from "../../store";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Button from "../../components/Button";
 import VideoComponent from "../../components/VideoComponent";
 import { OtherUsers, Container } from "../../components/layout/common";
@@ -19,6 +19,8 @@ import {
 } from "../../components/layout/dance";
 import { getPenaltyUser, getDanceUrl } from "../../hooks/dance";
 import { gameActions } from "../../store/gameSlice";
+import { changePhase } from "../../store/phaseSlice";
+import { InitializedData } from "../../api/game";
 
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
@@ -28,6 +30,7 @@ function Dance() {
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
     const [videoId, setVideoId] = useState("");
+    const dispatch = useDispatch();
 
     const sendVideoId = async (videoIdToSend) => {
         session.signal({
@@ -36,7 +39,13 @@ function Dance() {
             type: "videoData",
         });
     };
-
+    const handleTimerEnd = async () => {
+        // setGameEnd(true);
+        await InitializedData(roomId);
+        dispatch(gameActions.reset());
+        console.log("초기화 확인 : ", game);
+        dispatch(changePhase("Wait"));
+    };
     useEffect(() => {
         const fetchDanceUrl = async () => {
             try {
@@ -98,7 +107,7 @@ function Dance() {
 
     return (
         <Container>
-            <Timer />
+            <Timer onTimerEnd={handleTimerEnd} />
             <PenaltyBox>
                 <LeftItem>
                     <Video>

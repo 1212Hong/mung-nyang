@@ -62,6 +62,9 @@ export const gameSlice = createSlice({
         updatePenaltyUser: (state, action) => {
             state.penaltyUser = action.payload;
         },
+        reset(state) {
+            Object.assign(state, initialState);
+        },
     },
 });
 
