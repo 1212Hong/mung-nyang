@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { closeModal } from "../../store/modalSlice";
 import { changePhase } from "../../store/phaseSlice";
-
+import Button from "../Button";
+import { getPenaltyLink } from "../../api/game";
 const LinkContainer = styled.div`
     position: fixed;
     top: 0;
@@ -18,6 +19,9 @@ const LinkContainer = styled.div`
 `;
 
 const LinkBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     background-color: white;
     padding: 20px;
     width: 500px;
@@ -27,37 +31,84 @@ const LinkBox = styled.div`
     text-align: center;
 `;
 const LinkTitleBox = styled.div`
+    padding: 10px;
+    font-size: 24px;
     border-bottom: 1px solid gray;
     margin-bottom: 30px;
 `;
 const LinkContentBox = styled.div`
-    width: 80px;
     display: flex;
+    justify-content: center;
 `;
 const LinkContentDesc = styled.div`
     width: 20%;
+    padding: 5px;
     border: 1px solid gray;
+    border-radius: 5px 0 0 5px;
 `;
 const LinkContentUrl = styled.div`
-    width: 60%;
+    width: 100%;
+    padding: 5px;
     border: 1px solid gray;
 `;
 const LinkContentCopy = styled.div`
     width: 20%;
+    border: 1px solid gray;
+    padding: 5px;
+    border-radius: 0 5px 5px 0;
+    &:hover {
+        cursor: pointer;
+    }
+`;
+const LinkButtonBox = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
 `;
 const PenaltyLinkModal = () => {
     const game = useSelector((state) => state.game);
     const { answerer } = game;
-
+    const dispatch = useDispatch();
+    const openvidu = useSelector((state) => state.openvidu);
+    const { mySessionId } = openvidu;
+    const [penaltyLinkList, setPenaltyLinkList] = useState([]);
+    const copyLink = async (link) => {
+        alert("링크 복사 완료!");
+        await navigator.clipboard.writeText(link);
+    };
+    useEffect(() => {
+        getPenaltyLink(mySessionId).then((response) =>
+            setPenaltyLinkList(response.data),
+        );
+    });
     return (
         <LinkContainer>
             <LinkBox>
-                <LinkTitleBox> 링크 리스트 </LinkTitleBox>
+                <LinkTitleBox> 벌칙 영상 </LinkTitleBox>
                 <LinkContentBox>
-                    <LinkContentDesc>게임</LinkContentDesc>
-                    <LinkContentUrl>www.asdfasdf.sd.casdc</LinkContentUrl>
-                    <LinkContentCopy>복사</LinkContentCopy>
+                    {penaltyLinkList.length > 0
+                        ? penaltyLinkList.map((item) => (
+                              <>
+                                  <LinkContentDesc>게임</LinkContentDesc>
+                                  <LinkContentUrl>
+                                      {item.length > 48
+                                          ? item.slice(0, 48) + "..."
+                                          : item}
+                                  </LinkContentUrl>
+                                  <LinkContentCopy
+                                      onClick={() => copyLink(item)}
+                                  >
+                                      복사
+                                  </LinkContentCopy>
+                              </>
+                          ))
+                        : "아직 링크가 없어요!"}
                 </LinkContentBox>
+                <LinkButtonBox>
+                    <Button onClick={() => dispatch(closeModal())}>
+                        돌아가기
+                    </Button>
+                </LinkButtonBox>
             </LinkBox>
         </LinkContainer>
     );

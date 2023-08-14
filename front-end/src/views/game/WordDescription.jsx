@@ -107,7 +107,7 @@ function WordDescription(props) {
 
             setOtherUserStream(
                 streams.filter(
-                    (stream) => stream.stream.connection.data !== answerer,
+                    (stream) => stream.stream.connec1tion.data !== answerer,
                 ),
             );
             if (owner) {
