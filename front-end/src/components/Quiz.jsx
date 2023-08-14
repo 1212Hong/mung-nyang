@@ -11,7 +11,7 @@ const Quiz = (props) => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session, mySessionId, myUserName, owner } = openvidu;
     const [answered, setAnswered] = useState(false);
-    const [userChoice, setUserChoice] = useState("");
+    const [userChoice, setUserChoice] = useState(null);
     const dispatch = useDispatch();
     const roomId = mySessionId;
     const playerNickname = myUserName;
@@ -51,13 +51,17 @@ const Quiz = (props) => {
             <FlexBox>
                 <Content
                     onClick={() => handleUserChoice(true)}
-                    choice={userChoice === "positive"}
+                    className={
+                        "btn" + (userChoice === "positive" ? " active" : "")
+                    }
                 >
                     {text1}
                 </Content>
                 <Content
                     onClick={() => handleUserChoice(false)}
-                    choice={userChoice === "negative"}
+                    className={
+                        "btn" + (userChoice === "negative" ? " active" : "")
+                    }
                 >
                     {text2}
                 </Content>
