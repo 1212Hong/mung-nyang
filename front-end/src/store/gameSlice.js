@@ -14,6 +14,7 @@ const initialState = {
     result: "",
     category: "",
     penaltyUser: "",
+    passCnt: 0, // 벌칙에서 pass를 누른 인원수
 };
 
 export const gameSlice = createSlice({
@@ -64,6 +65,9 @@ export const gameSlice = createSlice({
         },
         reset(state) {
             Object.assign(state, initialState);
+        },
+        savePassCnt: (state, action) => {
+            state.passCnt = action.payload;
         },
     },
 });
