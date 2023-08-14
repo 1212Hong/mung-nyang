@@ -23,8 +23,7 @@ const FlexBox = styled.div`
 `;
 
 const Content = styled.button`
-    background-color: ${(props) =>
-        props.choice === "positive" ? `var(--beige-reverse)` : `var(--white)`};
+    background-color: var(--white);
     margin-right: 10px;
     margin-left: 10px;
     width: 350px;
@@ -41,6 +40,9 @@ const Content = styled.button`
     }
     :hover {
         cursor: pointer;
+    }
+    .active {
+        background-color: var(--beige-reverse);
     }
 `;
 

@@ -9,6 +9,7 @@ import { getUserWord } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import Timer from "../../components/Timer";
 import { changePhase } from "../../store/phaseSlice";
+import { SmallText } from "../../components/layout/common";
 
 const Container = styled.div`
     margin: 0;
@@ -161,7 +162,7 @@ function WordDescription() {
                             height={"80%"}
                         />
                     )}
-                    {curDescUserNickname}
+                    <SmallText>{curDescUserNickname}</SmallText>
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
                     <CurFunction>

@@ -32,11 +32,16 @@ function TopBottomVideo() {
     const dispatch = useDispatch();
 
     const title = "제시어 카테고리";
-    const list = ["음식", "스포츠", "과일", "카", "테", "고", "리"]; // 카테고리는 고정이므로 여기서 카테고리 다 넣어줌
+
+    const upside =
+        subscribers.length % 2 === 1
+            ? parseInt(subscribers.length / 2) + 1
+            : subscribers.length / 2;
+
     const upside_list = [
         ...subscribers.slice(0, Math.min(subscribers.length, 2)),
     ];
-    const downside_list = subscribers;
+    const downside_list = subscribers.slice(upside, subscribers.length);
 
     useEffect(() => {
         async function fetchAndSetQuizInfo() {
@@ -78,7 +83,7 @@ function TopBottomVideo() {
                         />
                     ) : phaseType === "Category" ? (
                         answerer === myUserName ? (
-                            <Select list={list} title={title} />
+                            <Select title={title} />
                         ) : (
                             <SubText>정답자가 카테고리 선정중</SubText>
                         )
