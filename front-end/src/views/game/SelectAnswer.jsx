@@ -11,6 +11,9 @@ import {
     Overlay,
 } from "../../components/layout/selectAnswer";
 import { liarAnswer } from "../../api/game";
+import { useDispatch, useSelector } from "react-redux";
+import { gameActions } from "../../store/gameSlice";
+import { changePhase } from "../../store/phaseSlice";
 
 const SelectAnswer = (props) => {
     const { time } = props;
@@ -20,6 +23,10 @@ const SelectAnswer = (props) => {
     const text = "라이어로 지목되었습니다. ";
     const imgSrc = foot2;
     const [answerList, setAnswerList] = useState([]);
+    const dispatch = useDispatch();
+    const openvidu = useSelector((state) => state.openvidu);
+    const { session } = openvidu;
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowNotification(false);
@@ -34,9 +41,33 @@ const SelectAnswer = (props) => {
     }, []);
 
     const handleContentClick = (boxIndex) => {
-        setActiveBox(boxIndex === activeBox ? null : boxIndex);
-        console.log(boxIndex);
+        if (boxIndex === activeBox) {
+            setActiveBox(null);
+        } else {
+            setActiveBox(boxIndex);
+        }
     };
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            dispatch(gameActions.updateSelectedAnswer(activeBox));
+            console.log(activeBox);
+            // signal 적용
+            const signalSelectLiar = async () => {
+                session.signal({
+                    data: activeBox,
+                    to: [],
+                    type: "startOpenLiar",
+                });
+            };
+            signalSelectLiar();
+            dispatch(changePhase("OpenLiar"));
+        }, 10000);
+        return () => {
+            clearTimeout(timer);
+        };
+    });
+
     return (
         <Container>
             <Timer time={time}></Timer>
