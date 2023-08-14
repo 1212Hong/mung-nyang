@@ -24,8 +24,7 @@ import { InitializedData } from "../../api/game";
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { passCnt } = game;
-    const penaltyUser = "깊은 치와와";
+    const { penaltyUser, passCnt } = game;
     const { session, owner, mySessionId, myUserName } = openvidu;
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
@@ -80,11 +79,11 @@ function Dance() {
             setVideoId(event.data);
         });
 
-        // const fetchPenaltyUser = async (roomId) => {
-        //     await getPenaltyUser(roomId);
-        //     store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
-        // };
-        // fetchPenaltyUser(roomId);
+        const fetchPenaltyUser = async (roomId) => {
+            await getPenaltyUser(roomId);
+            store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
+        };
+        fetchPenaltyUser(roomId);
     }, []);
 
     useEffect(() => {
