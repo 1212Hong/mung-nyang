@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const OPENVIDU = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: "https://i9c209.p.ssafy.io",
     headers: {
         "Content-Type": "application/json",
         Authorization: `Basic ${btoa("OPENVIDUAPP:MUNG")}`,
