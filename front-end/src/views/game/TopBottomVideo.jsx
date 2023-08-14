@@ -18,7 +18,7 @@ import { fetchQuizInfo } from "../../hooks/quiz";
 import { useDispatch, useSelector } from "react-redux";
 import ChooseModal from "../../components/modal/ChooseModal";
 import { changePhase } from "../../store/phaseSlice";
-import { SubText } from "../../components/layout/common";
+import { SmallText, SubText } from "../../components/layout/common";
 import { closeModal } from "../../store/modalSlice";
 
 function TopBottomVideo() {
@@ -32,16 +32,16 @@ function TopBottomVideo() {
     const dispatch = useDispatch();
 
     const title = "제시어 카테고리";
-
+    const streams = session.streamManagers;
     const upside =
-        subscribers.length % 2 === 1
-            ? parseInt(subscribers.length / 2) + 1
-            : subscribers.length / 2;
+        streams.length % 2 === 1
+            ? parseInt(streams.length / 2) + 1
+            : streams.length / 2;
 
-    const upside_list = [
-        ...subscribers.slice(0, Math.min(subscribers.length, 2)),
-    ];
-    const downside_list = subscribers.slice(upside, subscribers.length);
+    const upside_list = streams.slice(0, upside);
+    console.log(upside_list);
+    const downside_list = streams.slice(upside, streams.length);
+    console.log(downside_list);
 
     useEffect(() => {
         async function fetchAndSetQuizInfo() {
@@ -54,17 +54,9 @@ function TopBottomVideo() {
     return (
         <Container className="Container">
             <HeaderBox className="HeaderBox">
-                {publisher && (
-                    <VideoBox className="Pub">
-                        <VideoComponent
-                            width={"280px"}
-                            height={"150px"}
-                            streamManager={publisher}
-                        />
-                    </VideoBox>
-                )}
                 {upside_list.map((sub, index) => (
                     <VideoBox key={index} className="Sub">
+                        <SmallText>{sub.stream.connection.data}</SmallText>
                         <VideoComponent
                             width={"280px"}
                             height={"150px"}
@@ -109,6 +101,9 @@ function TopBottomVideo() {
                 {downside_list !== undefined
                     ? downside_list.map((sub, index) => (
                           <VideoBox key={index}>
+                              <SmallText>
+                                  {sub.stream.connection.data}
+                              </SmallText>
                               <VideoComponent
                                   width={"280px"}
                                   height={"150px"}

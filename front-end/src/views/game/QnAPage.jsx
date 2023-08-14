@@ -96,14 +96,12 @@ function QnAPage() {
             <VideoContainer>
                 {upside_list.map((user, index) => (
                     <VideoBox key={index}>
+                        <SmallText>{user.stream.connection.data}</SmallText>
                         <VideoComponent
                             width={"100%"}
                             height={"180px"}
                             streamManager={user}
                         />
-                        <SmallText>
-                            {user.stream.session.connection.data}
-                        </SmallText>
                     </VideoBox>
                 ))}
             </VideoContainer>
@@ -118,7 +116,7 @@ function QnAPage() {
                             height={"180px"}
                             streamManager={user}
                         />
-                        {user.stream.session.connection.data}
+                        {user.stream.connection.data}
                     </VideoBox>
                 ))}
             </VideoContainer>

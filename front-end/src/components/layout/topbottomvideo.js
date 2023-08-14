@@ -17,7 +17,9 @@ const HeaderBox = styled.div`
 
 const VideoBox = styled.div`
     width: 280px;
-    height: 150px;
+    height: 170px;
+    /* display: flex;
+    flex-direction: column; */
 `;
 
 const StateBox = styled.div`
