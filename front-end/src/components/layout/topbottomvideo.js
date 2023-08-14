@@ -10,19 +10,21 @@ const Container = styled.div`
 
 const HeaderBox = styled.div`
     width: 900px;
-    height: 150px;
+    height: 180px;
     display: flex;
     justify-content: space-evenly;
 `;
 
 const VideoBox = styled.div`
     width: 280px;
-    height: 150px;
+    height: 180px;
+    /* display: flex;
+    flex-direction: column; */
 `;
 
 const StateBox = styled.div`
     width: 700px;
-    height: 380px;
+    height: 360px;
     border-radius: 20px;
     display: flex;
     justify-content: center;
@@ -32,7 +34,7 @@ const StateBox = styled.div`
 
 const FooterBox = styled.div`
     width: 900px;
-    height: 150px;
+    height: 180px;
     display: flex;
     justify-content: space-evenly;
 `;
