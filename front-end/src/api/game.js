@@ -144,6 +144,33 @@ export const DanceUrl = () => {
 export const PenaltyUser = (roomId) => {
     return API.get(`/api/penalty/player?roomId=${roomId}`);
 };
+// Game 끝난 후 초기화
+export const InitializedData = (roomId) => {
+    return API.put(`/api/game-sessions/initialize`, {
+        roomId: roomId,
+    });
+};
+
+// 녹화 시작 요청
+export const RecordStart = (roomId, gameId) => {
+    return API.post(`/api/room/recording/start`, {
+        roomId: roomId,
+        gameId: gameId,
+    });
+};
+
+// 녹화 중단 요청
+export const RecordStop = (roomId, gameId) => {
+    return API.post(`/api/room/recording/stop`, {
+        roomId: roomId,
+        gameId: gameId,
+    });
+};
+
+// 저장된 녹화 영상들 가져오기
+export const getRecords = (roomId) => {
+    API.get(`/api/room/recording/get/${encodeURIComponent(roomId)}`);
+};
 
 // 벌칙 영상 전부 가져오기
 export const getPenaltyLink = (roomId) => {
