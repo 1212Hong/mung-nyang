@@ -14,6 +14,7 @@ const initialState = {
     selectedAnswer: "",
     result: "",
     category: "",
+    penaltyUser: "",
 };
 
 export const gameSlice = createSlice({
@@ -58,6 +59,9 @@ export const gameSlice = createSlice({
         },
         updateResult: (state, action) => {
             state.result = action.payload;
+        },
+        updatePenaltyUser: (state, action) => {
+            state.penaltyUser = action.payload;
         },
     },
 });
