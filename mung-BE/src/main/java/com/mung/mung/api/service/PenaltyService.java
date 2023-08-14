@@ -35,10 +35,10 @@ public class PenaltyService {
 
     }
     @Transactional
-    public List<String> getPenaltyPlayer(HashMap<String,Integer> scoreMap){
+    public String getPenaltyPlayer(HashMap<String,Integer> scoreMap){
         Set<String> keySet = scoreMap.keySet();
         int minScore=1000;
-        List<String> players= new ArrayList<String>();
+        List<String> players= new ArrayList<>();
         for (String key : keySet) {
             if (scoreMap.get(key)<minScore){
                 minScore=scoreMap.get(key);
@@ -49,6 +49,9 @@ public class PenaltyService {
                 players.add(key);
             }
         } // 목록 return
-        return players;
+        Random random=new Random();
+        String player = players.get(random.nextInt(players.size()));
+        // 동점자 중 랜덤으로 유저 제공
+        return player;
     }
 }
