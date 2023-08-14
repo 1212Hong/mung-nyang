@@ -72,6 +72,7 @@ function QnAPage() {
     console.log(downside_list);
 
     useEffect(() => {
+        console.log(lastRound);
         if (!lastRound) {
             dispatch(gameActions.updateLastRound());
             const timer = setTimeout(() => {
@@ -88,7 +89,7 @@ function QnAPage() {
                 clearTimeout(timer);
             };
         }
-    }, [lastRound]);
+    }, []);
 
     return (
         <Container>

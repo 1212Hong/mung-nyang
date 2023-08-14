@@ -115,7 +115,7 @@ const ReadyModal = () => {
 
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
-            <Timer width={"80%"} time={8}></Timer>
+            <Timer width={"80%"} time={7.1}></Timer>
             <ModalViewDescDiv>게임 시작 투표</ModalViewDescDiv>
 
             <ModalViewResultDiv className="vote-res-div">
