@@ -5,13 +5,16 @@ import com.mung.mung.api.request.VoteSetReq;
 import com.mung.mung.api.response.VoteCountRes;
 import com.mung.mung.api.response.VoteResultRes;
 import com.mung.mung.common.exception.custom.PlayerNotExistException;
+import com.mung.mung.common.exception.custom.QuizNotFoundException;
 import com.mung.mung.common.exception.custom.RoomNotExistException;
 import com.mung.mung.common.exception.custom.VotesNotStartException;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameRoom;
+import com.mung.mung.db.entity.Quiz;
 import com.mung.mung.db.enums.GameProcessType;
 import com.mung.mung.db.repository.GameRepository;
 import com.mung.mung.db.repository.GameRoomRepository;
+import com.mung.mung.db.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,9 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
@@ -31,6 +36,8 @@ public class VoteServiceImpl implements VoteService {
     private final GameRoomRepository gameRoomRepository;
 
     private final GameRepository gameRepository;
+
+    private final QuizRepository quizRepository;
 
     // 방 - 현재인원 Map 형식으로 저장
     private final Map<String, Integer> roomPlayers = new ConcurrentHashMap<>();
@@ -70,7 +77,7 @@ public class VoteServiceImpl implements VoteService {
 
         Integer requiredVotes = roomPlayers.get(voteCountReq.getRoomId()); // 각 방에 필요한 투표 수
 
-        if(requiredVotes==null){
+        if (requiredVotes == null) {
             throw new VotesNotStartException();
         }
 
@@ -101,7 +108,7 @@ public class VoteServiceImpl implements VoteService {
 
         Integer requiredVotes = roomPlayers.get(roomId); // 각 방에 필요한 투표 수
 
-        if(requiredVotes==null){
+        if (requiredVotes == null) {
             throw new VotesNotStartException();
         }
 
@@ -115,11 +122,15 @@ public class VoteServiceImpl implements VoteService {
 
             gameRoomRepository.save(gameRoom);
 
+            // Game 테이블에 Quiz 정보 미리 저장
+            Long quizId = (long) randomQuiz();
+
             Game game = Game.builder()
                     .curSet(0)
                     .maxSet(maxGameSet)
                     .startTime(LocalDateTime.now())
                     .gameRoom(gameRoom)
+                    .ranQuiz(quizId)
                     .build();
 
             gameRepository.save(game);
@@ -137,7 +148,7 @@ public class VoteServiceImpl implements VoteService {
         log.info("시작 투표 정보 삭제 : {}", roomId);
         Integer requiredVotes = roomPlayers.get(roomId); // 각 방에 필요한 투표 수
 
-        if(requiredVotes==null){
+        if (requiredVotes == null) {
             throw new VotesNotStartException();
         }
 
@@ -146,6 +157,15 @@ public class VoteServiceImpl implements VoteService {
         roomPlayers.remove(roomId);
         log.info("투표 정보 삭제 확인: {}", roomVotesMap.get(roomId));
 
+    }
+
+    private int randomQuiz() {
+        List<Quiz> quizList = quizRepository.findAll();
+        if (quizList.isEmpty()) {
+            throw new QuizNotFoundException();
+        }
+
+        return ThreadLocalRandom.current().nextInt(quizList.size()) + 1;
     }
 
 
