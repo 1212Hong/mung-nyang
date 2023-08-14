@@ -39,15 +39,6 @@ function TopBottomVideo() {
     const downside_list = subscribers;
 
     useEffect(() => {
-        if (session) {
-            session.on("startDesc", () => {
-                dispatch(changePhase({ phaseType: "Desc" }));
-            });
-            console.log(session.on("category", () => {}));
-        }
-    }, [session]);
-
-    useEffect(() => {
         async function fetchAndSetQuizInfo() {
             const info = await fetchQuizInfo(gameId);
             setQuizInfo(info);
