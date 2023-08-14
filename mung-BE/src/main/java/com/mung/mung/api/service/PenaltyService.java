@@ -19,21 +19,13 @@ public class PenaltyService {
 
     @Transactional
     public DanceRes getRandomDance(){
-        long danceCnt=danceRepository.count();
-        DanceRes danceRes;
-        if (danceCnt == 0) {
-            throw new PenaltyNotExistException();
-        }
-        Random random = new Random();
-        long randomNumber = (long) random.nextInt((int) danceCnt) + 1;
-        Dance dance = danceRepository.findByDanceId(randomNumber);
-        danceRes = DanceRes.builder()
+        Dance dance = danceRepository.getRandomDance();
+        return DanceRes.builder()
                 .danceUrl(dance.getDanceUrl())
                 .difficulty(dance.getDifficulty())
                 .build();
-        return danceRes;
-
     }
+
     @Transactional
     public String getPenaltyPlayer(HashMap<String,Integer> scoreMap){
         Set<String> keySet = scoreMap.keySet();
@@ -50,8 +42,26 @@ public class PenaltyService {
             }
         } // 목록 return
         Random random=new Random();
-        String player = players.get(random.nextInt(players.size()));
         // 동점자 중 랜덤으로 유저 제공
-        return player;
+        return players.get(random.nextInt(players.size()));
     }
+
+//    1~cnt까지 랜덤으로 벌칙 선정 => DB에 1이라는 key값이나 중간에 비어있으면 오류
+//    @Transactional
+//    public DanceRes getRandomDance(){
+//        long danceCnt=danceRepository.count();
+//        DanceRes danceRes;
+//        if (danceCnt == 0) {
+//            throw new PenaltyNotExistException();
+//        }
+//        Random random = new Random();
+//        long randomNumber = (long) random.nextInt((int) danceCnt) + 1;
+//        Dance dance = danceRepository.findByDanceId(randomNumber);
+//        danceRes = DanceRes.builder()
+//                .danceUrl(dance.getDanceUrl())
+//                .difficulty(dance.getDifficulty())
+//                .build();
+//        return danceRes;
+//    }
+
 }
