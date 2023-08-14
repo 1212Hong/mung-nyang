@@ -153,12 +153,14 @@ function WaitingRoom() {
                     {publisher && (
                         <>
                             <Videobox>
-                            <VideoUserName>{myUserName}</VideoUserName>
+                            {/* <VideoUserName>{myUserName}</VideoUserName> */}
                                 <VideoComponent
-                                    width="380"
-                                    height="200"
+                                    width="336"
+                                    height="189"
                                     streamManager={publisher}
                                 />
+                            <VideoUserName>{myUserName}</VideoUserName>
+
                             </Videobox>
                         </>
                     )}
@@ -166,13 +168,14 @@ function WaitingRoom() {
                         subscribers.map((sub, i) => (
                             <React.Fragment key={i}>
                                 <Videobox>
-                            <VideoUserName>{sub.stream.connection.data}</VideoUserName>
 
                                     <VideoComponent
-                                        width="380"
-                                        height="200"
+                                        width="336"
+                                        height="189"
                                         streamManager={sub}
                                     />
+                            <VideoUserName>{sub.stream.connection.data}</VideoUserName>
+
                                 </Videobox>
                             </React.Fragment>
                         ))}
