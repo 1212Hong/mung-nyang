@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { closeModal } from "../../store/modalSlice";
+import { changePhase } from "../../store/phaseSlice";
 
 const ChooseContainer = styled.div`
     position: fixed;
@@ -22,7 +25,10 @@ const ChooseContent = styled.div`
     text-align: center;
 `;
 
-const ChooseModal = ({ answerer }) => {
+const ChooseModal = () => {
+    const game = useSelector((state) => state.game);
+    const { answerer } = game;
+
     return (
         <ChooseContainer>
             <ChooseContent>
