@@ -72,12 +72,13 @@ function WordDescription(props) {
     };
 
     const [answererStream, setAnswererStream] = useState({});
-    const [otherUserStream, setOtherUserStream] = useState([]);
+    const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUserNickname, setDescUserNickname] = useState([""]);
     const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
     const [timerKey, setTimerKey] = useState(0);
     const streams = session.streamManagers;
+    console.log(streams);
     // 초기 세팅
     useEffect(() => {
         const getFunc = async () => {
@@ -89,23 +90,32 @@ function WordDescription(props) {
                 console.log(response);
             });
         };
-        const getUserStream = async () => {
-            setAnswererStream(
-                streams.find((stream) => stream.connection.data === answerer),
-            );
+        // const getUserStream = async () => {
 
-            setOtherUserStream(
-                streams.filter((stream) => stream.connection.data !== answerer),
-            );
-            console.log(descUserNickname);
-        };
+        // };
         getFunc();
-        getUserStream();
+
+        const newAnswererStream = streams.find(
+            (streamManager) =>
+                streamManager.stream.connection.data === answerer,
+        );
+        setAnswererStream(newAnswererStream);
+        console.log(newAnswererStream);
+
+        const newOtherStreams = streams.filter(
+            (streamManager) =>
+                streamManager.stream.connection.data !== answerer,
+        );
+
+        setOtherUserStreams(newOtherStreams);
+        console.log(newOtherStreams);
+        // getUserStream();
 
         if (owner) {
-            for (let i = 0; i < otherUserStream.length; i++) {
-                let nickname = otherUserStream[i].connection.data;
-                setDescUserNickname((prev) => [...prev, nickname]);
+            for (let i = 0; i < newOtherStreams.length; i++) {
+                let nickname = newOtherStreams[i].stream.connection.data;
+                console.log(nickname);
+                setDescUserNickname((prev) => [...prev, nickname]); // 정답자 이외의 닉네임 배열 갱신
             }
         }
     }, []);
@@ -116,7 +126,8 @@ function WordDescription(props) {
         if (descIndex < streams.length - 1) {
             setDescIndex(descIndex + 1);
             startTimer();
-        } else dispatch(changePhase("QnA"));
+        }
+        // } else dispatch(changePhase("QnA"));
     };
 
     useEffect(() => {
@@ -135,6 +146,7 @@ function WordDescription(props) {
 
     useEffect(() => {
         session.on("signal:descIndex", (event) => {
+            console.log(event.data);
             setCurDescUserNickname(event.data);
         });
     }, [timerKey]);
@@ -144,14 +156,17 @@ function WordDescription(props) {
             <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()}></Timer>
             <Participants>
                 <CurParticipants width={"100%"}>
-                    <VideoComponent
-                        streamManager={otherUserStream.find(
-                            (stream) =>
-                                stream.connection.data === curDescUserNickname,
-                        )}
-                        width={"80%"}
-                        height={"80%"}
-                    />
+                    {curDescUserNickname && (
+                        <VideoComponent
+                            streamManager={otherUserStreams.find(
+                                (streamManager) =>
+                                    streamManager.stream.connection.data ===
+                                    curDescUserNickname,
+                            )}
+                            width={"80%"}
+                            height={"80%"}
+                        />
+                    )}
                     {curDescUserNickname}
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
@@ -159,7 +174,7 @@ function WordDescription(props) {
                         <VideoComponent
                             width="380px"
                             height="250px"
-                            streamManager={answererStream}
+                            streamManager={answererStream.stream}
                         />
                     </CurFunction>
                     <CurFunction height={"36%"}>
@@ -189,7 +204,7 @@ function WordDescription(props) {
                 </CurParticipants>
             </Participants>
             <Participants height={"200px"}>
-                {otherUserStream.map((stream, i) => (
+                {otherUserStreams.map((stream, i) => (
                     <React.Fragment key={i}>
                         <VideoComponent
                             width="250"
