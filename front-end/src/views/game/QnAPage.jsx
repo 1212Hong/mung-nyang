@@ -1,4 +1,4 @@
-import VideoBoxing from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import styled from "styled-components";
 import Timer from "../../components/Timer";
 const Container = styled.div`
@@ -68,7 +68,7 @@ function QnAPage() {
             <VideoContainer>
                 {upside_list.map((user, index) => (
                     <VideoBox key={index}>
-                        <VideoBoxing width={"100%"} height={"180px"} />
+                        <VideoComponent width={"100%"} height={"180px"} />
                         {user}
                     </VideoBox>
                 ))}
@@ -79,7 +79,7 @@ function QnAPage() {
             <VideoContainer>
                 {downside_list.map((user, index) => (
                     <VideoBox key={index}>
-                        <VideoBoxing width={"100%"} height={"180px"} />
+                        <VideoComponent width={"100%"} height={"180px"} />
                         {user}
                     </VideoBox>
                 ))}

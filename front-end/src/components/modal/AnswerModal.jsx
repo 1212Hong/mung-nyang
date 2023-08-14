@@ -14,12 +14,12 @@ import { fetchEmergencyAnswerResponse } from "../../hooks/quiz";
 import { useSelector, useDispatch } from "react-redux";
 import { closeModal } from "../../store/modalSlice";
 import { gameActions } from "../../store/gameSlice";
-const AnswerModal = () => {
+const AnswerModal = (type) => {
     const [userAnswer, setUserAnswer] = useState("");
     const [answerResult, setAnswerResult] = useState("");
     const result = useSelector((state) => state.game.result);
     const dispatch = useDispatch();
-
+    console.log(type);
     const onChange = (e) => {
         setUserAnswer(e.target.value);
     };
