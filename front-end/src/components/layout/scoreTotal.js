@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export const Container = styled.div`
+    background-color: var(--brown-white);
+`;
+
 export const TitleBox = styled.div`
     display: flex;
     padding: 20px;
@@ -32,8 +36,6 @@ export const LineItem = styled.div`
     font-size: 32px;
 `;
 
-export const UserItem = styled.div``;
-
 export const RankItem = styled.div`
     width: 150px;
 `;
@@ -53,7 +55,7 @@ export const ScoreItem = styled.div`
 export const TitleItem = styled.div``;
 
 export const SetItem = styled.div`
-    padding: 5px;
+    padding: 15px;
 
     font-size: 32px;
     background-color: var(--beige-dark);
@@ -64,4 +66,8 @@ export const BtnBox = styled.div`
     display: flex;
     justify-content: flex-end;
     margin: 20px 20px 0px 0px;
+`;
+
+export const ImgBox = styled.div`
+    text-align: right;
 `;

@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { Container } from "../../components/layout/common";
 import {
+    Container,
     TitleBox,
     RankBox,
     Border,
     LineItem,
-    UserItem,
     RankItem,
     NameItem,
     UpItem,
@@ -16,9 +15,11 @@ import {
     TitleItem,
     SetItem,
     BtnBox,
+    ImgBox,
 } from "../../components/layout/scoreTotal";
 import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
+import foots from "../../assets/img/foots.png";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
@@ -129,8 +130,8 @@ const ScoreTotal = () => {
                     </LineItem>
                 ))}
             </RankBox>
-            {owner && (
-                <BtnBox>
+            <BtnBox>
+                {owner && (
                     <Button
                         fontSize="32px"
                         fontColor="var(--brown-dark)"
@@ -138,8 +139,11 @@ const ScoreTotal = () => {
                     >
                         다음
                     </Button>
-                </BtnBox>
-            )}
+                )}
+            </BtnBox>
+            <ImgBox>
+                <img src={foots} alt="" width={500} height={500} />
+            </ImgBox>
         </Container>
     );
 };
