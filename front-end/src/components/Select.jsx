@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategory } from "../api/game";
-import { gameActions } from "../store/gameSlice";
+import { selectCategory, signalCategory, startDesc } from "../api/game";
 import { changePhase } from "../store/phaseSlice";
 import { closeModal } from "../store/modalSlice";
 
