@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategory, signalCategory, startDesc } from "../api/game";
+import { selectCategory } from "../api/game";
 import { gameActions } from "../store/gameSlice";
 import { changePhase } from "../store/phaseSlice";
 
@@ -35,15 +35,28 @@ const Content = styled.button`
 `;
 
 const Select = (props) => {
-    const { list, title } = props;
+    const { title } = props;
+    const list = [
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+        "과일",
+    ];
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
+    const game = useSelector((state) => state.game);
+    const phase = useSelector((state) => state.phase);
     const { session } = openvidu;
 
     const goDesc = async (category) => {
-        dispatch(gameActions.saveCategory(category));
-        await signalCategory(category, session.sessionId);
-        startDesc(session.sessionId);
+        await selectCategory("테스트", "1", category, "테스트유저1");
+        // 접근 실패 시 symbol 타입으로 접근
+        dispatch(changePhase("Desc"));
     };
 
     return (

@@ -13,8 +13,6 @@ public class QuizPlayersRoleRes {
 
     private Long setId;
 
-    List<Map<String, String>> playersRoleInfo;
-
     private GameProcessType gameProcessType;
 
 }

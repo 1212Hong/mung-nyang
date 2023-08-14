@@ -10,6 +10,7 @@ import {
     fetchEmergencyAnswerResponse,
     fetchFinalAnswerResponse,
 } from "../../hooks/quiz";
+import { getUserWord } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 const Container = styled.div`
     margin: 0;
@@ -82,7 +83,8 @@ function WordDescription(props) {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const { subscribers, publisher, mySessionId, myUserName } = openvidu;
-    const { gameId, category, answerer, word } = game;
+    const { gameId, category, answerer } = game;
+    const [word, setWord] = useState("");
     console.log(subscribers);
 
     const openAnswerModal = () => {
@@ -95,19 +97,10 @@ function WordDescription(props) {
     };
     useEffect(() => {
         const getFunc = async () => {
-            const roleInfo = await fetchUserRole(
-                mySessionId,
-                gameId,
-                category,
-                answerer,
-            );
+            // await getUserWord(game.PlayerId).then((response) =>
+            //     setWord(response),
+            // );
             // setCurGameSetId(roleInfo.setId);
-            const playersRoleInfo = roleInfo.playersRoleInfo;
-            playersRoleInfo.map((item) => {
-                if (item.playerNickname === myUserName) {
-                    dispatch(gameActions.saveWord(item.word));
-                }
-            });
         };
         getFunc();
     }, []);
