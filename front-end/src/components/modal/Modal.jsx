@@ -60,7 +60,7 @@ const Modal = () => {
         return findModal.component;
     };
     //modal 종료 방지
-    const maintainModal = ["ReadyModal", "AnswerModal"];
+    const maintainModal = ["ReadyModal", "AnswerModal", "PenaltyLinkModal"];
     const ModalCheck = maintainModal.includes(modalType) ? true : false;
     return (
         <ModalContainer>
