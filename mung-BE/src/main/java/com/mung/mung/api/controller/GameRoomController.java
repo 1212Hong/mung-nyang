@@ -59,8 +59,6 @@ public class GameRoomController {
     // 한 방에 여러개의 영상을 가지기 위함
     private Map<String, String> sessionRecordMap =new HashMap<>();
 
-    private long convertNum=1;
-
     @PostConstruct
     public void init() {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
@@ -83,9 +81,7 @@ public class GameRoomController {
         String RoomUUID = StringUUID.replaceAll("[^a-zA-Z0-9]", "");
         log.info("test UUID : {}",RoomUUID);
         log.info("test UUID : {}",StringUUID);
-//        this.sessionRoomConvert.put(roomId,"Mung"+this.convertNum);
         this.sessionRoomConvert.put(roomId,RoomUUID);
-        this.convertNum+=1;
 
         // GameRoomCreateReq 정보를 Map으로 변환 내장 라이브러리를 사용하기 위해서는 customSessionId로 hashMap을 만들어 주어야 함
         Map<String, Object> gameInfoMap = new HashMap<>();
