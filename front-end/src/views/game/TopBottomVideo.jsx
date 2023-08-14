@@ -38,33 +38,13 @@ function TopBottomVideo() {
 
     const downside_list = subscribers;
     const dispatch = useDispatch();
-    let c = "";
 
-    const getFunc = async (category) => {
-        const roleInfo = await fetchUserRole(
-            mySessionId,
-            gameId,
-            category,
-            answerer,
-        );
-        console.log(roleInfo);
-        if (roleInfo) {
-            const playersRoleInfo = roleInfo.playersRoleInfo;
-            playersRoleInfo.map((item) => {
-                if (item.playerNickname === myUserName) {
-                    dispatch(gameActions.saveWord(item.word));
-                }
-            });
-        }
-    };
     useEffect(() => {
         if (session) {
             session.on("startDesc", () => {
                 dispatch(changePhase({ phaseType: "Desc" }));
             });
             console.log(session.on("category", () => {}));
-
-            getFunc(c);
         }
     }, [session]);
 
@@ -73,7 +53,7 @@ function TopBottomVideo() {
             const info = await fetchQuizInfo(gameId);
             setQuizInfo(info);
         }
-        owner && fetchAndSetQuizInfo();
+        fetchAndSetQuizInfo();
     }, []);
     const onViewChange = (newView) => {
         setView(newView);

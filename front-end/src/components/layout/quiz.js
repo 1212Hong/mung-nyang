@@ -23,8 +23,7 @@ const FlexBox = styled.div`
 `;
 
 const Content = styled.button`
-    background-color: ${(props) =>
-        props.clicked ? `var(--beige-reverse)` : `var(--white)`};
+    background-color: ${(props) => props.clicked && `var(--beige-reverse)`};
     margin-right: 10px;
     margin-left: 10px;
     width: 350px;

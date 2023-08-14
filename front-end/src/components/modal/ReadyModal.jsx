@@ -46,6 +46,15 @@ const ReadyModal = () => {
         });
     };
 
+    const signalGoQuiz = async (phase) => {
+        console.log(phase);
+        await session.signal({
+            data: phase,
+            to: [],
+            type: phase,
+        });
+    };
+
     const handleEndVote = async () => {
         try {
             const response = await getVoteRes(mySessionId, setCnt);
@@ -54,7 +63,9 @@ const ReadyModal = () => {
 
                 console.log(response.data.gameId);
                 await signalGameId(response.data.gameId);
+
                 dispatch(gameActions.saveGameId(response.data.gameId));
+                await signalGoQuiz(response.data.gameProcessType);
                 dispatch(changePhase(response.data.gameProcessType));
             }
             console.log(owner);
@@ -92,6 +103,11 @@ const ReadyModal = () => {
 
         return () => {
             clearTimeout(timer);
+            session.on("gameId", (e) => {
+                console.log(e.data);
+                dispatch(gameActions.saveGameId(e.data));
+                dispatch(changePhase("Quiz"));
+            });
         };
     }, [modalFlag]);
 
