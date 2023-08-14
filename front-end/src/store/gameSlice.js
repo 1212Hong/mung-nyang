@@ -13,6 +13,7 @@ const initialState = {
     selectedAnswer: "",
     result: "",
     category: "",
+    dupLiars: [],
     penaltyUser: "",
 };
 
@@ -58,6 +59,9 @@ export const gameSlice = createSlice({
         },
         updateResult: (state, action) => {
             state.result = action.payload;
+        },
+        updateDupLiars: (state, action) => {
+            state.dupLiars = action.payload;
         },
         updatePenaltyUser: (state, action) => {
             state.penaltyUser = action.payload;
