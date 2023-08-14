@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     // OV: null,
     mySessionId: undefined,
+    mySessionPw: undefined,
     myUserName: undefined,
     session: undefined,
     mainStreamManager: undefined,
@@ -23,6 +24,9 @@ export const openviduSlice = createSlice({
         saveSessionId: (state, action) => {
             state.mySessionId = action.payload;
             console.log(state.mySessionId);
+        },
+        saveSessionPw: (state, action) => {
+            state.mySessionPw = action.payload;
         },
         saveToken: (state, action) => {
             state.token = action.payload;
