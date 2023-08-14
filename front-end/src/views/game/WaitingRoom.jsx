@@ -35,8 +35,15 @@ function WaitingRoom() {
     // const [userMessage, setUserMessage] = useState("");
     const userMessage = useRef("");
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher, mySessionId, session, owner, myUserName } =
-        openvidu;
+    const {
+        subscribers,
+        publisher,
+        mySessionId,
+        session,
+        owner,
+        myUserName,
+        mySessionPw,
+    } = openvidu;
     console.log(subscribers);
 
     console.log(openvidu.messageList);
@@ -97,6 +104,50 @@ function WaitingRoom() {
         });
         userMessage.current.value = "";
     };
+
+    // 카카오톡공유 코드시작
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://developers.kakao.com/sdk/js/kakao.js";
+        script.async = true;
+        document.body.appendChild(script);
+        return () => document.body.removeChild(script);
+    }, []);
+
+    const shareKakao = () => {
+        if (window.Kakao) {
+            const kakao = window.Kakao;
+            if (!kakao.isInitialized()) {
+                // 카카오에서 제공받은 javascript key를 넣어줌 -> .env파일에서 호출시킴
+                kakao.init(process.env.REACT_APP_KAKAO);
+            }
+            // 직접 설정
+            kakao.Link.sendDefault({
+                objectType: "feed", // 카카오 링크 공유 여러 type들 중 feed라는 타입 -> 자세한 건 카카오에서 확인
+                content: {
+                    title: `방제목 : ${mySessionId}`, // 인자값으로 받은 title
+                    description: `비밀번호 : ${mySessionPw} `, // 비밀번호 저장하고 불러와야됌
+                    imageUrl:
+                        "http://k.kakaocdn.net/dn/bopryU/btsrgQwe7vk/aKe0lK132QU1HJ13rKm90k/kakaolink40_original.jpg",
+                    link: {
+                        mobileWebUrl: "https://i9c209.p.ssafy.io/",
+                        webUrl: "https://i9c209.p.ssafy.io/",
+                    },
+                },
+                buttons: [
+                    {
+                        title: "입장하기",
+                        link: {
+                            mobileWebUrl: "https://i9c209.p.ssafy.io/",
+                            webUrl: "https://i9c209.p.ssafy.io/",
+                        },
+                    },
+                ],
+            });
+        }
+    };
+    // 카카오톡공유 코드종료
+
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
@@ -169,6 +220,7 @@ function WaitingRoom() {
                         </Button>
                     </ChattingInputBox>
                 </ChattingBox>
+
                 <MenuBox>
                     <Button
                         width="55px"
@@ -195,7 +247,7 @@ function WaitingRoom() {
                         <Button
                             key="mute"
                             type="icon"
-                            width="55px"
+                            width="50px"
                             height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
@@ -206,7 +258,7 @@ function WaitingRoom() {
                         <Button
                             key="on"
                             type="icon"
-                            width="55px"
+                            width="50px"
                             height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
@@ -214,6 +266,14 @@ function WaitingRoom() {
                             <VolumeOnIcon width="23" height="23" />
                         </Button>
                     )}
+                    <Button width="45px" height="40px" onClick={shareKakao}>
+                        <img
+                            width="30"
+                            height="30"
+                            src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                            alt="공유하기"
+                        />
+                    </Button>
                 </MenuBox>
                 {owner && (
                     <StartnSetBox>
