@@ -35,7 +35,14 @@ const OpenLiar = () => {
                 );
                 const result = response.data;
                 console.log(result);
-                dispatch(gameActions.updateResult(result));
+
+                if (result === "LiarWin_Success") {
+                    dispatch(gameActions.updateResult("라이어 승리"));
+                } else if (result === "LiarLose_Fail") {
+                    dispatch(gameActions.updateResult("시민 승리"));
+                } else if (result === "LiarWin_NotLiar") {
+                    dispatch(gameActions.updateResult("라이어 승리"));
+                }
                 await deleteLiar(setId);
                 dispatch(changePhase("MidScore"));
             } catch (error) {
