@@ -88,6 +88,51 @@ function WaitingRoom() {
         });
         userMessage.current.value = "";
     };
+
+    // 카카오톡공유 코드시작
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://developers.kakao.com/sdk/js/kakao.js";
+        script.async = true;
+        document.body.appendChild(script);
+        return () => document.body.removeChild(script);
+    }, []);
+
+    const shareKakao = () => {
+        if (window.Kakao) {
+          const kakao = window.Kakao;
+          if (!kakao.isInitialized()) {
+                // 카카오에서 제공받은 javascript key를 넣어줌 -> .env파일에서 호출시킴
+                kakao.init(process.env.REACT_APP_KAKAO);
+        
+          }
+          // 직접 설정
+          kakao.Link.sendDefault({
+            objectType: "feed", // 카카오 링크 공유 여러 type들 중 feed라는 타입 -> 자세한 건 카카오에서 확인
+            content: {
+              title: `방제목 : ${mySessionId}`, // 인자값으로 받은 title
+              description: `비밀번호 : 1212바꿔야함 `, // 비밀번호 저장하고 불러와야됌
+                imageUrl: "http://k.kakaocdn.net/dn/bopryU/btsrgQwe7vk/aKe0lK132QU1HJ13rKm90k/kakaolink40_original.jpg",
+              link: {
+                mobileWebUrl: 'https://i9c209.p.ssafy.io/',
+                webUrl: 'https://i9c209.p.ssafy.io/'
+              }
+            },
+            buttons: [
+              {
+                title: "입장하기",
+                link: {
+                  mobileWebUrl: 'https://i9c209.p.ssafy.io/',
+                  webUrl: 'https://i9c209.p.ssafy.io/'
+                }
+              }
+            ]
+          });
+            
+        }
+    };
+    // 카카오톡공유 코드종료
+
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
@@ -160,6 +205,15 @@ function WaitingRoom() {
                         </Button>
                     </ChattingInputBox>
                 </ChattingBox>
+                
+                <button
+  id="kakao-link-btn"
+  className="bg-lightBlue-500 active:bg-lightBlue-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
+  type="button"
+  onClick={shareKakao}
+>
+  share
+</button>
                 <MenuBox>
                     {[
                         { icon: <QuestionIcon width="23" height="23" /> },
