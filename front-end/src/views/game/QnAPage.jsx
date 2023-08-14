@@ -88,7 +88,7 @@ function QnAPage() {
                 clearTimeout(timer);
             };
         }
-    });
+    }, [lastRound]);
 
     return (
         <Container>
@@ -116,7 +116,7 @@ function QnAPage() {
                             height={"180px"}
                             streamManager={user}
                         />
-                        {user.stream.connection.data}
+                        <SmallText>{user.stream.connection.data}</SmallText>
                     </VideoBox>
                 ))}
             </VideoContainer>

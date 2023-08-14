@@ -52,7 +52,7 @@ function WordDescription() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const { myUserName, session, owner } = openvidu;
-    const { gameId, category, answerer, setId, playerId } = game;
+    const { gameId, result, answerer, setId, playerId } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUserNickname, setDescUserNickname] = useState([""]);
@@ -142,26 +142,34 @@ function WordDescription() {
         });
     }, [timerKey]);
 
+    useEffect(() => {
+        session.on("signal:result", (e) => {
+            console.log(e.data);
+        });
+    });
+
     const answererStream = streams.find(
         (streamManager) => streamManager.stream.connection.data === answerer,
     );
 
     return (
         <Container>
-            {}
             <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()}></Timer>
             <Participants>
                 <CurParticipants width={"100%"}>
                     {curDescUserNickname ? (
-                        <VideoComponent
-                            streamManager={otherUserStreams.find(
-                                (streamManager) =>
-                                    streamManager.stream.connection.data ===
-                                    curDescUserNickname,
-                            )}
-                            width={"80%"}
-                            height={"80%"}
-                        />
+                        <>
+                            <SmallText>{curDescUserNickname}</SmallText>
+                            <VideoComponent
+                                streamManager={otherUserStreams.find(
+                                    (streamManager) =>
+                                        streamManager.stream.connection.data ===
+                                        curDescUserNickname,
+                                )}
+                                width={"80%"}
+                                height={"80%"}
+                            />
+                        </>
                     ) : (
                         <ModalBackdrop>
                             <ModalViewDescDiv>
@@ -172,7 +180,6 @@ function WordDescription() {
                             </ModalViewDescDiv>
                         </ModalBackdrop>
                     )}
-                    <SmallText>{curDescUserNickname}</SmallText>
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
                     <CurFunction>
@@ -184,16 +191,21 @@ function WordDescription() {
                     </CurFunction>
                     <CurFunction height={"36%"}>
                         <CurSubFunction>
-                            <Button
-                                width={"100%"}
-                                height={"100%"}
-                                text={
-                                    answerer
-                                        ? "정답을 맞춰보세요"
-                                        : `제시어 : ${word}`
-                                }
-                                fontSize={"28px"}
-                            ></Button>
+                            {myUserName === answerer ? (
+                                <Button
+                                    width={"100%"}
+                                    height={"100%"}
+                                    text={"정답을 맞춰보세요"}
+                                    fontSize={"28px"}
+                                />
+                            ) : (
+                                <Button
+                                    width={"100%"}
+                                    height={"100%"}
+                                    text={`제시어 : ${word}`}
+                                    fontSize={"28px"}
+                                />
+                            )}
                         </CurSubFunction>
                         <CurSubFunction>
                             <CurSubBtn>
