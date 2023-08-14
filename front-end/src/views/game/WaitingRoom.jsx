@@ -21,23 +21,24 @@ import {
     Videobox,
     VideoboxGrid,
     ChatItem,
+    ChatItemName,
+    ChatItemMessage,
 } from "../../components/layout/waiting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { startGameVote } from "../../api/game";
-import Dropdown from "../../components/Dropdown";
-import { SmallText, SubText } from "../../components/layout/common";
 import { gameActions } from "../../store/gameSlice";
-import { ovActions } from "../../store/openviduSlice";
+
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
     const [setCnt, setSetCnt] = useState(1); // redux에 저장해두고 getVoteRes에 넣어주기
     // const [userMessage, setUserMessage] = useState("");
     const userMessage = useRef("");
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher, mySessionId, session, owner } = openvidu;
+    const { subscribers, publisher, mySessionId, session, owner, myUserName } =
+        openvidu;
     console.log(subscribers);
-    console.log(session);
+
     console.log(openvidu.messageList);
     const messageEndRef = useRef();
     const dispatch = useDispatch();
@@ -85,17 +86,13 @@ function WaitingRoom() {
             to: [],
             type: "chat",
         });
+        userMessage.current.value = "";
     };
     function toggleVolume() {
         setIsMuted((prevState) => !prevState);
     }
     console.log(openvidu.messageList.length);
-    useEffect(() => {
-        // session.on("signal:chat", (event) => {
-        //     const data = JSON.parse(event.data);
-        //     console.log(data);
-        // });
-    });
+
     return (
         <Container className="waiting-container">
             <Leftbox>
@@ -124,20 +121,32 @@ function WaitingRoom() {
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                {/* (
-                <Participant
-                    user_list={subscribers}
-                    // host={host}
-                />
-                ) */}
+                {publisher && subscribers && (
+                    <Participant
+                        publisher={publisher}
+                        subscribers={subscribers}
+                    />
+                )}
+
                 <ChattingBox>
                     <ChatBox>
-                        {openvidu.messageList.map((item, index) => (
-                            <ChatItem key={index}>
-                                <>{item.userName}</>
-                                <>{item.userMessage}</>
-                            </ChatItem>
-                        ))}
+                        {openvidu.messageList.map((item, index) =>
+                            item.userName === myUserName ? (
+                                <ChatItem key={index} align={"right"}>
+                                    <ChatItemName>{"나"}</ChatItemName>
+                                    <ChatItemMessage align={"right"}>
+                                        {item.userMessage}
+                                    </ChatItemMessage>
+                                </ChatItem>
+                            ) : (
+                                <ChatItem key={index}>
+                                    <ChatItemName>{item.userName}</ChatItemName>
+                                    <ChatItemMessage>
+                                        {item.userMessage}
+                                    </ChatItemMessage>
+                                </ChatItem>
+                            ),
+                        )}
                         <ChatItem ref={messageEndRef}></ChatItem>
                     </ChatBox>
                     <ChattingInputBox>
