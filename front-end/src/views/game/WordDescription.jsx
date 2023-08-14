@@ -94,12 +94,13 @@ function WordDescription(props) {
 
         // };
         getFunc();
+
         const newAnswererStream = streams.find(
             (streamManager) =>
                 streamManager.stream.connection.data === answerer,
         );
         setAnswererStream(newAnswererStream);
-        console.log(answererStream);
+        console.log(newAnswererStream);
 
         const newOtherStreams = streams.filter(
             (streamManager) =>
@@ -117,7 +118,6 @@ function WordDescription(props) {
                 setDescUserNickname((prev) => [...prev, nickname]); // 정답자 이외의 닉네임 배열 갱신
             }
         }
-        console.log(descUserNickname);
     }, []);
     const startTimer = () => {
         setTimerKey((prevKey) => prevKey + 1);
@@ -156,15 +156,17 @@ function WordDescription(props) {
             <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()}></Timer>
             <Participants>
                 <CurParticipants width={"100%"}>
-                    <VideoComponent
-                        streamManager={otherUserStreams.find(
-                            (streamManager) =>
-                                streamManager.stream.connection.data ===
-                                curDescUserNickname,
-                        )}
-                        width={"80%"}
-                        height={"80%"}
-                    />
+                    {curDescUserNickname && (
+                        <VideoComponent
+                            streamManager={otherUserStreams.find(
+                                (streamManager) =>
+                                    streamManager.stream.connection.data ===
+                                    curDescUserNickname,
+                            )}
+                            width={"80%"}
+                            height={"80%"}
+                        />
+                    )}
                     {curDescUserNickname}
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
