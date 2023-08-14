@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectCategory, signalCategory, startDesc } from "../api/game";
 import { changePhase } from "../store/phaseSlice";
+import { closeModal } from "../store/modalSlice";
 
 const Container = styled.div`
     padding: 20px;
@@ -49,12 +50,26 @@ const Select = (props) => {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const phase = useSelector((state) => state.phase);
-    const { session } = openvidu;
+    const { gameId } = game;
+    const { session, mySessionId, answerer } = openvidu;
 
     const goDesc = async (category) => {
-        await selectCategory("테스트", "1", category, "테스트유저1");
-        // 접근 실패 시 symbol 타입으로 접근
+        const setInfo = await selectCategory(
+            mySessionId,
+            gameId,
+            category,
+            answerer,
+        );
+        console.log(setInfo);
+        if (setInfo) {
+            const setId = setInfo.setId;
+            dispatch(gameActions.saveSetId(setId));
+            session.signal({
+                data: setId,
+                to: [],
+                type: "setId",
+            });
+        }
         dispatch(changePhase("Desc"));
     };
 

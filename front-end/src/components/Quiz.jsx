@@ -1,56 +1,21 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
 import Timer from "./Timer";
 import { useEffect } from "react";
 import { fetchQuizResult, submitAnswer } from "../hooks/quiz";
 import { gameActions } from "../store/gameSlice";
-
-const Container = styled.div`
-    padding: 20px;
-    padding-bottom: 40px;
-    width: 600px;
-    height: 300px;
-    background: ${`var(--macciato)`};
-    text-align: center;
-    border-radius: 5px;
-`;
-
-const Title = styled.div`
-    padding: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 32px;
-    color: ${`var(--dusty-pink-dark)`};
-`;
-
-const Box = styled.div`
-    display: flex;
-`;
-
-const Content = styled.button`
-    background-color: ${`var(--white)`};
-    margin-right: 10px;
-    margin-left: 10px;
-    width: 350px;
-    height: 150px;
-    border-radius: 5px;
-    font-size: 32px;
-    color: ${`var(--beige-dark)`};
-`;
+import { Container, Content, FlexBox, Title } from "./layout/quiz";
 
 const Quiz = (props) => {
-    const { title, text1, text2, onViewChange, ChooseModal } = props;
-    const [showChooseModal, setShowChooseModal] = useState(false);
-    const [answerer, setAnswerer] = useState("");
+    const { title, text1, text2 } = props;
+    const openvidu = useSelector((state) => state.openvidu);
+    const { session, mySessionId, myUserName, owner } = openvidu;
     const [answered, setAnswered] = useState(false);
     const [userChoice, setUserChoice] = useState("");
     const dispatch = useDispatch();
-    const openvidu = useSelector((state) => state.openvidu);
-    const { mySessionId, myUserName, owner } = openvidu;
     const roomId = mySessionId;
     const playerNickname = myUserName;
-    const [quizResultFetched, setQuizResultFetched] = useState(false);
+
     const handleUserChoice = (isPositive) => {
         setUserChoice(isPositive ? "positive" : "negative");
     };
@@ -63,55 +28,40 @@ const Quiz = (props) => {
                 await submitAnswer(roomId, playerNickname, userChoice);
                 const quizResultResponse = await fetchQuizResult(roomId);
 
-                setAnswerer(quizResultResponse.answerer);
-                dispatch(gameActions.saveAnswerer(answerer));
-                setShowChooseModal(true);
-                setQuizResultFetched(true);
+                dispatch(gameActions.saveAnswerer(quizResultResponse.answerer));
+                session.signal({
+                    data: quizResultResponse.answerer,
+                    to: [],
+                    type: "answerer",
+                });
             } catch (error) {
                 console.error("Error:", error);
             }
         };
 
         if (answered) {
-            handleAnswerSubmission();
+            owner && handleAnswerSubmission();
         }
-    }, [
-        answered,
-        roomId,
-        playerNickname,
-        myUserName,
-        userChoice,
-        showChooseModal,
-        answerer,
-    ]);
+    }, [answered, userChoice]);
 
-    useEffect(() => {
-        if (showChooseModal) {
-            const modalTimer = setTimeout(() => {
-                setShowChooseModal(false);
-                onViewChange("Category");
-            }, 5000);
-
-            return () => clearTimeout(modalTimer);
-        }
-    }, [setShowChooseModal, onViewChange, showChooseModal]);
     return (
         <Container>
-            <Timer
-                onTimerEnd={() => setAnswered(true)}
-                roomId={roomId}
-                myUserName={myUserName}
-            />
+            <Timer onTimerEnd={() => setAnswered(true)} />
             <Title>{title}</Title>
-            <Box>
-                <Content onClick={() => handleUserChoice(true)}>
+            <FlexBox>
+                <Content
+                    onClick={() => handleUserChoice(true)}
+                    clicked={userChoice === "positive" ? true : false}
+                >
                     {text1}
                 </Content>
-                <Content onClick={() => handleUserChoice(false)}>
+                <Content
+                    onClick={() => handleUserChoice(false)}
+                    clicked={userChoice === "negative" ? true : false}
+                >
                     {text2}
                 </Content>
-            </Box>
-            {quizResultFetched && <ChooseModal answerer={answerer} />}
+            </FlexBox>
         </Container>
     );
 };
