@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import VideoComponent from "../../components/VideoComponent";
 import Card from "../../components/Card";
-import imageSrc from "../../assets/img/clock.png";
+import clockImg from "../../assets/img/clock.png";
+import aCatInDogsImg from "../../assets/img/a_cat_in_dogs_up.png";
 import Timer from "../../components/Timer";
+import Input from "../../components/Input";
 import {
     Container,
     OtherUsers,
@@ -15,15 +17,49 @@ import {
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { gameActions } from "../../store/gameSlice";
-import AnswerModal from "../../components/modal/AnswerModal";
+import { Box, ColBox, ImgBox, InputBox } from "../../components/layout/finAns";
+import Button from "../../components/Button";
+import { finalAnswer } from "../../api/game";
 
 const FinAns = () => {
+    const [ans, setAns] = useState("");
+    const [resReturn, setResReturn] = useState("");
+    const [nextPhase, setNextPhase] = useState("");
     const text = "정답자가 정답을 입력중입니다.";
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
-    const { session } = openvidu;
-    const answerer = useSelector((state) => state.game.answerer);
+    const { session, mySessionId } = openvidu; // roomId가 mySessionId
+    const game = useSelector((state) => state.game);
+    const { answerer, setId } = game;
+    const streams = session.streamManagers;
+
+    const handleChange = (e) => {
+        setAns(e.target.value);
+    };
+
+    const signalFinAns = async (resReturn, phase) => {
+        session.signal({
+            data: phase,
+            to: [],
+            type: resReturn,
+        });
+    };
+
+    const submitAnswer = async (ans) => {
+        await finalAnswer(setId, mySessionId, ans)
+            .then((res) => {
+                console.log(res); // 올바른 반환값 : resultReturn, gameProcessType 담긴 객체
+                setResReturn(res.data.resReturn);
+                setNextPhase(res.data.gameProcessType);
+
+                signalFinAns(res.data.resultReturn, res.data.gameProcessType); // 비동기에러 생각해서 우선 데이터 받기 성공하면 시그널 전송
+                // signalFinAns(resReturn, nextPhase);
+                console.log(resReturn);
+            })
+            .catch((err) => console.log(err));
+
+        dispatch(changePhase(nextPhase));
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -41,32 +77,52 @@ const FinAns = () => {
         <Container>
             <Timer />
             <AnswerBox>
-                {session.streamManagers &&
-                    session.streamManagers.map((user, i) => (
+                {streams &&
+                    streams.map((user, i) => (
                         <React.Fragment key={i}>
                             {user.stream.connection.data === answerer && (
                                 <AnswerItem>
-                                    <SmallText>
-                                        {user.stream.connection.data}
-                                    </SmallText>
-                                    <VideoComponent
-                                        width="500px"
-                                        height="400px"
-                                        streamManager={user}
-                                    />
+                                    <ColBox>
+                                        <SmallText>
+                                            {user.stream.connection.data}
+                                        </SmallText>
+                                        <VideoComponent
+                                            width="500px"
+                                            height="384px"
+                                            streamManager={user}
+                                        />
+                                    </ColBox>
                                 </AnswerItem>
                             )}
                         </React.Fragment>
                     ))}
-                {answerer ? (
-                    <AnswerModal />
+                {session.connection.data === answerer ? (
+                    <Box>
+                        <ImgBox>
+                            <img
+                                src={aCatInDogsImg}
+                                alt="a cat in dogs img"
+                                width="90%"
+                            />
+                        </ImgBox>
+                        <InputBox>
+                            <Input value={ans} onChange={handleChange} />
+                            <Button
+                                onClick={() => submitAnswer(ans)}
+                                width="155px"
+                                height="40px"
+                            >
+                                최종 정답 제출
+                            </Button>
+                        </InputBox>
+                    </Box>
                 ) : (
-                    <Card imageSrc={imageSrc} description={text} />
+                    <Card imageSrc={clockImg} description={text} />
                 )}
             </AnswerBox>
             <UserBox>
-                {session.streamManagers &&
-                    session.streamManagers.map((user, i) => (
+                {streams &&
+                    streams.map((user, i) => (
                         <React.Fragment key={i}>
                             {user.stream.connection.data !== answerer && (
                                 <OtherUsers>
