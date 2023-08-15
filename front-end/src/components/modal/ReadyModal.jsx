@@ -95,10 +95,6 @@ const ReadyModal = () => {
     }, [gameVoteCnt]);
 
     useEffect(() => {
-        if (!modalFlag) {
-            owner && deleteVote(mySessionId);
-            return;
-        }
         const timer = setTimeout(async () => {
             // 타이머 흘러가는중
             owner && handleEndVote();
@@ -108,6 +104,12 @@ const ReadyModal = () => {
             //       dispatch(changePhase("Quiz"));
             //   });
         }, 7000);
+
+        if (!modalFlag) {
+            clearTimeout(timer);
+            owner && deleteVote(mySessionId);
+            return;
+        }
 
         return () => {
             session.on("signal:gameId", (e) => {
