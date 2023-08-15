@@ -32,7 +32,9 @@ const Videobox = styled.div`
     align-items: center;
     justify-content: center;
     flex-direction: column; /* 수직 배치 */
-`;
+margin-top:-20px;
+    `
+;
 
 const VideoboxGrid = styled.div`
     display: grid;
@@ -129,10 +131,10 @@ const StartnSetBox = styled.div`
 `;
 
 const VideoUserName = styled.div`
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     background-color: rgba(0, 0, 0, 0.7);
-    padding: 2px 2px;
+    padding:5px;
     border-radius: 4px;
     color: white;
     z-index: 1;
