@@ -269,7 +269,9 @@ const Game = () => {
         };
     }, []);
 
-    const deleteSubscriber = (streamManager) => {
+    const deleteSubscriber = async (streamManager) => {
+        await outRoom(mySessionId, playerId);
+
         console.log("delete 호출");
         console.log(streamManager);
         console.log(subscribersList);
@@ -279,7 +281,7 @@ const Game = () => {
         console.log(updatedSubscribers);
         setSubscribersList(updatedSubscribers);
         dispatch(ovActions.saveSubscribers(updatedSubscribers));
-        outRoom(mySessionId, playerId);
+
         console.log(subscribersList);
     };
     const leaveSession = () => {
@@ -288,8 +290,6 @@ const Game = () => {
         if (mySession) {
             mySession.disconnect();
         }
-
-        outRoom(mySessionId, playerId);
 
         // 모든 state 업데이트 초기화
         setOV(null);

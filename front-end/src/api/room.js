@@ -35,7 +35,7 @@ export const getNickname = async (sessionId) => {
 };
 
 // 떠난 사용자 처리
-export const outRoom = (sessionId, playerId) => {
+export const outRoom = async (sessionId, playerId) => {
     return API.delete(
         `/api/game-sessions/leave/${encodeURIComponent(sessionId)}/${playerId}`,
     )
