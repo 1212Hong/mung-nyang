@@ -19,26 +19,18 @@ public class PenaltyService {
 
     @Transactional
     public DanceRes getRandomDance(){
-        long danceCnt=danceRepository.count();
-        DanceRes danceRes;
-        if (danceCnt == 0) {
-            throw new PenaltyNotExistException();
-        }
-        Random random = new Random();
-        long randomNumber = (long) random.nextInt((int) danceCnt) + 1;
-        Dance dance = danceRepository.findByDanceId(randomNumber);
-        danceRes = DanceRes.builder()
+        Dance dance = danceRepository.getRandomDance();
+        return DanceRes.builder()
                 .danceUrl(dance.getDanceUrl())
                 .difficulty(dance.getDifficulty())
                 .build();
-        return danceRes;
-
     }
+
     @Transactional
-    public List<String> getPenaltyPlayer(HashMap<String,Integer> scoreMap){
+    public String getPenaltyPlayer(HashMap<String,Integer> scoreMap){
         Set<String> keySet = scoreMap.keySet();
         int minScore=1000;
-        List<String> players= new ArrayList<String>();
+        List<String> players= new ArrayList<>();
         for (String key : keySet) {
             if (scoreMap.get(key)<minScore){
                 minScore=scoreMap.get(key);
@@ -49,6 +41,27 @@ public class PenaltyService {
                 players.add(key);
             }
         } // 목록 return
-        return players;
+        Random random=new Random();
+        // 동점자 중 랜덤으로 유저 제공
+        return players.get(random.nextInt(players.size()));
     }
+
+//    1~cnt까지 랜덤으로 벌칙 선정 => DB에 1이라는 key값이나 중간에 비어있으면 오류
+//    @Transactional
+//    public DanceRes getRandomDance(){
+//        long danceCnt=danceRepository.count();
+//        DanceRes danceRes;
+//        if (danceCnt == 0) {
+//            throw new PenaltyNotExistException();
+//        }
+//        Random random = new Random();
+//        long randomNumber = (long) random.nextInt((int) danceCnt) + 1;
+//        Dance dance = danceRepository.findByDanceId(randomNumber);
+//        danceRes = DanceRes.builder()
+//                .danceUrl(dance.getDanceUrl())
+//                .difficulty(dance.getDifficulty())
+//                .build();
+//        return danceRes;
+//    }
+
 }

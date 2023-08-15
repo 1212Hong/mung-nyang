@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import TopBottomVideo from "./game/TopBottomVideo";
+import Dance from "./game/Dance";
 import WordDescription from "./game/WordDescription";
 import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
@@ -14,7 +15,9 @@ import { outRoom } from "../api/room";
 import Loading from "./Loading";
 import { gameActions } from "../store/gameSlice";
 import { closeModal, openModal } from "../store/modalSlice";
-import { deleteVote } from "../api/game";
+import DupLiar from "./game/DupLiar";
+import QnAPage from "./game/QnAPage";
+import { changePhase } from "../store/phaseSlice";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -24,9 +27,10 @@ const PHASES = {
     Category: "Category",
     Desc: "Desc",
     QnA: "QnA",
-    Ans: "Ans",
+    FinAns: "FinAns",
     EmgAns: "EmgAns",
     LiarVote: "LiarVote",
+    DupLiar: "DupLiar",
     SelectAns: "SelectAns",
     OtherView: "OtherView",
     OpenLiar: "OpenLiar",
@@ -51,6 +55,17 @@ const PHASE_COMPONENTS = [
         component: <TopBottomVideo />,
     },
     {
+        type: PHASES.Desc,
+        component: <WordDescription />,
+    },
+    {
+        type: PHASES.QnA,
+        component: <QnAPage />,
+    },
+    {
+        type: PHASES.FinAns,
+    },
+    {
         type: PHASES.LiarVote,
         component: <SelectLiar />,
     },
@@ -66,9 +81,15 @@ const PHASE_COMPONENTS = [
         type: PHASES.OpenLiar,
         component: <OpenLiar />,
     },
+
     {
-        type: PHASES.Desc,
-        component: <WordDescription />,
+        type: PHASES.DupLiar,
+        component: <DupLiar />,
+    },
+
+    {
+        type: PHASES.Dance,
+        component: <Dance />,
     },
 ];
 
@@ -146,28 +167,42 @@ const Game = () => {
                 });
 
                 newSession.on("signal:agree", (event) => {
+                    console.log("찬성");
                     const newCnt = event.data;
-                    console.log(newCnt);
+                    console.log(event);
                     // 발도장 찍어야함 -> 찬성 수 리덕스로 저장하고 조회해갈까?
                     dispatch(gameActions.saveGameVoteCnt(newCnt + 1));
                 });
 
                 newSession.on("signal:disagree", (event) => {
-                    console.log("disagree");
+                    console.log("반대");
                     dispatch(closeModal());
+                    dispatch(gameActions.saveGameVoteCnt(0));
                 });
 
-                // // 투표 수락 or 거절 post to openvidu -> check에 찬성에 대한 state(agree)보내서 찬성 인원 수 표현
-                // export const signalVote = async (check, sessionId, cnt) => {
-                //     OPENVIDU.post(`/openvidu/api/signal`, {
-                //         session: sessionId,
-                //         to: [],
-                //         type: check === "T" ? "agree" : "disagree",
-                //         data: `${cnt + 1}`,
-                //     })
-                //         .then((data) => console.log(data))
-                //         .catch((err) => console.log(err));
-                // };
+                newSession.on("signal:Quiz", (e) => {
+                    dispatch(changePhase(e.data));
+                });
+
+                newSession.on("signal:answerer", (e) => {
+                    console.log("받아온 정답자 : ", e.data);
+                    dispatch(gameActions.saveAnswerer(e.data));
+                    dispatch(
+                        openModal({
+                            modalType: "ChooseModal",
+                            isOpen: true,
+                        }),
+                    );
+                    setTimeout(() => {
+                        dispatch(changePhase("Category"));
+                        dispatch(closeModal());
+                    }, 5000);
+                });
+
+                newSession.on("signal:setId", (e) => {
+                    dispatch(gameActions.saveSetId(e.data));
+                    dispatch(changePhase("Desc"));
+                });
 
                 var devices = await OV.getDevices();
 
@@ -224,6 +259,8 @@ const Game = () => {
 
         if (!mySessionId) navigate("/error");
         window.addEventListener("beforeunload", leaveSession);
+
+        if (!session) console.log("bye");
 
         // componentWillUnmount
         return () => {

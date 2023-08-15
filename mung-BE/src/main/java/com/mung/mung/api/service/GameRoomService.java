@@ -1,12 +1,14 @@
 package com.mung.mung.api.service;
 
 import com.mung.mung.api.request.GameRoomCreateReq;
+import com.mung.mung.common.exception.custom.GameNotExistException;
 import com.mung.mung.common.exception.custom.PlayerNotExistException;
 import com.mung.mung.common.exception.custom.RoomAlreadyExistsException;
 import com.mung.mung.common.exception.custom.RoomNotExistException;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.entity.Player;
+import com.mung.mung.db.repository.GameRepository;
 import com.mung.mung.db.repository.GameRoomRepository;
 import com.mung.mung.db.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -25,6 +29,7 @@ import java.time.ZonedDateTime;
 public class GameRoomService {
     private final GameRoomRepository gameRoomRepository;
     private final PlayerRepository playerRepository;
+    private final GameRepository gameRepository;
 
     @Transactional
     public void makeRoom(String roomId, final GameRoomCreateReq gameRoomCreateReq){
@@ -110,5 +115,25 @@ public class GameRoomService {
             throw new RoomNotExistException();
         }
         gameRoom.updateStatus("waiting");
+    }
+
+    @Transactional // Video URL을 game에 저장
+    public void saveRecording(long gameId, String newVideoURL){
+        Game game = gameRepository.findByGameId(gameId);
+        if (game == null){
+            throw new GameNotExistException();
+        }
+        game.updateGameVideoUrl(newVideoURL);
+        gameRepository.save(game);
+    }
+
+    @Transactional
+    public List<String> returnRecording(String roomId){
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        List<String> recordingList = new ArrayList<String>();
+        for (Game game : gameRoom.getGames()) {
+            recordingList.add(game.getVideoUrl());
+        }
+        return recordingList;
     }
 }

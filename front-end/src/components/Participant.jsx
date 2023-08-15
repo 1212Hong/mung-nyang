@@ -1,6 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import Button from "./Button";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
     /* width: 250px; */
@@ -19,12 +20,12 @@ const UserItem = styled.div`
 `;
 const UserName = styled.div``;
 
-function Participant({ user_list, host }) {
-    console.log(user_list.length);
-    const flag = user_list.length === 0;
-    const subs = user_list[0];
-    if (!flag) console.log(subs[0].stream.session.connection.data);
-
+function Participant({ publisher, subscribers }) {
+    const openvidu = useSelector((state) => state.openvidu);
+    const { owner } = openvidu;
+    console.log(owner);
+    console.log(publisher);
+    console.log(subscribers);
     return (
         <Container>
             <div className="header">
@@ -32,17 +33,21 @@ function Participant({ user_list, host }) {
             </div>
             <br />
             <div className="container-body">
-                {subs &&
-                    subs.map((user, index) => (
-                        <UserItem key={index}>
-                            <UserName>{} </UserName>
-                            {user === host ? null : (
-                                <Button width="20px" height="20px">
-                                    x
-                                </Button>
-                            )}
-                        </UserItem>
-                    ))}
+                <UserItem>
+                    <UserName>{publisher.stream.connection.data}</UserName>
+                </UserItem>
+                {subscribers.map((item, key) => (
+                    <UserItem key={key}>
+                        <UserName>{item.stream.connection.data}</UserName>
+                        {owner ? (
+                            <Button width="20px" height="20px">
+                                x
+                            </Button>
+                        ) : (
+                            ""
+                        )}
+                    </UserItem>
+                ))}
             </div>
         </Container>
     );

@@ -12,6 +12,8 @@ import { MainText, SubText } from "../components/layout/common";
 import Input from "../components/Input";
 import { makeRoom, enterRoom } from "../hooks/home";
 import { useNavigate } from "react-router-dom";
+import { ovActions } from "../store/openviduSlice";
+import { useDispatch } from "react-redux";
 import mainBgm from "../assets/audio/mainBgm.wav";
 
 const Home = () => {
@@ -22,6 +24,7 @@ const Home = () => {
     });
     const { roomId, roomPw } = roomInfo;
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         setRoomInfo({
@@ -37,7 +40,8 @@ const Home = () => {
     };
 
     const handleMakeRoom = async () => {
-        await makeRoom(roomInfo);
+        await makeRoom(roomInfo).catch((err) => navigate("/error"));
+        dispatch(ovActions.saveSessionPw(roomPw));
         navigate("/test");
     };
 

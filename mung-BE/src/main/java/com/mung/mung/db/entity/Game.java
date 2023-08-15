@@ -26,13 +26,13 @@ public class Game {
 
     private int curSet;
 
-    private String imageUrl;
-
     private String videoUrl;
 
     private LocalDateTime startTime;
 
     private LocalDateTime endTime;
+
+    private Long ranQuiz;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
@@ -41,6 +41,9 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
     private List<GameSet> gameSets = new ArrayList<>();
 
+    public void updateGameVideoUrl(String newVideoUrl) {
+        this.videoUrl = newVideoUrl;
+    }
     public void updateCurSet() {
         this.curSet = this.curSet+1;
     }
