@@ -11,11 +11,18 @@ export const TitleBox = styled.div`
     justify-content: space-between;
 `;
 
+export const RankBoxFrame = styled.div``;
+
 export const RankBox = styled.div`
     border: 2px solid black;
-    width: 1100px;
+    width: 700px;
     text-align: center;
     margin-left: 30px;
+`;
+
+export const PersonBox = styled.div`
+    display: flex;
+    margin: 30px;
 `;
 
 export const Border = styled.div`
@@ -37,11 +44,11 @@ export const LineItem = styled.div`
 `;
 
 export const RankItem = styled.div`
-    width: 150px;
+    width: 110px;
 `;
 
 export const NameItem = styled.div`
-    width: 400px;
+    width: 350px;
 `;
 
 export const UpItem = styled.div`
@@ -54,19 +61,15 @@ export const ScoreItem = styled.div`
 
 export const TitleItem = styled.div``;
 
-export const SetItem = styled.div`
-    padding: 15px;
-
-    font-size: 32px;
-    background-color: var(--beige-dark);
-    border-radius: 20px;
-`;
-
-export const BtnBox = styled.div`
+export const Frame = styled.div`
     display: flex;
-    justify-content: flex-end;
-    margin: 20px 20px 0px 0px;
 `;
+
+export const SetItem = styled.div`
+    font-size: 32px;
+`;
+
+export const BtnBox = styled.div``;
 
 export const ImgBox = styled.div`
     text-align: right;
