@@ -171,7 +171,7 @@ const Game = () => {
                     const newCnt = event.data;
                     console.log(event);
                     // 발도장 찍어야함 -> 찬성 수 리덕스로 저장하고 조회해갈까?
-                    dispatch(gameActions.saveGameVoteCnt(newCnt + 1));
+                    dispatch(gameActions.saveGameVoteCnt(newCnt));
                 });
 
                 newSession.on("signal:disagree", (event) => {
@@ -288,6 +288,8 @@ const Game = () => {
         if (mySession) {
             mySession.disconnect();
         }
+
+        outRoom(mySessionId, playerId);
 
         // 모든 state 업데이트 초기화
         setOV(null);

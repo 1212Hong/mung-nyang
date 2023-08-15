@@ -52,10 +52,11 @@ function WordDescription() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const { myUserName, session, owner } = openvidu;
-    const { gameId, result, answerer, setId, playerId } = game;
+    const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUserNickname, setDescUserNickname] = useState([""]);
+    const [descStreamManager, setDescStreamManager] = useState({});
     const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
     const [timerKey, setTimerKey] = useState(0);
@@ -139,6 +140,13 @@ function WordDescription() {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
         });
+        setDescStreamManager(
+            otherUserStreams.find(
+                (streamManager) =>
+                    streamManager.stream.connection.data ===
+                    curDescUserNickname,
+            ),
+        );
     }, [timerKey]);
 
     useEffect(() => {
@@ -162,11 +170,7 @@ function WordDescription() {
                         <>
                             <SmallText>{curDescUserNickname}</SmallText>
                             <VideoComponent
-                                streamManager={otherUserStreams.find(
-                                    (streamManager) =>
-                                        streamManager.stream.connection.data ===
-                                        curDescUserNickname,
-                                )}
+                                streamManager={descStreamManager}
                                 width={"80%"}
                                 height={"80%"}
                             />
@@ -174,10 +178,16 @@ function WordDescription() {
                     ) : (
                         <ModalBackdrop>
                             <ModalViewDescDiv>
-                                <SubText>
-                                    잠시 후 제시어 설명이 시작됩니다. 순서대로
-                                    자신의 제시어를 설명해보세요!
-                                </SubText>
+                                {!lastRound ? (
+                                    <SubText>
+                                        "잠시 후 제시어 설명이 시작됩니다.
+                                        순서대로 자신의 제시어를 설명해보세요!"
+                                    </SubText>
+                                ) : (
+                                    <SubText>
+                                        "한 번 더 이전 라운드처럼 진행됩니다!"
+                                    </SubText>
+                                )}
                             </ModalViewDescDiv>
                         </ModalBackdrop>
                     )}
