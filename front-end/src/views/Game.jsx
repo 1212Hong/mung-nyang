@@ -27,7 +27,7 @@ const PHASES = {
     Category: "Category",
     Desc: "Desc",
     QnA: "QnA",
-    Ans: "Ans",
+    FinAns: "FinAns",
     EmgAns: "EmgAns",
     LiarVote: "LiarVote",
     DupLiar: "DupLiar",
@@ -55,6 +55,17 @@ const PHASE_COMPONENTS = [
         component: <TopBottomVideo />,
     },
     {
+        type: PHASES.Desc,
+        component: <WordDescription />,
+    },
+    {
+        type: PHASES.QnA,
+        component: <QnAPage />,
+    },
+    {
+        type: PHASES.FinAns,
+    },
+    {
         type: PHASES.LiarVote,
         component: <SelectLiar />,
     },
@@ -70,18 +81,12 @@ const PHASE_COMPONENTS = [
         type: PHASES.OpenLiar,
         component: <OpenLiar />,
     },
-    {
-        type: PHASES.Desc,
-        component: <WordDescription />,
-    },
+
     {
         type: PHASES.DupLiar,
         component: <DupLiar />,
     },
-    {
-        type: PHASES.QnA,
-        component: <QnAPage />,
-    },
+
     {
         type: PHASES.Dance,
         component: <Dance />,
