@@ -1,6 +1,12 @@
-import VideoBoxing from "../../components/VideoBoxing";
+import VideoComponent from "../../components/VideoComponent";
 import styled from "styled-components";
 import Timer from "../../components/Timer";
+import { useDispatch, useSelector } from "react-redux";
+import { SmallText } from "../../components/layout/common";
+import { useEffect } from "react";
+import { changePhase } from "../../store/phaseSlice";
+import { gameActions } from "../../store/gameSlice";
+
 const Container = styled.div`
     height: 100%;
     margin: 0;
@@ -45,22 +51,45 @@ const DescBox = styled.div`
     background: var(--vanilla-cream);
     box-shadow: 3px 5px 5px 0px rgba(0, 0, 0, 0.5);
 `;
-function QnAPage() {
-    const user_list = [
-        "권영재",
-        "김대홍",
-        "손임현",
-        "이민규",
-        "홍주영",
-        "이현우",
-    ];
-    const upside =
-        user_list.length % 2 === 1
-            ? parseInt(user_list.length / 2) + 1
-            : user_list.length / 2;
 
-    const upside_list = user_list.slice(0, upside);
-    const downside_list = user_list.slice(upside, user_list.length);
+function QnAPage() {
+    const openvidu = useSelector((state) => state.openvidu);
+    const game = useSelector((state) => state.game);
+    const { session } = openvidu;
+    const { lastRound } = game;
+    console.log(session.streamManagers);
+    const streams = session.streamManagers;
+    const dispatch = useDispatch();
+
+    const upside =
+        streams.length % 2 === 1
+            ? parseInt(streams.length / 2) + 1
+            : streams.length / 2;
+
+    const upside_list = streams.slice(0, upside);
+    console.log(upside_list);
+    const downside_list = streams.slice(upside, streams.length);
+    console.log(downside_list);
+
+    useEffect(() => {
+        console.log(lastRound);
+        if (!lastRound) {
+            dispatch(gameActions.updateLastRound());
+            const timer = setTimeout(() => {
+                dispatch(changePhase("Desc"));
+            }, 10000);
+            return () => {
+                clearTimeout(timer);
+            };
+        } else {
+            const timer = setTimeout(() => {
+                dispatch(changePhase("LiarVote"));
+            }, 10000);
+            return () => {
+                clearTimeout(timer);
+            };
+        }
+    }, []);
 
     return (
         <Container>
@@ -68,8 +97,12 @@ function QnAPage() {
             <VideoContainer>
                 {upside_list.map((user, index) => (
                     <VideoBox key={index}>
-                        <VideoBoxing width={"100%"} height={"180px"} />
-                        {user}
+                        <SmallText>{user.stream.connection.data}</SmallText>
+                        <VideoComponent
+                            width={"100%"}
+                            height={"180px"}
+                            streamManager={user}
+                        />
                     </VideoBox>
                 ))}
             </VideoContainer>
@@ -79,8 +112,12 @@ function QnAPage() {
             <VideoContainer>
                 {downside_list.map((user, index) => (
                     <VideoBox key={index}>
-                        <VideoBoxing width={"100%"} height={"180px"} />
-                        {user}
+                        <VideoComponent
+                            width={"100%"}
+                            height={"180px"}
+                            streamManager={user}
+                        />
+                        <SmallText>{user.stream.connection.data}</SmallText>
                     </VideoBox>
                 ))}
             </VideoContainer>

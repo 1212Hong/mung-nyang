@@ -61,6 +61,7 @@ const Button = (props) => {
         padding,
         margin,
         volume = 0.5,
+        disabled,
     } = props;
     audio.volume = volume;
     // const test = new Audio(audioURL && "");
@@ -84,6 +85,7 @@ const Button = (props) => {
             hoverbgcolor={hoverbgcolor}
             padding={padding}
             margin={margin}
+            disabled={disabled}
         >
             {text}
             {children}

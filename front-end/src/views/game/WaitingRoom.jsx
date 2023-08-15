@@ -22,23 +22,31 @@ import {
     Videobox,
     VideoboxGrid,
     ChatItem,
+    ChatItemName,
+    ChatItemMessage,
 } from "../../components/layout/waiting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { startGameVote } from "../../api/game";
-import Dropdown from "../../components/Dropdown";
-import { SmallText, SubText } from "../../components/layout/common";
 import { gameActions } from "../../store/gameSlice";
-import { ovActions } from "../../store/openviduSlice";
+
 function WaitingRoom() {
     const [isMuted, setIsMuted] = useState(false);
     const [setCnt, setSetCnt] = useState(1); // redux에 저장해두고 getVoteRes에 넣어주기
     // const [userMessage, setUserMessage] = useState("");
     const userMessage = useRef("");
     const openvidu = useSelector((state) => state.openvidu);
-    const { subscribers, publisher, mySessionId, session, owner } = openvidu;
+    const {
+        subscribers,
+        publisher,
+        mySessionId,
+        session,
+        owner,
+        myUserName,
+        mySessionPw,
+    } = openvidu;
     console.log(subscribers);
-    console.log(session);
+
     console.log(openvidu.messageList);
     const messageEndRef = useRef();
     const dispatch = useDispatch();
@@ -59,6 +67,15 @@ function WaitingRoom() {
         dispatch(
             openModal({
                 modalType: "RuleModal",
+                isOpen: true,
+            }),
+        );
+    };
+    const openPenaltyLink = () => {
+        console.log("?");
+        dispatch(
+            openModal({
+                modalType: "PenaltyLinkModal",
                 isOpen: true,
             }),
         );
@@ -86,15 +103,9 @@ function WaitingRoom() {
             to: [],
             type: "chat",
         });
+        userMessage.current.value = "";
     };
-    function toggleVolume() {
-        setIsMuted((prevState) => !prevState);
-        const bgmAudio = document.querySelector("audio");
-        if (bgmAudio) {
-            bgmAudio.muted = !bgmAudio.muted;
-        }
-    }
-    console.log(openvidu.messageList.length);
+
     useEffect(() => {
         const bgmAudio = new Audio(mainBgm);
         bgmAudio.preload = "auto";
@@ -104,17 +115,57 @@ function WaitingRoom() {
             bgmAudio.play();
         };
     }, []);
+
+    // 카카오톡공유 코드시작
     useEffect(() => {
-        // session.on("signal:chat", (event) => {
-        //     const data = JSON.parse(event.data);
-        //     console.log(data);
-        // });
-    });
+        const script = document.createElement("script");
+        script.src = "https://developers.kakao.com/sdk/js/kakao.js";
+        script.async = true;
+        document.body.appendChild(script);
+        return () => document.body.removeChild(script);
+    }, []);
+
+    const shareKakao = () => {
+        if (window.Kakao) {
+            const kakao = window.Kakao;
+            if (!kakao.isInitialized()) {
+                // 카카오에서 제공받은 javascript key를 넣어줌 -> .env파일에서 호출시킴
+                kakao.init(process.env.REACT_APP_KAKAO);
+            }
+            // 직접 설정
+            kakao.Link.sendDefault({
+                objectType: "feed", // 카카오 링크 공유 여러 type들 중 feed라는 타입 -> 자세한 건 카카오에서 확인
+                content: {
+                    title: `방제목 : ${mySessionId}`, // 인자값으로 받은 title
+                    description: `비밀번호 : ${mySessionPw} `, // 비밀번호 저장하고 불러와야됌
+                    imageUrl:
+                        "http://k.kakaocdn.net/dn/bopryU/btsrgQwe7vk/aKe0lK132QU1HJ13rKm90k/kakaolink40_original.jpg",
+                    link: {
+                        mobileWebUrl: "https://i9c209.p.ssafy.io/",
+                        webUrl: "https://i9c209.p.ssafy.io/",
+                    },
+                },
+                buttons: [
+                    {
+                        title: "입장하기",
+                        link: {
+                            mobileWebUrl: "https://i9c209.p.ssafy.io/",
+                            webUrl: "https://i9c209.p.ssafy.io/",
+                        },
+                    },
+                ],
+            });
+        }
+    };
+    // 카카오톡공유 코드종료
+
+    function toggleVolume() {
+        setIsMuted((prevState) => !prevState);
+    }
+    console.log(openvidu.messageList.length);
+
     return (
         <Container className="waiting-container">
-            <audio loop>
-                <source src={mainBgm} type="audio/wav" />
-            </audio>
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
                     {publisher && (
@@ -141,20 +192,32 @@ function WaitingRoom() {
                 </VideoboxGrid>
             </Leftbox>
             <Rightbox>
-                {/* (
-                <Participant
-                    user_list={subscribers}
-                    // host={host}
-                />
-                ) */}
+                {publisher && subscribers && (
+                    <Participant
+                        publisher={publisher}
+                        subscribers={subscribers}
+                    />
+                )}
+
                 <ChattingBox>
                     <ChatBox>
-                        {openvidu.messageList.map((item, index) => (
-                            <ChatItem key={index}>
-                                <>{item.userName}</>
-                                <>{item.userMessage}</>
-                            </ChatItem>
-                        ))}
+                        {openvidu.messageList.map((item, index) =>
+                            item.userName === myUserName ? (
+                                <ChatItem key={index} align={"right"}>
+                                    <ChatItemName>{"나"}</ChatItemName>
+                                    <ChatItemMessage align={"right"}>
+                                        {item.userMessage}
+                                    </ChatItemMessage>
+                                </ChatItem>
+                            ) : (
+                                <ChatItem key={index}>
+                                    <ChatItemName>{item.userName}</ChatItemName>
+                                    <ChatItemMessage>
+                                        {item.userMessage}
+                                    </ChatItemMessage>
+                                </ChatItem>
+                            ),
+                        )}
                         <ChatItem ref={messageEndRef}></ChatItem>
                     </ChatBox>
                     <ChattingInputBox>
@@ -168,38 +231,59 @@ function WaitingRoom() {
                         </Button>
                     </ChattingInputBox>
                 </ChattingBox>
+
                 <MenuBox>
-                    {[
-                        { icon: <QuestionIcon width="23" height="23" /> },
-                        { icon: <LinkIcon width="23" height="23" /> },
-                        { icon: <CaptureIcon width="23" height="23" /> },
-                    ].map((item, index) => (
-                        <Button
-                            key={index}
-                            type="icon"
-                            width="55px"
-                            height="40px"
-                            background={`var(--beige-dark)`}
-                            onClick={() => {
-                                openRuleBook();
-                            }}
-                        >
-                            {item.icon}
-                        </Button>
-                    ))}
                     <Button
-                        key="mute"
-                        type="icon"
                         width="55px"
                         height="40px"
-                        background={`var(--beige-dark)`}
-                        onClick={toggleVolume}
+                        onClick={() => {
+                            openRuleBook();
+                        }}
                     >
-                        {isMuted ? (
+                        <QuestionIcon></QuestionIcon>
+                    </Button>
+                    <Button
+                        width="55px"
+                        height="40px"
+                        onClick={() => {
+                            openPenaltyLink();
+                        }}
+                    >
+                        <LinkIcon></LinkIcon>
+                    </Button>
+                    <Button width="55px" height="40px">
+                        <CaptureIcon></CaptureIcon>
+                    </Button>
+                    {isMuted ? (
+                        <Button
+                            key="mute"
+                            type="icon"
+                            width="50px"
+                            height="40px"
+                            background={`var(--beige-dark)`}
+                            onClick={toggleVolume}
+                        >
                             <VolumeMuteIcon width="23" height="23" />
-                        ) : (
+                        </Button>
+                    ) : (
+                        <Button
+                            key="on"
+                            type="icon"
+                            width="50px"
+                            height="40px"
+                            background={`var(--beige-dark)`}
+                            onClick={toggleVolume}
+                        >
                             <VolumeOnIcon width="23" height="23" />
-                        )}
+                        </Button>
+                    )}
+                    <Button width="45px" height="40px" onClick={shareKakao}>
+                        <img
+                            width="30"
+                            height="30"
+                            src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                            alt="공유하기"
+                        />
                     </Button>
                 </MenuBox>
                 {owner && (
