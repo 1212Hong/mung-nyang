@@ -170,7 +170,11 @@ function WordDescription() {
                         <>
                             <SmallText>{curDescUserNickname}</SmallText>
                             <VideoComponent
-                                streamManager={descStreamManager}
+                                streamManager={otherUserStreams.find(
+                                    (streamManager) =>
+                                        streamManager.stream.connection.data ===
+                                        curDescUserNickname,
+                                )}
                                 width={"80%"}
                                 height={"80%"}
                             />
