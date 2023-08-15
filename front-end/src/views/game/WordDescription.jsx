@@ -54,8 +54,10 @@ function WordDescription() {
     const { myUserName, session, owner } = openvidu;
     const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
+    const [answererStream, setAnswererStream] = useState();
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUserNickname, setDescUserNickname] = useState([""]);
+    const [descStreamManager, setDescStreamManager] = useState({});
     const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
     const [timerKey, setTimerKey] = useState(0);
@@ -85,6 +87,13 @@ function WordDescription() {
         };
 
         getFunc();
+
+        setAnswererStream(
+            streams.find(
+                (streamManager) =>
+                    streamManager.stream.connection.data === answerer,
+            ),
+        );
 
         const newOtherStreams = streams.filter(
             (streamManager) =>
@@ -138,6 +147,12 @@ function WordDescription() {
     useEffect(() => {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
+            setDescStreamManager(
+                otherUserStreams.find(
+                    (streamManager) =>
+                        streamManager.stream.connection.data === event.data,
+                ),
+            );
         });
     }, [timerKey]);
 
@@ -149,15 +164,6 @@ function WordDescription() {
         });
     });
 
-    const answererStream = streams.find(
-        (streamManager) => streamManager.stream.connection.data === answerer,
-    );
-
-    const desc = otherUserStreams.find(
-        (streamManager) =>
-            streamManager.stream.connection.data === curDescUserNickname,
-    );
-
     return (
         <Container>
             <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()}></Timer>
@@ -167,7 +173,7 @@ function WordDescription() {
                         <>
                             <SmallText>{curDescUserNickname}</SmallText>
                             <VideoComponent
-                                streamManager={desc}
+                                streamManager={descStreamManager}
                                 width={"80%"}
                                 height={"80%"}
                             />
