@@ -44,13 +44,23 @@ const OpenLiar = () => {
                     dispatch(gameActions.updateResult("라이어 승리"));
                 }
                 await deleteLiar(setId);
-                dispatch(changePhase("MidScore"));
             } catch (error) {
                 console.error(error);
             }
         }, []);
         return () => clearTimeout(timer);
     }, []);
+
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            try {
+                dispatch(changePhase("MidScore"));
+            } catch (error) {
+                console.error(error);
+            }
+        }, []);
+        return () => clearTimeout(timer);
+    }, 5000);
 
     return (
         <Container>

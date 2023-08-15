@@ -16,10 +16,15 @@ import {
     SetItem,
     BtnBox,
     ImgBox,
+    Frame,
+    RankBoxFrame,
+    PersonBox,
 } from "../../components/layout/scoreTotal";
 import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import foots from "../../assets/img/foots.png";
+import VideoComponent from "../../components/VideoComponent";
+import { AnswerItem } from "../../components/layout/otherView";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
@@ -67,7 +72,7 @@ const ScoreTotal = () => {
         console.log(username);
         const newEntry = {
             username,
-            upscore: scoreData[username] - beforeScore[username],
+            // upscore: scoreData[username] - beforeScore[username],
             score: scoreData[username],
         };
         information.push(newEntry);
@@ -108,38 +113,54 @@ const ScoreTotal = () => {
         <Container>
             <TitleBox>
                 <TitleItem>{result}</TitleItem>
-                <SetItem>
-                    세트 : {set} / {setCnt}
-                </SetItem>
+                <Frame>
+                    <BtnBox>
+                        {owner && (
+                            <Button
+                                fontSize="32px"
+                                fontColor="var(--brown-dark)"
+                                onClick={Next}
+                            >
+                                다음
+                            </Button>
+                        )}
+                    </BtnBox>
+                    <SetItem>
+                        세트 : {set} / {setCnt}
+                    </SetItem>
+                </Frame>
             </TitleBox>
-            <RankBox>
-                <Border>
-                    <RankItem>Rank</RankItem>
-                    <NameItem>닉네임</NameItem>
-                    <UpItem>오른 점수</UpItem>
-                    <ScoreItem>총 점수</ScoreItem>
-                </Border>
-
-                {sortedInformation.map((user, index) => (
-                    <LineItem key={index}>
-                        <RankItem>{index + 1}st</RankItem>
-                        <NameItem>{user.username}</NameItem>
-                        <UpItem>+{user.upscore}</UpItem>
-                        <ScoreItem>{user.score}</ScoreItem>
-                    </LineItem>
-                ))}
-            </RankBox>
-            <BtnBox>
-                {owner && (
-                    <Button
-                        fontSize="32px"
-                        fontColor="var(--brown-dark)"
-                        onClick={Next}
-                    >
-                        다음
-                    </Button>
-                )}
-            </BtnBox>
+            <RankBoxFrame>
+                <RankBox>
+                    <Border>
+                        <RankItem>Rank</RankItem>
+                        <NameItem>닉네임</NameItem>
+                        {/* <UpItem>오른 점수</UpItem> */}
+                        <ScoreItem>총 점수</ScoreItem>
+                    </Border>
+                    {sortedInformation.map((user, index) => (
+                        <LineItem key={index}>
+                            <RankItem>{index + 1}등</RankItem>
+                            <NameItem>{user.username}</NameItem>
+                            {/* <UpItem>+{user.upscore}</UpItem> */}
+                            <ScoreItem>{user.score}</ScoreItem>
+                        </LineItem>
+                    ))}
+                </RankBox>
+                <PersonBox>
+                    {session.streamManagers.map((sub, i) => (
+                        <React.Fragment key={i}>
+                            <AnswerItem>
+                                <VideoComponent
+                                    width="200px"
+                                    height="200px"
+                                    streamManager={sub}
+                                />
+                            </AnswerItem>
+                        </React.Fragment>
+                    ))}
+                </PersonBox>
+            </RankBoxFrame>
             <ImgBox>
                 <img src={foots} alt="" width={500} height={500} />
             </ImgBox>
