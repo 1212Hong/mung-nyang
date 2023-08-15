@@ -15,6 +15,7 @@ const initialState = {
     score: 0,
     playerId: 0,
     messageList: [],
+    userStreams: [],
 };
 
 export const openviduSlice = createSlice({
@@ -55,8 +56,10 @@ export const openviduSlice = createSlice({
             state.currentVideoDevice = action.payload;
         },
         saveMainStreamManager: (state, action) => {
-            console.log(action.payload);
             state.mainStreamManager = action.payload;
+        },
+        saveUserStreams: (state, action) => {
+            state.userStreams = [...action.payload];
         },
         // Action to delete the publisher from the state
         deletePublisher: (state) => {

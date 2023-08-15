@@ -52,7 +52,8 @@ function WordDescription() {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { myUserName, session, owner, mainStreamManager } = openvidu;
+    const { myUserName, session, owner, mainStreamManager, userStreams } =
+        openvidu;
     const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
@@ -88,7 +89,7 @@ function WordDescription() {
 
         getFunc();
 
-        const newOtherStreams = streams.filter(
+        const newOtherStreams = userStreams.filter(
             (streamManager) =>
                 streamManager.stream.connection.data !== answerer,
         );
@@ -105,7 +106,7 @@ function WordDescription() {
         }
     }, []);
 
-    const answererStream = streams.find(
+    const answererStream = userStreams.find(
         (streamManager) => streamManager.stream.connection.data === answerer,
     );
 
@@ -113,7 +114,7 @@ function WordDescription() {
         setTimerKey((prevKey) => prevKey + 1);
     };
     const getNextDescIndex = () => {
-        if (descIndex < streams.length - 1) {
+        if (descIndex < userStreams.length - 1) {
             setDescIndex(descIndex + 1);
             startTimer();
             // } else dispatch(changePhase("QnA"));
@@ -140,14 +141,6 @@ function WordDescription() {
             }
         };
         setSignal();
-        console.log(answerer);
-        const newOtherStreams = streams.filter(
-            (streamManager) =>
-                streamManager.stream.connection.data !== answerer,
-        );
-
-        setOtherUserStreams(newOtherStreams);
-        console.log(newOtherStreams);
     }, [descIndex]);
 
     useEffect(() => {

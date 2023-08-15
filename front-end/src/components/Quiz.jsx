@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { fetchQuizResult, submitAnswer } from "../hooks/quiz";
 import { gameActions } from "../store/gameSlice";
 import { Container, Content, FlexBox, Title } from "./layout/quiz";
-
+import { ovActions } from "../store/openviduSlice";
 const Quiz = (props) => {
     const { title, text1, text2 } = props;
     const openvidu = useSelector((state) => state.openvidu);
@@ -26,6 +26,8 @@ const Quiz = (props) => {
                 console.log(myUserName, playerNickname);
                 console.log(roomId, playerNickname, userChoice);
                 await submitAnswer(roomId, playerNickname, userChoice);
+                console.log(session.streamManagers);
+                dispatch(ovActions.saveUserStreams(session.streamManagers));
             } catch (error) {
                 console.error("Error:", error);
             }
@@ -34,6 +36,7 @@ const Quiz = (props) => {
             const quizResultResponse = await fetchQuizResult(roomId);
             console.log(quizResultResponse);
             dispatch(gameActions.saveAnswerer(quizResultResponse.answerer));
+
             session.signal({
                 data: quizResultResponse.answerer,
                 to: [],
