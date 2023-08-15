@@ -128,6 +128,14 @@ function WordDescription() {
                     type: "descIndex",
                 });
                 console.log(descUserNickname[descIndex]);
+                const desc = otherUserStreams.find(
+                    (streamManager) =>
+                        streamManager.stream.connection.data ===
+                        curDescUserNickname,
+                );
+                setDescStreamManager(desc);
+                console.log(descStreamManager);
+                dispatch(ovActions.saveMainStreamManager(desc));
             }
         };
         setSignal();
@@ -151,9 +159,10 @@ function WordDescription() {
                     curDescUserNickname,
             );
             setDescStreamManager(desc);
+            console.log(descStreamManager);
             dispatch(ovActions.saveMainStreamManager(desc));
         });
-    }, [timerKey, descStreamManager]);
+    }, [timerKey]);
 
     useEffect(() => {
         // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
