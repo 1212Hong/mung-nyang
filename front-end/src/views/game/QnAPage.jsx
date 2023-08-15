@@ -76,7 +76,7 @@ function QnAPage() {
         if (!lastRound) {
             dispatch(gameActions.updateLastRound());
             const timer = setTimeout(() => {
-                dispatch(changePhase("Desc"));
+                dispatch(changePhase("FinAns"));
             }, 10000);
             return () => {
                 clearTimeout(timer);
