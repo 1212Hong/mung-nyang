@@ -159,7 +159,7 @@ function WordDescription() {
                     curDescUserNickname,
             );
             setDescStreamManager(desc);
-            console.log(descStreamManager);
+            console.log(descStreamManager); // undefined
             dispatch(ovActions.saveMainStreamManager(desc));
         });
     }, [timerKey]);
