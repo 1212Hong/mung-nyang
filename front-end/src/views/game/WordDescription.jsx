@@ -173,7 +173,9 @@ function WordDescription() {
                         <>
                             <SmallText>{curDescUserNickname}</SmallText>
                             <VideoComponent
-                                streamManager={getDescStream()}
+                                streamManager={getDescStream(
+                                    curDescUserNickname,
+                                )}
                                 width={"80%"}
                                 height={"80%"}
                             />
