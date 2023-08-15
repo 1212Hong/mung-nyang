@@ -54,7 +54,6 @@ function WordDescription() {
     const { myUserName, session, owner } = openvidu;
     const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
-    const [answererStream, setAnswererStream] = useState();
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUserNickname, setDescUserNickname] = useState([""]);
     const [descStreamManager, setDescStreamManager] = useState({});
@@ -88,13 +87,6 @@ function WordDescription() {
 
         getFunc();
 
-        setAnswererStream(
-            streams.find(
-                (streamManager) =>
-                    streamManager.stream.connection.data === answerer,
-            ),
-        );
-
         const newOtherStreams = streams.filter(
             (streamManager) =>
                 streamManager.stream.connection.data !== answerer,
@@ -111,6 +103,10 @@ function WordDescription() {
             }
         }
     }, []);
+
+    const answererStream = streams.find(
+        (streamManager) => streamManager.stream.connection.data === answerer,
+    );
 
     const startTimer = () => {
         setTimerKey((prevKey) => prevKey + 1);
@@ -142,9 +138,7 @@ function WordDescription() {
 
         setOtherUserStreams(newOtherStreams);
         console.log(newOtherStreams);
-    }, [descIndex]);
 
-    useEffect(() => {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
             setDescStreamManager(
@@ -154,7 +148,9 @@ function WordDescription() {
                 ),
             );
         });
-    }, [timerKey]);
+    }, [descIndex]);
+
+    useEffect(() => {}, [timerKey]);
 
     useEffect(() => {
         // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
