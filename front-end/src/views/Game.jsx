@@ -170,7 +170,6 @@ const Game = () => {
                     console.log("찬성");
                     const newCnt = event.data;
                     console.log(event);
-                    // 발도장 찍어야함 -> 찬성 수 리덕스로 저장하고 조회해갈까?
                     dispatch(gameActions.saveGameVoteCnt(newCnt));
                 });
 
@@ -181,6 +180,7 @@ const Game = () => {
                 });
 
                 newSession.on("signal:Quiz", (e) => {
+                    dispatch(closeModal());
                     dispatch(changePhase(e.data));
                 });
 
