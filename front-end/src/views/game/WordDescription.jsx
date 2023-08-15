@@ -135,7 +135,6 @@ function WordDescription() {
                         streamManager.stream.connection.data ===
                         curDescUserNickname,
                 );
-                setDescStreamManager(desc);
                 console.log(descStreamManager);
                 dispatch(ovActions.saveMainStreamManager(desc));
             }
@@ -153,8 +152,7 @@ function WordDescription() {
                     (streamManager) =>
                         streamManager.stream.connection.data === descNickname,
                 );
-
-                setDescStreamManager(desc);
+                console.log(desc);
                 console.log(descStreamManager); // undefined
                 dispatch(ovActions.saveMainStreamManager(desc));
             });
@@ -169,7 +167,9 @@ function WordDescription() {
             dispatch(gameActions.saveResult(e.data));
         });
     });
-
+    useEffect(() => {
+        setDescStreamManager(mainStreamManager);
+    }, [mainStreamManager]);
     return (
         <Container>
             <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()} />
@@ -178,9 +178,9 @@ function WordDescription() {
                     {curDescUserNickname ? (
                         <>
                             <SmallText>{curDescUserNickname}</SmallText>
-                            {mainStreamManager !== undefined ? (
+                            {descStreamManager !== undefined ? (
                                 <VideoComponent
-                                    streamManager={mainStreamManager}
+                                    streamManager={descStreamManager}
                                     width={"80%"}
                                     height={"80%"}
                                 />
