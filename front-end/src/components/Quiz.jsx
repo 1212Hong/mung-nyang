@@ -5,15 +5,13 @@ import { useEffect } from "react";
 import { fetchQuizResult, submitAnswer } from "../hooks/quiz";
 import { gameActions } from "../store/gameSlice";
 import { Container, Content, FlexBox, Title } from "./layout/quiz";
-import { closeModal, openModal } from "../store/modalSlice";
-import { changePhase } from "../store/phaseSlice";
 
 const Quiz = (props) => {
     const { title, text1, text2 } = props;
     const openvidu = useSelector((state) => state.openvidu);
     const { session, mySessionId, myUserName, owner } = openvidu;
     const [answered, setAnswered] = useState(false);
-    const [userChoice, setUserChoice] = useState("");
+    const [userChoice, setUserChoice] = useState(null);
     const dispatch = useDispatch();
     const roomId = mySessionId;
     const playerNickname = myUserName;
@@ -53,13 +51,17 @@ const Quiz = (props) => {
             <FlexBox>
                 <Content
                     onClick={() => handleUserChoice(true)}
-                    clicked={userChoice === "positive" ? true : false}
+                    className={
+                        "btn" + (userChoice === "positive" ? " active" : "")
+                    }
                 >
                     {text1}
                 </Content>
                 <Content
                     onClick={() => handleUserChoice(false)}
-                    clicked={userChoice === "negative" ? true : false}
+                    className={
+                        "btn" + (userChoice === "negative" ? " active" : "")
+                    }
                 >
                     {text2}
                 </Content>
