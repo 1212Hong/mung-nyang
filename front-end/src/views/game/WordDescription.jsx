@@ -138,7 +138,9 @@ function WordDescription() {
 
         setOtherUserStreams(newOtherStreams);
         console.log(newOtherStreams);
+    }, [descIndex]);
 
+    useEffect(() => {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
             setDescStreamManager(
@@ -148,9 +150,7 @@ function WordDescription() {
                 ),
             );
         });
-    }, [descIndex]);
-
-    useEffect(() => {}, [timerKey]);
+    }, [timerKey, descStreamManager]);
 
     useEffect(() => {
         // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
@@ -193,6 +193,7 @@ function WordDescription() {
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
                     <CurFunction>
+                        <SmallText>{answerer}</SmallText>
                         <VideoComponent
                             width="380px"
                             height="250px"
