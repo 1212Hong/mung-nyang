@@ -11,6 +11,7 @@ import Timer from "../../components/Timer";
 import { changePhase } from "../../store/phaseSlice";
 import { SmallText, SubText } from "../../components/layout/common";
 import { ModalBackdrop, ModalViewDescDiv } from "../../components/layout/modal";
+import { ovActions } from "../../store/openviduSlice";
 
 const Container = styled.div`
     margin: 0;
@@ -51,7 +52,7 @@ function WordDescription() {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { myUserName, session, owner } = openvidu;
+    const { myUserName, session, owner, mainStreamManager } = openvidu;
     const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
@@ -149,8 +150,8 @@ function WordDescription() {
                     streamManager.stream.connection.data ===
                     curDescUserNickname,
             );
-
             setDescStreamManager(desc);
+            dispatch(ovActions.saveMainStreamManager(desc));
         });
     }, [timerKey, descStreamManager]);
 
@@ -164,17 +165,19 @@ function WordDescription() {
 
     return (
         <Container>
-            <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()}></Timer>
+            <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
                 <CurParticipants width={"100%"}>
                     {curDescUserNickname ? (
                         <>
                             <SmallText>{curDescUserNickname}</SmallText>
-                            <VideoComponent
-                                streamManager={descStreamManager}
-                                width={"80%"}
-                                height={"80%"}
-                            />
+                            {mainStreamManager && (
+                                <VideoComponent
+                                    streamManager={mainStreamManager}
+                                    width={"80%"}
+                                    height={"80%"}
+                                />
+                            )}
                         </>
                     ) : (
                         <ModalBackdrop>
