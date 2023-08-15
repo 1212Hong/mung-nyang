@@ -144,6 +144,13 @@ function WordDescription() {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
             console.log(event.data);
+            const desc = otherUserStreams.find(
+                (streamManager) =>
+                    streamManager.stream.connection.data ===
+                    curDescUserNickname,
+            );
+
+            setDescStreamManager(desc);
         });
     }, [timerKey, descStreamManager]);
 
@@ -155,15 +162,6 @@ function WordDescription() {
         });
     });
 
-    const getDescStream = async (curDescUserNickname) => {
-        const desc = otherUserStreams.find(
-            (streamManager) =>
-                streamManager.stream.connection.data === curDescUserNickname,
-        );
-
-        return desc;
-    };
-
     return (
         <Container>
             <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()}></Timer>
@@ -173,9 +171,7 @@ function WordDescription() {
                         <>
                             <SmallText>{curDescUserNickname}</SmallText>
                             <VideoComponent
-                                streamManager={getDescStream(
-                                    curDescUserNickname,
-                                )}
+                                streamManager={descStreamManager}
                                 width={"80%"}
                                 height={"80%"}
                             />
