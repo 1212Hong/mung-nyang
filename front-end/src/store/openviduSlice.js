@@ -55,6 +55,7 @@ export const openviduSlice = createSlice({
             state.currentVideoDevice = action.payload;
         },
         saveMainStreamManager: (state, action) => {
+            console.log(action.payload);
             state.mainStreamManager = action.payload;
         },
         // Action to delete the publisher from the state

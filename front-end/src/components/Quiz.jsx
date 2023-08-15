@@ -32,7 +32,7 @@ const Quiz = (props) => {
         };
         const getQuizRes = async () => {
             const quizResultResponse = await fetchQuizResult(roomId);
-
+            console.log(quizResultResponse);
             dispatch(gameActions.saveAnswerer(quizResultResponse.answerer));
             session.signal({
                 data: quizResultResponse.answerer,

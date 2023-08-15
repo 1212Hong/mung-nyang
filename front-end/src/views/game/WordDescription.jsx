@@ -116,7 +116,8 @@ function WordDescription() {
         if (descIndex < streams.length - 1) {
             setDescIndex(descIndex + 1);
             startTimer();
-        } else dispatch(changePhase("QnA"));
+            // } else dispatch(changePhase("QnA"));
+        }
     };
 
     useEffect(() => {
@@ -139,7 +140,7 @@ function WordDescription() {
             }
         };
         setSignal();
-
+        console.log(answerer);
         const newOtherStreams = streams.filter(
             (streamManager) =>
                 streamManager.stream.connection.data !== answerer,
@@ -150,18 +151,22 @@ function WordDescription() {
     }, [descIndex]);
 
     useEffect(() => {
-        session.on("signal:descIndex", (event) => {
-            setCurDescUserNickname(event.data);
-            console.log(event.data);
-            const desc = otherUserStreams.find(
-                (streamManager) =>
-                    streamManager.stream.connection.data ===
-                    curDescUserNickname,
-            );
-            setDescStreamManager(desc);
-            console.log(descStreamManager); // undefined
-            dispatch(ovActions.saveMainStreamManager(desc));
-        });
+        async function userInfoSignal() {
+            await session.on("signal:descIndex", (event) => {
+                const descNickname = event.data;
+                setCurDescUserNickname(descNickname);
+                console.log(descNickname);
+                const desc = otherUserStreams.find(
+                    (streamManager) =>
+                        streamManager.stream.connection.data === descNickname,
+                );
+
+                setDescStreamManager(desc);
+                console.log(descStreamManager); // undefined
+                dispatch(ovActions.saveMainStreamManager(desc));
+            });
+        }
+        userInfoSignal();
     }, [timerKey]);
 
     useEffect(() => {
@@ -180,13 +185,13 @@ function WordDescription() {
                     {curDescUserNickname ? (
                         <>
                             <SmallText>{curDescUserNickname}</SmallText>
-                            {mainStreamManager && (
+                            {mainStreamManager !== undefined ? (
                                 <VideoComponent
                                     streamManager={mainStreamManager}
                                     width={"80%"}
                                     height={"80%"}
                                 />
-                            )}
+                            ) : null}
                         </>
                     ) : (
                         <ModalBackdrop>
