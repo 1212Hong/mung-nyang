@@ -26,6 +26,7 @@ const LiarVote = () => {
     const answerer = useSelector((state) => state.game.answerer);
     const [answered, setAnswered] = useState(false);
     const [activeBox, setActiveBox] = useState(null);
+    const [showLoading, setShowLoading] = useState(false);
 
     const handleBoxClick = (name) => {
         setActiveBox(name === activeBox ? null : name);
@@ -107,7 +108,12 @@ const LiarVote = () => {
         };
         const handleVoteSubmit = () => {
             postLiar();
-            owner && handleResult();
+            setShowLoading(true);
+            if (owner) {
+                setTimeout(() => {
+                    handleResult();
+                }, 3000);
+            }
         };
 
         if (answered) {
@@ -155,8 +161,8 @@ const LiarVote = () => {
                                     <Item
                                         onClick={() =>
                                             handleBoxClick(
-                                                session.streamManagers[i].stream
-                                                    .connection.data,
+                                                subscriber.stream.connection
+                                                    .data,
                                             )
                                         }
                                     >
@@ -189,6 +195,9 @@ const LiarVote = () => {
             </Box>
             <NotificationContainer show={showNotification}>
                 {text}
+            </NotificationContainer>
+            <NotificationContainer show={showLoading}>
+                집계중 입니다. 잠시만 기다려 주세요.
             </NotificationContainer>
         </Container>
     );
