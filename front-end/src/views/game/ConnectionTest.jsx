@@ -16,6 +16,7 @@ import {
     SettingIcon,
     RefreshIcon,
     RightItem,
+    DescBox,
 } from "../../components/layout/connectionTest";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +29,7 @@ import { MidText } from "../../components/layout/common";
 import { ovActions } from "../../store/openviduSlice";
 import { enterGameRoom } from "../../hooks/testView";
 import Loading from "../Loading";
+import { ReactComponent as RefreshIconO } from "../../assets/img/icon _refresh_circle_.svg";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
 
@@ -233,8 +235,9 @@ function ConnectionTest() {
                                 />
                             </RightItem>
                             <FlexRowBox>
-                                <MidText>소리변조 테스트</MidText>
-
+                                <DescBox>
+                                    <MidText>소리변조 테스트</MidText>
+                                </DescBox>
                                 <Button
                                     text="테스트"
                                     width="100px"
@@ -253,14 +256,12 @@ function ConnectionTest() {
                                     />
                                 </NickName>
                                 <Button
-                                    isOn={isOn}
                                     onClick={refreshName}
-                                    padding={0}
+                                    width="45px"
                                     type="icon"
-                                    width="100px"
                                     background="dusty-pink-white"
                                 >
-                                    <RefreshIcon width="45" height="45" />
+                                    <RefreshIconO width="45" height="45" />
                                 </Button>
                                 <Button
                                     width="100px"
