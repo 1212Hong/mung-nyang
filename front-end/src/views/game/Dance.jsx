@@ -114,7 +114,7 @@ function Dance() {
     const nonPenaltyUsers = streams.filter((user) => {
         return user.stream.connection.data !== penaltyUser;
     });
-    const penaltyStreamer = streams.finc((user) => {
+    const penaltyStreamer = streams.find((user) => {
         return user.stream.connection.data === penaltyUser;
     });
     console.log(nonPenaltyUsers);
@@ -167,7 +167,7 @@ function Dance() {
                         fontSize="32px"
                         disabled={true}
                     >
-                        찬성 {passCnt} / {session.streamManagers.length - 1}
+                        찬성 {passCnt} / {streams.length - 1}
                     </Button>
                 </Buttons>
             </PenaltyBox>
