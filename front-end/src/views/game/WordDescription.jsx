@@ -123,15 +123,15 @@ function WordDescription() {
         const setSignal = () => {
             if (owner) {
                 session.signal({
-                    data: descUserNickname[descIndex + 1],
+                    data: descUserNickname[descIndex],
                     to: [],
                     type: "descIndex",
                 });
-                console.log(descUserNickname[descIndex + 1]);
+                console.log(descUserNickname[descIndex]);
                 const desc = otherUserStreams.find(
                     (streamManager) =>
                         streamManager.stream.connection.data ===
-                        descUserNickname[descIndex + 1],
+                        descUserNickname[descIndex],
                 );
                 setDescStreamManager(desc);
                 console.log(desc);
