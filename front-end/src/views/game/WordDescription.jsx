@@ -60,9 +60,7 @@ function WordDescription() {
     const [descStreamManager, setDescStreamManager] = useState({});
     const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
-    const [timerKey, setTimerKey] = useState(0);
     const streams = session.streamManagers;
-    console.log(streams);
 
     const openAnswerModal = () => {
         dispatch(
@@ -109,25 +107,11 @@ function WordDescription() {
         (streamManager) => streamManager.stream.connection.data === answerer,
     );
 
-    const startTimer = () => {
-        setTimerKey((prevKey) => prevKey + 1);
-    };
     const getNextDescIndex = () => {
         if (descIndex < streams.length - 1) {
             setDescIndex(descIndex + 1);
-            startTimer();
         } else dispatch(changePhase("QnA"));
     };
-
-    useEffect(() => {
-        const newOtherStreams = streams.filter(
-            (streamManager) =>
-                streamManager.stream.connection.data !== answerer,
-        );
-
-        setOtherUserStreams(newOtherStreams);
-        console.log(newOtherStreams);
-    }, [descIndex]);
 
     useEffect(() => {
         const setSignal = () => {
@@ -149,6 +133,14 @@ function WordDescription() {
             }
         };
         setSignal();
+        const newOtherStreams = streams.filter(
+            (streamManager) =>
+                streamManager.stream.connection.data !== answerer,
+        );
+
+        setOtherUserStreams(newOtherStreams);
+        console.log(newOtherStreams);
+
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
             console.log(event.data);
@@ -161,7 +153,7 @@ function WordDescription() {
             console.log(descStreamManager); // undefined
             dispatch(ovActions.saveMainStreamManager(desc));
         });
-    }, [timerKey]);
+    }, [descIndex]);
 
     useEffect(() => {
         // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
@@ -173,7 +165,7 @@ function WordDescription() {
 
     return (
         <Container>
-            <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()} />
+            <Timer key={descIndex} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
                 <CurParticipants width={"100%"}>
                     {curDescUserNickname ? (
