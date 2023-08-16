@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {RoomNotExistException.class})
-    public ResponseEntity<Object> handelRoomNotExistException(RoomNotExistException e){
+    public ResponseEntity<Object> handelRoomNotExistException(RoomNotExistException e) {
 
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {GameNotExistException.class})
-    public ResponseEntity<Object> handelGameNotExistException(GameNotExistException e){
+    public ResponseEntity<Object> handelGameNotExistException(GameNotExistException e) {
 
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {QuizNotFoundException.class})
-    public ResponseEntity<Object> handleQuizNotFoundException(QuizNotFoundException e){
+    public ResponseEntity<Object> handleQuizNotFoundException(QuizNotFoundException e) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         ApiException apiException = new ApiException(
@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {SetNotExistException.class})
-    public ResponseEntity<Object> handleSetNotExistException(SetNotExistException e){
+    public ResponseEntity<Object> handleSetNotExistException(SetNotExistException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
         ApiException apiException = new ApiException(
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {LiarVoteResultNotFoundException.class})
-    public ResponseEntity<Object> handleLiarVoteResultNotFoundException(LiarVoteResultNotFoundException e){
+    public ResponseEntity<Object> handleLiarVoteResultNotFoundException(LiarVoteResultNotFoundException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
         ApiException apiException = new ApiException(
@@ -84,7 +84,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {LiarAnswerOptionsNotExistException.class})
-    public ResponseEntity<Object> handleLiarAnswerOptionsNotExistException(LiarAnswerOptionsNotExistException e){
+    public ResponseEntity<Object> handleLiarAnswerOptionsNotExistException(LiarAnswerOptionsNotExistException e) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         ApiException apiException = new ApiException(
@@ -97,7 +97,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {PlayerNotExistException.class})
-    public ResponseEntity<Object> handlePlayerNotExistException(PlayerNotExistException e){
+    public ResponseEntity<Object> handlePlayerNotExistException(PlayerNotExistException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
         ApiException apiException = new ApiException(
@@ -110,7 +110,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {VotesNotStartException.class})
-    public ResponseEntity<Object> handleVotesNotStartException(VotesNotStartException e){
+    public ResponseEntity<Object> handleVotesNotStartException(VotesNotStartException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
         ApiException apiException = new ApiException(
@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {RoomAlreadyExistsException.class})
-    public ResponseEntity<Object> roomAlreadyExistsException(RoomAlreadyExistsException e){
+    public ResponseEntity<Object> roomAlreadyExistsException(RoomAlreadyExistsException e) {
         HttpStatus httpStatus = HttpStatus.CONFLICT;
 
         ApiException apiException = new ApiException(
@@ -134,9 +134,9 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiException, httpStatus);
     }
-    
+
     @ExceptionHandler(value = {RoomAlreadyStartException.class})
-    public ResponseEntity<Object> gameRoomAlreadyStartException(RoomAlreadyStartException e){
+    public ResponseEntity<Object> gameRoomAlreadyStartException(RoomAlreadyStartException e) {
         HttpStatus httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
 
         ApiException apiException = new ApiException(
@@ -147,10 +147,10 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiException, httpStatus);
     }
-    
-    
+
+
     @ExceptionHandler(value = {SessionNotExistException.class})
-    public ResponseEntity<Object> sessionNotExistException (SessionNotExistException e){
+    public ResponseEntity<Object> sessionNotExistException(SessionNotExistException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
         ApiException apiException = new ApiException(
@@ -163,7 +163,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {RoomPasswordWrongException.class})
-    public ResponseEntity<Object> roomPasswordWrongException (RoomPasswordWrongException e){
+    public ResponseEntity<Object> roomPasswordWrongException(RoomPasswordWrongException e) {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
         ApiException apiException = new ApiException(
@@ -177,7 +177,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(value = {RoomAlreadyFullException.class})
-    public ResponseEntity<Object> roomAlreadyFullException (RoomAlreadyFullException e){
+    public ResponseEntity<Object> roomAlreadyFullException(RoomAlreadyFullException e) {
         HttpStatus httpStatus = HttpStatus.CONFLICT;
 
         ApiException apiException = new ApiException(
@@ -191,7 +191,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(value = {PenaltyNotExistException.class})
-    public ResponseEntity<Object> penaltyNotExistException (PenaltyNotExistException e){
+    public ResponseEntity<Object> penaltyNotExistException(PenaltyNotExistException e) {
         HttpStatus httpStatus = HttpStatus.CONFLICT;
 
         ApiException apiException = new ApiException(
@@ -205,7 +205,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(value = {NicknameNotExistException.class})
-    public ResponseEntity<Object> nicknameNotExistException (NicknameNotExistException e){
+    public ResponseEntity<Object> nicknameNotExistException(NicknameNotExistException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
         ApiException apiException = new ApiException(
@@ -219,7 +219,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(value = {NicknameAlreadyExistException.class})
-    public ResponseEntity<Object> nicknameAlreadyExistException (NicknameAlreadyExistException e){
+    public ResponseEntity<Object> nicknameAlreadyExistException(NicknameAlreadyExistException e) {
         HttpStatus httpStatus = HttpStatus.CONFLICT;
 
         ApiException apiException = new ApiException(
@@ -232,21 +232,8 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(value = {MapSessionNotExistException.class})
-    public ResponseEntity<Object> mapSessionExistException (MapSessionNotExistException e){
-        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-
-        ApiException apiException = new ApiException(
-                ExceptionMessage.MAPSESSION_NOT_EXIST_MESSAGE,
-                httpStatus,
-                ZonedDateTime.now(ZoneId.of("Z"))
-        );
-
-        return new ResponseEntity<>(apiException, httpStatus);
-    }
-
     @ExceptionHandler(value = {WordNotFoundException.class})
-    public ResponseEntity<Object> handelWordNotFoundException (WordNotFoundException e){
+    public ResponseEntity<Object> handelWordNotFoundException(WordNotFoundException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
         ApiException apiException = new ApiException(
@@ -260,7 +247,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(value = {RecordingNotStartedException.class})
-    public ResponseEntity<Object> recordingNotStartedException (RecordingNotStartedException e){
+    public ResponseEntity<Object> recordingNotStartedException(RecordingNotStartedException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
         ApiException apiException = new ApiException(

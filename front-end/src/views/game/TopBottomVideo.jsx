@@ -16,9 +16,7 @@ import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { fetchQuizInfo } from "../../hooks/quiz";
 import { useDispatch, useSelector } from "react-redux";
-import { changePhase } from "../../store/phaseSlice";
 import { SmallText, SubText } from "../../components/layout/common";
-import { closeModal } from "../../store/modalSlice";
 
 function TopBottomVideo() {
     const phase = useSelector((state) => state.phase);
@@ -98,11 +96,11 @@ function TopBottomVideo() {
             <FooterBox className="FooterBox">
                 {downside_list !== undefined
                     ? downside_list.map((sub, index) => (
-                          <VideoBox key={index}>
+                          <VideoBox key={index} className="Sub">
                               <VideoComponent
                                   width={"280px"}
                                   height={"150px"}
-                                  streamManger={sub}
+                                  streamManager={sub}
                               />
                               <SmallText>
                                   {sub.stream.connection.data}

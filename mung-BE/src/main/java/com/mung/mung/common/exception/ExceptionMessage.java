@@ -20,11 +20,9 @@ public enum ExceptionMessage {
     PENALTY_NOT_EXIST_MESSAGE("벌칙이 없습니다."),
     NICKNAME_NOT_EXIST_MESSAGE("유효한 닉네임이 없습니다."),
     NICKNAME_ALREADY_EXIST_MESSAGE("이미 존재하는 닉네임 입니다."),
-    MAPSESSION_NOT_EXIST_MESSAGE("JOIN & CONNECT의 횟수 동기화 오류입니다."),
     WORD_NOT_FOUND_MESSAGE("제시어 목록이 없습니다"),
 
-    RECORDING_NOT_STARTED_MESSAGE("녹화가 시작되지 않았습니다.")
-    ;
+    RECORDING_NOT_STARTED_MESSAGE("녹화가 시작되지 않았습니다.");
 
     private final String message;
 
