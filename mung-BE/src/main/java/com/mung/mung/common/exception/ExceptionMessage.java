@@ -22,8 +22,7 @@ public enum ExceptionMessage {
     NICKNAME_ALREADY_EXIST_MESSAGE("이미 존재하는 닉네임 입니다."),
     WORD_NOT_FOUND_MESSAGE("제시어 목록이 없습니다"),
 
-    RECORDING_NOT_STARTED_MESSAGE("녹화가 시작되지 않았습니다.")
-    ;
+    RECORDING_NOT_STARTED_MESSAGE("녹화가 시작되지 않았습니다.");
 
     private final String message;
 

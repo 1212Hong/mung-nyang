@@ -6,8 +6,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import static com.mung.mung.db.entity.QPlayer.player;
+
 @RequiredArgsConstructor
-public class PlayerRepositoryImpl implements PlayerRepositoryCumstom{
+public class PlayerRepositoryImpl implements PlayerRepositoryCumstom {
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -32,7 +33,6 @@ public class PlayerRepositoryImpl implements PlayerRepositoryCumstom{
 
                 .fetchOne();
     }
-
 
 
 }
