@@ -77,14 +77,14 @@ function QnAPage() {
             dispatch(gameActions.updateLastRound());
             const timer = setTimeout(() => {
                 dispatch(changePhase("Desc"));
-            }, 10000);
+            }, 1000);
             return () => {
                 clearTimeout(timer);
             };
         } else {
             const timer = setTimeout(() => {
                 dispatch(changePhase("FinAns"));
-            }, 10000);
+            }, 1000);
             return () => {
                 clearTimeout(timer);
             };
