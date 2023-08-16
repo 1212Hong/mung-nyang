@@ -180,6 +180,11 @@ const Game = () => {
                     dispatch(gameActions.saveGameVoteCnt(0));
                 });
 
+                newSession.on("signal:setCnt", (e) => {
+                    console.log(e.data);
+                    dispatch(gameActions.saveSetCnt(e.data));
+                });
+
                 newSession.on("signal:Quiz", (e) => {
                     dispatch(closeModal());
                     dispatch(changePhase(e.data));
