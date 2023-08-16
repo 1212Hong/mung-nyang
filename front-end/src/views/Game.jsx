@@ -128,6 +128,7 @@ const Game = () => {
             newSession.on("streamDestroyed", (event) => {
                 console.log("파괴");
                 console.log(session);
+                console.log(event);
                 deleteSubscriber(event.stream.streamManager);
             });
 
@@ -270,7 +271,9 @@ const Game = () => {
     }, []);
 
     const deleteSubscriber = async (streamManager) => {
-        await outRoom(mySessionId, playerId);
+        console.log(streamManager.stream.connection.data);
+
+        await outRoom(mySessionId, streamManager.stream.connection.data);
 
         console.log("delete 호출");
         console.log(streamManager);
