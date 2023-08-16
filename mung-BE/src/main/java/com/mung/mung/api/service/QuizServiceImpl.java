@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
@@ -162,8 +163,9 @@ public class QuizServiceImpl implements QuizService {
         if (game == null) {
             throw new GameNotExistException();
         }
-        // game curSet+1
-        game.updateCurSet();
+        Long updateQuiz = (long) randomQuiz();
+        // game curSet+1, 퀴즈 업데이트
+        game.updateCurSetAndQuiz(updateQuiz);
 
         // GameSet 생성
         GameSet gameSet = GameSet.builder()
@@ -213,6 +215,18 @@ public class QuizServiceImpl implements QuizService {
         log.info("Quiz 투표 정보 삭제 : {}", roomId);
         positiveQuizByRoom.remove(roomId);
         negativeQuizByRoom.remove(roomId);
+    }
+
+    // Set 가 여러개일 경우 Game 테이블의 Quiz 를 바꿔줘야함
+    private int randomQuiz() {
+
+        List<Quiz> quizList = quizRepository.findAll();
+
+        if (quizList.isEmpty()) {
+            throw new QuizNotFoundException();
+        }
+
+        return ThreadLocalRandom.current().nextInt(quizList.size()) + 1;
     }
 
 
