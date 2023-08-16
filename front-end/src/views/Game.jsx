@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
-import SelectLiar from "../views/game/SelectLiar";
+import ScoreTotal from "../views/game/ScoreTotal";
+import LiarVote from "./game/LiarVote";
 import SelectAnswer from "../views/game/SelectAnswer";
 import OtherView from "../views/game/OtherView";
 import OpenLiar from "../views/game/OpenLiar";
@@ -55,6 +56,10 @@ const PHASE_COMPONENTS = [
         component: <TopBottomVideo />,
     },
     {
+        type: PHASES.MidScore,
+        component: <ScoreTotal />,
+    },
+    {
         type: PHASES.Desc,
         component: <WordDescription />,
     },
@@ -67,7 +72,7 @@ const PHASE_COMPONENTS = [
     },
     {
         type: PHASES.LiarVote,
-        component: <SelectLiar />,
+        component: <LiarVote />,
     },
     {
         type: PHASES.SelectAns,
@@ -208,6 +213,30 @@ const Game = () => {
                 newSession.on("signal:setId", (e) => {
                     dispatch(gameActions.saveSetId(e.data));
                     dispatch(changePhase("Desc"));
+                });
+
+                newSession.on("signal:startDupLiar", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.updateDupLiars(event.data));
+                    dispatch(changePhase("DupLiar"));
+                });
+                newSession.on("signal:VotedLiar", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.saveLiar(event.data));
+                    if (publisher.stream.connection.data === event.data) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
+                });
+                newSession.on("signal:dupVotedLiar", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.saveLiar(event.data));
+                    if (publisher.stream.connection.data === event.data) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
                 });
 
                 var devices = await OV.getDevices();
