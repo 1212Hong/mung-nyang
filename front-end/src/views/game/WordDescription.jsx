@@ -57,7 +57,6 @@ function WordDescription() {
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUserNickname, setDescUserNickname] = useState([""]);
-    const [descStreamManager, setDescStreamManager] = useState({});
     const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
     const [timerKey, setTimerKey] = useState(0);
@@ -121,47 +120,30 @@ function WordDescription() {
 
     useEffect(() => {
         const setSignal = () => {
-            if (owner) {
-                session.signal({
-                    data: descUserNickname[descIndex],
-                    to: [],
-                    type: "descIndex",
-                });
-                console.log(descUserNickname[descIndex]);
-                const desc = otherUserStreams.find(
-                    (streamManager) =>
-                        streamManager.stream.connection.data ===
-                        curDescUserNickname,
-                );
-                setDescStreamManager(desc);
-                console.log(descStreamManager);
-                dispatch(ovActions.saveMainStreamManager(desc));
-            }
-        };
-        setSignal();
+            session.signal({
+                data: descUserNickname[descIndex],
+                to: [],
+                type: "descIndex",
+            });
+            console.log(descUserNickname[descIndex]);
 
-        const newOtherStreams = streams.filter(
-            (streamManager) =>
-                streamManager.stream.connection.data !== answerer,
-        );
-
-        setOtherUserStreams(newOtherStreams);
-        console.log(newOtherStreams);
-    }, [descIndex]);
-
-    useEffect(() => {
-        session.on("signal:descIndex", (event) => {
-            setCurDescUserNickname(event.data);
-            console.log(event.data);
             const desc = otherUserStreams.find(
                 (streamManager) =>
                     streamManager.stream.connection.data ===
-                    curDescUserNickname,
+                    descUserNickname[descIndex],
             );
-            setDescStreamManager(desc);
-            console.log(descStreamManager); // undefined
+
+            console.log(desc);
+
             dispatch(ovActions.saveMainStreamManager(desc));
-        });
+            console.log(mainStreamManager);
+        };
+        owner && setSignal();
+    }, [descIndex]);
+
+    useEffect(() => {
+        setCurDescUserNickname(mainStreamManager.stream.connection.data);
+        console.log(curDescUserNickname);
     }, [timerKey]);
 
     useEffect(() => {

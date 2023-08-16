@@ -215,18 +215,18 @@ const Game = () => {
                     dispatch(changePhase("Desc"));
                 });
 
-                // newSession.on("signal:descIndex", (event) => {
-                //     console.log(event.data);
-                //     console.log(newSession.streamManagers);
-                //     const desc = newSession.streamManagers.find(
-                //         (streamManager) =>
-                //             streamManager.stream.connection.data === event.data,
-                //     );
-                //     console.log(desc);
+                newSession.on("signal:descIndex", (event) => {
+                    console.log(event.data);
+                    console.log(newSession.streamManagers);
+                    const desc = newSession.streamManagers.find(
+                        (streamManager) =>
+                            streamManager.stream.connection.data === event.data,
+                    );
+                    console.log(desc);
 
-                //     // console.log(descStreamManager); // undefined
-                //     dispatch(ovActions.saveMainStreamManager(desc));
-                // });
+                    // console.log(descStreamManager); // undefined
+                    dispatch(ovActions.saveMainStreamManager(desc));
+                });
 
                 newSession.on("signal:startDupLiar", (event) => {
                     console.log(event.data);
