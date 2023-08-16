@@ -19,6 +19,7 @@ import { closeModal, openModal } from "../store/modalSlice";
 import DupLiar from "./game/DupLiar";
 import QnAPage from "./game/QnAPage";
 import { changePhase } from "../store/phaseSlice";
+import FinAns from "./game/FinAns";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -69,6 +70,7 @@ const PHASE_COMPONENTS = [
     },
     {
         type: PHASES.FinAns,
+        component: <FinAns />,
     },
     {
         type: PHASES.LiarVote,
@@ -259,6 +261,17 @@ const Game = () => {
                     } else {
                         dispatch(changePhase("OtherView"));
                     }
+                });
+
+                // 최종 정답 시그널 받기
+                session.on("signal:Pick to Liar", (e) => {
+                    console.log(e.data);
+                    dispatch(changePhase(e.data)); // 최종정답 api의 결과에 따라 페이즈 이동
+                    // 필요하다면 게임 결과도 저장해야함
+                });
+                session.on("signal:LiarLose", (e) => {
+                    console.log(e.data);
+                    dispatch(changePhase(e.data));
                 });
 
                 var devices = await OV.getDevices();

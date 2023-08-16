@@ -31,7 +31,10 @@ const Videobox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-`;
+    flex-direction: column; /* 수직 배치 */
+margin-top:-20px;
+    `
+;
 
 const VideoboxGrid = styled.div`
     display: grid;
@@ -127,6 +130,17 @@ const StartnSetBox = styled.div`
     grid-template-columns: 135px 135px;
 `;
 
+const VideoUserName = styled.div`
+    font-size: 14px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding:5px;
+    border-radius: 4px;
+    color: white;
+    z-index: 1;
+`;
+
+
 export {
     Container,
     Leftbox,
@@ -141,4 +155,6 @@ export {
     ChatItem,
     ChatItemName,
     ChatItemMessage,
+
+    VideoUserName
 };

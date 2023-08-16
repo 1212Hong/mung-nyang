@@ -24,7 +24,9 @@ import {
     ChatItem,
     ChatItemName,
     ChatItemMessage,
+    VideoUserName
 } from "../../components/layout/waiting";
+import { SmallText } from "../../components/layout/common";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { startGameVote } from "../../api/game";
@@ -179,23 +181,31 @@ function WaitingRoom() {
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
                     {publisher && (
-                        <Videobox>
-                            <VideoComponent
-                                width="380"
-                                height="200"
-                                streamManager={publisher}
-                            />
-                        </Videobox>
+                        <>
+                            <Videobox>
+                            {/* <VideoUserName>{myUserName}</VideoUserName> */}
+                                <VideoComponent
+                                    width="336"
+                                    height="189"
+                                    streamManager={publisher}
+                                />
+                            <VideoUserName>{myUserName}</VideoUserName>
+
+                            </Videobox>
+                        </>
                     )}
                     {subscribers &&
                         subscribers.map((sub, i) => (
                             <React.Fragment key={i}>
                                 <Videobox>
+
                                     <VideoComponent
-                                        width="380"
-                                        height="200"
+                                        width="336"
+                                        height="189"
                                         streamManager={sub}
                                     />
+                            <VideoUserName>{sub.stream.connection.data}</VideoUserName>
+
                                 </Videobox>
                             </React.Fragment>
                         ))}
