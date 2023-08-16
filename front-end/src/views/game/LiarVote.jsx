@@ -61,11 +61,6 @@ const LiarVote = () => {
                         selectedLiarResponse.data.mostVotedNicknames;
                     console.log(dupliars);
                     dispatch(gameActions.updateDupLiars(dupliars));
-                    // const strDupLiars = "";
-
-                    // dupliars.map((str, i) => {
-                    //     strDupLiars += +str + ",";
-                    // });
                     const strDupLiars = dupliars.map((str) => str + ",");
                     const joinedStrDupLiars = strDupLiars.join("");
 
@@ -137,7 +132,7 @@ const LiarVote = () => {
 
     return (
         <Container>
-            <Timer time={5} onTimerEnd={() => setAnswered(true)} />
+            <Timer time={10} onTimerEnd={() => setAnswered(true)} />
             <Box>
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {

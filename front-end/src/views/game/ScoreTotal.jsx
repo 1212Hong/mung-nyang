@@ -96,7 +96,10 @@ const ScoreTotal = () => {
 
     const Next = () => {
         dispatch(gameActions.saveScore(scoreData));
-        if (set === setCnt) {
+        console.log(set);
+        console.log(setCnt);
+        const setCntNumber = parseInt(setCnt);
+        if (set === setCntNumber) {
             signalDance();
             dispatch(changePhase("Dance"));
         } else {
