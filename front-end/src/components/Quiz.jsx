@@ -21,26 +21,32 @@ const Quiz = (props) => {
     };
 
     useEffect(() => {
-        const handleAnswerSubmission = async () => {
+        const postAnswer = async () => {
             try {
                 console.log(myUserName, playerNickname);
                 console.log(roomId, playerNickname, userChoice);
                 await submitAnswer(roomId, playerNickname, userChoice);
-                const quizResultResponse = await fetchQuizResult(roomId);
-
-                dispatch(gameActions.saveAnswerer(quizResultResponse.answerer));
-                session.signal({
-                    data: quizResultResponse.answerer,
-                    to: [],
-                    type: "answerer",
-                });
             } catch (error) {
                 console.error("Error:", error);
             }
         };
+        const getQuizRes = async () => {
+            const quizResultResponse = await fetchQuizResult(roomId);
 
+            dispatch(gameActions.saveAnswerer(quizResultResponse.answerer));
+            session.signal({
+                data: quizResultResponse.answerer,
+                to: [],
+                type: "answerer",
+            });
+        };
+
+        const handleAnswerSubmission = () => {
+            postAnswer();
+            owner && getQuizRes();
+        };
         if (answered) {
-            owner && handleAnswerSubmission();
+            handleAnswerSubmission();
         }
     }, [answered, userChoice]);
 
