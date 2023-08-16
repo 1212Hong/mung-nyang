@@ -15,8 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { gameActions } from "../../store/gameSlice";
 import { changePhase } from "../../store/phaseSlice";
 
-const SelectAnswer = (props) => {
-    const { time } = props;
+const SelectAnswer = () => {
     const [activeBox, setActiveBox] = useState(null);
     const [showNotification, setShowNotification] = useState(true);
     const title = "아래 단어들 중 정답을 골라주세요.";
@@ -50,7 +49,7 @@ const SelectAnswer = (props) => {
     };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const handleSelectAnswer = () => {
             dispatch(gameActions.updateSelectedAnswer(activeBox));
             console.log(activeBox);
             // signal 적용
@@ -63,15 +62,15 @@ const SelectAnswer = (props) => {
             };
             signalSelectLiar();
             dispatch(changePhase("OpenLiar"));
-        });
+        };
         if (answered) {
-            timer();
+            handleSelectAnswer();
         }
     }, [answered]);
 
     return (
         <Container>
-            <Timer time={time} onTimerEnd={() => setAnswered(true)}></Timer>
+            <Timer time={10} onTimerEnd={() => setAnswered(true)}></Timer>
             <Head>{title}</Head>
             <Line>
                 {answerList.map((item, index) => (
