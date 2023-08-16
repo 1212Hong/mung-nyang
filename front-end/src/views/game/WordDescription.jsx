@@ -119,21 +119,18 @@ function WordDescription() {
     const getNextDescIndex = () => {
         if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
-            // newOtherStreams.map((item) => {
-            //     item.stream.connection.data === sortedArr[descIndex]
-            //         ? setCurIndex(indexOf(item))
-            //         : setCurIndex(curIndex);
-            // });
+
             console.log(mainStreamManager);
         } else dispatch(changePhase("QnA"));
     };
 
     useEffect(() => {
-        const rotateStream = otherUserStreams.find(
-            (streamManager) =>
-                streamManager.stream.connection.data === sortedArr[descIndex],
+        console.log(streams);
+        let index = streams.findIndex(
+            (item) => item.stream.connection.data === sortedArr[descIndex],
         );
-        dispatch(ovActions.saveMainStreamManager(rotateStream));
+        setCurIndex(index);
+        console.log("index  " + index);
         setStreamKey((prev) => prev + 1);
         console.log(mainStreamManager);
     }, [descIndex]);
@@ -163,7 +160,7 @@ function WordDescription() {
                                 <VideoComponent
                                     key={streamKey}
                                     streamManager={
-                                        session.streamManagers[descIndex]
+                                        session.streamManagers[curIndex]
                                     }
                                     width={"80%"}
                                     height={"80%"}
