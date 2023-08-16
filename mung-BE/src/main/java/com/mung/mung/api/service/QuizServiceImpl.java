@@ -30,6 +30,8 @@ public class QuizServiceImpl implements QuizService {
     private final GameRepository gameRepository;
     private final GameSetRepository gameSetRepository;
     private final WordRepository wordRepository;
+    private final Map<String, Set<String>> positiveQuizByRoom = new ConcurrentHashMap<>();
+    private final Map<String, Set<String>> negativeQuizByRoom = new ConcurrentHashMap<>();
 
     @Override
     public QuizStartRes startQuiz(Long gameId) {
@@ -49,9 +51,6 @@ public class QuizServiceImpl implements QuizService {
                 .quiz(quiz)
                 .build();
     }
-
-    private final Map<String, Set<String>> positiveQuizByRoom = new ConcurrentHashMap<>();
-    private final Map<String, Set<String>> negativeQuizByRoom = new ConcurrentHashMap<>();
 
     public void submitPositiveQuiz(QuizCountReq quizCountReq) {
         String roomId = quizCountReq.getRoomId();

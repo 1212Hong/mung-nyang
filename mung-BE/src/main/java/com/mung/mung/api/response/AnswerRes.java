@@ -11,8 +11,8 @@ public class AnswerRes {
 
     @Builder
     public AnswerRes(String resultReturn, GameProcessType gameProcessType) {
-        this.resultReturn=resultReturn;
-        this.gameProcessType=gameProcessType;
+        this.resultReturn = resultReturn;
+        this.gameProcessType = gameProcessType;
     }
 
 }
