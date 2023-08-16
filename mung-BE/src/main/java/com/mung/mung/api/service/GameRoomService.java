@@ -55,15 +55,32 @@ public class GameRoomService {
         gameRoomRepository.save(gameRoom);
     }
 
+//    @Transactional
+//    public boolean isPlayerExists(String roomId, String playerNickname){
+//        // DB에서 Player가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
+//
+//        Player existingPlayer = playerRepository.findByPlayerId(playerId);
+//        if (existingPlayer == null) {
+//            throw new PlayerNotExistException();
+//        }
+//
+//        return true;
+//    }
+
     @Transactional
-    public boolean isPlayerExists(long playerId) {
+    public Player returnPlayer(String roomId, String playerNickname) {
         // DB에서 Player가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
-        Player existingPlayer = playerRepository.findByPlayerId(playerId);
-        if (existingPlayer == null) {
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        List<Player> players = gameRoom.getPlayers();
+        if (players.isEmpty()) {
             throw new PlayerNotExistException();
         }
-
-        return true;
+        for (Player player : players) {
+            if (player.getPlayerNickname().equals(playerNickname)) {
+                return player;
+            }
+        }
+        throw new PlayerNotExistException(); // 해당하는 플레이어가 없으면 에러
     }
 
     @Transactional

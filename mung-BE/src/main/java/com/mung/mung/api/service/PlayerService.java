@@ -70,8 +70,11 @@ public class PlayerService {
     // Player 데이터를 반환하는데 사용할 계획. Room Join 시, Player Score요청 시 계속 테이블에서 찾지 않기 위함.
     @Transactional
     public long GetPlayerId(String playerNickname, String roomId) {
-        long playerId = playerRepository.GetPlayerId(playerNickname, roomId);
-        return playerRepository.GetPlayerId(playerNickname, roomId);
+        Long playerId = playerRepository.GetPlayerId(playerNickname, roomId);
+        if (playerId == null) {
+            throw new PlayerNotExistException();
+        }
+        return playerId;
     }
 
     // 처음 Join때 id를 얻어두면 이후 status조회 시 front단에서 계속 보내줌으로써 pk인덱스로 빠르게 조회가능
