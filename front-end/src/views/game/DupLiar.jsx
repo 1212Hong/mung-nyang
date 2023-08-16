@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 
-const LiarVote = () => {
+const DupLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session, publisher, owner } = openvidu;
     const setId = useSelector((state) => state.game.setId);
@@ -26,8 +26,9 @@ const LiarVote = () => {
     const answerer = useSelector((state) => state.game.answerer);
     const [answered, setAnswered] = useState(false);
     const [activeBox, setActiveBox] = useState(null);
-    const updatedDupLiars = useSelector((state) => state.game.dupLiars);
     const [next, setNext] = useState(false);
+    const updatedDupLiars = useSelector((state) => state.game.dupLiars);
+    console.log(updatedDupLiars);
 
     const handleBoxClick = (name) => {
         setActiveBox(name === activeBox ? null : name);
@@ -37,28 +38,36 @@ const LiarVote = () => {
         const handleSubmission = async () => {
             try {
                 const response = await selectLiar(setId, activeBox);
+
+                console.log(setId);
                 console.log(response);
             } catch (error) {
                 console.error("Error", error);
             }
         };
-
         if (answered) {
             handleSubmission();
             setNext(true);
         }
-    }, [answered, activeBox]);
+    }, [answered]);
 
     useEffect(() => {
         const handleResult = async () => {
             try {
                 const selectedLiarResponse = await selectedLiar(setId);
                 console.log(selectedLiarResponse);
-
                 const mostVotedNickname =
                     selectedLiarResponse.data.mostVotedNicknames[0];
                 console.log(mostVotedNickname);
                 dispatch(gameActions.updateSelectedLiar(mostVotedNickname));
+                const signalLiard = async () => {
+                    session.signal({
+                        data: mostVotedNickname,
+                        to: [],
+                        type: "startLiard",
+                    });
+                };
+                signalLiard();
 
                 if (publisher.stream.connection.data === mostVotedNickname) {
                     dispatch(changePhase("SelectAns"));
@@ -70,9 +79,25 @@ const LiarVote = () => {
             }
         };
         if (next) {
-            handleResult();
+            owner && handleResult();
         }
     }, [next]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            // siganl 받기
+            session.on("signal:startLiard", (event) => {
+                console.log(event.data);
+                if (publisher.stream.connection.data === event.data) {
+                    dispatch(changePhase("SelectAns"));
+                } else {
+                    dispatch(changePhase("OtherView"));
+                }
+            });
+        });
+
+        return () => clearTimeout(timer);
+    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -149,4 +174,4 @@ const LiarVote = () => {
     );
 };
 
-export default LiarVote;
+export default DupLiar;

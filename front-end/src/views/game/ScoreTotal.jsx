@@ -105,7 +105,7 @@ const ScoreTotal = () => {
             dispatch(changePhase("Dance"));
         } else {
             signalQuiz();
-            dispatch(changePhase("Quiz"));
+            dispatch(changePhase("Dance"));
         }
     };
 

@@ -39,37 +39,65 @@ const LiarVote = () => {
 
                 console.log(setId);
                 console.log(response);
+                setNext(true);
             } catch (error) {
                 console.error("Error", error);
             }
         };
         if (answered) {
             handleSubmission();
-            setNext(true);
         }
-    }, [answered, activeBox]);
+    }, [answered]);
 
     useEffect(() => {
         const handleResult = async () => {
             try {
                 const selectedLiarResponse = await selectedLiar(setId);
                 console.log(selectedLiarResponse);
-                const mostVotedNickname =
-                    selectedLiarResponse.data.mostVotedNicknames[0];
-                console.log(mostVotedNickname);
-                dispatch(gameActions.updateSelectedLiar(mostVotedNickname));
+                if (selectedLiarResponse.data.gameProcessType === "LiarVote") {
+                    const dupliars =
+                        selectedLiarResponse.data.mostVotedNicknames;
+                    console.log(dupliars);
+                    dispatch(gameActions.updateDupLiars(dupliars));
+                    const signalDupLiar = async () => {
+                        session.signal({
+                            data: dupliars,
+                            to: [],
+                            type: "startDupLiar",
+                        });
+                    };
+                    signalDupLiar();
+                    dispatch(changePhase("DupLiar"));
+                } else if (
+                    selectedLiarResponse.data.gameProcessType === "SelectAns"
+                ) {
+                    const mostVotedNickname =
+                        selectedLiarResponse.data.mostVotedNicknames[0];
+                    console.log(mostVotedNickname);
+                    dispatch(gameActions.saveLiar(mostVotedNickname));
+                    const signalLiar = async () => {
+                        session.signal({
+                            data: mostVotedNickname,
+                            to: [],
+                            type: "startLiar",
+                        });
+                    };
+                    signalLiar();
 
-                if (publisher.stream.connection.data === mostVotedNickname) {
-                    dispatch(changePhase("SelectAns"));
-                } else {
-                    dispatch(changePhase("OtherView"));
+                    if (
+                        publisher.stream.connection.data === mostVotedNickname
+                    ) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
                 }
             } catch (error) {
                 console.error("Error", error);
             }
         };
         if (next) {
-            handleResult();
+            owner && handleResult();
         }
     }, [next]);
 
