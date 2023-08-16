@@ -11,6 +11,7 @@ import Timer from "../../components/Timer";
 import { changePhase } from "../../store/phaseSlice";
 import { SmallText, SubText } from "../../components/layout/common";
 import { ModalBackdrop, ModalViewDescDiv } from "../../components/layout/modal";
+import { ovActions } from "../../store/openviduSlice";
 
 const Container = styled.div`
     margin: 0;
@@ -51,11 +52,12 @@ function WordDescription() {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { myUserName, session, owner } = openvidu;
-    const { gameId, result, answerer, setId, playerId } = game;
+    const { myUserName, session, owner, mainStreamManager } = openvidu;
+    const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUserNickname, setDescUserNickname] = useState([""]);
+    const [descStreamManager, setDescStreamManager] = useState({});
     const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
     const [timerKey, setTimerKey] = useState(0);
@@ -103,6 +105,10 @@ function WordDescription() {
         }
     }, []);
 
+    const answererStream = streams.find(
+        (streamManager) => streamManager.stream.connection.data === answerer,
+    );
+
     const startTimer = () => {
         setTimerKey((prevKey) => prevKey + 1);
     };
@@ -122,6 +128,14 @@ function WordDescription() {
                     type: "descIndex",
                 });
                 console.log(descUserNickname[descIndex]);
+                const desc = otherUserStreams.find(
+                    (streamManager) =>
+                        streamManager.stream.connection.data ===
+                        curDescUserNickname,
+                );
+                setDescStreamManager(desc);
+                console.log(descStreamManager);
+                dispatch(ovActions.saveMainStreamManager(desc));
             }
         };
         setSignal();
@@ -138,6 +152,15 @@ function WordDescription() {
     useEffect(() => {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
+            console.log(event.data);
+            const desc = otherUserStreams.find(
+                (streamManager) =>
+                    streamManager.stream.connection.data ===
+                    curDescUserNickname,
+            );
+            setDescStreamManager(desc);
+            console.log(descStreamManager); // undefined
+            dispatch(ovActions.saveMainStreamManager(desc));
         });
     }, [timerKey]);
 
@@ -149,41 +172,42 @@ function WordDescription() {
         });
     });
 
-    const answererStream = streams.find(
-        (streamManager) => streamManager.stream.connection.data === answerer,
-    );
-
     return (
         <Container>
-            <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()}></Timer>
+            <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
                 <CurParticipants width={"100%"}>
                     {curDescUserNickname ? (
                         <>
                             <SmallText>{curDescUserNickname}</SmallText>
-                            <VideoComponent
-                                streamManager={otherUserStreams.find(
-                                    (streamManager) =>
-                                        streamManager.stream.connection.data ===
-                                        curDescUserNickname,
-                                )}
-                                width={"80%"}
-                                height={"80%"}
-                            />
+                            {mainStreamManager && (
+                                <VideoComponent
+                                    streamManager={mainStreamManager}
+                                    width={"80%"}
+                                    height={"80%"}
+                                />
+                            )}
                         </>
                     ) : (
                         <ModalBackdrop>
                             <ModalViewDescDiv>
-                                <SubText>
-                                    잠시 후 제시어 설명이 시작됩니다. 순서대로
-                                    자신의 제시어를 설명해보세요!
-                                </SubText>
+                                {!lastRound ? (
+                                    <SubText>
+                                        "잠시 후 제시어 설명이 시작됩니다.
+                                        순서대로 자신의 제시어를 설명해보세요!"
+                                    </SubText>
+                                ) : (
+                                    <SubText>
+                                        "한 번 더 이전 라운드처럼 진행됩니다!"
+                                    </SubText>
+                                )}
                             </ModalViewDescDiv>
                         </ModalBackdrop>
                     )}
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
                     <CurFunction>
+                        <SmallText>{answerer}</SmallText>
                         <VideoComponent
                             width="380px"
                             height="250px"

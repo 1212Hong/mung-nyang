@@ -13,7 +13,8 @@ export const makeRoom = async (roomInfo) => {
             roomInfo.roomId,
             roomInfo.roomPw,
         );
-        const sessionId = createRoomResponse.data;
+        const sessionId = createRoomResponse.data.roomId;
+        const sessionPw = createRoomResponse.data.roomPw;
 
         console.log(createRoomResponse);
 
@@ -25,6 +26,7 @@ export const makeRoom = async (roomInfo) => {
         console.log(connectRoomResponse);
 
         store.dispatch(ovActions.saveSessionId(sessionId));
+        store.dispatch(ovActions.saveSessionPw(sessionPw));
         store.dispatch(ovActions.saveToken(connectRoomResponse.data));
 
         const firstNickName = await getNickname(sessionId);

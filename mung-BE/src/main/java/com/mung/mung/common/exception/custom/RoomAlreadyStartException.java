@@ -1,5 +1,5 @@
 package com.mung.mung.common.exception.custom;
 
-public class RoomAlreadyStartException extends RuntimeException{
-    
+public class RoomAlreadyStartException extends RuntimeException {
+
 }

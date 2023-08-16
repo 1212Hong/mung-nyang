@@ -1,7 +1,8 @@
 package com.mung.mung.api.controller;
 
-import com.mung.mung.api.request.*;
-import com.mung.mung.api.response.*;
+import com.mung.mung.api.request.LiarSubmitVoteReq;
+import com.mung.mung.api.response.LiarAnswerOptionsRes;
+import com.mung.mung.api.response.LiarVoteResultRes;
 import com.mung.mung.api.service.LiarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
