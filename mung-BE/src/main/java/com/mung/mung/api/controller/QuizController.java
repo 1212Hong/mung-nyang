@@ -2,7 +2,10 @@ package com.mung.mung.api.controller;
 
 import com.mung.mung.api.request.QuizCountReq;
 import com.mung.mung.api.request.QuizPlayersRoleReq;
-import com.mung.mung.api.response.*;
+import com.mung.mung.api.response.QuizPlayersRoleRes;
+import com.mung.mung.api.response.QuizPlayersWordRes;
+import com.mung.mung.api.response.QuizResultRes;
+import com.mung.mung.api.response.QuizStartRes;
 import com.mung.mung.api.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,8 +70,6 @@ public class QuizController {
         return ResponseEntity.ok(quizPlayersWordRes);
 
     }
-
-
 
 
 }
