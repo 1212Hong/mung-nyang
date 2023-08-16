@@ -6,6 +6,7 @@ import {
     ModalViewResultBox,
     ModalViewButtonDiv,
     ModalViewCompleteDiv,
+    FootImgDiv,
 } from "../layout/modal";
 import Button from "../Button";
 import Timer from "../Timer";
@@ -40,7 +41,7 @@ const ReadyModal = () => {
     const signalVote = async (check) => {
         console.log(gameVoteCnt);
         await session.signal({
-            data: `${String(Number(gameVoteCnt + 1))}`,
+            data: `${String(Number(gameVoteCnt) + 1)}`,
             to: [],
             type: check === "T" ? "agree" : "disagree",
         });
@@ -72,40 +73,50 @@ const ReadyModal = () => {
         } catch (error) {
             console.error("Error sending data:", error);
         }
-        owner && (await deleteVote(mySessionId));
     };
 
     useEffect(() => {
         // 로컬 대기만 줄어듦 -> 모두의 화면이 줄어들도록 openvidu통신
         const newFootDivEl = gameVoteCnt ? (
-            <div key={gameVoteCnt}>
+            <FootImgDiv key={gameVoteCnt}>
                 <img src={imgSrc} alt="사진" width="55px" height="55px" />
-            </div>
+            </FootImgDiv>
         ) : null;
         setFootDivEls((prevDivs) => [...prevDivs, newFootDivEl]);
+
+        if (Number(gameVoteCnt) === session.streamManagers.length) {
+            owner && handleEndVote();
+            // : session.on("signal:gameId", (e) => {
+            //       console.log(e.data);
+            //       dispatch(gameActions.saveGameId(e.data));
+            //       dispatch(changePhase("Quiz"));
+            //   });
+        }
     }, [gameVoteCnt]);
 
     useEffect(() => {
+        const timer = setTimeout(async () => {
+            // 타이머 흘러가는중
+            owner && handleEndVote();
+            // : session.on("signal:gameId", (e) => {
+            //       console.log(e.data);
+            //       dispatch(gameActions.saveGameId(e.data));
+            //       dispatch(changePhase("Quiz"));
+            //   });
+        }, 7000);
+
         if (!modalFlag) {
+            clearTimeout(timer);
             owner && deleteVote(mySessionId);
             return;
         }
-        const timer = setTimeout(async () => {
-            // 타이머 흘러가는중
-            owner
-                ? handleEndVote()
-                : session.on("signal:gameId", (e) => {
-                      console.log(e.data);
-                      dispatch(gameActions.saveGameId(e.data));
-                      dispatch(changePhase("Quiz"));
-                  });
-        }, 7000);
 
         return () => {
             session.on("signal:gameId", (e) => {
                 console.log(e.data);
                 dispatch(gameActions.saveGameId(e.data));
                 dispatch(changePhase("Quiz"));
+                clearTimeout(timer);
             });
             session.on("signal:refuseVote", (e) => {
                 clearTimeout(timer);
