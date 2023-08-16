@@ -16,7 +16,7 @@ import { gameActions } from "../../store/gameSlice";
 
 const LiarVote = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { session, publisher, owner } = openvidu;
+    const { session, owner, myUserName } = openvidu;
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
     const text = "라이어를 선택하세요.";
@@ -90,9 +90,8 @@ const LiarVote = () => {
                         });
                     };
                     signalVotedLiar();
-                    if (
-                        publisher.stream.connection.data === mostVotedNickname
-                    ) {
+                    if (myUserName === mostVotedNickname) {
+                        // publisher에서 접근하기보다 자기 닉네임은 이미 저장된 값 쓰면 됨
                         dispatch(changePhase("SelectAns"));
                     } else {
                         dispatch(changePhase("OtherView"));
@@ -137,6 +136,7 @@ const LiarVote = () => {
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
                         if (subscriber.stream.connection.data === answerer) {
+                            // 정답자 외 비디오도 닉네임 띄워주면 좋을듯
                             return (
                                 <React.Fragment key={i}>
                                     <Item>
@@ -150,7 +150,7 @@ const LiarVote = () => {
                                 </React.Fragment>
                             );
                         }
-                        return null;
+                        return null; // null은 왜 반환함?
                     })}
 
                 {session.streamManagers &&
