@@ -24,8 +24,7 @@ import { InitializedData, RecordStart, RecordStop } from "../../api/game";
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { passCnt, gameId } = game;
-    const penaltyUser = "아닌 시츄";
+    const { penaltyUser, passCnt, gameId } = game;
     const { session, owner, mySessionId, myUserName } = openvidu;
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
@@ -80,14 +79,13 @@ function Dance() {
             setVideoId(event.data);
         });
 
-        // const fetchPenaltyUser = async (roomId) => {
-        //     await getPenaltyUser(roomId);
-        //     store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
-        // };
-        // fetchPenaltyUser(roomId);
+        const fetchPenaltyUser = async (roomId) => {
+            await getPenaltyUser(roomId);
+            store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
+        };
+        fetchPenaltyUser(roomId);
         const startRecord = async (roomId, gameId) => {
             await RecordStart(roomId, gameId);
-            console.log("녹화시작요청");
         };
         owner && startRecord(roomId, gameId);
     }, []);
@@ -97,9 +95,8 @@ function Dance() {
         if (Number(passCnt) === session.streamManagers.length - 1) {
             const stopRecord = async (roomId, gameId) => {
                 await RecordStop(roomId, gameId);
-                console.log("녹화중단요청");
             };
-            stopRecord(roomId, gameId);
+            owner && stopRecord(roomId, gameId);
             passVoteEnd();
         }
         addCount(passCnt);

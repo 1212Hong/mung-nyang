@@ -65,8 +65,8 @@ const ReadyModal = () => {
                 await signalGameId(response.data.gameId);
 
                 dispatch(gameActions.saveGameId(response.data.gameId));
-                await signalGoQuiz("Dance");
-                dispatch(changePhase("Dance"));
+                await signalGoQuiz("Quiz");
+                dispatch(changePhase("Quiz"));
             }
             console.log(owner);
         } catch (error) {
@@ -105,7 +105,7 @@ const ReadyModal = () => {
             session.on("signal:gameId", (e) => {
                 console.log(e.data);
                 dispatch(gameActions.saveGameId(e.data));
-                dispatch(changePhase("Dance"));
+                dispatch(changePhase("Quiz"));
             });
             session.on("signal:refuseVote", (e) => {
                 clearTimeout(timer);

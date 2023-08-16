@@ -106,16 +106,6 @@ function WaitingRoom() {
         userMessage.current.value = "";
     };
 
-    useEffect(() => {
-        const bgmAudio = new Audio(mainBgm);
-        bgmAudio.preload = "auto";
-
-        bgmAudio.oncanplay = () => {
-            bgmAudio.volume = 0.2;
-            bgmAudio.play();
-        };
-    }, []);
-
     // 카카오톡공유 코드시작
     useEffect(() => {
         const script = document.createElement("script");
@@ -159,13 +149,33 @@ function WaitingRoom() {
     };
     // 카카오톡공유 코드종료
 
+    const audioRef = useRef(null);
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = 0.2;
+        }
+    }, []);
     function toggleVolume() {
+        const audioElement = audioRef.current;
+
+        if (audioElement) {
+            if (isMuted) {
+                audioElement.volume = 0.2;
+                audioElement.muted = false;
+            } else {
+                audioElement.muted = true;
+            }
+        }
+
         setIsMuted((prevState) => !prevState);
     }
     console.log(openvidu.messageList.length);
 
     return (
         <Container className="waiting-container">
+            <audio ref={audioRef} autoPlay loop>
+                <source src={mainBgm} type="audio/wav" />
+            </audio>
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
                     {publisher && (
