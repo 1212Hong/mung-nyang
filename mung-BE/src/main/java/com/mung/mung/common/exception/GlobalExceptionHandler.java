@@ -232,19 +232,6 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(value = {MapSessionNotExistException.class})
-    public ResponseEntity<Object> mapSessionExistException (MapSessionNotExistException e){
-        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-
-        ApiException apiException = new ApiException(
-                ExceptionMessage.MAPSESSION_NOT_EXIST_MESSAGE,
-                httpStatus,
-                ZonedDateTime.now(ZoneId.of("Z"))
-        );
-
-        return new ResponseEntity<>(apiException, httpStatus);
-    }
-
     @ExceptionHandler(value = {WordNotFoundException.class})
     public ResponseEntity<Object> handelWordNotFoundException (WordNotFoundException e){
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
