@@ -59,12 +59,12 @@ const DupLiar = () => {
                 const mostVotedNickname =
                     selectedLiarResponse.data.mostVotedNicknames[0];
                 console.log(mostVotedNickname);
-                dispatch(gameActions.updateSelectedLiar(mostVotedNickname));
+                dispatch(gameActions.saveLiar(mostVotedNickname));
                 const signalLiard = async () => {
                     session.signal({
                         data: mostVotedNickname,
                         to: [],
-                        type: "startLiard",
+                        type: "dupVotedLiar",
                     });
                 };
                 signalLiard();
@@ -82,22 +82,6 @@ const DupLiar = () => {
             owner && handleResult();
         }
     }, [next]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            // siganl 받기
-            session.on("signal:startLiard", (event) => {
-                console.log(event.data);
-                if (publisher.stream.connection.data === event.data) {
-                    dispatch(changePhase("SelectAns"));
-                } else {
-                    dispatch(changePhase("OtherView"));
-                }
-            });
-        });
-
-        return () => clearTimeout(timer);
-    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => {

@@ -211,9 +211,19 @@ const Game = () => {
 
                 newSession.on("signal:startDupLiar", (event) => {
                     console.log(event.data);
+                    dispatch(gameActions.updateDupLiars(event.data));
                     dispatch(changePhase("DupLiar"));
                 });
-                newSession.on("signal:startLiar", (event) => {
+                newSession.on("signal:VotedLiar", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.saveLiar(event.data));
+                    if (publisher.stream.connection.data === event.data) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
+                });
+                newSession.on("signal:dupVotedLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.saveLiar(event.data));
                     if (publisher.stream.connection.data === event.data) {

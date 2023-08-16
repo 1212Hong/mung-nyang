@@ -75,14 +75,14 @@ const LiarVote = () => {
                         selectedLiarResponse.data.mostVotedNicknames[0];
                     console.log(mostVotedNickname);
                     dispatch(gameActions.saveLiar(mostVotedNickname));
-                    const signalLiar = async () => {
+                    const signalVotedLiar = async () => {
                         session.signal({
                             data: mostVotedNickname,
                             to: [],
-                            type: "startLiar",
+                            type: "VotedLiar",
                         });
                     };
-                    signalLiar();
+                    signalVotedLiar();
 
                     if (
                         publisher.stream.connection.data === mostVotedNickname

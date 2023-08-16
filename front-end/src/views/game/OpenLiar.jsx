@@ -35,7 +35,6 @@ const OpenLiar = () => {
                 );
                 const result = response.data;
                 console.log(result);
-
                 if (result === "LiarWin_Success") {
                     dispatch(gameActions.updateResult("라이어 승리"));
                 } else if (result === "LiarLose_Fail") {

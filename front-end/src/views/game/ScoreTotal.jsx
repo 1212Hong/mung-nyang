@@ -29,6 +29,7 @@ import { AnswerItem } from "../../components/layout/otherView";
 const ScoreTotal = () => {
     const dispatch = useDispatch();
     const result = useSelector((state) => state.game.result);
+    console.log(result);
     const setCnt = useSelector((state) => state.game.setCnt);
     const set = useSelector((state) => state.game.setId);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
