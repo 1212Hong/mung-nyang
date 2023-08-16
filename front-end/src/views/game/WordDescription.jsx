@@ -132,19 +132,6 @@ function WordDescription() {
 
         setOtherUserStreams(newOtherStreams);
         console.log(newOtherStreams);
-
-        session.on("signal:descIndex", (event) => {
-            console.log(event.data);
-            setCurDescUserNickname(event.data);
-            const desc = otherUserStreams.find(
-                (streamManager) =>
-                    streamManager.stream.connection.data === event.data,
-            );
-            console.log(desc);
-            setDescStreamManager(desc);
-            // console.log(descStreamManager); // undefined
-            dispatch(ovActions.saveMainStreamManager(desc));
-        });
     }, [descIndex]);
 
     useEffect(() => {
