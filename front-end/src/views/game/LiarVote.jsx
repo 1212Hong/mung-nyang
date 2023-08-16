@@ -35,10 +35,12 @@ const LiarVote = () => {
     useEffect(() => {
         const handleSubmission = async () => {
             try {
-                const response = await selectLiar(setId, activeBox);
+                if (activeBox) {
+                    const response = await selectLiar(setId, activeBox);
 
-                console.log(setId);
-                console.log(response);
+                    console.log(setId);
+                    console.log(response);
+                }
                 setNext(true);
             } catch (error) {
                 console.error("Error", error);
@@ -59,9 +61,14 @@ const LiarVote = () => {
                         selectedLiarResponse.data.mostVotedNicknames;
                     console.log(dupliars);
                     dispatch(gameActions.updateDupLiars(dupliars));
+                    const strDupLiars = dupliars.map((str) => str + ",");
+                    const joinedStrDupLiars = strDupLiars.join("");
+
+                    console.log(joinedStrDupLiars);
+
                     const signalDupLiar = async () => {
                         session.signal({
-                            data: dupliars,
+                            data: joinedStrDupLiars,
                             to: [],
                             type: "startDupLiar",
                         });
@@ -83,7 +90,6 @@ const LiarVote = () => {
                         });
                     };
                     signalVotedLiar();
-
                     if (
                         publisher.stream.connection.data === mostVotedNickname
                     ) {
@@ -91,6 +97,19 @@ const LiarVote = () => {
                     } else {
                         dispatch(changePhase("OtherView"));
                     }
+                } else {
+                    const response = await Result(setId, roomId, "", "");
+                    console.log(response);
+                    dispatch(gameActions.updateResult("라이어 승리"));
+                    const signalNoLiar = async () => {
+                        session.signal({
+                            data: "라이어 승리",
+                            to: [],
+                            type: "noLiar",
+                        });
+                    };
+                    signalNoLiar();
+                    dispatch(changePhase("MidScore"));
                 }
             } catch (error) {
                 console.error("Error", error);
@@ -113,7 +132,7 @@ const LiarVote = () => {
 
     return (
         <Container>
-            <Timer onTimerEnd={() => setAnswered(true)} />
+            <Timer time={10} onTimerEnd={() => setAnswered(true)} />
             <Box>
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
