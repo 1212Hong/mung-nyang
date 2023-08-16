@@ -14,10 +14,12 @@ import {
     TitleItem,
     SetItem,
     BtnBox,
-    ImgBox,
+    LineFrame,
     Frame,
     RankBoxFrame,
-    PersonBox,
+    ImgItem,
+    ImgFrame,
+    FrameBox,
 } from "../../components/layout/scoreTotal";
 import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
@@ -25,6 +27,7 @@ import foots from "../../assets/img/foots.png";
 import VideoComponent from "../../components/VideoComponent";
 import { AnswerItem } from "../../components/layout/otherView";
 import { SmallText } from "../../components/layout/common";
+import cat from "../../assets/img/scorecat.png";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
@@ -137,34 +140,36 @@ const ScoreTotal = () => {
                         <NameItem>닉네임</NameItem>
                         <ScoreItem>총 점수</ScoreItem>
                     </Border>
-                    {sortedInformation.map((user, index) => (
-                        <LineItem key={index}>
-                            <RankItem>{index + 1}등</RankItem>
-                            <NameItem>{user.username}</NameItem>
-                            <ScoreItem>{user.score}</ScoreItem>
-                        </LineItem>
-                    ))}
+                    <FrameBox>
+                        <LineFrame>
+                            {sortedInformation.map((user, index) => (
+                                <LineItem key={index}>
+                                    {session.streamManagers.map((sub, i) =>
+                                        sub.stream.connection.data ===
+                                        user.username ? (
+                                            <React.Fragment key={i}>
+                                                <AnswerItem>
+                                                    <VideoComponent
+                                                        width="70px"
+                                                        height="70px"
+                                                        streamManager={sub}
+                                                    />
+                                                </AnswerItem>
+                                            </React.Fragment>
+                                        ) : null,
+                                    )}
+                                    <RankItem>{index + 1}등</RankItem>
+                                    <NameItem>{user.username}</NameItem>
+                                    <ScoreItem>{user.score}</ScoreItem>
+                                </LineItem>
+                            ))}
+                        </LineFrame>
+                    </FrameBox>
                 </RankBox>
-                <PersonBox>
-                    {session.streamManagers.map((sub, i) => (
-                        <React.Fragment key={i}>
-                            <AnswerItem>
-                                <SmallText>
-                                    {sub.stream.connection.data}
-                                </SmallText>
-                                <VideoComponent
-                                    width="200px"
-                                    height="200px"
-                                    streamManager={sub}
-                                />
-                            </AnswerItem>
-                        </React.Fragment>
-                    ))}
-                </PersonBox>
+                <ImgFrame>
+                    <img src={cat} alt="" width={350} height={500} />
+                </ImgFrame>
             </RankBoxFrame>
-            <ImgBox>
-                <img src={foots} alt="" width={500} height={500} />
-            </ImgBox>
         </Container>
     );
 };
