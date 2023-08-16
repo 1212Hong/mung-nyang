@@ -33,7 +33,7 @@ const OpenLiar = () => {
                     pickedLiar,
                     selectedAnswer,
                 );
-                const result = response.data;
+                const result = response.data.resultReturn;
                 console.log(result);
                 if (result === "LiarWin_Success") {
                     dispatch(gameActions.updateResult("라이어 승리"));
@@ -57,9 +57,9 @@ const OpenLiar = () => {
             } catch (error) {
                 console.error(error);
             }
-        }, []);
+        }, 5000);
         return () => clearTimeout(timer);
-    }, 5000);
+    }, []);
 
     return (
         <Container>
