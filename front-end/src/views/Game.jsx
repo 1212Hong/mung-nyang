@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ovActions } from "../store/openviduSlice";
 import { useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
-import SelectLiar from "../views/game/SelectLiar";
+import ScoreTotal from "../views/game/ScoreTotal";
+import LiarVote from "./game/LiarVote";
 import SelectAnswer from "../views/game/SelectAnswer";
 import OtherView from "../views/game/OtherView";
 import OpenLiar from "../views/game/OpenLiar";
@@ -18,6 +19,7 @@ import { closeModal, openModal } from "../store/modalSlice";
 import DupLiar from "./game/DupLiar";
 import QnAPage from "./game/QnAPage";
 import { changePhase } from "../store/phaseSlice";
+import FinAns from "./game/FinAns";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -55,6 +57,10 @@ const PHASE_COMPONENTS = [
         component: <TopBottomVideo />,
     },
     {
+        type: PHASES.MidScore,
+        component: <ScoreTotal />,
+    },
+    {
         type: PHASES.Desc,
         component: <WordDescription />,
     },
@@ -64,10 +70,11 @@ const PHASE_COMPONENTS = [
     },
     {
         type: PHASES.FinAns,
+        component: <FinAns />,
     },
     {
         type: PHASES.LiarVote,
-        component: <SelectLiar />,
+        component: <LiarVote />,
     },
     {
         type: PHASES.SelectAns,
@@ -128,6 +135,7 @@ const Game = () => {
             newSession.on("streamDestroyed", (event) => {
                 console.log("파괴");
                 console.log(session);
+                console.log(event);
                 deleteSubscriber(event.stream.streamManager);
             });
 
@@ -170,8 +178,7 @@ const Game = () => {
                     console.log("찬성");
                     const newCnt = event.data;
                     console.log(event);
-                    // 발도장 찍어야함 -> 찬성 수 리덕스로 저장하고 조회해갈까?
-                    dispatch(gameActions.saveGameVoteCnt(newCnt + 1));
+                    dispatch(gameActions.saveGameVoteCnt(newCnt));
                 });
 
                 newSession.on("signal:disagree", (event) => {
@@ -180,7 +187,13 @@ const Game = () => {
                     dispatch(gameActions.saveGameVoteCnt(0));
                 });
 
+                newSession.on("signal:setCnt", (e) => {
+                    console.log(e.data);
+                    dispatch(gameActions.saveSetCnt(e.data));
+                });
+
                 newSession.on("signal:Quiz", (e) => {
+                    dispatch(closeModal());
                     dispatch(changePhase(e.data));
                 });
 
@@ -202,6 +215,41 @@ const Game = () => {
                 newSession.on("signal:setId", (e) => {
                     dispatch(gameActions.saveSetId(e.data));
                     dispatch(changePhase("Desc"));
+                });
+
+                newSession.on("signal:startDupLiar", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.updateDupLiars(event.data));
+                    dispatch(changePhase("DupLiar"));
+                });
+                newSession.on("signal:VotedLiar", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.saveLiar(event.data));
+                    if (publisher.stream.connection.data === event.data) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
+                });
+                newSession.on("signal:dupVotedLiar", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.saveLiar(event.data));
+                    if (publisher.stream.connection.data === event.data) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
+                });
+
+                // 최종 정답 시그널 받기
+                session.on("signal:Pick to Liar", (e) => {
+                    console.log(e.data);
+                    dispatch(changePhase(e.data)); // 최종정답 api의 결과에 따라 페이즈 이동
+                    // 필요하다면 게임 결과도 저장해야함
+                });
+                session.on("signal:LiarLose", (e) => {
+                    console.log(e.data);
+                    dispatch(changePhase(e.data));
                 });
 
                 var devices = await OV.getDevices();
@@ -269,7 +317,11 @@ const Game = () => {
         };
     }, []);
 
-    const deleteSubscriber = (streamManager) => {
+    const deleteSubscriber = async (streamManager) => {
+        console.log(streamManager.stream.connection.data);
+
+        await outRoom(mySessionId, streamManager.stream.connection.data);
+
         console.log("delete 호출");
         console.log(streamManager);
         console.log(subscribersList);
@@ -279,7 +331,7 @@ const Game = () => {
         console.log(updatedSubscribers);
         setSubscribersList(updatedSubscribers);
         dispatch(ovActions.saveSubscribers(updatedSubscribers));
-        outRoom(mySessionId, playerId);
+
         console.log(subscribersList);
     };
     const leaveSession = () => {
