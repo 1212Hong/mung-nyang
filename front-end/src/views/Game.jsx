@@ -247,7 +247,8 @@ const Game = () => {
                 newSession.on("signal:VotedLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.saveLiar(event.data));
-                    if (publisher.stream.connection.data === event.data) {
+                    if (myUserName === event.data) {
+                        // 라이어 투표랑 마찬가지 - 걍 저장된 닉네임쓰기
                         dispatch(changePhase("SelectAns"));
                     } else {
                         dispatch(changePhase("OtherView"));
@@ -256,7 +257,7 @@ const Game = () => {
                 newSession.on("signal:dupVotedLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.saveLiar(event.data));
-                    if (publisher.stream.connection.data === event.data) {
+                    if (myUserName === event.data) {
                         dispatch(changePhase("SelectAns"));
                     } else {
                         dispatch(changePhase("OtherView"));
