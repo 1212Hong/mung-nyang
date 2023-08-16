@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
@@ -191,6 +190,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public QuizPlayersWordRes getPlayerWord(Long setId, String playerNick) {
         GameSet curSet = gameSetRepository.findBySetId(setId);
+        log.info("닉네임 한글 확인 decode 유무 : {}", playerNick);
 
         if (curSet == null) {
             throw new SetNotExistException();
