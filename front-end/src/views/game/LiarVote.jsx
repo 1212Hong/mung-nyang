@@ -35,7 +35,7 @@ const LiarVote = () => {
     useEffect(() => {
         const handleSubmission = async () => {
             try {
-                const response = await selectLiar(setId, activeBox);
+                const response = await selectLiar(setId, activeBox || "");
 
                 console.log(setId);
                 console.log(response);

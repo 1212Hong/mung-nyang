@@ -25,7 +25,7 @@ const OpenLiar = () => {
     const { session } = openvidu;
 
     useEffect(() => {
-        const timer = setTimeout(async () => {
+        const getRes = async () => {
             try {
                 const response = await Result(
                     setId,
@@ -46,8 +46,8 @@ const OpenLiar = () => {
             } catch (error) {
                 console.error(error);
             }
-        }, []);
-        return () => clearTimeout(timer);
+        };
+        getRes();
     }, []);
 
     useEffect(() => {
