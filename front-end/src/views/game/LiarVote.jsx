@@ -132,7 +132,7 @@ const LiarVote = () => {
 
     return (
         <Container>
-            <Timer time={10} onTimerEnd={() => setAnswered(true)} />
+            <Timer onTimerEnd={() => setAnswered(true)} />
             <Box>
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {

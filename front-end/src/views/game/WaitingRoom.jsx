@@ -24,7 +24,7 @@ import {
     ChatItem,
     ChatItemName,
     ChatItemMessage,
-    VideoUserName
+    VideoUserName,
 } from "../../components/layout/waiting";
 import { SmallText } from "../../components/layout/common";
 import { useDispatch, useSelector } from "react-redux";
@@ -183,14 +183,12 @@ function WaitingRoom() {
                     {publisher && (
                         <>
                             <Videobox>
-                            {/* <VideoUserName>{myUserName}</VideoUserName> */}
                                 <VideoComponent
                                     width="336"
                                     height="189"
                                     streamManager={publisher}
                                 />
-                            <VideoUserName>{myUserName}</VideoUserName>
-
+                                <VideoUserName>{myUserName}</VideoUserName>
                             </Videobox>
                         </>
                     )}
@@ -198,14 +196,14 @@ function WaitingRoom() {
                         subscribers.map((sub, i) => (
                             <React.Fragment key={i}>
                                 <Videobox>
-
                                     <VideoComponent
                                         width="336"
                                         height="189"
                                         streamManager={sub}
                                     />
-                            <VideoUserName>{sub.stream.connection.data}</VideoUserName>
-
+                                    <VideoUserName>
+                                        {sub.stream.connection.data}
+                                    </VideoUserName>
                                 </Videobox>
                             </React.Fragment>
                         ))}
