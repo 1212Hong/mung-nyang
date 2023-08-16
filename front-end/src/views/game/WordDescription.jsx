@@ -139,12 +139,12 @@ function WordDescription() {
             console.log(mainStreamManager);
         };
         owner && setSignal();
-    }, [descIndex]);
 
-    useEffect(() => {
         setCurDescUserNickname(mainStreamManager.stream.connection.data);
         console.log(curDescUserNickname);
-    }, [timerKey]);
+    }, [descIndex]);
+
+    // useEffect(() => {}, [timerKey]);
 
     useEffect(() => {
         // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
@@ -156,7 +156,7 @@ function WordDescription() {
 
     return (
         <Container>
-            <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()} />
+            <Timer key={descIndex} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
                 <CurParticipants width={"100%"}>
                     {curDescUserNickname ? (
