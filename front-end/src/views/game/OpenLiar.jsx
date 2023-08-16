@@ -33,15 +33,31 @@ const OpenLiar = () => {
                     pickedLiar,
                     selectedAnswer,
                 );
-                const result = response.data;
+                const result = response.data.resultReturn;
                 console.log(result);
-                dispatch(gameActions.updateResult(result));
+                if (result === "LiarWin_Success") {
+                    dispatch(gameActions.updateResult("라이어 승리"));
+                } else if (result === "LiarLose_Fail") {
+                    dispatch(gameActions.updateResult("시민 승리"));
+                } else if (result === "LiarWin_NotLiar") {
+                    dispatch(gameActions.updateResult("라이어 승리"));
+                }
                 await deleteLiar(setId);
-                dispatch(changePhase("MidScore"));
             } catch (error) {
                 console.error(error);
             }
         }, []);
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            try {
+                dispatch(changePhase("MidScore"));
+            } catch (error) {
+                console.error(error);
+            }
+        }, 5000);
         return () => clearTimeout(timer);
     }, []);
 

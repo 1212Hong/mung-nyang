@@ -107,6 +107,11 @@ export const QuizResult = (roomId) => {
     return API.get(`/api/quiz/result?roomId=${roomId}`);
 };
 
+// 점수 집계
+export const score = (roomId) => {
+    return API.get(`/api/score/get/?roomId=${roomId}`);
+};
+
 // 라이어 투표
 export const selectLiar = (setId, playerNickname) => {
     return API.post(`/api/liar/vote`, {
