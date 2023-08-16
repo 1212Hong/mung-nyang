@@ -41,8 +41,9 @@ public class Game {
         this.videoUrl = newVideoUrl;
     }
 
-    public void updateCurSet() {
+    public void updateCurSetAndQuiz(Long updateQuiz) {
         this.curSet = this.curSet + 1;
+        this.ranQuiz = updateQuiz;
     }
 
 }
