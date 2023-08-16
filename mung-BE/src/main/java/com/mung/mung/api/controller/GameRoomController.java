@@ -124,20 +124,20 @@ public class GameRoomController {
     }
 
 
-    @DeleteMapping("/game-sessions/leave/{encodeRoomId}/{playerId}")
-    public ResponseEntity<String> leaveRoom(@PathVariable("encodeRoomId") String encodeRoomId,
-                                            @PathVariable long playerId) throws UnsupportedEncodingException {
+    @DeleteMapping("/game-sessions/leave/{encodeRoomId}/{encodePlayerNickname}")
+    public ResponseEntity<String> leaveRoom(@PathVariable String encodeRoomId,
+                                            @PathVariable String encodePlayerNickname) throws UnsupportedEncodingException {
         String roomId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
+        String playerNickname = URLDecoder.decode(encodePlayerNickname, StandardCharsets.UTF_8);
         // roomId와 playerId가 유효하지 않은 경우 예외 처리
         if (roomId == null || roomId.isEmpty() || !gameRoomService.isRoomExists(roomId)) {
             throw new RoomNotExistException();
         }
         log.info("roomId info : {}", roomId);
 
-        // DB에서 playerData 삭제하기 전에 playerId가 DB에 있는지 확인합니다.
-        if (!gameRoomService.isPlayerExists(playerId)) { // 있으면 true 없으면 에러
-            throw new PlayerNotExistException();
-        }
+        // DB에서 playerData 삭제하기 전에 roomID, playerNickname으로 DB에 있는지 확인
+//        Player player=gameRoomService.returnPlayer(roomId, playerNickname);
+        long playerId = playerService.GetPlayerId(playerNickname, roomId);
         // DB에서 playerData 삭제
         gameRoomService.leaveRoom(playerId);
 
