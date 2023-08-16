@@ -120,6 +120,16 @@ function WordDescription() {
     };
 
     useEffect(() => {
+        const newOtherStreams = streams.filter(
+            (streamManager) =>
+                streamManager.stream.connection.data !== answerer,
+        );
+
+        setOtherUserStreams(newOtherStreams);
+        console.log(newOtherStreams);
+    }, [descIndex]);
+
+    useEffect(() => {
         const setSignal = () => {
             if (owner) {
                 session.signal({
@@ -139,17 +149,6 @@ function WordDescription() {
             }
         };
         setSignal();
-
-        const newOtherStreams = streams.filter(
-            (streamManager) =>
-                streamManager.stream.connection.data !== answerer,
-        );
-
-        setOtherUserStreams(newOtherStreams);
-        console.log(newOtherStreams);
-    }, [descIndex]);
-
-    useEffect(() => {
         session.on("signal:descIndex", (event) => {
             setCurDescUserNickname(event.data);
             console.log(event.data);
