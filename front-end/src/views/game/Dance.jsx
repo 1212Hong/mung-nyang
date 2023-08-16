@@ -31,6 +31,7 @@ function Dance() {
     const [videoId, setVideoId] = useState("");
     const [complete, setComplete] = useState(false);
     const dispatch = useDispatch();
+    const streams = session.streamManagers;
 
     const sendVideoId = async (videoId) => {
         session.signal({
@@ -81,7 +82,6 @@ function Dance() {
 
         const fetchPenaltyUser = async (roomId) => {
             await getPenaltyUser(roomId);
-            store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
         };
         fetchPenaltyUser(roomId);
         const startRecord = async (roomId, gameId) => {
@@ -91,8 +91,8 @@ function Dance() {
     }, []);
 
     useEffect(() => {
-        console.log("비교 :", session.streamManagers.length - 1, passCnt);
-        if (Number(passCnt) === session.streamManagers.length - 1) {
+        console.log("비교 :", streams.length - 1, passCnt);
+        if (Number(passCnt) === streams.length - 1) {
             const stopRecord = async (roomId, gameId) => {
                 await RecordStop(roomId, gameId);
             };
@@ -111,8 +111,11 @@ function Dance() {
             clearTimeout(timer);
         };
     }, []);
-    const nonPenaltyUsers = session.streamManagers.filter((user) => {
+    const nonPenaltyUsers = streams.filter((user) => {
         return user.stream.connection.data !== penaltyUser;
+    });
+    const penaltyStreamer = streams.finc((user) => {
+        return user.stream.connection.data === penaltyUser;
     });
     console.log(nonPenaltyUsers);
     return (
@@ -132,17 +135,13 @@ function Dance() {
                     </Video>
                 </LeftItem>
                 <RightItem>
-                    <VideoComponent width="800px" height="450px">
-                        {penaltyUser && (
-                            <iframe
-                                width="100%"
-                                height="100%"
-                                src={penaltyUser.videoUrl}
-                                title="Penalty Video"
-                                allow="autoplay"
-                            ></iframe>
-                        )}
-                    </VideoComponent>
+                    {penaltyUser && (
+                        <VideoComponent
+                            width="800px"
+                            height="450px"
+                            streamManager={penaltyStreamer}
+                        />
+                    )}
                 </RightItem>
                 <Buttons>
                     <Button
@@ -168,7 +167,7 @@ function Dance() {
                         fontSize="32px"
                         disabled={true}
                     >
-                        찬성 {passCnt}/{session.streamManagers.length - 1}
+                        찬성 {passCnt} / {session.streamManagers.length - 1}
                     </Button>
                 </Buttons>
             </PenaltyBox>
