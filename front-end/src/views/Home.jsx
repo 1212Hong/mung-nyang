@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     ButtonBox,
     FormBox,
@@ -52,9 +52,17 @@ const Home = () => {
             : navigate("/test");
     };
 
+    useEffect(() => {
+        const audioElement = document.getElementById("bgm");
+        if (audioElement) {
+            audioElement.volume = 0.07; // 음량 조절
+            audioElement.play(); // 재생
+        }
+    }, []);
+
     return (
         <HomeContainer>
-            <audio autoPlay loop>
+            <audio id="bgm" autoPlay loop>
                 <source src={mainBgm} type="audio/wav" />
             </audio>
             <LeftBox className="leftbox">
