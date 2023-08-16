@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     background-color: var(--brown-white);
+    height: 100%;
 `;
 
 export const TitleBox = styled.div`
@@ -11,11 +12,13 @@ export const TitleBox = styled.div`
     justify-content: space-between;
 `;
 
-export const RankBoxFrame = styled.div``;
+export const RankBoxFrame = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
 
 export const RankBox = styled.div`
-    border: 2px solid black;
-    width: 700px;
+    width: 750px;
     text-align: center;
     margin-left: 30px;
 `;
@@ -26,25 +29,34 @@ export const PersonBox = styled.div`
 `;
 
 export const Border = styled.div`
-    margin-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 20px;
-    border-bottom: 2px solid black;
+    margin-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 100px;
+    border: 2px solid white;
     display: flex;
     font-size: 32px;
 `;
 
+export const FrameBox = styled.div`
+    display: flex;
+`;
+
+export const LineFrame = styled.div``;
+
+export const ImgFrame = styled.div``;
+
+export const ImgItem = styled.div``;
+
 export const LineItem = styled.div`
-    margin-top: 20px;
     padding-left: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid white;
+    padding-bottom: 5px;
+    border: 2px solid white;
     display: flex;
     font-size: 32px;
 `;
 
 export const RankItem = styled.div`
-    width: 110px;
+    width: 160px;
 `;
 
 export const NameItem = styled.div`
@@ -69,7 +81,9 @@ export const SetItem = styled.div`
     font-size: 32px;
 `;
 
-export const BtnBox = styled.div``;
+export const BtnBox = styled.div`
+    margin-right: 20px;
+`;
 
 export const ImgBox = styled.div`
     text-align: right;
