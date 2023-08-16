@@ -56,23 +56,63 @@ const DupLiar = () => {
             try {
                 const selectedLiarResponse = await selectedLiar(setId);
                 console.log(selectedLiarResponse);
-                const mostVotedNickname =
-                    selectedLiarResponse.data.mostVotedNicknames[0];
-                console.log(mostVotedNickname);
-                dispatch(gameActions.saveLiar(mostVotedNickname));
-                const signalLiard = async () => {
-                    session.signal({
-                        data: mostVotedNickname,
-                        to: [],
-                        type: "dupVotedLiar",
-                    });
-                };
-                signalLiard();
+                if (selectedLiarResponse.data.gameProcessType === "LiarVote") {
+                    const dupliars =
+                        selectedLiarResponse.data.mostVotedNicknames;
+                    console.log(dupliars);
+                    const randomLiar =
+                        dupliars[Math.floor(Math.random() * dupliars.length)];
 
-                if (publisher.stream.connection.data === mostVotedNickname) {
-                    dispatch(changePhase("SelectAns"));
+                    console.log(randomLiar);
+                    dispatch(gameActions.saveLiar(randomLiar));
+                    const signalVotedLiar = async () => {
+                        session.signal({
+                            data: randomLiar,
+                            to: [],
+                            type: "VotedLiar",
+                        });
+                    };
+                    signalVotedLiar();
+                    if (publisher.stream.connection.data === randomLiar) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
+                } else if (
+                    selectedLiarResponse.data.gameProcessType === "SelectAns"
+                ) {
+                    const mostVotedNickname =
+                        selectedLiarResponse.data.mostVotedNicknames[0];
+                    console.log(mostVotedNickname);
+                    dispatch(gameActions.saveLiar(mostVotedNickname));
+                    const signalVotedLiar = async () => {
+                        session.signal({
+                            data: mostVotedNickname,
+                            to: [],
+                            type: "VotedLiar",
+                        });
+                    };
+                    signalVotedLiar();
+                    if (
+                        publisher.stream.connection.data === mostVotedNickname
+                    ) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
                 } else {
-                    dispatch(changePhase("OtherView"));
+                    const response = await Result(setId, roomId, "", "");
+                    console.log(response);
+                    dispatch(gameActions.updateResult("라이어 승리"));
+                    const signalNoLiar = async () => {
+                        session.signal({
+                            data: "라이어 승리",
+                            to: [],
+                            type: "noLiar",
+                        });
+                    };
+                    signalNoLiar();
+                    dispatch(changePhase("MidScore"));
                 }
             } catch (error) {
                 console.error("Error", error);
