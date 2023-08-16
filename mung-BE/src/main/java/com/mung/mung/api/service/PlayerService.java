@@ -5,6 +5,7 @@ import com.mung.mung.api.request.RoomIdReq;
 import com.mung.mung.api.response.PlayerStatusRes;
 import com.mung.mung.common.exception.custom.NicknameAlreadyExistException;
 import com.mung.mung.common.exception.custom.PlayerNotExistException;
+import com.mung.mung.common.exception.custom.RoomAlreadyFullException;
 import com.mung.mung.common.exception.custom.RoomNotExistException;
 import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.entity.Player;
@@ -46,6 +47,10 @@ public class PlayerService {
         if (nicknameList.contains(playerJoinReq.getPlayerNickname())){
             throw new NicknameAlreadyExistException();
         }
+        // 방에 입장한 플레이어 인원체크를 join단에서 수행
+        if (players.size()>=6){
+            throw new RoomAlreadyFullException();
+        }
         if(players.size()<1){
             // 방에 아무도 입장을 안했다면, 처음 입장한 사람을 방장으로 선택
             gameRoom.updateOwner(playerJoinReq.getPlayerNickname());
@@ -53,6 +58,7 @@ public class PlayerService {
             gameRoomRepository.save(gameRoom);
         }
 
+        // 플레이어 인원 저장
         System.out.println(playerJoinReq);
         Player player = Player.builder()
                 .playerNickname(playerJoinReq.getPlayerNickname())
