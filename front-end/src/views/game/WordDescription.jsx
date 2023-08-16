@@ -128,7 +128,7 @@ function WordDescription() {
                     type: "descIndex",
                 });
                 console.log(descUserNickname[descIndex]);
-                setCurDescUserNickname(descUserNickname[descIndex]);
+
                 const desc = otherUserStreams.find(
                     (streamManager) =>
                         streamManager.stream.connection.data ===
@@ -142,6 +142,7 @@ function WordDescription() {
             }
         };
         setSignal();
+        setCurDescUserNickname(descUserNickname[descIndex]);
     }, [timerKey]);
 
     useEffect(() => {
