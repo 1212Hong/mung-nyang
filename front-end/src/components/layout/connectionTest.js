@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 import { ReactComponent as SettingIcon } from "../../assets/img/setting.svg";
 import { ReactComponent as CameraIcon } from "../../assets/img/camera_on.svg";
 import { ReactComponent as CameraOffIcon } from "../../assets/img/camera_off.svg";
-import { ReactComponent as RefreshIcon } from "../../assets/img/icon_refresh leftsquare.svg";
+import { ReactComponent as RefreshIcon } from "../../assets/img/icon_refresh_leftsquare.svg";
 
 const Container = styled.div`
     background-color: var(--vanilla-cream);
@@ -123,6 +123,11 @@ const FlexRowBox = styled.div`
     justify-content: space-between;
 `;
 
+const DescBox = styled.div`
+    text-align: center;
+    margin-right: 100px;
+`;
+
 export {
     Container,
     ContainerBody,
@@ -141,4 +146,5 @@ export {
     CameraIcon,
     CameraOffIcon,
     RefreshIcon,
+    DescBox,
 };

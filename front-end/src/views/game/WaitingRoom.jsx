@@ -24,7 +24,7 @@ import {
     ChatItem,
     ChatItemName,
     ChatItemMessage,
-    VideoUserName
+    VideoUserName,
 } from "../../components/layout/waiting";
 import { SmallText } from "../../components/layout/common";
 import { useDispatch, useSelector } from "react-redux";
@@ -183,14 +183,12 @@ function WaitingRoom() {
                     {publisher && (
                         <>
                             <Videobox>
-                            {/* <VideoUserName>{myUserName}</VideoUserName> */}
                                 <VideoComponent
                                     width="336"
                                     height="189"
                                     streamManager={publisher}
                                 />
-                            <VideoUserName>{myUserName}</VideoUserName>
-
+                                <VideoUserName>{myUserName}</VideoUserName>
                             </Videobox>
                         </>
                     )}
@@ -198,14 +196,14 @@ function WaitingRoom() {
                         subscribers.map((sub, i) => (
                             <React.Fragment key={i}>
                                 <Videobox>
-
                                     <VideoComponent
                                         width="336"
                                         height="189"
                                         streamManager={sub}
                                     />
-                            <VideoUserName>{sub.stream.connection.data}</VideoUserName>
-
+                                    <VideoUserName>
+                                        {sub.stream.connection.data}
+                                    </VideoUserName>
                                 </Videobox>
                             </React.Fragment>
                         ))}
@@ -254,31 +252,33 @@ function WaitingRoom() {
 
                 <MenuBox>
                     <Button
-                        width="55px"
+                        width="45px"
                         height="40px"
+                        type="icon"
                         onClick={() => {
                             openRuleBook();
                         }}
                     >
-                        <QuestionIcon></QuestionIcon>
+                        <QuestionIcon width="20" />
                     </Button>
                     <Button
-                        width="55px"
+                        width="45px"
                         height="40px"
+                        type="icon"
                         onClick={() => {
                             openPenaltyLink();
                         }}
                     >
-                        <LinkIcon></LinkIcon>
+                        <LinkIcon width="23" />
                     </Button>
-                    <Button width="55px" height="40px">
-                        <CaptureIcon></CaptureIcon>
+                    <Button width="45px" height="40px" type="icon">
+                        <CaptureIcon width="23" />
                     </Button>
                     {isMuted ? (
                         <Button
                             key="mute"
                             type="icon"
-                            width="50px"
+                            width="45px"
                             height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
@@ -289,7 +289,7 @@ function WaitingRoom() {
                         <Button
                             key="on"
                             type="icon"
-                            width="50px"
+                            width="45px"
                             height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
