@@ -7,7 +7,6 @@ import com.mung.mung.common.exception.custom.RoomAlreadyExistsException;
 import com.mung.mung.common.exception.custom.RoomNotExistException;
 import com.mung.mung.db.entity.Game;
 import com.mung.mung.db.entity.GameRoom;
-import com.mung.mung.db.entity.Player;
 import com.mung.mung.db.repository.GameRepository;
 import com.mung.mung.db.repository.GameRoomRepository;
 import com.mung.mung.db.repository.PlayerRepository;
@@ -45,7 +44,6 @@ public class GameRoomService {
         ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
 
-        System.out.println(roomId);
         GameRoom gameRoom = GameRoom.builder()
                 .roomId(roomId)
                 .roomPw(gameRoomCreateReq.getRoomPw())
@@ -53,34 +51,6 @@ public class GameRoomService {
                 .startTime(seoulTime.toLocalDateTime())
                 .build();
         gameRoomRepository.save(gameRoom);
-    }
-
-//    @Transactional
-//    public boolean isPlayerExists(String roomId, String playerNickname){
-//        // DB에서 Player가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
-//
-//        Player existingPlayer = playerRepository.findByPlayerId(playerId);
-//        if (existingPlayer == null) {
-//            throw new PlayerNotExistException();
-//        }
-//
-//        return true;
-//    }
-
-    @Transactional
-    public Player returnPlayer(String roomId, String playerNickname) {
-        // DB에서 Player가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
-        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
-        List<Player> players = gameRoom.getPlayers();
-        if (players.isEmpty()) {
-            throw new PlayerNotExistException();
-        }
-        for (Player player : players) {
-            if (player.getPlayerNickname().equals(playerNickname)) {
-                return player;
-            }
-        }
-        throw new PlayerNotExistException(); // 해당하는 플레이어가 없으면 에러
     }
 
     @Transactional
