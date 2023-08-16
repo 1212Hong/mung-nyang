@@ -10,7 +10,6 @@ import {
     LineItem,
     RankItem,
     NameItem,
-    UpItem,
     ScoreItem,
     TitleItem,
     SetItem,
@@ -31,7 +30,7 @@ const ScoreTotal = () => {
     const result = useSelector((state) => state.game.result);
     console.log(result);
     const setCnt = useSelector((state) => state.game.setCnt);
-    const set = useSelector((state) => state.game.setId);
+    const set = useSelector((state) => state.game.curSetCnt);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const [scoreData, setScoreData] = useState({});
     const openvidu = useSelector((state) => state.openvidu);
@@ -44,36 +43,32 @@ const ScoreTotal = () => {
     console.log(userlist);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            score(roomId)
-                .then((response) => {
-                    setScoreData(response.data);
-                    console.log(scoreData);
-                })
-                .catch((error) => {
-                    console.error("Error fetching score:", error);
-                });
-            // signal 받기
-            session.on("signal:startDance", (event) => {
-                console.log(event.data);
-                dispatch(changePhase(event.data));
+        dispatch(gameActions.updateCurSetCnt(set + 1));
+        score(roomId)
+            .then((response) => {
+                setScoreData(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching score:", error);
             });
-            session.on("signal:startQuiz", (event) => {
-                console.log(event.data);
-                dispatch(changePhase(event.data));
-            });
+        // signal 받기
+        session.on("signal:startDance", (event) => {
+            console.log(event.data);
+            dispatch(changePhase(event.data));
         });
-        return () => clearTimeout(timer);
+        session.on("signal:startQuiz", (event) => {
+            console.log(event.data);
+            dispatch(changePhase(event.data));
+        });
     }, []);
     const information = [];
-    const beforeScore = useSelector((state) => state.game.score);
-    console.log(beforeScore);
+
     for (let i = 0; i < userlist.length; i++) {
         const username = userlist[i];
         console.log(username);
         const newEntry = {
             username,
-            // upscore: scoreData[username] - beforeScore[username],
+
             score: scoreData[username],
         };
         information.push(newEntry);
@@ -93,7 +88,7 @@ const ScoreTotal = () => {
     };
     const signalQuiz = async () => {
         session.signal({
-            data: "Dance",
+            data: "Quiz",
             to: [],
             type: "startQuiz",
         });
@@ -101,12 +96,15 @@ const ScoreTotal = () => {
 
     const Next = () => {
         dispatch(gameActions.saveScore(scoreData));
-        if (set === setCnt) {
+        console.log(set);
+        console.log(setCnt);
+        const setCntNumber = parseInt(setCnt);
+        if (set === setCntNumber) {
             signalDance();
             dispatch(changePhase("Dance"));
         } else {
             signalQuiz();
-            dispatch(changePhase("Dance"));
+            dispatch(changePhase("Quiz"));
         }
     };
 

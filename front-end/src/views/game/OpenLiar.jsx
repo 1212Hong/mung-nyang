@@ -22,10 +22,10 @@ const OpenLiar = () => {
     console.log(selectedAnswer);
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
-    const { session } = openvidu;
+    const { session, owner } = openvidu;
 
     useEffect(() => {
-        const timer = setTimeout(async () => {
+        const getRes = async () => {
             try {
                 const response = await Result(
                     setId,
@@ -42,12 +42,22 @@ const OpenLiar = () => {
                 } else if (result === "LiarWin_NotLiar") {
                     dispatch(gameActions.updateResult("라이어 승리"));
                 }
+
+                const signalResult = async () => {
+                    session.signal({
+                        data: result,
+                        to: [],
+                        type: "getresult",
+                    });
+                };
+                signalResult();
+
                 await deleteLiar(setId);
             } catch (error) {
                 console.error(error);
             }
-        }, []);
-        return () => clearTimeout(timer);
+        };
+        owner && getRes();
     }, []);
 
     useEffect(() => {

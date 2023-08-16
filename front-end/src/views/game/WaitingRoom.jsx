@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, forwardRef } from "react";
 import Button from "../../components/Button";
+import mainBgm from "../../assets/audio/mainBgm.wav";
 import { ReactComponent as LinkIcon } from "../../assets/img/link_image.svg";
 import { ReactComponent as CaptureIcon } from "../../assets/img/capture_image.svg";
 import { ReactComponent as DogFootIcon } from "../../assets/img/dog_foot.svg";
@@ -150,13 +151,33 @@ function WaitingRoom() {
     };
     // 카카오톡공유 코드종료
 
+    const audioRef = useRef(null);
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = 0.2;
+        }
+    }, []);
     function toggleVolume() {
+        const audioElement = audioRef.current;
+
+        if (audioElement) {
+            if (isMuted) {
+                audioElement.volume = 0.2;
+                audioElement.muted = false;
+            } else {
+                audioElement.muted = true;
+            }
+        }
+
         setIsMuted((prevState) => !prevState);
     }
     console.log(openvidu.messageList.length);
 
     return (
         <Container className="waiting-container">
+            <audio ref={audioRef} autoPlay loop>
+                <source src={mainBgm} type="audio/wav" />
+            </audio>
             <Leftbox>
                 <VideoboxGrid className="videos-grid">
                     {publisher && (
