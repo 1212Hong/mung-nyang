@@ -217,7 +217,7 @@ const Game = () => {
 
                 newSession.on("signal:descIndex", (event) => {
                     console.log(event.data);
-
+                    console.log(newSession.streamManagers);
                     const desc = newSession.streamManagers.find(
                         (streamManager) =>
                             streamManager.stream.connection.data === event.data,
