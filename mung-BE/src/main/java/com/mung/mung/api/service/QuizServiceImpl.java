@@ -31,6 +31,8 @@ public class QuizServiceImpl implements QuizService {
     private final GameRepository gameRepository;
     private final GameSetRepository gameSetRepository;
     private final WordRepository wordRepository;
+    private final Map<String, Set<String>> positiveQuizByRoom = new ConcurrentHashMap<>();
+    private final Map<String, Set<String>> negativeQuizByRoom = new ConcurrentHashMap<>();
 
     @Override
     public QuizStartRes startQuiz(Long gameId) {
@@ -50,9 +52,6 @@ public class QuizServiceImpl implements QuizService {
                 .quiz(quiz)
                 .build();
     }
-
-    private final Map<String, Set<String>> positiveQuizByRoom = new ConcurrentHashMap<>();
-    private final Map<String, Set<String>> negativeQuizByRoom = new ConcurrentHashMap<>();
 
     public void submitPositiveQuiz(QuizCountReq quizCountReq) {
         String roomId = quizCountReq.getRoomId();
@@ -164,8 +163,9 @@ public class QuizServiceImpl implements QuizService {
         if (game == null) {
             throw new GameNotExistException();
         }
-        // game curSet+1
-        game.updateCurSet();
+        Long updateQuiz = (long) randomQuiz();
+        // game curSet+1, 퀴즈 업데이트
+        game.updateCurSetAndQuiz(updateQuiz);
 
         // GameSet 생성
         GameSet gameSet = GameSet.builder()
@@ -191,6 +191,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public QuizPlayersWordRes getPlayerWord(Long setId, String playerNick) {
         GameSet curSet = gameSetRepository.findBySetId(setId);
+        log.info("닉네임 한글 확인 decode 유무 : {}", playerNick);
 
         if (curSet == null) {
             throw new SetNotExistException();
@@ -214,6 +215,18 @@ public class QuizServiceImpl implements QuizService {
         log.info("Quiz 투표 정보 삭제 : {}", roomId);
         positiveQuizByRoom.remove(roomId);
         negativeQuizByRoom.remove(roomId);
+    }
+
+    // Set 가 여러개일 경우 Game 테이블의 Quiz 를 바꿔줘야함
+    private int randomQuiz() {
+
+        List<Quiz> quizList = quizRepository.findAll();
+
+        if (quizList.isEmpty()) {
+            throw new QuizNotFoundException();
+        }
+
+        return ThreadLocalRandom.current().nextInt(quizList.size()) + 1;
     }
 
 

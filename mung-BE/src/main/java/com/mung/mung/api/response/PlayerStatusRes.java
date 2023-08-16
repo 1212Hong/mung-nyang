@@ -1,6 +1,7 @@
 package com.mung.mung.api.response;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 public class PlayerStatusRes {
@@ -10,12 +11,13 @@ public class PlayerStatusRes {
     private String playerNickname;
     private int playerScore;
     private boolean owner;
+
     @Builder
-    public PlayerStatusRes(long playerId, String roomId, String playerNickname, int playerScore, boolean owner){
-        this.playerId=playerId;
-        this.roomId=roomId;
-        this.playerNickname=playerNickname;
-        this.playerScore=playerScore;
+    public PlayerStatusRes(long playerId, String roomId, String playerNickname, int playerScore, boolean owner) {
+        this.playerId = playerId;
+        this.roomId = roomId;
+        this.playerNickname = playerNickname;
+        this.playerScore = playerScore;
         this.owner = owner;
     }
 }

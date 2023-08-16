@@ -6,8 +6,6 @@ import com.mung.mung.api.response.PlayerStatusRes;
 import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.NicknameService;
 import com.mung.mung.api.service.PlayerService;
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,16 +26,15 @@ public class PlayerController {
     @PostMapping("/join")
     public ResponseEntity<PlayerStatusRes> joinGameRoom(@RequestBody PlayerJoinReq playerJoinReq) {
         // player정보를 DB에 저장
-        log.info("playerJoinReq : {}",playerJoinReq);
+        log.info("playerJoinReq : {}", playerJoinReq);
         boolean ownerCheck = playerService.joinRoom(playerJoinReq);
 
         // 저장 후 조회 해 Id를 보내 줌
-        String playerNickname=playerJoinReq.getPlayerNickname();
+        String playerNickname = playerJoinReq.getPlayerNickname();
         String roomId = playerJoinReq.getRoomId();
-        long playerId= playerService.GetPlayerId(playerNickname, roomId);
+        long playerId = playerService.GetPlayerId(playerNickname, roomId);
         //owner 추가해야함
-//        System.out.println(playerService.getPlayerStatus(playerId, playerNickname, roomId, ownerCheck));
-        return new ResponseEntity<>(playerService.getPlayerStatus(playerId, playerNickname, roomId, ownerCheck),HttpStatus.OK);
+        return new ResponseEntity<>(playerService.getPlayerStatus(playerId, playerNickname, roomId, ownerCheck), HttpStatus.OK);
     }
 
     // 유저에게 랜덤으로 닉네임을 주기.
@@ -47,15 +44,15 @@ public class PlayerController {
         // throw처리 내부에 잇음
         gameRoomService.isRoomExists(roomId);
         // 호출 여러번 하면 안됨 => 숫자 증가가 1이 아니라 2가 돼 안나오는 경우가 생길 수 있음
-        return new ResponseEntity<>(nicknameService.giveNickname(roomId),HttpStatus.OK);
+        return new ResponseEntity<>(nicknameService.giveNickname(roomId), HttpStatus.OK);
         // 저장 후 조회 해 Id를 보내 줌
     }
 
     @PutMapping("/owner") // Leave처리를 이미 했으므로 방장을 바꿔주기만 하면 됨
-    public ResponseEntity<String> changeOwner(@RequestBody RoomIdReq roomIdReq){
+    public ResponseEntity<String> changeOwner(@RequestBody RoomIdReq roomIdReq) {
         // return값이 String인 player Nickname임
-        String returnAns=playerService.changeOwner(roomIdReq);
-        return new ResponseEntity<>(returnAns,HttpStatus.OK);
+        String returnAns = playerService.changeOwner(roomIdReq);
+        return new ResponseEntity<>(returnAns, HttpStatus.OK);
     }
 
 }
