@@ -19,12 +19,12 @@ import {
 import { getPenaltyUser, getDanceUrl } from "../../hooks/dance";
 import { gameActions } from "../../store/gameSlice";
 import { changePhase } from "../../store/phaseSlice";
-import { InitializedData } from "../../api/game";
+import { InitializedData, RecordStart, RecordStop } from "../../api/game";
 
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { penaltyUser, passCnt } = game;
+    const { penaltyUser, passCnt, gameId } = game;
     const { session, owner, mySessionId, myUserName } = openvidu;
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
@@ -84,11 +84,19 @@ function Dance() {
             store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
         };
         fetchPenaltyUser(roomId);
+        const startRecord = async (roomId, gameId) => {
+            await RecordStart(roomId, gameId);
+        };
+        owner && startRecord(roomId, gameId);
     }, []);
 
     useEffect(() => {
         console.log("비교 :", session.streamManagers.length - 1, passCnt);
         if (Number(passCnt) === session.streamManagers.length - 1) {
+            const stopRecord = async (roomId, gameId) => {
+                await RecordStop(roomId, gameId);
+            };
+            owner && stopRecord(roomId, gameId);
             passVoteEnd();
         }
         addCount(passCnt);
