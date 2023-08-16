@@ -58,6 +58,7 @@ function WordDescription() {
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUser, setDescUser] = useState();
     const [descIndex, setDescIndex] = useState(0);
+    const [curIndex, setCurIndex] = useState(0);
     const [streamKey, setStreamKey] = useState(0);
     const streams = session.streamManagers;
 
@@ -85,7 +86,12 @@ function WordDescription() {
             }),
         );
     };
-
+    const newOtherStreams = streams.filter(
+        (streamManager) => streamManager.stream.connection.data !== answerer,
+    );
+    const answererStream = streams.find(
+        (streamManager) => streamManager.stream.connection.data === answerer,
+    );
     // 초기 세팅
     useEffect(() => {
         const getFunc = async () => {
@@ -100,10 +106,7 @@ function WordDescription() {
         };
 
         getFunc();
-        const newOtherStreams = streams.filter(
-            (streamManager) =>
-                streamManager.stream.connection.data !== answerer,
-        );
+
         if (myUserName === answerer)
             newOtherStreams.map((item) => {
                 item.subscribeToAudio(false);
@@ -113,13 +116,14 @@ function WordDescription() {
         console.log(otherUserStreams);
     }, []);
 
-    const answererStream = streams.find(
-        (streamManager) => streamManager.stream.connection.data === answerer,
-    );
-
     const getNextDescIndex = () => {
         if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
+            // newOtherStreams.map((item) => {
+            //     item.stream.connection.data === sortedArr[descIndex]
+            //         ? setCurIndex(indexOf(item))
+            //         : setCurIndex(curIndex);
+            // });
             console.log(mainStreamManager);
         } else dispatch(changePhase("QnA"));
     };
