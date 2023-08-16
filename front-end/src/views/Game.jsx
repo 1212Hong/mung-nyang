@@ -217,11 +217,33 @@ const Game = () => {
                     dispatch(changePhase("Desc"));
                 });
 
-                newSession.on("signal:startDupLiar", (event) => {
+                !owner &&
+                    newSession.on("signal:startDupLiar", (event) => {
+                        console.log(event.data);
+                        const dupList = event.data
+                            .split(",")
+                            .filter((str) => str.trim() !== "");
+                        dispatch(gameActions.updateDupLiars(dupList));
+
+                        dispatch(changePhase("DupLiar"));
+                    });
+                newSession.on("signal:noLiar", (event) => {
                     console.log(event.data);
-                    dispatch(gameActions.updateDupLiars(event.data));
-                    dispatch(changePhase("DupLiar"));
+                    dispatch(gameActions.updateResult(event.data));
+                    dispatch(changePhase("MidScore"));
                 });
+                !owner &&
+                    newSession.on("signal:getresult", (event) => {
+                        console.log(event.data);
+                        if (event.data === "LiarWin_Success") {
+                            dispatch(gameActions.updateResult("라이어 승리"));
+                        } else if (event.data === "LiarLose_Fail") {
+                            dispatch(gameActions.updateResult("시민 승리"));
+                        } else if (event.data === "LiarWin_NotLiar") {
+                            dispatch(gameActions.updateResult("라이어 승리"));
+                        }
+                        dispatch(changePhase("MidScore"));
+                    });
                 newSession.on("signal:VotedLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.saveLiar(event.data));

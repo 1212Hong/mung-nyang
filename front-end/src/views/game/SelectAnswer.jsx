@@ -26,6 +26,7 @@ const SelectAnswer = (props) => {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const { session } = openvidu;
+    const [answered, setAnswered] = useState(false);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -62,15 +63,15 @@ const SelectAnswer = (props) => {
             };
             signalSelectLiar();
             dispatch(changePhase("OpenLiar"));
-        }, 10000);
-        return () => {
-            clearTimeout(timer);
-        };
-    });
+        });
+        if (answered) {
+            timer();
+        }
+    }, [answered]);
 
     return (
         <Container>
-            <Timer time={time}></Timer>
+            <Timer time={time} onTimerEnd={() => setAnswered(true)}></Timer>
             <Head>{title}</Head>
             <Line>
                 {answerList.map((item, index) => (
