@@ -5,7 +5,7 @@ const initialState = {
     lastRound: false,
     gameVoteCnt: 0, // 게임 시작투표에 대한 누적 카운트
     setId: 0,
-    score: 0,
+    score: {},
     selectedLiar: "",
     answerer: "",
     word: "",
@@ -33,7 +33,7 @@ export const gameSlice = createSlice({
             state.setId = action.payload;
         },
         saveScore: (state, action) => {
-            state.score += action.payload;
+            state.score = action.payload;
         },
         saveLiar: (state, action) => {
             state.selectedLiar = action.payload;
@@ -52,9 +52,6 @@ export const gameSlice = createSlice({
         },
         saveCategory: (state, action) => {
             state.category = action.payload;
-        },
-        updateSelectedLiar: (state, action) => {
-            state.selectedLiar = action.payload;
         },
         updateSelectedAnswer: (state, action) => {
             state.selectedAnswer = action.payload;
