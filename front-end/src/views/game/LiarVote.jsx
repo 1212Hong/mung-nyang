@@ -27,7 +27,10 @@ const LiarVote = () => {
     const [answered, setAnswered] = useState(false);
     const [activeBox, setActiveBox] = useState(null);
     const [showLoading, setShowLoading] = useState(false);
-
+    const streams = session.streamManagers;
+    const newOtherStreams = streams.filter(
+        (streamManager) => streamManager.stream.connection.data !== answerer,
+    );
     const handleBoxClick = (name) => {
         setActiveBox(name === activeBox ? null : name);
     };
@@ -122,6 +125,10 @@ const LiarVote = () => {
     }, [answered, activeBox]);
 
     useEffect(() => {
+        if (myUserName === answerer)
+            newOtherStreams.map((item) => {
+                item.subscribeToAudio(false);
+            });
         const timer = setTimeout(() => {
             setShowNotification(false);
         }, 3000);
