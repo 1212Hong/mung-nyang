@@ -57,7 +57,6 @@ public class PlayerService {
         }
 
         // 플레이어 인원 저장
-        System.out.println(playerJoinReq);
         Player player = Player.builder()
                 .playerNickname(playerJoinReq.getPlayerNickname())
                 .gameRoom(gameRoom)

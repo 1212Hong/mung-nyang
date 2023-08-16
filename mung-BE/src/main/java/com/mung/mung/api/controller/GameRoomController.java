@@ -136,7 +136,6 @@ public class GameRoomController {
         log.info("roomId info : {}", roomId);
 
         // DB에서 playerData 삭제하기 전에 roomID, playerNickname으로 DB에 있는지 확인
-//        Player player=gameRoomService.returnPlayer(roomId, playerNickname);
         long playerId = playerService.GetPlayerId(playerNickname, roomId);
         // DB에서 playerData 삭제
         gameRoomService.leaveRoom(playerId);
