@@ -122,14 +122,6 @@ function WordDescription() {
                     type: "descIndex",
                 });
                 console.log(descUserNickname[descIndex]);
-                const desc = otherUserStreams.find(
-                    (streamManager) =>
-                        streamManager.stream.connection.data ===
-                        curDescUserNickname,
-                );
-                setDescStreamManager(desc);
-                console.log(descStreamManager);
-                dispatch(ovActions.saveMainStreamManager(desc));
             }
         };
         setSignal();
@@ -142,15 +134,15 @@ function WordDescription() {
         console.log(newOtherStreams);
 
         session.on("signal:descIndex", (event) => {
-            setCurDescUserNickname(event.data);
             console.log(event.data);
+            setCurDescUserNickname(event.data);
             const desc = otherUserStreams.find(
                 (streamManager) =>
-                    streamManager.stream.connection.data ===
-                    curDescUserNickname,
+                    streamManager.stream.connection.data === event.data,
             );
+            console.log(desc);
             setDescStreamManager(desc);
-            console.log(descStreamManager); // undefined
+            // console.log(descStreamManager); // undefined
             dispatch(ovActions.saveMainStreamManager(desc));
         });
     }, [descIndex]);
