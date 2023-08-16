@@ -1,10 +1,6 @@
 package com.mung.mung.db.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -18,7 +14,7 @@ public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long playerId;
+    private Long playerId;
 
     private String playerNickname;
 
@@ -34,8 +30,8 @@ public class Player {
     @JoinColumn(name = "room_id")
     private GameRoom gameRoom;
 
-    public void changeScore(int newScore){
-        this.playerScore=newScore;
+    public void changeScore(int newScore) {
+        this.playerScore = newScore;
     }
 
 
