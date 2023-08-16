@@ -88,7 +88,7 @@ const ScoreTotal = () => {
     };
     const signalQuiz = async () => {
         session.signal({
-            data: "Dance",
+            data: "Quiz",
             to: [],
             type: "startQuiz",
         });
@@ -101,7 +101,7 @@ const ScoreTotal = () => {
             dispatch(changePhase("Dance"));
         } else {
             signalQuiz();
-            dispatch(changePhase("Dance"));
+            dispatch(changePhase("Quiz"));
         }
     };
 

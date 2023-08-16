@@ -215,10 +215,21 @@ const Game = () => {
                     dispatch(changePhase("Desc"));
                 });
 
-                newSession.on("signal:startDupLiar", (event) => {
+                !owner &&
+                    newSession.on("signal:startDupLiar", (event) => {
+                        console.log(event.data);
+                        const dupList = event.data
+                            .split(",")
+                            .filter((str) => str.trim() !== "");
+                        // dispatch(gameActions.updateDupLiars(event.data));
+                        dispatch(gameActions.updateDupLiars(dupList));
+
+                        dispatch(changePhase("DupLiar"));
+                    });
+                newSession.on("signal:noLiar", (event) => {
                     console.log(event.data);
-                    dispatch(gameActions.updateDupLiars(event.data));
-                    dispatch(changePhase("DupLiar"));
+                    dispatch(gameActions.updateResult(event.data));
+                    dispatch(changePhase("MidScore"));
                 });
                 newSession.on("signal:VotedLiar", (event) => {
                     console.log(event.data);
