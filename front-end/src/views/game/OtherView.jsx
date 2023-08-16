@@ -19,6 +19,7 @@ const OtherView = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session } = openvidu;
     const pickedLiar = useSelector((state) => state.game.selectedLiar);
+    console.log(pickedLiar);
 
     useEffect(() => {
         const timer = setTimeout(() => {

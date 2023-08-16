@@ -14,12 +14,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 
-const DupLiar = () => {
+const LiarVote = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session, publisher, owner } = openvidu;
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
-    const text = "중복 투표가 나왔습니다. 라이어를 다시 선택하세요.";
+    const text = "라이어를 선택하세요.";
     const imgSrc = foot;
     const dispatch = useDispatch();
     const roomId = useSelector((state) => state.openvidu.mySessionId);
@@ -27,8 +27,6 @@ const DupLiar = () => {
     const [answered, setAnswered] = useState(false);
     const [activeBox, setActiveBox] = useState(null);
     const [next, setNext] = useState(false);
-    const updatedDupLiars = useSelector((state) => state.game.dupLiars);
-    console.log(updatedDupLiars);
 
     const handleBoxClick = (name) => {
         setActiveBox(name === activeBox ? null : name);
@@ -41,13 +39,13 @@ const DupLiar = () => {
 
                 console.log(setId);
                 console.log(response);
+                setNext(true);
             } catch (error) {
                 console.error("Error", error);
             }
         };
         if (answered) {
             handleSubmission();
-            setNext(true);
         }
     }, [answered]);
 
@@ -56,23 +54,43 @@ const DupLiar = () => {
             try {
                 const selectedLiarResponse = await selectedLiar(setId);
                 console.log(selectedLiarResponse);
-                const mostVotedNickname =
-                    selectedLiarResponse.data.mostVotedNicknames[0];
-                console.log(mostVotedNickname);
-                dispatch(gameActions.saveLiar(mostVotedNickname));
-                const signalLiard = async () => {
-                    session.signal({
-                        data: mostVotedNickname,
-                        to: [],
-                        type: "dupVotedLiar",
-                    });
-                };
-                signalLiard();
+                if (selectedLiarResponse.data.gameProcessType === "LiarVote") {
+                    const dupliars =
+                        selectedLiarResponse.data.mostVotedNicknames;
+                    console.log(dupliars);
+                    dispatch(gameActions.updateDupLiars(dupliars));
+                    const signalDupLiar = async () => {
+                        session.signal({
+                            data: dupliars,
+                            to: [],
+                            type: "startDupLiar",
+                        });
+                    };
+                    signalDupLiar();
+                    dispatch(changePhase("DupLiar"));
+                } else if (
+                    selectedLiarResponse.data.gameProcessType === "SelectAns"
+                ) {
+                    const mostVotedNickname =
+                        selectedLiarResponse.data.mostVotedNicknames[0];
+                    console.log(mostVotedNickname);
+                    dispatch(gameActions.saveLiar(mostVotedNickname));
+                    const signalVotedLiar = async () => {
+                        session.signal({
+                            data: mostVotedNickname,
+                            to: [],
+                            type: "VotedLiar",
+                        });
+                    };
+                    signalVotedLiar();
 
-                if (publisher.stream.connection.data === mostVotedNickname) {
-                    dispatch(changePhase("SelectAns"));
-                } else {
-                    dispatch(changePhase("OtherView"));
+                    if (
+                        publisher.stream.connection.data === mostVotedNickname
+                    ) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
                 }
             } catch (error) {
                 console.error("Error", error);
@@ -99,17 +117,44 @@ const DupLiar = () => {
             <Box>
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
-                        const nickname = subscriber.stream.connection.data;
-                        const isDisplayed = updatedDupLiars.includes(nickname);
+                        if (subscriber.stream.connection.data === answerer) {
+                            return (
+                                <React.Fragment key={i}>
+                                    <Item>
+                                        정답자 : {answerer}
+                                        <VideoComponent
+                                            width="350px"
+                                            height="320px"
+                                            streamManager={subscriber}
+                                        />
+                                    </Item>
+                                </React.Fragment>
+                            );
+                        }
+                        return null;
+                    })}
 
-                        if (isDisplayed) {
+                {session.streamManagers &&
+                    session.streamManagers.map((subscriber, i) => {
+                        if (subscriber.stream.connection.data !== answerer) {
                             return (
                                 <React.Fragment key={i}>
                                     <Item
-                                        onClick={() => handleBoxClick(nickname)}
+                                        onClick={() =>
+                                            handleBoxClick(
+                                                session.streamManagers[i].stream
+                                                    .connection.data,
+                                            )
+                                        }
                                     >
                                         <ImageOverlay
-                                            active={activeBox === nickname}
+                                            active={
+                                                activeBox ===
+                                                subscriber.stream.connection
+                                                    .data
+                                                    ? true
+                                                    : false
+                                            }
                                         >
                                             <img
                                                 src={imgSrc}
@@ -126,28 +171,6 @@ const DupLiar = () => {
                                 </React.Fragment>
                             );
                         }
-
-                        return null;
-                    })}
-                {session.streamManagers &&
-                    session.streamManagers.map((subscriber, i) => {
-                        const nickname = subscriber.stream.connection.data;
-                        const isDisplayed = updatedDupLiars.includes(nickname);
-
-                        if (!isDisplayed) {
-                            return (
-                                <React.Fragment key={i}>
-                                    <Item>
-                                        <VideoComponent
-                                            width="350px"
-                                            height="320px"
-                                            streamManager={subscriber}
-                                        />
-                                    </Item>
-                                </React.Fragment>
-                            );
-                        }
-
                         return null;
                     })}
             </Box>
@@ -158,4 +181,4 @@ const DupLiar = () => {
     );
 };
 
-export default DupLiar;
+export default LiarVote;
