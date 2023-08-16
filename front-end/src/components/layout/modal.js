@@ -76,7 +76,13 @@ const ModalViewResultBox = styled.div`
     width: 30%;
     margin: 0 5px;
     display: flex;
+    justify-content: center;
 `;
+
+const FootImgDiv = styled.div`
+    text-align: center;
+`;
+
 const ModalViewButtonDiv = styled.div`
     color: black;
     display: flex;
@@ -140,4 +146,5 @@ export {
     AnswerModalView,
     AnswerModalInput,
     AnswerModalViewDiv,
+    FootImgDiv,
 };

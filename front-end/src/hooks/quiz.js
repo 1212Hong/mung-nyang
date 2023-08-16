@@ -22,7 +22,7 @@ export const submitAnswer = async (roomId, myUserName, userChoice) => {
     try {
         if (userChoice === "positive") {
             await QuizAnswerPositive(roomId, myUserName);
-            // console.log(QuizAnswerPositive);
+
             console.log(roomId, myUserName);
         } else if (userChoice === "negative") {
             await QuizAnswerNegative(roomId, myUserName);
@@ -34,7 +34,6 @@ export const submitAnswer = async (roomId, myUserName, userChoice) => {
 
 export const fetchQuizResult = async (roomId) => {
     try {
-        console.log("테스트 :", roomId);
         const quizResultresponse = await QuizResult(roomId);
         console.log("테스트 결과", quizResultresponse.data);
         return quizResultresponse.data;

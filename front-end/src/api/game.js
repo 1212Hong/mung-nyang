@@ -91,7 +91,7 @@ export const QuizAnswerPositive = async (roomId, playerNickname) => {
     return API.post(`/api/quiz/positive`, {
         roomId: roomId,
         playerNickname: playerNickname,
-    });
+    }).then((data) => console.log(data));
 };
 
 // 퀴즈에서 사용자가 오른쪽 정답을 선택한 경우
@@ -99,7 +99,7 @@ export const QuizAnswerNegative = async (roomId, playerNickname) => {
     return API.post(`/api/quiz/negative`, {
         roomId: roomId,
         playerNickname: playerNickname,
-    });
+    }).then((data) => console.log(data));
 };
 
 // 퀴즈의 결과(0 : 왼쪽, 1 : 오른쪽, 2: 무승부)와 정답자를 백에서 보내줌
