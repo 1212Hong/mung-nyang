@@ -57,9 +57,7 @@ function WordDescription() {
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUser, setDescUser] = useState();
-    const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
-    const [timerKey, setTimerKey] = useState(0);
     const streams = session.streamManagers;
     console.log(streams);
 
@@ -74,6 +72,7 @@ function WordDescription() {
     const othersNickname = nicknameArr.filter((data) => data !== answerer);
     // 리스트 정렬
     const sortedArr = othersNickname.sort();
+    sortedArr.unshift("");
     console.log(sortedArr);
 
     const openAnswerModal = () => {
@@ -106,19 +105,17 @@ function WordDescription() {
 
         setOtherUserStreams(newOtherStreams);
         console.log(newOtherStreams);
+        console.log(otherUserStreams);
     }, []);
 
     const answererStream = streams.find(
         (streamManager) => streamManager.stream.connection.data === answerer,
     );
 
-    const startTimer = () => {
-        setTimerKey((prevKey) => prevKey + 1);
-    };
     const getNextDescIndex = () => {
-        if (descIndex < streams.length - 1) {
+        if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
-            startTimer();
+            console.log(mainStreamManager);
         } else dispatch(changePhase("QnA"));
     };
 
@@ -127,8 +124,8 @@ function WordDescription() {
             (streamManager) =>
                 streamManager.stream.connection.data === sortedArr[descIndex],
         );
-        setCurDescUserNickname(sortedArr[descIndex]);
-        setDescUser(rotateStream);
+        dispatch(ovActions.saveMainStreamManager(rotateStream));
+        console.log(mainStreamManager);
     }, [descIndex]);
 
     // useEffect(() => {}, [timerKey]);
@@ -146,12 +143,12 @@ function WordDescription() {
             <Timer key={descIndex} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
                 <CurParticipants width={"100%"}>
-                    {curDescUserNickname ? (
+                    {sortedArr[descIndex] ? (
                         <>
-                            <SmallText>{curDescUserNickname}</SmallText>
+                            <SmallText>{sortedArr[descIndex]}</SmallText>
                             {mainStreamManager && (
                                 <VideoComponent
-                                    streamManager={descUser}
+                                    streamManager={mainStreamManager}
                                     width={"80%"}
                                     height={"80%"}
                                 />
@@ -233,4 +230,4 @@ function WordDescription() {
     );
 }
 
-export default WordDescription;
+export default React.memo(WordDescription);
