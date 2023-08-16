@@ -13,7 +13,6 @@ import com.mung.mung.db.repository.GameRoomRepository;
 import com.mung.mung.db.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +31,7 @@ public class GameRoomService {
     private final GameRepository gameRepository;
 
     @Transactional
-    public void makeRoom(String roomId, final GameRoomCreateReq gameRoomCreateReq){
+    public void makeRoom(String roomId, final GameRoomCreateReq gameRoomCreateReq) {
         // DB에서 roomId가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
         if (roomId == null || roomId.isEmpty()) {
             throw new RoomNotExistException();
@@ -41,7 +40,7 @@ public class GameRoomService {
         if (existingGameRoom != null) {
             // 이미 해당 roomId가 존재하는 경우
             throw new RoomAlreadyExistsException();
-        } 
+        }
         // 존재하지 않으면 roomId로 방 생성
         ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
@@ -57,75 +56,75 @@ public class GameRoomService {
     }
 
     @Transactional
-    public boolean isPlayerExists(long playerId){
+    public boolean isPlayerExists(long playerId) {
         // DB에서 Player가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
         Player existingPlayer = playerRepository.findByPlayerId(playerId);
         if (existingPlayer == null) {
             throw new PlayerNotExistException();
-        } 
+        }
 
         return true;
     }
 
     @Transactional
-    public boolean isRoomExists(String roomId){
+    public boolean isRoomExists(String roomId) {
         // DB에서 roomId가 있는지 검색 후 없으면 아래처럼 데이터 저장 후 생성, 있으면 return false
         GameRoom existingRoom = gameRoomRepository.findByRoomId(roomId);
         if (existingRoom == null) {
             // 방이 없으면
             throw new RoomNotExistException();
-        } 
+        }
         return true;
-        
+
     }
 
     @Transactional
-    public String getRoomStatus(String roomId){
+    public String getRoomStatus(String roomId) {
         // roomStatus 반환
-       GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
-       if (gameRoom == null){
-           throw new RoomNotExistException();
-       }
-       return gameRoom.getStatus();
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
+        if (gameRoom == null) {
+            throw new RoomNotExistException();
+        }
+        return gameRoom.getStatus();
     }
 
 
     @Transactional
     public void leaveRoom(long playerId) {
-        if (playerRepository.findByPlayerId(playerId) == null){
+        if (playerRepository.findByPlayerId(playerId) == null) {
             throw new PlayerNotExistException();
         }
-        log.info("player info : {}",playerId);
+        log.info("player info : {}", playerId);
         playerRepository.deleteByPlayerId(playerId);
     }
 
     @Transactional
-    public long playersCnt(String roomId){
-        GameRoom gameRoom=gameRoomRepository.findByRoomId(roomId);
+    public long playersCnt(String roomId) {
+        GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         return gameRoom.getPlayers().size();
     }
 
     @Transactional
-    public void deleteRoom(String roomId){
-        if (gameRoomRepository.findByRoomId(roomId) == null){
+    public void deleteRoom(String roomId) {
+        if (gameRoomRepository.findByRoomId(roomId) == null) {
             throw new RoomNotExistException();
         }
         gameRoomRepository.deleteByRoomId(roomId);
     }
 
     @Transactional
-    public void roomInitialize(String roomId){
+    public void roomInitialize(String roomId) {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
-        if (gameRoom==null){
+        if (gameRoom == null) {
             throw new RoomNotExistException();
         }
         gameRoom.updateStatus("waiting");
     }
 
     @Transactional // Video URL을 game에 저장
-    public void saveRecording(long gameId, String newVideoURL){
+    public void saveRecording(long gameId, String newVideoURL) {
         Game game = gameRepository.findByGameId(gameId);
-        if (game == null){
+        if (game == null) {
             throw new GameNotExistException();
         }
         game.updateGameVideoUrl(newVideoURL);
@@ -133,7 +132,7 @@ public class GameRoomService {
     }
 
     @Transactional
-    public List<String> returnRecording(String roomId){
+    public List<String> returnRecording(String roomId) {
         GameRoom gameRoom = gameRoomRepository.findByRoomId(roomId);
         List<String> recordingList = new ArrayList<String>();
         for (Game game : gameRoom.getGames()) {
