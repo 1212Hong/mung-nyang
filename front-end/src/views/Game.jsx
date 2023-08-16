@@ -19,6 +19,7 @@ import { closeModal, openModal } from "../store/modalSlice";
 import DupLiar from "./game/DupLiar";
 import QnAPage from "./game/QnAPage";
 import { changePhase } from "../store/phaseSlice";
+import FinAns from "./game/FinAns";
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -69,6 +70,7 @@ const PHASE_COMPONENTS = [
     },
     {
         type: PHASES.FinAns,
+        component: <FinAns />,
     },
     {
         type: PHASES.LiarVote,
@@ -228,11 +230,33 @@ const Game = () => {
                     dispatch(ovActions.saveMainStreamManager(desc));
                 });
 
-                newSession.on("signal:startDupLiar", (event) => {
+                !owner &&
+                    newSession.on("signal:startDupLiar", (event) => {
+                        console.log(event.data);
+                        const dupList = event.data
+                            .split(",")
+                            .filter((str) => str.trim() !== "");
+                        dispatch(gameActions.updateDupLiars(dupList));
+
+                        dispatch(changePhase("DupLiar"));
+                    });
+                newSession.on("signal:noLiar", (event) => {
                     console.log(event.data);
-                    dispatch(gameActions.updateDupLiars(event.data));
-                    dispatch(changePhase("DupLiar"));
+                    dispatch(gameActions.updateResult(event.data));
+                    dispatch(changePhase("MidScore"));
                 });
+                !owner &&
+                    newSession.on("signal:getresult", (event) => {
+                        console.log(event.data);
+                        if (event.data === "LiarWin_Success") {
+                            dispatch(gameActions.updateResult("라이어 승리"));
+                        } else if (event.data === "LiarLose_Fail") {
+                            dispatch(gameActions.updateResult("시민 승리"));
+                        } else if (event.data === "LiarWin_NotLiar") {
+                            dispatch(gameActions.updateResult("라이어 승리"));
+                        }
+                        dispatch(changePhase("MidScore"));
+                    });
                 newSession.on("signal:VotedLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.saveLiar(event.data));
@@ -250,6 +274,17 @@ const Game = () => {
                     } else {
                         dispatch(changePhase("OtherView"));
                     }
+                });
+
+                // 최종 정답 시그널 받기
+                session.on("signal:Pick to Liar", (e) => {
+                    console.log(e.data);
+                    dispatch(changePhase(e.data)); // 최종정답 api의 결과에 따라 페이즈 이동
+                    // 필요하다면 게임 결과도 저장해야함
+                });
+                session.on("signal:LiarLose", (e) => {
+                    console.log(e.data);
+                    dispatch(changePhase(e.data));
                 });
 
                 var devices = await OV.getDevices();
