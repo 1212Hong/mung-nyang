@@ -53,9 +53,6 @@ export const gameSlice = createSlice({
         saveCategory: (state, action) => {
             state.category = action.payload;
         },
-        updateSelectedLiar: (state, action) => {
-            state.selectedLiar = action.payload;
-        },
         updateSelectedAnswer: (state, action) => {
             state.selectedAnswer = action.payload;
         },

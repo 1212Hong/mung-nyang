@@ -209,6 +209,20 @@ const Game = () => {
                     dispatch(changePhase("Desc"));
                 });
 
+                newSession.on("signal:startDupLiar", (event) => {
+                    console.log(event.data);
+                    dispatch(changePhase("DupLiar"));
+                });
+                newSession.on("signal:startLiar", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.saveLiar(event.data));
+                    if (publisher.stream.connection.data === event.data) {
+                        dispatch(changePhase("SelectAns"));
+                    } else {
+                        dispatch(changePhase("OtherView"));
+                    }
+                });
+
                 var devices = await OV.getDevices();
 
                 var videoDevices = devices.filter(
