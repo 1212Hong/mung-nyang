@@ -33,6 +33,12 @@ const Home = () => {
         });
     };
 
+    const handleOnKeyPress = (e) => {
+        if (e.key === "Enter") {
+            view ? handleMakeRoom() : handleJoinRoom();
+        }
+    };
+
     const changeView = () => {
         setRoomInfo({ roomId: "", roomPw: "" });
         setView(!view);
@@ -90,6 +96,7 @@ const Home = () => {
                         type="password"
                         value={roomPw}
                         onChange={handleChange}
+                        onKeyPress={handleOnKeyPress}
                     />
                 </FormBox>
                 <ButtonBox>

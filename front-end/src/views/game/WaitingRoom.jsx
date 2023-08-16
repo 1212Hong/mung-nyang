@@ -108,6 +108,12 @@ function WaitingRoom() {
         userMessage.current.value = "";
     };
 
+    const handleOnKeyPress = (e) => {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+    };
+
     // 카카오톡공유 코드시작
     useEffect(() => {
         const script = document.createElement("script");
@@ -239,7 +245,12 @@ function WaitingRoom() {
                         <ChatItem ref={messageEndRef}></ChatItem>
                     </ChatBox>
                     <ChattingInputBox>
-                        <Input width="200px" height="15px" ref={userMessage} />
+                        <Input
+                            width="200px"
+                            height="15px"
+                            ref={userMessage}
+                            onKeyPress={handleOnKeyPress}
+                        />
                         <Button
                             type="icon"
                             background={`var(--white)`}
