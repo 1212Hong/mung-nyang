@@ -99,6 +99,11 @@ public class GameRoomService {
         playerRepository.deleteByPlayerId(playerId);
     }
 
+    @Transactional
+    public long playersCnt(String roomId){
+        GameRoom gameRoom=gameRoomRepository.findByRoomId(roomId);
+        return gameRoom.getPlayers().size();
+    }
 
     @Transactional
     public void deleteRoom(String roomId){
