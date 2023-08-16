@@ -20,6 +20,7 @@ import {
     ImgItem,
     ImgFrame,
     FrameBox,
+    RankItemFrame,
 } from "../../components/layout/scoreTotal";
 import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
@@ -28,6 +29,7 @@ import VideoComponent from "../../components/VideoComponent";
 import { AnswerItem } from "../../components/layout/otherView";
 import { SmallText } from "../../components/layout/common";
 import cat from "../../assets/img/scorecat.png";
+import { MainText, SubText } from "../../components/layout/common";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
@@ -134,41 +136,34 @@ const ScoreTotal = () => {
                 </Frame>
             </TitleBox>
             <RankBoxFrame>
-                <RankBox>
-                    <Border>
-                        <RankItem>Rank</RankItem>
-                        <NameItem>닉네임</NameItem>
-                        <ScoreItem>총 점수</ScoreItem>
-                    </Border>
-                    <FrameBox>
-                        <LineFrame>
-                            {sortedInformation.map((user, index) => (
-                                <LineItem key={index}>
-                                    {session.streamManagers.map((sub, i) =>
-                                        sub.stream.connection.data ===
-                                        user.username ? (
-                                            <React.Fragment key={i}>
-                                                <AnswerItem>
-                                                    <VideoComponent
-                                                        width="70px"
-                                                        height="70px"
-                                                        streamManager={sub}
-                                                    />
-                                                </AnswerItem>
-                                            </React.Fragment>
-                                        ) : null,
-                                    )}
-                                    <RankItem>{index + 1}등</RankItem>
-                                    <NameItem>{user.username}</NameItem>
-                                    <ScoreItem>{user.score}</ScoreItem>
-                                </LineItem>
-                            ))}
-                        </LineFrame>
-                    </FrameBox>
-                </RankBox>
-                <ImgFrame>
-                    <img src={cat} alt="" width={350} height={500} />
-                </ImgFrame>
+                {sortedInformation.map((user, index) => (
+                    <RankBox key={index}>
+                        {session.streamManagers.map((sub, i) =>
+                            sub.stream.connection.data === user.username ? (
+                                <React.Fragment key={i}>
+                                    <AnswerItem>
+                                        <VideoComponent
+                                            width="200px"
+                                            height="220px"
+                                            streamManager={sub}
+                                        />
+                                    </AnswerItem>
+                                </React.Fragment>
+                            ) : null,
+                        )}
+                        <RankItemFrame>
+                            <RankItem>
+                                <SubText>{index + 1}등</SubText>
+                            </RankItem>
+                            <NameItem>
+                                <SubText>{user.username}</SubText>
+                            </NameItem>
+                            <ScoreItem>
+                                <SubText>{user.score}점</SubText>
+                            </ScoreItem>
+                        </RankItemFrame>
+                    </RankBox>
+                ))}
             </RankBoxFrame>
         </Container>
     );
