@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 
 import com.mung.mung.api.request.*;
+import com.mung.mung.api.response.CreateRoomRes;
 import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.PlayerService;
 import com.mung.mung.common.exception.custom.*;
@@ -65,7 +66,7 @@ public class GameRoomController {
     }
 
     @PostMapping("/game-sessions")
-    public ResponseEntity<String> createRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
+    public ResponseEntity<?> createRoom(@RequestBody GameRoomCreateReq gameRoomCreateReq)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         // makeRoom에서 return으로 중복된 Id가 있는지 없는지를 판단 후 중복이라면 Data 생성 없이 false값을 return함
@@ -90,9 +91,12 @@ public class GameRoomController {
         SessionProperties properties = SessionProperties.fromJson(gameInfoMap).build();
 //        log.info("properties : ", String.valueOf(properties));
         Session session = openvidu.createSession(properties);
+        CreateRoomRes createRoomRes = CreateRoomRes.builder()
+                .roomId(roomId)
+                .roomPw(roomPw)
+                .build();
 //        log.info("session : ",String.valueOf(session));
-
-        return new ResponseEntity<>(roomId, HttpStatus.OK);
+        return new ResponseEntity<>(createRoomRes, HttpStatus.OK);
     }
 
 
