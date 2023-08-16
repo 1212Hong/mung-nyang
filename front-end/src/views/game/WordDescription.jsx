@@ -58,7 +58,9 @@ function WordDescription() {
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descUser, setDescUser] = useState();
     const [descIndex, setDescIndex] = useState(0);
+    const [streamKey, setStreamKey] = useState(0);
     const streams = session.streamManagers;
+
     console.log(streams);
 
     console.log("세션");
@@ -116,7 +118,8 @@ function WordDescription() {
         if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
             console.log(mainStreamManager);
-        } else dispatch(changePhase("QnA"));
+            // } else dispatch(changePhase("QnA"));
+        }
     };
 
     useEffect(() => {
@@ -125,9 +128,13 @@ function WordDescription() {
                 streamManager.stream.connection.data === sortedArr[descIndex],
         );
         dispatch(ovActions.saveMainStreamManager(rotateStream));
+        setStreamKey((prev) => prev + 1);
         console.log(mainStreamManager);
     }, [descIndex]);
 
+    // useEffect(() => {
+    //     console.log(mainStreamManager);
+    // }, [mainStreamManager]);
     // useEffect(() => {}, [timerKey]);
 
     useEffect(() => {
@@ -146,13 +153,16 @@ function WordDescription() {
                     {sortedArr[descIndex] ? (
                         <>
                             <SmallText>{sortedArr[descIndex]}</SmallText>
-                            {mainStreamManager && (
+                            {
                                 <VideoComponent
-                                    streamManager={mainStreamManager}
+                                    key={streamKey}
+                                    streamManager={
+                                        session.streamManagers[descIndex]
+                                    }
                                     width={"80%"}
                                     height={"80%"}
                                 />
-                            )}
+                            }
                         </>
                     ) : (
                         <ModalBackdrop>
