@@ -76,14 +76,14 @@ function QnAPage() {
         if (!lastRound) {
             dispatch(gameActions.updateLastRound());
             const timer = setTimeout(() => {
-                dispatch(changePhase("FinAns"));
+                dispatch(changePhase("Desc"));
             }, 10000);
             return () => {
                 clearTimeout(timer);
             };
         } else {
             const timer = setTimeout(() => {
-                dispatch(changePhase("LiarVote"));
+                dispatch(changePhase("FinAns"));
             }, 10000);
             return () => {
                 clearTimeout(timer);
