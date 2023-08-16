@@ -134,8 +134,9 @@ function WordDescription() {
                         curDescUserNickname,
                 );
                 setDescStreamManager(desc);
-                console.log(descStreamManager);
+                console.log(desc);
                 dispatch(ovActions.saveMainStreamManager(desc));
+                console.log(mainStreamManager);
             }
         };
         setSignal();
