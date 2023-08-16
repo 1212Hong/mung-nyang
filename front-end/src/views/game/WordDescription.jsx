@@ -128,21 +128,40 @@ function WordDescription() {
                     type: "descIndex",
                 });
                 console.log(descUserNickname[descIndex]);
-
                 const desc = otherUserStreams.find(
                     (streamManager) =>
                         streamManager.stream.connection.data ===
-                        descUserNickname[descIndex],
+                        curDescUserNickname,
                 );
                 setDescStreamManager(desc);
-                console.log(desc);
-
+                console.log(descStreamManager);
                 dispatch(ovActions.saveMainStreamManager(desc));
-                console.log(mainStreamManager);
             }
         };
         setSignal();
-        setCurDescUserNickname(descUserNickname[descIndex]);
+
+        const newOtherStreams = streams.filter(
+            (streamManager) =>
+                streamManager.stream.connection.data !== answerer,
+        );
+
+        setOtherUserStreams(newOtherStreams);
+        console.log(newOtherStreams);
+    }, [descIndex]);
+
+    useEffect(() => {
+        session.on("signal:descIndex", (event) => {
+            setCurDescUserNickname(event.data);
+            console.log(event.data);
+            const desc = otherUserStreams.find(
+                (streamManager) =>
+                    streamManager.stream.connection.data ===
+                    curDescUserNickname,
+            );
+            setDescStreamManager(desc);
+            console.log(descStreamManager); // undefined
+            dispatch(ovActions.saveMainStreamManager(desc));
+        });
     }, [timerKey]);
 
     useEffect(() => {
