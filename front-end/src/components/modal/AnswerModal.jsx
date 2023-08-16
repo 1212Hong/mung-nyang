@@ -1,38 +1,44 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import {
     ModalViewDescDiv,
     ModalViewResultDiv,
-    ModalViewResultBox,
-    ModalViewButtonDiv,
     AnswerModalViewDiv,
     AnswerModalView,
     AnswerModalInput,
 } from "../layout/modal";
 import Button from "../Button";
-import Timer from "../Timer";
-import { fetchEmergencyAnswerResponse } from "../../hooks/quiz";
+import { fetchEmergencyAnswerResponse } from "../../hooks/ans";
 import { useSelector, useDispatch } from "react-redux";
 import { closeModal } from "../../store/modalSlice";
 import { gameActions } from "../../store/gameSlice";
+
 const AnswerModal = (type) => {
     const [userAnswer, setUserAnswer] = useState("");
-    const [answerResult, setAnswerResult] = useState("");
-    const result = useSelector((state) => state.game.result);
+    const openvidu = useSelector((state) => state.openvidu);
+    const { mySessionId, myUserName, session } = openvidu;
+    const game = useSelector((state) => state.game);
+    const { setId, result } = game;
     const dispatch = useDispatch();
     console.log(type);
     const onChange = (e) => {
         setUserAnswer(e.target.value);
     };
-    const submitAnswer = async () => {
+    const submitAnswer = async (ans) => {
         await fetchEmergencyAnswerResponse(
-            1,
-            "테스트",
-            "테스트유저2",
-            "석류",
-        ).then((response) => {
-            dispatch(gameActions.saveResult(response));
+            setId,
+            mySessionId,
+            myUserName,
+            ans,
+        ).then((data) => {
+            dispatch(gameActions.saveResult(data));
         });
         dispatch(closeModal());
+        session.signal({
+            data: result,
+            to: [],
+            type: "emgAnswered", // 비상 정답 누르면 신호 보냄 -> 받는 거 체크 필요
+        });
+        console.log(result);
     };
     return (
         <AnswerModalView onClick={(e) => e.stopPropagation()}>
@@ -49,7 +55,9 @@ const AnswerModal = (type) => {
             </ModalViewResultDiv>
             <ModalViewResultDiv>
                 <AnswerModalViewDiv>
-                    <Button onClick={() => submitAnswer()}>제출</Button>
+                    <Button onClick={() => submitAnswer(userAnswer)}>
+                        제출
+                    </Button>
                     <Button
                         onClick={() => {
                             dispatch(closeModal());
