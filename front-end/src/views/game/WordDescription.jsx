@@ -56,12 +56,25 @@ function WordDescription() {
     const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
-    const [descUserNickname, setDescUserNickname] = useState([""]);
+    const [descUser, setDescUser] = useState();
     const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
     const [timerKey, setTimerKey] = useState(0);
     const streams = session.streamManagers;
     console.log(streams);
+
+    console.log("세션");
+    console.log(session);
+    // 사용자 닉네임 리스트
+    const nicknameArr = [];
+    session.streamManagers.map((item) => {
+        nicknameArr.push(item.stream.connection.data);
+    });
+    // answerer 제거
+    const othersNickname = nicknameArr.filter((data) => data !== answerer);
+    // 리스트 정렬
+    const sortedArr = othersNickname.sort();
+    console.log(sortedArr);
 
     const openAnswerModal = () => {
         dispatch(
@@ -86,7 +99,6 @@ function WordDescription() {
         };
 
         getFunc();
-
         const newOtherStreams = streams.filter(
             (streamManager) =>
                 streamManager.stream.connection.data !== answerer,
@@ -94,14 +106,6 @@ function WordDescription() {
 
         setOtherUserStreams(newOtherStreams);
         console.log(newOtherStreams);
-
-        if (owner) {
-            for (let i = 0; i < newOtherStreams.length; i++) {
-                let nickname = newOtherStreams[i].stream.connection.data;
-                console.log(nickname);
-                setDescUserNickname((prev) => [...prev, nickname]); // 정답자 이외의 닉네임 배열 갱신
-            }
-        }
     }, []);
 
     const answererStream = streams.find(
@@ -119,29 +123,12 @@ function WordDescription() {
     };
 
     useEffect(() => {
-        const setSignal = () => {
-            session.signal({
-                data: descUserNickname[descIndex],
-                to: [],
-                type: "descIndex",
-            });
-            console.log(descUserNickname[descIndex]);
-
-            const desc = otherUserStreams.find(
-                (streamManager) =>
-                    streamManager.stream.connection.data ===
-                    descUserNickname[descIndex],
-            );
-
-            console.log(desc);
-
-            dispatch(ovActions.saveMainStreamManager(desc));
-            console.log(mainStreamManager);
-        };
-        owner && setSignal();
-
-        setCurDescUserNickname(mainStreamManager.stream.connection.data);
-        console.log(curDescUserNickname);
+        const rotateStream = otherUserStreams.find(
+            (streamManager) =>
+                streamManager.stream.connection.data === sortedArr[descIndex],
+        );
+        setCurDescUserNickname(sortedArr[descIndex]);
+        setDescUser(rotateStream);
     }, [descIndex]);
 
     // useEffect(() => {}, [timerKey]);
@@ -164,7 +151,7 @@ function WordDescription() {
                             <SmallText>{curDescUserNickname}</SmallText>
                             {mainStreamManager && (
                                 <VideoComponent
-                                    streamManager={mainStreamManager}
+                                    streamManager={descUser}
                                     width={"80%"}
                                     height={"80%"}
                                 />
