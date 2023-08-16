@@ -119,7 +119,7 @@ const LiarVote = () => {
         if (answered) {
             handleVoteSubmit();
         }
-    }, [answered]);
+    }, [answered, activeBox]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
