@@ -60,9 +60,10 @@ const Button = (props) => {
         // -> url props로는 못줄거같고 특정 사운드 후보들 미리 저장해두고 바꿔쓰기는 가능
         padding,
         margin,
+        volume = 0.5,
         disabled,
     } = props;
-
+    audio.volume = volume;
     // const test = new Audio(audioURL && "");
 
     return (
