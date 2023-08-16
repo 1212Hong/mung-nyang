@@ -104,7 +104,10 @@ function WordDescription() {
             (streamManager) =>
                 streamManager.stream.connection.data !== answerer,
         );
-
+        if (myUserName === answerer)
+            newOtherStreams.map((item) => {
+                item.subscribeToAudio(false);
+            });
         setOtherUserStreams(newOtherStreams);
         console.log(newOtherStreams);
         console.log(otherUserStreams);
@@ -118,8 +121,7 @@ function WordDescription() {
         if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
             console.log(mainStreamManager);
-            // } else dispatch(changePhase("QnA"));
-        }
+        } else dispatch(changePhase("QnA"));
     };
 
     useEffect(() => {
@@ -161,6 +163,7 @@ function WordDescription() {
                                     }
                                     width={"80%"}
                                     height={"80%"}
+                                    volumn={-100}
                                 />
                             }
                         </>
