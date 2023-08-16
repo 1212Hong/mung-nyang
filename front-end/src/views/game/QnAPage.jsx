@@ -83,8 +83,8 @@ function QnAPage() {
             };
         } else {
             const timer = setTimeout(() => {
-                dispatch(changePhase("LiarVote"));
-            }, 1000);
+                dispatch(changePhase("FinAns"));
+            }, 10000);
             return () => {
                 clearTimeout(timer);
             };
