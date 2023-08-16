@@ -34,7 +34,6 @@ public class PlayerController {
         String roomId = playerJoinReq.getRoomId();
         long playerId = playerService.GetPlayerId(playerNickname, roomId);
         //owner 추가해야함
-//        System.out.println(playerService.getPlayerStatus(playerId, playerNickname, roomId, ownerCheck));
         return new ResponseEntity<>(playerService.getPlayerStatus(playerId, playerNickname, roomId, ownerCheck), HttpStatus.OK);
     }
 
