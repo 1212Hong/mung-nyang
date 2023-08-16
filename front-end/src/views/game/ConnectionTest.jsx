@@ -50,8 +50,14 @@ function ConnectionTest() {
     const handleChange = (e) => {
         setUserName(e.target.value);
     };
-    // 사용자 제스처와 연관된 플래그
+    // 사용자 제스처와 연관된 플래그 -> 이거 쓰나?
     const [userGesturePerformed, setUserGesturePerformed] = useState(false);
+
+    const handleOnKeyPress = (e) => {
+        if (e.key === "Enter") {
+            handleGoWaitingRoom();
+        }
+    };
 
     const handleGoWaitingRoom = async () => {
         console.log(mySessionId);
@@ -253,6 +259,7 @@ function ConnectionTest() {
                                         value={userName}
                                         disabled="disabled"
                                         onChange={handleChange}
+                                        onKeyPress={handleOnKeyPress}
                                     />
                                 </NickName>
                                 <Button
@@ -261,6 +268,7 @@ function ConnectionTest() {
                                     type="icon"
                                     background="dusty-pink-white"
                                 >
+                                    {/* 리롤버튼 css안깨지는거로 수정 필요 */}
                                     <RefreshIconO width="45" height="45" />
                                 </Button>
                                 <Button

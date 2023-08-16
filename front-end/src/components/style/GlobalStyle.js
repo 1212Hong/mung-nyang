@@ -35,8 +35,6 @@ const GlobalStyle = createGlobalStyle`
         font-size: 16px;
         color: var(--white);
         border-radius: 30px;
-        box-shadow: 3px 3px 3px var(--blacks);
-        transition-duration: 0.3s;
     }
 
     * {
