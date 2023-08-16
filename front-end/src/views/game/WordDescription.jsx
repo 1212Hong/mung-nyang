@@ -135,6 +135,7 @@ function WordDescription() {
                 );
                 setDescStreamManager(desc);
                 console.log(desc);
+                setCurDescUserNickname(descUserNickname[descIndex]);
                 dispatch(ovActions.saveMainStreamManager(desc));
                 console.log(mainStreamManager);
             }

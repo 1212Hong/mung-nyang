@@ -318,10 +318,6 @@ const Game = () => {
     }, []);
 
     const deleteSubscriber = async (streamManager) => {
-        console.log(streamManager.stream.connection.data);
-
-        await outRoom(mySessionId, streamManager.stream.connection.data);
-
         console.log("delete 호출");
         console.log(streamManager);
         console.log(subscribersList);
@@ -334,13 +330,14 @@ const Game = () => {
 
         console.log(subscribersList);
     };
-    const leaveSession = () => {
+    const leaveSession = async () => {
         const mySession = session;
         console.log(mySession);
         if (mySession) {
             mySession.disconnect();
         }
 
+        await outRoom(mySessionId, myUserName);
         // 모든 state 업데이트 초기화
         setOV(null);
         setSession(undefined);
