@@ -128,6 +128,7 @@ function WordDescription() {
                     type: "descIndex",
                 });
                 console.log(descUserNickname[descIndex]);
+                setCurDescUserNickname(descUserNickname[descIndex]);
                 const desc = otherUserStreams.find(
                     (streamManager) =>
                         streamManager.stream.connection.data ===
@@ -135,7 +136,7 @@ function WordDescription() {
                 );
                 setDescStreamManager(desc);
                 console.log(desc);
-                setCurDescUserNickname(descUserNickname[descIndex]);
+
                 dispatch(ovActions.saveMainStreamManager(desc));
                 console.log(mainStreamManager);
             }
