@@ -22,6 +22,7 @@ const VideoComponent = (props) => {
     // video on
     const startVideo = async () => {
         try {
+            console.log("로컬임?");
             const stream = await navigator.mediaDevices.getUserMedia(
                 constraints,
             );
