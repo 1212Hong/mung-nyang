@@ -60,7 +60,9 @@ function WordDescription() {
     const [descStreamManager, setDescStreamManager] = useState({});
     const [curDescUserNickname, setCurDescUserNickname] = useState("");
     const [descIndex, setDescIndex] = useState(0);
+    const [timerKey, setTimerKey] = useState(0);
     const streams = session.streamManagers;
+    console.log(streams);
 
     const openAnswerModal = () => {
         dispatch(
@@ -107,9 +109,13 @@ function WordDescription() {
         (streamManager) => streamManager.stream.connection.data === answerer,
     );
 
+    const startTimer = () => {
+        setTimerKey((prevKey) => prevKey + 1);
+    };
     const getNextDescIndex = () => {
         if (descIndex < streams.length - 1) {
             setDescIndex(descIndex + 1);
+            startTimer();
         } else dispatch(changePhase("QnA"));
     };
 
@@ -122,17 +128,18 @@ function WordDescription() {
                     type: "descIndex",
                 });
                 console.log(descUserNickname[descIndex]);
+                const desc = otherUserStreams.find(
+                    (streamManager) =>
+                        streamManager.stream.connection.data ===
+                        curDescUserNickname,
+                );
+                setDescStreamManager(desc);
+                console.log(descStreamManager);
+                dispatch(ovActions.saveMainStreamManager(desc));
             }
         };
         setSignal();
-        const newOtherStreams = streams.filter(
-            (streamManager) =>
-                streamManager.stream.connection.data !== answerer,
-        );
-
-        setOtherUserStreams(newOtherStreams);
-        console.log(newOtherStreams);
-    }, [descIndex]);
+    }, [timerKey]);
 
     useEffect(() => {
         // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
@@ -144,7 +151,7 @@ function WordDescription() {
 
     return (
         <Container>
-            <Timer key={descIndex} onTimerEnd={() => getNextDescIndex()} />
+            <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
                 <CurParticipants width={"100%"}>
                     {curDescUserNickname ? (
