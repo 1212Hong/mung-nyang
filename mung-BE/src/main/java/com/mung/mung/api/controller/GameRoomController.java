@@ -17,6 +17,7 @@ import com.mung.mung.api.service.GameRoomService;
 import com.mung.mung.api.service.PlayerService;
 import com.mung.mung.common.exception.custom.*;
 import com.mung.mung.db.entity.Game;
+import com.mung.mung.db.entity.GameRoom;
 import com.mung.mung.db.repository.GameRoomRepository;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +47,6 @@ public class GameRoomController {
 
     private OpenVidu openvidu;
 
-    // 방 관리
-    private Map<String, Integer> mapSessions = new ConcurrentHashMap<>();
-
     // 녹화중인지 확인
     private Map<String, Boolean> sessionRecordings = new ConcurrentHashMap<>();
     // 방 비밀번호 체크용이라서 HashMap사용, 동기화 필요 X
@@ -74,8 +72,6 @@ public class GameRoomController {
         gameRoomService.makeRoom(gameRoomCreateReq.getRoomId(), gameRoomCreateReq);
         String roomId=gameRoomCreateReq.getRoomId();
         String roomPw= gameRoomCreateReq.getRoomPw();
-
-        this.mapSessions.put(roomId, 0);
         // 방별로 Pw 저장해서 관리
         this.gameConnectionInfoMap.put(roomId,roomPw);
         String StringUUID=UUID.randomUUID().toString();
@@ -120,14 +116,6 @@ public class GameRoomController {
             throw new RoomPasswordWrongException();
         }
 
-
-        // 인원수가 LIMIT보다 작다면 인원수 1 추가
-        if (this.mapSessions.get(roomId)<LIMIT){
-            this.mapSessions.put(roomId, this.mapSessions.get(roomId) + 1);
-        } else{ // LIMIT이 됐다면 접근불가
-            throw new RoomAlreadyFullException();
-        }
-
         // session 생성을 위해 Map으로 변환
         Map<String, String> gameInfoMap = new HashMap<>();
         gameInfoMap.put("customSessionId", this.sessionRoomConvert.get(roomId));
@@ -150,24 +138,19 @@ public class GameRoomController {
             throw new RoomNotExistException();
         }
         log.info("roomId info : {}",roomId);
-        // 테스트 창에서 나가는 경우 인원은 +1 된 상태이므로 roomId만 일치하면 leave가 들어올 경우 인원을 뺀다.
-        if (this.mapSessions.get(roomId)==null){
-            throw new MapSessionNotExistException();
-        }
-        this.mapSessions.put(roomId, this.mapSessions.get(roomId) - 1);
 
         // DB에서 playerData 삭제하기 전에 playerId가 DB에 있는지 확인합니다.
-        if (!gameRoomService.isPlayerExists(playerId)) { // 있으면 true
+        if (!gameRoomService.isPlayerExists(playerId)) { // 있으면 true 없으면 에러
             throw new PlayerNotExistException();
         }
+        // DB에서 playerData 삭제
+        gameRoomService.leaveRoom(playerId);
 
-        if (this.mapSessions.get(roomId)>0) {
-            // DB에서 playerData 삭제
-            gameRoomService.leaveRoom(playerId);
-        }else { // 만약 모든 사람이 방을 떠나면 GameRoom 데이터 삭제
-            gameRoomService.deleteRoom(roomId);
-            this.mapSessions.remove(roomId);
-            this.gameConnectionInfoMap.remove(roomId);
+        long playersCnt=gameRoomService.playersCnt(roomId);
+        if (playersCnt==0) {
+            // 만약 모든 사람이 방을 떠나면 GameRoom 데이터 삭제
+            gameRoomService.deleteRoom(roomId); // DB에서 Room 삭제
+            this.gameConnectionInfoMap.remove(roomId); // game 비밀번호 map 삭제
             this.sessionRoomConvert.remove(roomId); //roomId,SessionID 삭제
         }
 
