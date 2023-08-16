@@ -56,7 +56,6 @@ function WordDescription() {
     const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
-    const [descUser, setDescUser] = useState();
     const [descIndex, setDescIndex] = useState(0);
     const [curIndex, setCurIndex] = useState(0);
     const [streamKey, setStreamKey] = useState(0);
@@ -106,7 +105,7 @@ function WordDescription() {
         };
 
         getFunc();
-
+        // 제시어 설명 시 시민 음소거
         if (myUserName === answerer)
             newOtherStreams.map((item) => {
                 item.subscribeToAudio(false);
@@ -119,26 +118,16 @@ function WordDescription() {
     const getNextDescIndex = () => {
         if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
-
-            console.log(mainStreamManager);
         } else dispatch(changePhase("QnA"));
     };
 
     useEffect(() => {
-        console.log(streams);
         let index = streams.findIndex(
             (item) => item.stream.connection.data === sortedArr[descIndex],
         );
         setCurIndex(index);
-        console.log("index  " + index);
         setStreamKey((prev) => prev + 1);
-        console.log(mainStreamManager);
     }, [descIndex]);
-
-    // useEffect(() => {
-    //     console.log(mainStreamManager);
-    // }, [mainStreamManager]);
-    // useEffect(() => {}, [timerKey]);
 
     useEffect(() => {
         // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
