@@ -1,6 +1,5 @@
 package com.mung.mung.api.response;
 
-import com.mung.mung.db.enums.GameProcessType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,7 +10,7 @@ public class CreateRoomRes {
 
     @Builder
     public CreateRoomRes(String roomId, String roomPw) {
-        this.roomId=roomId;
-        this.roomPw=roomPw;
+        this.roomId = roomId;
+        this.roomPw = roomPw;
     }
 }

@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
@@ -31,6 +30,8 @@ public class QuizServiceImpl implements QuizService {
     private final GameRepository gameRepository;
     private final GameSetRepository gameSetRepository;
     private final WordRepository wordRepository;
+    private final Map<String, Set<String>> positiveQuizByRoom = new ConcurrentHashMap<>();
+    private final Map<String, Set<String>> negativeQuizByRoom = new ConcurrentHashMap<>();
 
     @Override
     public QuizStartRes startQuiz(Long gameId) {
@@ -50,9 +51,6 @@ public class QuizServiceImpl implements QuizService {
                 .quiz(quiz)
                 .build();
     }
-
-    private final Map<String, Set<String>> positiveQuizByRoom = new ConcurrentHashMap<>();
-    private final Map<String, Set<String>> negativeQuizByRoom = new ConcurrentHashMap<>();
 
     public void submitPositiveQuiz(QuizCountReq quizCountReq) {
         String roomId = quizCountReq.getRoomId();
@@ -191,6 +189,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public QuizPlayersWordRes getPlayerWord(Long setId, String playerNick) {
         GameSet curSet = gameSetRepository.findBySetId(setId);
+        log.info("닉네임 한글 확인 decode 유무 : {}", playerNick);
 
         if (curSet == null) {
             throw new SetNotExistException();

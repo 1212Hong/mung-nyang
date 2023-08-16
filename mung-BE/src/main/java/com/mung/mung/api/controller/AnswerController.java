@@ -26,14 +26,15 @@ public class AnswerController {
 
     private final AnswerService answerService;
     private final ScoreService scoreService;
+
     //비상정답
     @PostMapping("/emergency")
-    public ResponseEntity<AnswerRes> emergencyAnswer(@RequestBody EmergencyAnswerReq emergencyAnswerReq){
+    public ResponseEntity<AnswerRes> emergencyAnswer(@RequestBody EmergencyAnswerReq emergencyAnswerReq) {
 
         AnswerRes returnAnswer = answerService.emergencyAnswer(emergencyAnswerReq);
         //returnAnswer의 경우에 따라 점수 산정 방식이 다르다.
-        Map<String,Integer> scoreMap=answerService.emergencyAnswerScore(returnAnswer);
-        scoreService.calcScoreEmergency(emergencyAnswerReq,scoreMap.get("liarScore") ,scoreMap.get("noLiarScore"),scoreMap.get("elseScore"));
+        Map<String, Integer> scoreMap = answerService.emergencyAnswerScore(returnAnswer);
+        scoreService.calcScoreEmergency(emergencyAnswerReq, scoreMap.get("liarScore"), scoreMap.get("noLiarScore"), scoreMap.get("elseScore"));
         return new ResponseEntity<>(returnAnswer, HttpStatus.OK);
     }
 
@@ -41,21 +42,21 @@ public class AnswerController {
     @PostMapping("/final")
     public ResponseEntity<AnswerRes> finalAnswer(@RequestBody FinalAnswerReq finalAnswerReq) {
 
-        AnswerRes returnAnswer=answerService.finalAnswer(finalAnswerReq);
-        if (returnAnswer.getResultReturn().equals("LiarLose_Final")){
+        AnswerRes returnAnswer = answerService.finalAnswer(finalAnswerReq);
+        if (returnAnswer.getResultReturn().equals("LiarLose_Final")) {
             // 정답자가 정답을 맞추는데 성공함
-            scoreService.calcScoreFinal(finalAnswerReq,1,0);
+            scoreService.calcScoreFinal(finalAnswerReq, 1, 0);
         }
         return new ResponseEntity<>(returnAnswer, HttpStatus.OK);
     }
 
     @PostMapping("/liar")
-    public ResponseEntity<AnswerRes> pickedLiarAnswer(@RequestBody LiarAnswerReq liarAnswerReq){
+    public ResponseEntity<AnswerRes> pickedLiarAnswer(@RequestBody LiarAnswerReq liarAnswerReq) {
 
-        AnswerRes returnAnswer=answerService.pickedLiarAnswer(liarAnswerReq);
-        Map<String,Integer> scoreMap=answerService.liarAnswerScore(returnAnswer);
+        AnswerRes returnAnswer = answerService.pickedLiarAnswer(liarAnswerReq);
+        Map<String, Integer> scoreMap = answerService.liarAnswerScore(returnAnswer);
 
-        scoreService.calcScoreLiar(liarAnswerReq,scoreMap.get("liarScore"),scoreMap.get("noLiarScore"));
+        scoreService.calcScoreLiar(liarAnswerReq, scoreMap.get("liarScore"), scoreMap.get("noLiarScore"));
         return new ResponseEntity<>(returnAnswer, HttpStatus.OK);
     }
 }

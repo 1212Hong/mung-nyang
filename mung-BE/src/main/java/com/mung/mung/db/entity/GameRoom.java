@@ -2,7 +2,10 @@ package com.mung.mung.db.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +30,10 @@ public class GameRoom {
 
     private LocalDateTime endTime;
 
-    @OneToMany(mappedBy = "gameRoom" ,cascade = CascadeType.ALL)// default : LAZY
+    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL)// default : LAZY
     private List<Player> players = new ArrayList<>();
 
-    @OneToMany(mappedBy = "gameRoom" ,cascade = CascadeType.ALL)// default : LAZY
+    @OneToMany(mappedBy = "gameRoom", cascade = CascadeType.ALL)// default : LAZY
     private List<Game> games = new ArrayList<>();
 
     public void updateOwner(String newOwner) {
