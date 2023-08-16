@@ -3,7 +3,11 @@ import store from "../../store";
 import { useSelector, useDispatch } from "react-redux";
 import Button from "../../components/Button";
 import VideoComponent from "../../components/VideoComponent";
-import { OtherUsers, Container } from "../../components/layout/common";
+import {
+    OtherUsers,
+    Container,
+    SmallText,
+} from "../../components/layout/common";
 import {
     NotificationContainer,
     Overlay,
@@ -31,6 +35,7 @@ function Dance() {
     const [videoId, setVideoId] = useState("");
     const [complete, setComplete] = useState(false);
     const dispatch = useDispatch();
+    const streams = session.streamManagers;
 
     const sendVideoId = async (videoId) => {
         session.signal({
@@ -80,8 +85,9 @@ function Dance() {
         });
 
         const fetchPenaltyUser = async (roomId) => {
-            await getPenaltyUser(roomId);
-            store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
+            store.dispatch(
+                gameActions.updatePenaltyUser(await getPenaltyUser(roomId)),
+            );
         };
         fetchPenaltyUser(roomId);
         const startRecord = async (roomId, gameId) => {
@@ -111,6 +117,10 @@ function Dance() {
             clearTimeout(timer);
         };
     }, []);
+
+    const penaltyUserStream = streams.find(
+        (streamManager) => streamManager.stream.connection.data === penaltyUser,
+    );
     const nonPenaltyUsers = session.streamManagers.filter((user) => {
         return user.stream.connection.data !== penaltyUser;
     });
@@ -132,17 +142,12 @@ function Dance() {
                     </Video>
                 </LeftItem>
                 <RightItem>
-                    <VideoComponent width="800px" height="450px">
-                        {penaltyUser && (
-                            <iframe
-                                width="100%"
-                                height="100%"
-                                src={penaltyUser.videoUrl}
-                                title="Penalty Video"
-                                allow="autoplay"
-                            ></iframe>
-                        )}
-                    </VideoComponent>
+                    <SmallText>{penaltyUser}</SmallText>
+                    <VideoComponent
+                        width="800px"
+                        height="450px"
+                        streamManager={penaltyUserStream}
+                    />
                 </RightItem>
                 <Buttons>
                     <Button
