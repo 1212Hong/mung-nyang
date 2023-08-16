@@ -1,10 +1,6 @@
 package com.mung.mung.db.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -44,8 +40,9 @@ public class Game {
     public void updateGameVideoUrl(String newVideoUrl) {
         this.videoUrl = newVideoUrl;
     }
+
     public void updateCurSet() {
-        this.curSet = this.curSet+1;
+        this.curSet = this.curSet + 1;
     }
 
 }

@@ -56,6 +56,14 @@ const ReadyModal = () => {
         });
     };
 
+    const signalSetCnt = async (setCnt) => {
+        await session.signal({
+            data: setCnt,
+            to: [],
+            type: "setCnt",
+        });
+    };
+
     const handleEndVote = async () => {
         try {
             const response = await getVoteRes(mySessionId, setCnt);
@@ -68,6 +76,8 @@ const ReadyModal = () => {
                 dispatch(gameActions.saveGameId(response.data.gameId));
                 await signalGoQuiz(response.data.gameProcessType);
                 dispatch(changePhase(response.data.gameProcessType));
+
+                await signalSetCnt(setCnt);
             }
             console.log(owner);
         } catch (error) {
