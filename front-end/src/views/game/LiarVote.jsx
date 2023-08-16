@@ -91,7 +91,6 @@ const LiarVote = () => {
                     };
                     signalVotedLiar();
                     if (myUserName === mostVotedNickname) {
-                        // publisher에서 접근하기보다 자기 닉네임은 이미 저장된 값 쓰면 됨
                         dispatch(changePhase("SelectAns"));
                     } else {
                         dispatch(changePhase("OtherView"));
@@ -136,7 +135,6 @@ const LiarVote = () => {
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
                         if (subscriber.stream.connection.data === answerer) {
-                            // 정답자 외 비디오도 닉네임 띄워주면 좋을듯
                             return (
                                 <React.Fragment key={i}>
                                     <Item>
@@ -150,7 +148,6 @@ const LiarVote = () => {
                                 </React.Fragment>
                             );
                         }
-                        return null; // null은 왜 반환함?
                     })}
 
                 {session.streamManagers &&
@@ -181,6 +178,7 @@ const LiarVote = () => {
                                                 width="100%"
                                             />
                                         </ImageOverlay>
+                                        {subscriber.stream.connection.data}
                                         <VideoComponent
                                             width="350px"
                                             height="320px"
@@ -190,7 +188,6 @@ const LiarVote = () => {
                                 </React.Fragment>
                             );
                         }
-                        return null;
                     })}
             </Box>
             <NotificationContainer show={showNotification}>

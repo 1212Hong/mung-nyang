@@ -150,6 +150,7 @@ const ScoreTotal = () => {
                     {session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
                             <AnswerItem>
+                                {sub.stream.connection.data}
                                 <VideoComponent
                                     width="200px"
                                     height="200px"
