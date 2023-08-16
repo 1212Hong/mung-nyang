@@ -50,7 +50,7 @@ const SelectAnswer = (props) => {
     };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const handleSelectAnswer = () => {
             dispatch(gameActions.updateSelectedAnswer(activeBox));
             console.log(activeBox);
             // signal 적용
@@ -63,15 +63,15 @@ const SelectAnswer = (props) => {
             };
             signalSelectLiar();
             dispatch(changePhase("OpenLiar"));
-        });
+        };
         if (answered) {
-            timer();
+            handleSelectAnswer();
         }
     }, [answered]);
 
     return (
         <Container>
-            <Timer time={time} onTimerEnd={() => setAnswered(true)}></Timer>
+            <Timer onTimerEnd={() => setAnswered(true)}></Timer>
             <Head>{title}</Head>
             <Line>
                 {answerList.map((item, index) => (
