@@ -56,13 +56,27 @@ function WordDescription() {
     const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
-    const [descUserNickname, setDescUserNickname] = useState([""]);
-    const [descStreamManager, setDescStreamManager] = useState({});
-    const [curDescUserNickname, setCurDescUserNickname] = useState("");
+    const [descUser, setDescUser] = useState();
     const [descIndex, setDescIndex] = useState(0);
-    const [timerKey, setTimerKey] = useState(0);
+    const [curIndex, setCurIndex] = useState(0);
+    const [streamKey, setStreamKey] = useState(0);
     const streams = session.streamManagers;
+
     console.log(streams);
+
+    console.log("세션");
+    console.log(session);
+    // 사용자 닉네임 리스트
+    const nicknameArr = [];
+    session.streamManagers.map((item) => {
+        nicknameArr.push(item.stream.connection.data);
+    });
+    // answerer 제거
+    const othersNickname = nicknameArr.filter((data) => data !== answerer);
+    // 리스트 정렬
+    const sortedArr = othersNickname.sort();
+    sortedArr.unshift("");
+    console.log(sortedArr);
 
     const openAnswerModal = () => {
         dispatch(
@@ -72,7 +86,12 @@ function WordDescription() {
             }),
         );
     };
-
+    const newOtherStreams = streams.filter(
+        (streamManager) => streamManager.stream.connection.data !== answerer,
+    );
+    const answererStream = streams.find(
+        (streamManager) => streamManager.stream.connection.data === answerer,
+    );
     // 초기 세팅
     useEffect(() => {
         const getFunc = async () => {
@@ -88,81 +107,41 @@ function WordDescription() {
 
         getFunc();
 
-        const newOtherStreams = streams.filter(
-            (streamManager) =>
-                streamManager.stream.connection.data !== answerer,
-        );
-
+        if (myUserName === answerer)
+            newOtherStreams.map((item) => {
+                item.subscribeToAudio(false);
+            });
         setOtherUserStreams(newOtherStreams);
         console.log(newOtherStreams);
-
-        if (owner) {
-            for (let i = 0; i < newOtherStreams.length; i++) {
-                let nickname = newOtherStreams[i].stream.connection.data;
-                console.log(nickname);
-                setDescUserNickname((prev) => [...prev, nickname]); // 정답자 이외의 닉네임 배열 갱신
-            }
-        }
+        console.log(otherUserStreams);
     }, []);
 
-    const answererStream = streams.find(
-        (streamManager) => streamManager.stream.connection.data === answerer,
-    );
-
-    const startTimer = () => {
-        setTimerKey((prevKey) => prevKey + 1);
-    };
     const getNextDescIndex = () => {
-        if (descIndex < streams.length - 1) {
+        if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
-            startTimer();
+            // newOtherStreams.map((item) => {
+            //     item.stream.connection.data === sortedArr[descIndex]
+            //         ? setCurIndex(indexOf(item))
+            //         : setCurIndex(curIndex);
+            // });
+            console.log(mainStreamManager);
         } else dispatch(changePhase("QnA"));
     };
 
     useEffect(() => {
-        const setSignal = () => {
-            if (owner) {
-                session.signal({
-                    data: descUserNickname[descIndex],
-                    to: [],
-                    type: "descIndex",
-                });
-                console.log(descUserNickname[descIndex]);
-                const desc = otherUserStreams.find(
-                    (streamManager) =>
-                        streamManager.stream.connection.data ===
-                        curDescUserNickname,
-                );
-                setDescStreamManager(desc);
-                console.log(descStreamManager);
-                dispatch(ovActions.saveMainStreamManager(desc));
-            }
-        };
-        setSignal();
-
-        const newOtherStreams = streams.filter(
+        const rotateStream = otherUserStreams.find(
             (streamManager) =>
-                streamManager.stream.connection.data !== answerer,
+                streamManager.stream.connection.data === sortedArr[descIndex],
         );
-
-        setOtherUserStreams(newOtherStreams);
-        console.log(newOtherStreams);
+        dispatch(ovActions.saveMainStreamManager(rotateStream));
+        setStreamKey((prev) => prev + 1);
+        console.log(mainStreamManager);
     }, [descIndex]);
 
-    useEffect(() => {
-        session.on("signal:descIndex", (event) => {
-            setCurDescUserNickname(event.data);
-            console.log(event.data);
-            const desc = otherUserStreams.find(
-                (streamManager) =>
-                    streamManager.stream.connection.data ===
-                    curDescUserNickname,
-            );
-            setDescStreamManager(desc);
-            console.log(descStreamManager); // undefined
-            dispatch(ovActions.saveMainStreamManager(desc));
-        });
-    }, [timerKey]);
+    // useEffect(() => {
+    //     console.log(mainStreamManager);
+    // }, [mainStreamManager]);
+    // useEffect(() => {}, [timerKey]);
 
     useEffect(() => {
         // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
@@ -174,19 +153,23 @@ function WordDescription() {
 
     return (
         <Container>
-            <Timer key={timerKey} onTimerEnd={() => getNextDescIndex()} />
+            <Timer key={descIndex} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
                 <CurParticipants width={"100%"}>
-                    {curDescUserNickname ? (
+                    {sortedArr[descIndex] ? (
                         <>
-                            <SmallText>{curDescUserNickname}</SmallText>
-                            {mainStreamManager && (
+                            <SmallText>{sortedArr[descIndex]}</SmallText>
+                            {
                                 <VideoComponent
-                                    streamManager={mainStreamManager}
+                                    key={streamKey}
+                                    streamManager={
+                                        session.streamManagers[descIndex]
+                                    }
                                     width={"80%"}
                                     height={"80%"}
+                                    volumn={-100}
                                 />
-                            )}
+                            }
                         </>
                     ) : (
                         <ModalBackdrop>
@@ -264,4 +247,4 @@ function WordDescription() {
     );
 }
 
-export default WordDescription;
+export default React.memo(WordDescription);
