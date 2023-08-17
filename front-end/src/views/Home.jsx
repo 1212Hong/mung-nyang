@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { ovActions } from "../store/openviduSlice";
 import { useDispatch } from "react-redux";
 import mainBgm from "../assets/audio/mainBgm.wav";
+import BackgroundImg from "../assets/img/mungnyangImg.png";
 
 const Home = () => {
     const [view, setView] = useState(false);
@@ -131,7 +132,14 @@ const Home = () => {
                     />
                 </ButtonBox>
             </LeftBox>
-            <RightBox className="rightbox" />
+            <RightBox className="rightbox">
+                <img
+                    src={BackgroundImg}
+                    width="840px"
+                    height="720px"
+                    alt="홈배경"
+                />
+            </RightBox>
         </HomeContainer>
     );
 };
