@@ -105,7 +105,7 @@ const ReadyModal = () => {
     }, [gameVoteCnt]);
 
     useEffect(() => {
-        const timer = setTimeout(async () => {
+        const timer = setTimeout(() => {
             // 타이머 흘러가는중
             owner && handleEndVote();
             // : session.on("signal:gameId", (e) => {
