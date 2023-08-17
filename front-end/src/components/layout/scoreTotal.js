@@ -35,7 +35,7 @@ export const RankItem = styled.div`
     border: 1px solid var(--brown-dark);
     height: 30px;
     width: 30px;
-    background-color: var(--brown);
+    background-color: var(--macciato);
     border-radius: 8px;
 `;
 
