@@ -124,7 +124,7 @@ const Home = () => {
                     {inputChecker ? (
                         ""
                     ) : (
-                        <p style={{ color: "rgab" }}>
+                        <p style={{ color: "rgba(255,0,0,0.5)" }}>
                             방 제목과 비밀번호를 입력해주세요.
                         </p>
                     )}
