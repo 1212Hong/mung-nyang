@@ -68,7 +68,7 @@ const Button = (props) => {
         clickactive,
         padding,
         margin,
-        volume = 0.5,
+        volume = 0.3,
         disabled,
     } = props;
     audio.volume = volume;

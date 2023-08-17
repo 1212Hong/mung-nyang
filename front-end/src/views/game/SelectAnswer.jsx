@@ -25,6 +25,7 @@ const SelectAnswer = () => {
     const [answerList, setAnswerList] = useState([]);
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
+    const setId = useSelector((state) => state.game.setId);
     const { session } = openvidu;
     const [answered, setAnswered] = useState(false);
 
@@ -32,7 +33,7 @@ const SelectAnswer = () => {
         const timer = setTimeout(() => {
             setShowNotification(false);
         }, 3000);
-        liarAnswer(1).then((response) => {
+        liarAnswer(setId).then((response) => {
             setAnswerList(response.data.answerOptions);
         });
 
