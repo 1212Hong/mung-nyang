@@ -84,7 +84,7 @@ function QnAPage() {
         } else {
             const timer = setTimeout(() => {
                 dispatch(changePhase("FinAns"));
-            }, 10000);
+            }, 1000);
             return () => {
                 clearTimeout(timer);
             };
