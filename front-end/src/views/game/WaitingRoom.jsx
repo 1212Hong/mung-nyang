@@ -46,7 +46,6 @@ function WaitingRoom() {
         myUserName,
         mySessionPw,
     } = openvidu;
-    const answerer = useSelector((state) => state.game.answerer);
 
     console.log(subscribers);
     console.log(openvidu.messageList);
@@ -178,16 +177,6 @@ function WaitingRoom() {
         setIsMuted((prevState) => !prevState);
     }
     console.log(openvidu.messageList.length);
-    const answererStream = session.streamManagers.find(
-        (streamManager) => streamManager.stream.connection.data === answerer,
-    );
-    useEffect(() => {
-        answererStream &&
-            answererStream.updatePublisherSpeakingEventsOptions({
-                interval: 20000, // Frequency of the polling of audio streams in ms
-                threshold: -50, // Threshold volume in dB
-            });
-    });
 
     return (
         <Container className="waiting-container">
