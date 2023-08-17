@@ -135,27 +135,30 @@ function WordDescription() {
             session.on("publisherStartSpeaking", (event) => {
                 if (phase === ("Desc" || "QnA" || "FinAns"))
                     publisher.publishAudio(false);
-                if (audioRef.current) audioRef.current.play();
+                if (audioRef.current)
+                    audioRef.current.play().then(() => {
+                        audioRef.current.pause();
+                        publisher.publishAudio(true);
+                    });
             });
-            session.on("publisherStopSpeaking", (e) => {
-                if (audioRef.current) audioRef.current.pause();
-                if (phase === ("Desc" || "QnA" || "FinAns"))
-                    publisher.publishAudio(true);
-            });
+            // session.on("publisherStopSpeaking", (e) => {
+            //     if (audioRef.current) audioRef.current.pause();
+            //     if (phase === ("Desc" || "QnA" || "FinAns"))
+            //         publisher.publishAudio(true);
+            // });
         }
         if (myUserName === answerer) {
             publisher.on("streamAudioVolumeChange", (event) => {
                 newOtherStreams.map((item) => {
                     item.subscribeToAudio(false);
                 });
-                if (audioRef.current) audioRef.current.play();
-
-                setTimeout(() => {
-                    if (audioRef.current) audioRef.current.pause();
-                    newOtherStreams.map((item) => {
-                        item.subscribeToAudio(true);
+                if (audioRef.current)
+                    audioRef.current.play().then(() => {
+                        audioRef.current.pause();
+                        newOtherStreams.map((item) => {
+                            item.subscribeToAudio(true);
+                        });
                     });
-                }, 100);
             });
             // publisher.on("streamAudioVolumeChange", (event) => {
             //     newOtherStreams.map((item) => {
@@ -191,7 +194,7 @@ function WordDescription() {
 
     return (
         <Container>
-            <audio ref={audioRef} src={TestSound} loop={false} />
+            <audio ref={audioRef} src={TestSound} loop={false} preload="" />
             <Timer key={descIndex} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
                 <CurParticipants width={"100%"}>
