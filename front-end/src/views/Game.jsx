@@ -269,11 +269,13 @@ const Game = () => {
 
                         dispatch(changePhase("DupLiar"));
                     });
+
                 newSession.on("signal:noLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.updateResult(event.data));
                     dispatch(changePhase("MidScore"));
                 });
+
                 !owner &&
                     newSession.on("signal:getresult", (event) => {
                         console.log(event.data);
@@ -284,8 +286,8 @@ const Game = () => {
                         } else if (event.data === "LiarWin_NotLiar") {
                             dispatch(gameActions.updateResult("라이어 승리"));
                         }
-                        dispatch(changePhase("MidScore"));
                     });
+
                 newSession.on("signal:VotedLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.saveLiar(event.data));
