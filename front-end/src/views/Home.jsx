@@ -123,6 +123,7 @@ const Home = () => {
                             type="icon"
                             width="45px"
                             height="40px"
+                            margin="30px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
                         >
@@ -134,6 +135,7 @@ const Home = () => {
                             type="icon"
                             width="45px"
                             height="40px"
+                            margin="30px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
                         >
