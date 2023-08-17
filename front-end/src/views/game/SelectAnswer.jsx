@@ -71,7 +71,7 @@ const SelectAnswer = () => {
     return (
         <Container>
             {!showNotification && (
-                <Timer time={10} onTimerEnd={() => setAnswered(true)}></Timer>
+                <Timer time={7} onTimerEnd={() => setAnswered(true)}></Timer>
             )}
             <Head>{title}</Head>
             <Line>
