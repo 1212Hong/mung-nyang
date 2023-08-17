@@ -192,7 +192,7 @@ function Dance() {
                         height="150px"
                         color="black"
                         fontSize="32px"
-                        disabled={true}
+                        disabled
                     >
                         찬성 {passCnt} / {streams.length - 1}
                     </Button>
