@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     ButtonBox,
     FormBox,
@@ -16,8 +16,11 @@ import { ovActions } from "../store/openviduSlice";
 import { useDispatch } from "react-redux";
 import mainBgm from "../assets/audio/mainBgm.wav";
 import BackgroundImg from "../assets/img/mungnyangImg.png";
+import { ReactComponent as VolumeOnIcon } from "../assets/img/volume_on.svg";
+import { ReactComponent as VolumeMuteIcon } from "../assets/img/volume_mute.svg";
 
 const Home = () => {
+    const [isMuted, setIsMuted] = useState(true);
     const [view, setView] = useState(false);
     const [roomInfo, setRoomInfo] = useState({
         roomId: "",
@@ -59,17 +62,30 @@ const Home = () => {
             : navigate("/test");
     };
 
+    const audioElement = document.getElementById("bgm");
     useEffect(() => {
-        const audioElement = document.getElementById("bgm");
         if (audioElement) {
             audioElement.volume = 0.07; // 음량 조절
             audioElement.play(); // 재생
         }
     }, []);
 
+    function toggleVolume() {
+        if (audioElement) {
+            if (isMuted) {
+                audioElement.volume = 0.07;
+                audioElement.muted = true;
+            } else {
+                audioElement.muted = false;
+            }
+        }
+        setIsMuted((prevState) => !prevState);
+        console.log(isMuted);
+    }
+
     return (
         <HomeContainer>
-            <audio id="bgm" autoPlay loop>
+            <audio id="bgm" muted={isMuted} autoPlay loop>
                 <source src={mainBgm} type="audio/wav" />
             </audio>
             <LeftBox className="leftbox">
@@ -101,6 +117,29 @@ const Home = () => {
                     />
                 </FormBox>
                 <ButtonBox>
+                    {isMuted ? (
+                        <Button
+                            key="mute"
+                            type="icon"
+                            width="45px"
+                            height="40px"
+                            background={`var(--beige-dark)`}
+                            onClick={toggleVolume}
+                        >
+                            <VolumeMuteIcon width="23" height="23" />
+                        </Button>
+                    ) : (
+                        <Button
+                            key="on"
+                            type="icon"
+                            width="45px"
+                            height="40px"
+                            background={`var(--beige-dark)`}
+                            onClick={toggleVolume}
+                        >
+                            <VolumeOnIcon width="23" height="23" />
+                        </Button>
+                    )}
                     {view ? (
                         <Button
                             text={"방생성"}
