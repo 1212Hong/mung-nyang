@@ -22,74 +22,65 @@ export const RankBoxFrame = styled.div`
 
 export const RankBox = styled.div`
     border: 1px solid #ccc;
+    background-color: var(--macciato);
     height: 230px;
-    background-color: white;
     padding: 20px;
     text-align: center;
     display: flex;
     border-radius: 20px;
 `;
 
-export const PersonBox = styled.div`
-    display: flex;
-    margin: 30px;
+export const RankItem = styled.div`
+    margin-right: 10px;
+    border: 2px solid var(--brown-dark);
+    height: 30px;
+    width: 30px;
+    background-color: var(--dusty-pink-light);
+    border-radius: 10px;
 `;
-
-export const Border = styled.div`
-    margin-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 100px;
-    border: 2px solid white;
-    display: flex;
-    font-size: 32px;
-`;
-
-export const FrameBox = styled.div`
-    display: flex;
-`;
-
-export const LineFrame = styled.div``;
-
-export const ImgFrame = styled.div``;
-
-export const ImgItem = styled.div``;
-
-export const LineItem = styled.div`
-    padding-left: 20px;
-    padding-bottom: 5px;
-    border: 2px solid white;
-    display: flex;
-    font-size: 32px;
-`;
-
-export const RankItem = styled.div``;
 
 export const RankItemFrame = styled.div`
+    width: 95px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
 `;
 
-export const NameItem = styled.div``;
+export const AnswerItem = styled.div`
+    justify-content: center;
+`;
 
-export const UpItem = styled.div``;
+export const NameItem = styled.div`
+    margin-top: 10px;
+    padding-left: 45px;
+`;
 
-export const ScoreItem = styled.div``;
+export const ScoreText = styled.div`
+    font-size: 48px;
+    color: var(--white);
+`;
 
-export const TitleItem = styled.div``;
+export const RankUserFrame = styled.div`
+    display: flex;
+`;
+
+export const ScoreItem = styled.div`
+    padding-left: 20px;
+    padding-bottom: 10px;
+`;
+
+export const ColorWhite = styled.div`
+    color: var(--white);
+`;
+
+export const RankColor = styled.div`
+    color: var(--brown-dark);
+`;
 
 export const Frame = styled.div`
     display: flex;
 `;
 
-export const SetItem = styled.div`
-    font-size: 32px;
-`;
-
 export const BtnBox = styled.div`
     margin-right: 20px;
-`;
-
-export const ImgBox = styled.div`
-    text-align: right;
 `;
