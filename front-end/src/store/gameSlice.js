@@ -18,6 +18,7 @@ const initialState = {
     dupLiars: [],
     penaltyUser: "",
     passCnt: 0, // 벌칙에서 pass를 누른 인원수
+    liarName: "",
 };
 
 export const gameSlice = createSlice({
@@ -77,6 +78,9 @@ export const gameSlice = createSlice({
         },
         updateCurSetCnt: (state, action) => {
             state.curSetCnt = action.payload;
+        },
+        updateLiarName: (state, action) => {
+            state.liarName = action.payload;
         },
     },
 });

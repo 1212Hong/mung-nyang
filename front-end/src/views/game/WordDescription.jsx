@@ -98,11 +98,12 @@ function WordDescription() {
             console.log(myUserName);
             console.log(playerId);
             //setId 때문에 404 오류 생길 수 있음.
-            myUserName !== answerer &&
-                (await getUserWord(setId, myUserName).then((response) => {
-                    setWord(response.data.playerWord);
-                    console.log(response);
-                }));
+
+            await getUserWord(setId, myUserName).then((response) => {
+                console.log(response);
+                myUserName !== answerer && setWord(response.data.playerWord);
+                gameActions.updateLiarName(response.data.liarName);
+            });
         };
 
         getFunc();
