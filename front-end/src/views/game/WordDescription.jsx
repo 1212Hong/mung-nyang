@@ -118,13 +118,13 @@ function WordDescription() {
         console.log(otherUserStreams);
 
         answererStream.updatePublisherSpeakingEventsOptions({
-            interval: 100, // Frequency of the polling of audio streams in ms
+            interval: 200, // Frequency of the polling of audio streams in ms
             threshold: -50, // Threshold volume in dB
         });
 
         return () => {
             answererStream.updatePublisherSpeakingEventsOptions({
-                interval: 10000, // Frequency of the polling of audio streams in ms
+                interval: 20000, // Frequency of the polling of audio streams in ms
                 threshold: -50, // Threshold volume in dB
             });
         };
