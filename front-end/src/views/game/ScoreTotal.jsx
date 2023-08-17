@@ -170,12 +170,7 @@ const ScoreTotal = () => {
                         <RankItemFrame>
                             <ScoreItem>
                                 <MidText>
-                                    <ColorWhite>Score:</ColorWhite>
-                                </MidText>
-                            </ScoreItem>
-                            <ScoreItem>
-                                <MidText>
-                                    <ScoreText>{user.score}</ScoreText>
+                                    <ScoreText>{user.score} 점</ScoreText>
                                 </MidText>
                             </ScoreItem>
                         </RankItemFrame>

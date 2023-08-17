@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import VideoComponent from "../../components/VideoComponent";
 import foot from "../../assets/img/foot.png";
 import Timer from "../../components/Timer";
-import { Container } from "../../components/layout/common";
+import { Container, ModalMainText } from "../../components/layout/common";
 import {
     Box,
     Item,
@@ -205,7 +205,9 @@ const LiarVote = () => {
             </ModalContainer>
             <ModalContainer>
                 <NotificationContainer show={showLoading}>
-                    집계중 입니다. 잠시만 기다려 주세요.
+                    <ModalMainText>
+                        집계중 입니다. 잠시만 기다려 주세요.
+                    </ModalMainText>
                 </NotificationContainer>
             </ModalContainer>
         </Container>
