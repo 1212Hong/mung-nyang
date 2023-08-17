@@ -29,7 +29,7 @@ const OtherView = () => {
                 dispatch(gameActions.updateSelectedAnswer(event.data));
                 dispatch(changePhase("OpenLiar"));
             });
-        }, 10000);
+        });
 
         return () => clearTimeout(timer);
     }, []);

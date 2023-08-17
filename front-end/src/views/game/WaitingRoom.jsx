@@ -26,7 +26,6 @@ import {
     ChatItemMessage,
     VideoUserName,
 } from "../../components/layout/waiting";
-import { SmallText } from "../../components/layout/common";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../../store/modalSlice";
 import { startGameVote } from "../../api/game";
@@ -47,8 +46,8 @@ function WaitingRoom() {
         myUserName,
         mySessionPw,
     } = openvidu;
-    console.log(subscribers);
 
+    console.log(subscribers);
     console.log(openvidu.messageList);
     const messageEndRef = useRef();
     const dispatch = useDispatch();
@@ -106,6 +105,12 @@ function WaitingRoom() {
             type: "chat",
         });
         userMessage.current.value = "";
+    };
+
+    const handleOnKeyPress = (e) => {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
     };
 
     // 카카오톡공유 코드시작
@@ -211,10 +216,7 @@ function WaitingRoom() {
             </Leftbox>
             <Rightbox>
                 {publisher && subscribers && (
-                    <Participant
-                        publisher={publisher}
-                        subscribers={subscribers}
-                    />
+                    <Participant publisher={publisher} />
                 )}
 
                 <ChattingBox>
@@ -239,44 +241,55 @@ function WaitingRoom() {
                         <ChatItem ref={messageEndRef}></ChatItem>
                     </ChatBox>
                     <ChattingInputBox>
-                        <Input width="200px" height="15px" ref={userMessage} />
+                        <Input
+                            width="200px"
+                            height="15px"
+                            margin="0"
+                            ref={userMessage}
+                            onKeyPress={handleOnKeyPress}
+                        />
                         <Button
                             type="icon"
+                            width="30px"
+                            height="25px"
                             background={`var(--white)`}
+                            shadow="none"
                             onClick={sendMessage}
                         >
-                            <DogFootIcon width="15" height="15" />
+                            <DogFootIcon width="20" height="20" />
                         </Button>
                     </ChattingInputBox>
                 </ChattingBox>
 
                 <MenuBox>
                     <Button
-                        width="55px"
+                        width="45px"
                         height="40px"
+                        type="icon"
                         onClick={() => {
                             openRuleBook();
                         }}
                     >
-                        <QuestionIcon></QuestionIcon>
+                        <QuestionIcon width="20" />
                     </Button>
                     <Button
-                        width="55px"
+                        width="45px"
                         height="40px"
+                        type="icon"
                         onClick={() => {
                             openPenaltyLink();
                         }}
                     >
-                        <LinkIcon></LinkIcon>
+                        <LinkIcon width="23" />
                     </Button>
-                    <Button width="55px" height="40px">
-                        <CaptureIcon></CaptureIcon>
+                    <Button width="45px" height="40px" type="icon">
+                        <CaptureIcon width="23" />
                     </Button>
                     {isMuted ? (
                         <Button
                             key="mute"
                             type="icon"
-                            width="50px"
+                            width="45px"
                             height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
@@ -287,7 +300,7 @@ function WaitingRoom() {
                         <Button
                             key="on"
                             type="icon"
-                            width="50px"
+                            width="45px"
                             height="40px"
                             background={`var(--beige-dark)`}
                             onClick={toggleVolume}
