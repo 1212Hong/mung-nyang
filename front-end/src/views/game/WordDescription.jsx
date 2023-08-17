@@ -125,10 +125,10 @@ function WordDescription() {
                     "User " + event.connection.connectionId + " start speaking",
                 );
                 publisher.publishAudio(false);
-                if (audioRef) audioRef.current.play();
+                if (audioRef.current) audioRef.current.play();
             });
             session.on("publisherStopSpeaking", (e) => {
-                if (audioRef) audioRef.current.pause();
+                if (audioRef.current) audioRef.current.pause();
                 publisher.publishAudio(true);
             });
         }
@@ -138,10 +138,10 @@ function WordDescription() {
                     "User " + event.connection.connectionId + " start speaking",
                 );
                 publisher.publishAudio(false);
-                if (audioRef) audioRef.current.play();
+                if (audioRef.current) audioRef.current.play();
             });
             session.on("publisherStopSpeaking", (e) => {
-                if (audioRef) audioRef.current.pause();
+                if (audioRef.current) audioRef.current.pause();
                 publisher.publishAudio(true);
             });
             // publisher.on("streamAudioVolumeChange", (event) => {
