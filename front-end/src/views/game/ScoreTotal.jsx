@@ -6,30 +6,23 @@ import {
     Container,
     TitleBox,
     RankBox,
-    Border,
-    LineItem,
     RankItem,
     NameItem,
     ScoreItem,
-    TitleItem,
-    SetItem,
     BtnBox,
-    LineFrame,
     Frame,
     RankBoxFrame,
-    ImgItem,
-    ImgFrame,
-    FrameBox,
     RankItemFrame,
+    RankUserFrame,
+    ScoreText,
+    ColorWhite,
+    RankColor,
+    AnswerItem,
 } from "../../components/layout/scoreTotal";
 import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
-import foots from "../../assets/img/foots.png";
 import VideoComponent from "../../components/VideoComponent";
-import { AnswerItem } from "../../components/layout/otherView";
-import { SmallText } from "../../components/layout/common";
-import cat from "../../assets/img/scorecat.png";
-import { MainText, SubText } from "../../components/layout/common";
+import { MidText, SubText, MainText } from "../../components/layout/common";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
@@ -57,7 +50,6 @@ const ScoreTotal = () => {
             .catch((error) => {
                 console.error("Error fetching score:", error);
             });
-        // signal 받기
         session.on("signal:startDance", (event) => {
             console.log(event.data);
             dispatch(changePhase(event.data));
@@ -84,7 +76,6 @@ const ScoreTotal = () => {
         .slice()
         .sort((a, b) => b.score - a.score);
 
-    // signal 적용
     const signalDance = async () => {
         session.signal({
             data: "Dance",
@@ -117,7 +108,7 @@ const ScoreTotal = () => {
     return (
         <Container>
             <TitleBox>
-                <TitleItem>{result}</TitleItem>
+                <MainText>{result}</MainText>
                 <Frame>
                     <BtnBox>
                         {owner && (
@@ -130,9 +121,9 @@ const ScoreTotal = () => {
                             </Button>
                         )}
                     </BtnBox>
-                    <SetItem>
+                    <SubText>
                         세트 : {set} / {setCnt}
-                    </SetItem>
+                    </SubText>
                 </Frame>
             </TitleBox>
             <RankBoxFrame>
@@ -142,24 +133,37 @@ const ScoreTotal = () => {
                             sub.stream.connection.data === user.username ? (
                                 <React.Fragment key={i}>
                                     <AnswerItem>
-                                        <VideoComponent
-                                            width="200px"
-                                            height="220px"
-                                            streamManager={sub}
-                                        />
+                                        <RankUserFrame>
+                                            <RankItem>
+                                                <MidText>
+                                                    <RankColor>
+                                                        {index + 1}
+                                                    </RankColor>
+                                                </MidText>
+                                            </RankItem>
+                                            <VideoComponent
+                                                width="220px"
+                                                height="200px"
+                                                streamManager={sub}
+                                            />
+                                        </RankUserFrame>
+                                        <NameItem>
+                                            <SubText>{user.username}</SubText>
+                                        </NameItem>
                                     </AnswerItem>
                                 </React.Fragment>
                             ) : null,
                         )}
                         <RankItemFrame>
-                            <RankItem>
-                                <SubText>{index + 1}등</SubText>
-                            </RankItem>
-                            <NameItem>
-                                <SubText>{user.username}</SubText>
-                            </NameItem>
                             <ScoreItem>
-                                <SubText>{user.score}점</SubText>
+                                <MidText>
+                                    <ColorWhite>Score:</ColorWhite>
+                                </MidText>
+                            </ScoreItem>
+                            <ScoreItem>
+                                <MidText>
+                                    <ScoreText>{user.score}</ScoreText>
+                                </MidText>
                             </ScoreItem>
                         </RankItemFrame>
                     </RankBox>
