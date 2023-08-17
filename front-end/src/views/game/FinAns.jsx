@@ -54,21 +54,26 @@ const FinAns = () => {
                 setResReturn(res.data.resReturn);
                 setNextPhase(res.data.gameProcessType);
 
-                signalFinAns(res.data.resultReturn, "MidScore"); // 비동기에러 생각해서 우선 데이터 받기 성공하면 시그널 전송
-                // signalFinAns(resReturn, nextPhase);
-                dispatch(gameActions.saveResult(res.data.resultReturn)); // "LiarLose_Final"
+                // 비동기에러 생각해서 우선 데이터 받기 성공하면 시그널 전송
+
+                // "LiarLose_Final"
                 if (res.data.resultReturn === "LiarLose_Final") {
+                    signalFinAns(res.data.resultReturn, "MidScore");
                     dispatch(gameActions.updateResult("강아지 승리"));
+                    const signalResult = async () => {
+                        session.signal({
+                            data: res.data.resultReturn,
+                            to: [],
+                            type: "getresult",
+                        });
+                    };
+                    signalResult();
+                    dispatch(changePhase("MidScore"));
+                } else {
+                    signalFinAns(resReturn, nextPhase);
+                    dispatch(gameActions.saveResult(res.data.resultReturn));
                 }
-                const signalResult = async () => {
-                    session.signal({
-                        data: res.data.resultReturn,
-                        to: [],
-                        type: "getresult",
-                    });
-                };
-                signalResult();
-                dispatch(changePhase("MidScore"));
+
                 console.log(resReturn);
             })
             .catch((err) => console.log(err));
