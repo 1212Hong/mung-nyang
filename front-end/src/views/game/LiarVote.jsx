@@ -8,11 +8,13 @@ import {
     Item,
     NotificationContainer,
     ImageOverlay,
+    ExItem,
 } from "../../components/layout/selectLiar";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
+import { MidText, SubText, MainText } from "../../components/layout/common";
 
 const LiarVote = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -140,14 +142,14 @@ const LiarVote = () => {
                         if (subscriber.stream.connection.data === answerer) {
                             return (
                                 <React.Fragment key={i}>
-                                    <Item>
-                                        정답자 : {answerer}
+                                    <ExItem>
+                                        <SubText>정답자 : {answerer}</SubText>
                                         <VideoComponent
                                             width="350px"
                                             height="320px"
                                             streamManager={subscriber}
                                         />
-                                    </Item>
+                                    </ExItem>
                                 </React.Fragment>
                             );
                         }
@@ -181,7 +183,9 @@ const LiarVote = () => {
                                                 width="100%"
                                             />
                                         </ImageOverlay>
-                                        {subscriber.stream.connection.data}
+                                        <SubText>
+                                            {subscriber.stream.connection.data}
+                                        </SubText>
                                         <VideoComponent
                                             width="350px"
                                             height="320px"
