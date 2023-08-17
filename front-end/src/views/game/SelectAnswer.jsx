@@ -14,7 +14,6 @@ import { liarAnswer } from "../../api/game";
 import { useDispatch, useSelector } from "react-redux";
 import { gameActions } from "../../store/gameSlice";
 import { changePhase } from "../../store/phaseSlice";
-import { ModalContainer } from "../../components/layout/modal";
 import { MainText } from "../../components/layout/common";
 
 const SelectAnswer = () => {
@@ -54,7 +53,6 @@ const SelectAnswer = () => {
         const handleSelectAnswer = () => {
             dispatch(gameActions.updateSelectedAnswer(activeBox));
             console.log(activeBox);
-            // signal 적용
             const signalSelectLiar = async () => {
                 session.signal({
                     data: activeBox,
@@ -72,7 +70,9 @@ const SelectAnswer = () => {
 
     return (
         <Container>
-            <Timer time={10} onTimerEnd={() => setAnswered(true)}></Timer>
+            {!showNotification && (
+                <Timer time={7} onTimerEnd={() => setAnswered(true)}></Timer>
+            )}
             <Head>{title}</Head>
             <Line>
                 {answerList.map((item, index) => (

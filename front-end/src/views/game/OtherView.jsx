@@ -8,10 +8,13 @@ import {
     AnswerBox,
     AnswerItem,
     UserBox,
+    Center,
+    NickName,
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { gameActions } from "../../store/gameSlice";
+import { MidText, SubText, MainText } from "../../components/layout/common";
 
 const OtherView = () => {
     const text = "지목된 사람이 정답을 선택 중입니다.";
@@ -19,7 +22,6 @@ const OtherView = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session } = openvidu;
     const pickedLiar = useSelector((state) => state.game.selectedLiar);
-    console.log(pickedLiar);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -42,13 +44,16 @@ const OtherView = () => {
                     session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
                             {sub.stream.connection.data === pickedLiar && (
-                                <AnswerItem>
+                                <Center>
+                                    <SubText>
+                                        지목된 사람 : {pickedLiar}
+                                    </SubText>
                                     <VideoComponent
                                         width="500px"
                                         height="400px"
                                         streamManager={sub}
                                     />
-                                </AnswerItem>
+                                </Center>
                             )}
                         </React.Fragment>
                     ))}
@@ -62,9 +67,14 @@ const OtherView = () => {
                                 <OtherUsers>
                                     <VideoComponent
                                         width="232px"
-                                        height="235px"
+                                        height="200px"
                                         streamManager={sub}
                                     />
+                                    <NickName>
+                                        <SubText>
+                                            {sub.stream.connection.data}
+                                        </SubText>
+                                    </NickName>
                                 </OtherUsers>
                             )}
                         </React.Fragment>
