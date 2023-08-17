@@ -16,7 +16,7 @@ import { gameActions } from "../../store/gameSlice";
 
 const LiarVote = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { session, publisher, owner } = openvidu;
+    const { session, owner, myUserName } = openvidu;
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
     const text = "라이어를 선택하세요.";
@@ -26,88 +26,79 @@ const LiarVote = () => {
     const answerer = useSelector((state) => state.game.answerer);
     const [answered, setAnswered] = useState(false);
     const [activeBox, setActiveBox] = useState(null);
-    const [next, setNext] = useState(false);
+    const [showLoading, setShowLoading] = useState(false);
 
     const handleBoxClick = (name) => {
         setActiveBox(name === activeBox ? null : name);
     };
 
+    const signalDupLiar = async (joinedStrDupLiars) => {
+        session.signal({
+            data: joinedStrDupLiars,
+            to: [],
+            type: "startDupLiar",
+        });
+    };
+
+    const signalVotedLiar = async (mostVotedNickname) => {
+        session.signal({
+            data: mostVotedNickname,
+            to: [],
+            type: "VotedLiar",
+        });
+    };
+
+    const signalNoLiar = async () => {
+        session.signal({
+            data: "라이어 승리",
+            to: [],
+            type: "noLiar",
+        });
+    };
+
     useEffect(() => {
-        const handleSubmission = async () => {
+        const postLiar = async () => {
             try {
                 if (activeBox) {
                     const response = await selectLiar(setId, activeBox);
-
                     console.log(setId);
                     console.log(response);
                 }
-                setNext(true);
             } catch (error) {
                 console.error("Error", error);
             }
         };
-        if (answered) {
-            handleSubmission();
-        }
-    }, [answered]);
-
-    useEffect(() => {
         const handleResult = async () => {
             try {
                 const selectedLiarResponse = await selectedLiar(setId);
                 console.log(selectedLiarResponse);
-                if (selectedLiarResponse.data.gameProcessType === "LiarVote") {
-                    const dupliars =
-                        selectedLiarResponse.data.mostVotedNicknames;
+                const data = selectedLiarResponse.data;
+                if (data.gameProcessType === "LiarVote") {
+                    const dupliars = data.mostVotedNicknames;
                     console.log(dupliars);
                     dispatch(gameActions.updateDupLiars(dupliars));
                     const strDupLiars = dupliars.map((str) => str + ",");
                     const joinedStrDupLiars = strDupLiars.join("");
-
-                    console.log(joinedStrDupLiars);
-
-                    const signalDupLiar = async () => {
-                        session.signal({
-                            data: joinedStrDupLiars,
-                            to: [],
-                            type: "startDupLiar",
-                        });
-                    };
-                    signalDupLiar();
+                    console.log(
+                        "동점자들 스트링으로 합친거 ",
+                        joinedStrDupLiars,
+                    );
+                    signalDupLiar(joinedStrDupLiars);
                     dispatch(changePhase("DupLiar"));
-                } else if (
-                    selectedLiarResponse.data.gameProcessType === "SelectAns"
-                ) {
-                    const mostVotedNickname =
-                        selectedLiarResponse.data.mostVotedNicknames[0];
+                } else if (data.gameProcessType === "SelectAns") {
+                    const mostVotedNickname = data.mostVotedNicknames[0];
                     console.log(mostVotedNickname);
                     dispatch(gameActions.saveLiar(mostVotedNickname));
-                    const signalVotedLiar = async () => {
-                        session.signal({
-                            data: mostVotedNickname,
-                            to: [],
-                            type: "VotedLiar",
-                        });
-                    };
-                    signalVotedLiar();
-                    if (
-                        publisher.stream.connection.data === mostVotedNickname
-                    ) {
-                        dispatch(changePhase("SelectAns"));
-                    } else {
-                        dispatch(changePhase("OtherView"));
-                    }
+
+                    signalVotedLiar(mostVotedNickname);
+
+                    myUserName === mostVotedNickname
+                        ? dispatch(changePhase("SelectAns"))
+                        : dispatch(changePhase("OtherView"));
                 } else {
                     const response = await Result(setId, roomId, "", "");
                     console.log(response);
                     dispatch(gameActions.updateResult("라이어 승리"));
-                    const signalNoLiar = async () => {
-                        session.signal({
-                            data: "라이어 승리",
-                            to: [],
-                            type: "noLiar",
-                        });
-                    };
                     signalNoLiar();
                     dispatch(changePhase("MidScore"));
                 }
@@ -115,10 +106,20 @@ const LiarVote = () => {
                 console.error("Error", error);
             }
         };
-        if (next) {
-            owner && handleResult();
+        const handleVoteSubmit = () => {
+            postLiar();
+            setShowLoading(true);
+            if (owner) {
+                setTimeout(() => {
+                    handleResult();
+                }, 3000);
+            }
+        };
+
+        if (answered) {
+            handleVoteSubmit();
         }
-    }, [next]);
+    }, [answered, activeBox]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -150,7 +151,6 @@ const LiarVote = () => {
                                 </React.Fragment>
                             );
                         }
-                        return null;
                     })}
 
                 {session.streamManagers &&
@@ -161,8 +161,8 @@ const LiarVote = () => {
                                     <Item
                                         onClick={() =>
                                             handleBoxClick(
-                                                session.streamManagers[i].stream
-                                                    .connection.data,
+                                                subscriber.stream.connection
+                                                    .data,
                                             )
                                         }
                                     >
@@ -181,6 +181,7 @@ const LiarVote = () => {
                                                 width="100%"
                                             />
                                         </ImageOverlay>
+                                        {subscriber.stream.connection.data}
                                         <VideoComponent
                                             width="350px"
                                             height="320px"
@@ -190,11 +191,13 @@ const LiarVote = () => {
                                 </React.Fragment>
                             );
                         }
-                        return null;
                     })}
             </Box>
             <NotificationContainer show={showNotification}>
                 {text}
+            </NotificationContainer>
+            <NotificationContainer show={showLoading}>
+                집계중 입니다. 잠시만 기다려 주세요.
             </NotificationContainer>
         </Container>
     );
