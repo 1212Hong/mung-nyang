@@ -116,6 +116,18 @@ function WordDescription() {
         setOtherUserStreams(newOtherStreams);
         console.log(newOtherStreams);
         console.log(otherUserStreams);
+
+        answererStream.updatePublisherSpeakingEventsOptions({
+            interval: 100, // Frequency of the polling of audio streams in ms
+            threshold: -50, // Threshold volume in dB
+        });
+
+        return () => {
+            answererStream.updatePublisherSpeakingEventsOptions({
+                interval: 10000, // Frequency of the polling of audio streams in ms
+                threshold: -50, // Threshold volume in dB
+            });
+        };
     }, []);
 
     useEffect(() => {
