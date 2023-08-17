@@ -8,6 +8,7 @@ import { ModalBackdrop, ModalContainer } from "../layout/modal";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal, selectModal } from "../../store/modalSlice";
 import NoReadyModal from "./NoReadyModal";
+import DropUserModal from "./DropUserModal";
 
 const MODAL_TYPES = {
     RuleModal: "RuleModal",
@@ -17,6 +18,7 @@ const MODAL_TYPES = {
     AnswerModal: "AnswerModal",
     NoReadyModal: "NoReadyModal",
     PenaltyLinkModal: "PenaltyLinkModal",
+    DropUserModal: "DropUserModal",
 };
 
 const MODAL_COMPONENTS = [
@@ -44,6 +46,10 @@ const MODAL_COMPONENTS = [
         type: MODAL_TYPES.PenaltyLinkModal,
         component: <PenaltyLinkModal />,
     },
+    {
+        type: MODAL_TYPES.DropUserModal,
+        component: <DropUserModal />,
+    },
 ];
 
 const Modal = () => {
@@ -60,7 +66,12 @@ const Modal = () => {
         return findModal.component;
     };
     //modal 종료 방지
-    const maintainModal = ["ReadyModal", "AnswerModal", "PenaltyLinkModal"];
+    const maintainModal = [
+        "ReadyModal",
+        "AnswerModal",
+        "PenaltyLinkModal",
+        "DropUserModal",
+    ];
     const ModalCheck = maintainModal.includes(modalType) ? true : false;
     return (
         <ModalContainer>
