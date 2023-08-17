@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     ButtonBox,
     FormBox,
@@ -16,14 +16,20 @@ import { ovActions } from "../store/openviduSlice";
 import { useDispatch } from "react-redux";
 import mainBgm from "../assets/audio/mainBgm.wav";
 import BackgroundImg from "../assets/img/mungnyangImg.png";
+import { ReactComponent as VolumeOnIcon } from "../assets/img/volume_on.svg";
+import { ReactComponent as VolumeMuteIcon } from "../assets/img/volume_mute.svg";
 
 const Home = () => {
+    const [isMuted, setIsMuted] = useState(true);
     const [view, setView] = useState(false);
     const [roomInfo, setRoomInfo] = useState({
         roomId: "",
         roomPw: "",
     });
+    const [inputChecker, setInputChecker] = useState(false);
     const { roomId, roomPw } = roomInfo;
+    const roomIdCheck = useRef();
+    const roomPwCheck = useRef();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -32,6 +38,12 @@ const Home = () => {
             ...roomInfo,
             [e.target.id]: e.target.value,
         });
+        if (
+            roomIdCheck.current.value !== "" &&
+            roomPwCheck.current.value !== ""
+        )
+            setInputChecker(true);
+        else setInputChecker(false);
     };
 
     const handleOnKeyPress = (e) => {
@@ -43,33 +55,51 @@ const Home = () => {
     const changeView = () => {
         setRoomInfo({ roomId: "", roomPw: "" });
         setView(!view);
-        console.log(roomInfo);
     };
 
     const handleMakeRoom = async () => {
+        if (!inputChecker) {
+            return false;
+        }
         await makeRoom(roomInfo).catch((err) => navigate("/error"));
         dispatch(ovActions.saveSessionPw(roomPw));
         navigate("/test");
     };
 
     const handleJoinRoom = async () => {
+        if (!inputChecker) {
+            return false;
+        }
         const joinRoomResponse = await enterRoom(roomInfo);
         joinRoomResponse && joinRoomResponse.error
             ? console.log("Error:", joinRoomResponse.error)
             : navigate("/test");
     };
 
+    const audioElement = document.getElementById("bgm");
     useEffect(() => {
-        const audioElement = document.getElementById("bgm");
         if (audioElement) {
             audioElement.volume = 0.07; // 음량 조절
             audioElement.play(); // 재생
         }
     }, []);
 
+    function toggleVolume() {
+        if (audioElement) {
+            if (isMuted) {
+                audioElement.volume = 0.07;
+                audioElement.muted = true;
+            } else {
+                audioElement.muted = false;
+            }
+        }
+        setIsMuted((prevState) => !prevState);
+        console.log(isMuted);
+    }
+
     return (
         <HomeContainer>
-            <audio id="bgm" autoPlay loop>
+            <audio id="bgm" muted={isMuted} autoPlay loop>
                 <source src={mainBgm} type="audio/wav" />
             </audio>
             <LeftBox className="leftbox">
@@ -90,6 +120,7 @@ const Home = () => {
                         placeholder="방제목"
                         value={roomId}
                         onChange={handleChange}
+                        ref={roomIdCheck}
                     />
                     <Input
                         id="roomPw"
@@ -98,9 +129,35 @@ const Home = () => {
                         value={roomPw}
                         onChange={handleChange}
                         onKeyPress={handleOnKeyPress}
+                        ref={roomPwCheck}
                     />
                 </FormBox>
                 <ButtonBox>
+                    {isMuted ? (
+                        <Button
+                            key="mute"
+                            type="icon"
+                            width="45px"
+                            height="40px"
+                            margin="30px"
+                            background={`var(--beige-dark)`}
+                            onClick={toggleVolume}
+                        >
+                            <VolumeMuteIcon width="23" height="23" />
+                        </Button>
+                    ) : (
+                        <Button
+                            key="on"
+                            type="icon"
+                            width="45px"
+                            height="40px"
+                            margin="30px"
+                            background={`var(--beige-dark)`}
+                            onClick={toggleVolume}
+                        >
+                            <VolumeOnIcon width="23" height="23" />
+                        </Button>
+                    )}
                     {view ? (
                         <Button
                             text={"방생성"}

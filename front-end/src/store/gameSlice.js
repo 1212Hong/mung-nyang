@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     setCnt: 0, // 방장이 정한 게임 총 세트 수
     curSetCnt: 0,
-    lastRound: false,
+    lastRound: false, // 2round = 1set -> 마지막 라운드면 true
     gameVoteCnt: 0, // 게임 시작투표에 대한 누적 카운트
     setId: 0,
     score: {},
@@ -17,8 +17,10 @@ const initialState = {
     category: "",
     dupLiars: [],
     penaltyUser: "",
-    passCnt: 0, // 벌칙에서 pass를 누른 인원수
+    passCnt: 0, // 벌칙에서 pass를 누른 인원수m
+    emgSignal: false,
     liarName: "",
+    videoId: "",
 };
 
 export const gameSlice = createSlice({
@@ -79,8 +81,14 @@ export const gameSlice = createSlice({
         updateCurSetCnt: (state, action) => {
             state.curSetCnt = action.payload;
         },
-        updateLiarName: (state, action) => {
-            state.liarName = action.payload;
+        updateEmgSignal: (state, action) => {
+            state.emgSignal = action.payload;
+        },
+        updateEmgSignal: (state, action) => {
+            state.emgSignal = action.payload;
+        },
+        updateVideoId: (state, action) => {
+            state.videoId = action.payload;
         },
     },
 });

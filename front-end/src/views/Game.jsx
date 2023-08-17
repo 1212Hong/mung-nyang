@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import TopBottomVideo from "./game/TopBottomVideo";
 import Dance from "./game/Dance";
@@ -13,15 +13,12 @@ import SelectAnswer from "../views/game/SelectAnswer";
 import OtherView from "../views/game/OtherView";
 import OpenLiar from "../views/game/OpenLiar";
 import { outRoom } from "../api/room";
-import Loading from "./Loading";
 import { gameActions } from "../store/gameSlice";
 import { closeModal, openModal } from "../store/modalSlice";
 import DupLiar from "./game/DupLiar";
 import QnAPage from "./game/QnAPage";
 import { changePhase } from "../store/phaseSlice";
 import FinAns from "./game/FinAns";
-
-// const TestSound = require("../assets/audio/test_sound.mp3");
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -104,21 +101,16 @@ const PHASE_COMPONENTS = [
 
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const {
-        publisher,
-        subscribers,
-        myUserName,
-        token,
-        mySessionId,
-        playerId,
-        owner,
-    } = openvidu;
+    const game = useSelector((state) => state.game);
+    const { subscribers, myUserName, token, mySessionId, playerId, owner } =
+        openvidu;
+    const { gameVoteCnt } = game;
     // State 업데이트를 더 잘 다루기 위해 여러 useState를 사용합니다.
     const [OV, setOV] = useState(new OpenVidu());
     const [session, setSession] = useState(OV.initSession());
-    const [newPublisher, setPublisher] = useState(null);
+    const [mainStreamManager, setMainStreamManager] = useState(null);
+    const [publisher, setPublisher] = useState(null);
     const [subscribersList, setSubscribersList] = useState([]);
-    // const audioRef = useRef(null);
 
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
@@ -166,41 +158,6 @@ const Game = () => {
                 console.log(publisher);
                 newSession.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
-
-                // newSession.on("publisherStartSpeaking", (event) => {
-                //     console.log(
-                //         "User " +
-                //             event.connection.connectionId +
-                //             " start speaking",
-                //     );
-                //     audioRef.current.play();
-                //     setTimeout(() => {
-                //         audioRef.current.pause();
-                //     }, 3000);
-                // });
-
-                newSession.on("signal:dropUser", (e) => {
-                    console.log(e.data);
-                    console.log(newSession.streamManagers);
-                    const dropUser = newSession.streamManagers.find(
-                        (user) => user.stream.connection.data === e.data,
-                    );
-                    console.log(dropUser);
-                    deleteSubscriber(dropUser);
-
-                    if (myUserName === e.data) {
-                        dispatch(
-                            openModal({
-                                modalType: "DropUserModal",
-                                isOpen: true,
-                            }),
-                        );
-                        setTimeout(() => {
-                            dispatch(closeModal());
-                            navigate("/");
-                        }, 5000);
-                    }
-                });
 
                 newSession.on("signal:startGameVote", () => {
                     dispatch(
@@ -282,13 +239,11 @@ const Game = () => {
 
                         dispatch(changePhase("DupLiar"));
                     });
-
                 newSession.on("signal:noLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.updateResult(event.data));
                     dispatch(changePhase("MidScore"));
                 });
-
                 !owner &&
                     newSession.on("signal:getresult", (event) => {
                         console.log(event.data);
@@ -299,8 +254,8 @@ const Game = () => {
                         } else if (event.data === "LiarWin_NotLiar") {
                             dispatch(gameActions.updateResult("라이어 승리"));
                         }
+                        dispatch(changePhase("MidScore"));
                     });
-
                 newSession.on("signal:VotedLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.saveLiar(event.data));
@@ -351,6 +306,7 @@ const Game = () => {
 
                 setPublisher(publisher);
 
+                session.signal({});
                 console.log(currentVideoDevice);
                 console.log("success connect to the session");
 
@@ -359,6 +315,12 @@ const Game = () => {
                     const userMessage = event.data;
                     const messageData = { userName, userMessage };
                     dispatch(ovActions.updateMessage(messageData));
+                });
+                session.on("signal:emgAnswered", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.updateEmgSignal(true));
+                    dispatch(gameActions.saveResult(event.data));
+                    dispatch(changePhase("MidScore"));
                 });
             } catch (error) {
                 console.log(
@@ -392,15 +354,15 @@ const Game = () => {
         // componentWillUnmount
         return () => {
             console.log("willunmount");
-            window.removeEventListener("beforeunload", leaveSession);
+            window.removeEventListener("beforeunload", onbeforeunload);
         };
     }, []);
 
     const deleteSubscriber = async (streamManager) => {
         console.log("delete 호출");
         console.log(streamManager);
-        console.log(subscribers);
-        const updatedSubscribers = subscribers.filter(
+        console.log(subscribersList);
+        const updatedSubscribers = subscribersList.filter(
             (sub) => sub.stream.streamId !== streamManager.stream.streamId,
         );
         console.log(updatedSubscribers);
@@ -420,6 +382,7 @@ const Game = () => {
         // 모든 state 업데이트 초기화
         setOV(null);
         setSession(undefined);
+        setMainStreamManager(undefined);
         setPublisher(undefined);
         setSubscribersList([]);
         dispatch(ovActions.leaveSession());
@@ -437,12 +400,7 @@ const Game = () => {
         return <>{findPhase.component}</>;
     };
 
-    return (
-        <>
-            {/* <audio ref={audioRef} src={TestSound} loop={false} /> */}
-            {renderPhase()}
-        </>
-    );
+    return <>{renderPhase()}</>;
 };
 
 export default Game;
