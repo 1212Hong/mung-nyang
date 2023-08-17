@@ -106,7 +106,7 @@ function WordDescription() {
             await getUserWord(setId, myUserName).then((response) => {
                 console.log(response);
                 myUserName !== answerer && setWord(response.data.playerWord);
-                gameActions.updateLiarName(response.data.liarName);
+                dispatch(gameActions.updateLiarName(response.data.liarName));
             });
         };
 

@@ -20,7 +20,7 @@ import { Overlay } from "../../components/layout/selectAnswer";
 
 const LiarVote = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { session, owner, myUserName } = openvidu;
+    const { session, owner, myUserName, subscribers, publisher } = openvidu;
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
     const text = "라이어를 선택하세요.";
@@ -141,6 +141,18 @@ const LiarVote = () => {
                 <Timer time={10} onTimerEnd={() => setAnswered(true)} />
             )}
             <Box>
+                {publisher.stream.connection.data !== answerer && (
+                    <ExItem>
+                        <SubText>
+                            본인 : {publisher.stream.connection.data}
+                        </SubText>
+                        <VideoComponent
+                            width="350px"
+                            height="300px"
+                            streamManager={publisher}
+                        />
+                    </ExItem>
+                )}
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
                         if (subscriber.stream.connection.data === answerer) {
@@ -159,8 +171,8 @@ const LiarVote = () => {
                         }
                     })}
 
-                {session.streamManagers &&
-                    session.streamManagers.map((subscriber, i) => {
+                {subscribers &&
+                    subscribers.map((subscriber, i) => {
                         if (subscriber.stream.connection.data !== answerer) {
                             return (
                                 <React.Fragment key={i}>
