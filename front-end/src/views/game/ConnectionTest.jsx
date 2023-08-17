@@ -16,6 +16,7 @@ import {
     SettingIcon,
     RefreshIcon,
     RightItem,
+    DescBox,
 } from "../../components/layout/connectionTest";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +29,7 @@ import { MidText } from "../../components/layout/common";
 import { ovActions } from "../../store/openviduSlice";
 import { enterGameRoom } from "../../hooks/testView";
 import Loading from "../Loading";
+import { ReactComponent as RefreshIconO } from "../../assets/img/icon _refresh_circle_.svg";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
 
@@ -48,8 +50,14 @@ function ConnectionTest() {
     const handleChange = (e) => {
         setUserName(e.target.value);
     };
-    // 사용자 제스처와 연관된 플래그
+    // 사용자 제스처와 연관된 플래그 -> 이거 쓰나?
     const [userGesturePerformed, setUserGesturePerformed] = useState(false);
+
+    const handleOnKeyPress = (e) => {
+        if (e.key === "Enter") {
+            handleGoWaitingRoom();
+        }
+    };
 
     const handleGoWaitingRoom = async () => {
         console.log(mySessionId);
@@ -233,10 +241,12 @@ function ConnectionTest() {
                                 />
                             </RightItem>
                             <FlexRowBox>
-                                <MidText>소리변조 테스트</MidText>
-
+                                <DescBox>
+                                    <MidText>소리변조 테스트</MidText>
+                                </DescBox>
                                 <Button
                                     text="테스트"
+                                    shadow="none"
                                     width="100px"
                                     onClick={handleTestButtonClick}
                                     className="testBtn"
@@ -250,17 +260,18 @@ function ConnectionTest() {
                                         value={userName}
                                         disabled="disabled"
                                         onChange={handleChange}
+                                        onKeyPress={handleOnKeyPress}
                                     />
                                 </NickName>
                                 <Button
-                                    isOn={isOn}
                                     onClick={refreshName}
-                                    padding={0}
+                                    width="45px"
                                     type="icon"
-                                    width="100px"
                                     background="dusty-pink-white"
+                                    shadow="none"
                                 >
-                                    <RefreshIcon width="45" height="45" />
+                                    {/* 리롤버튼 css안깨지는거로 수정 필요 */}
+                                    <RefreshIconO width="45" height="45" />
                                 </Button>
                                 <Button
                                     width="100px"

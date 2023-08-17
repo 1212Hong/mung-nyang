@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     ButtonBox,
     FormBox,
@@ -45,6 +45,12 @@ const Home = () => {
         else setInputChecker(false);
     };
 
+    const handleOnKeyPress = (e) => {
+        if (e.key === "Enter") {
+            view ? handleMakeRoom() : handleJoinRoom();
+        }
+    };
+
     const changeView = () => {
         setRoomInfo({ roomId: "", roomPw: "" });
         setView(!view);
@@ -68,6 +74,14 @@ const Home = () => {
             ? console.log("Error:", joinRoomResponse.error)
             : navigate("/test");
     };
+
+    useEffect(() => {
+        const audioElement = document.getElementById("bgm");
+        if (audioElement) {
+            audioElement.volume = 0.07; // 음량 조절
+            audioElement.play(); // 재생
+        }
+    }, []);
     const roomInfoCheck = () => {
         if (!roomInfo.roomId || !roomInfo.roomPw) {
             alert("맞음?");
@@ -105,12 +119,13 @@ const Home = () => {
                         type="password"
                         value={roomPw}
                         onChange={handleChange}
+                        onKeyPress={handleOnKeyPress}
                         ref={roomPwCheck}
                     />
                     {inputChecker ? (
                         ""
                     ) : (
-                        <p style={{ color: "rgba(255,0,0, 0.5)" }}>
+                        <p style={{ color: "rgab" }}>
                             방 제목과 비밀번호를 입력해주세요.
                         </p>
                     )}

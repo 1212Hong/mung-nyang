@@ -6,38 +6,41 @@ import {
     Container,
     TitleBox,
     RankBox,
-    Border,
-    LineItem,
     RankItem,
     NameItem,
     ScoreItem,
-    TitleItem,
-    SetItem,
     BtnBox,
-    LineFrame,
     Frame,
     RankBoxFrame,
-    ImgItem,
-    ImgFrame,
-    FrameBox,
+    RankItemFrame,
+    RankUserFrame,
+    ScoreText,
+    ColorWhite,
+    RankColor,
+    AnswerItem,
 } from "../../components/layout/scoreTotal";
 import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
-import foots from "../../assets/img/foots.png";
 import VideoComponent from "../../components/VideoComponent";
-import { AnswerItem } from "../../components/layout/otherView";
-import { SmallText } from "../../components/layout/common";
-import cat from "../../assets/img/scorecat.png";
+import {
+    MidText,
+    SubText,
+    MainText,
+    ModalMainText,
+} from "../../components/layout/common";
+import { NotificationContainer } from "../../components/layout/selectLiar";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
     const result = useSelector((state) => state.game.result);
+    const liar = useSelector((state) => state.game.selectedLiar);
     const setCnt = useSelector((state) => state.game.setCnt);
     const set = useSelector((state) => state.game.curSetCnt);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const [scoreData, setScoreData] = useState({});
     const openvidu = useSelector((state) => state.openvidu);
     const { session, owner } = openvidu;
+    const [showNotification, setShowNotification] = useState(true);
     console.log(result);
 
     const userlist = [];
@@ -55,14 +58,13 @@ const ScoreTotal = () => {
             .catch((error) => {
                 console.error("Error fetching score:", error);
             });
-        // signal 받기
         session.on("signal:startDance", (event) => {
             console.log(event.data);
-            dispatch(changePhase(event.data));
+            dispatch(changePhase("Dance"));
         });
         session.on("signal:startQuiz", (event) => {
             console.log(event.data);
-            dispatch(changePhase(event.data));
+            dispatch(changePhase("Quiz"));
         });
     }, []);
     const information = [];
@@ -82,7 +84,6 @@ const ScoreTotal = () => {
         .slice()
         .sort((a, b) => b.score - a.score);
 
-    // signal 적용
     const signalDance = async () => {
         session.signal({
             data: "Dance",
@@ -112,10 +113,20 @@ const ScoreTotal = () => {
         }
     };
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowNotification(false);
+        }, 3000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
+
     return (
         <Container>
             <TitleBox>
-                <TitleItem>{result}</TitleItem>
+                <MainText>{result}</MainText>
                 <Frame>
                     <BtnBox>
                         {owner && (
@@ -128,48 +139,59 @@ const ScoreTotal = () => {
                             </Button>
                         )}
                     </BtnBox>
-                    <SetItem>
-                        세트 : {set} / {setCnt}
-                    </SetItem>
+                    {set >= setCnt ? (
+                        <SubText>모든 세트가 종료되었습니다. </SubText>
+                    ) : (
+                        <div>
+                            {/* <div>
+                                <SubText>
+                                    세트 : {set} / {setCnt}
+                                </SubText>
+                            </div> */}
+                            <SubText>{setCnt - set} 세트 남았습니다.</SubText>
+                        </div>
+                    )}
                 </Frame>
             </TitleBox>
             <RankBoxFrame>
-                <RankBox>
-                    <Border>
-                        <RankItem>Rank</RankItem>
-                        <NameItem>닉네임</NameItem>
-                        <ScoreItem>총 점수</ScoreItem>
-                    </Border>
-                    <FrameBox>
-                        <LineFrame>
-                            {sortedInformation.map((user, index) => (
-                                <LineItem key={index}>
-                                    {session.streamManagers.map((sub, i) =>
-                                        sub.stream.connection.data ===
-                                        user.username ? (
-                                            <React.Fragment key={i}>
-                                                <AnswerItem>
-                                                    <VideoComponent
-                                                        width="70px"
-                                                        height="70px"
-                                                        streamManager={sub}
-                                                    />
-                                                </AnswerItem>
-                                            </React.Fragment>
-                                        ) : null,
-                                    )}
-                                    <RankItem>{index + 1}등</RankItem>
-                                    <NameItem>{user.username}</NameItem>
-                                    <ScoreItem>{user.score}</ScoreItem>
-                                </LineItem>
-                            ))}
-                        </LineFrame>
-                    </FrameBox>
-                </RankBox>
-                <ImgFrame>
-                    <img src={cat} alt="" width={350} height={500} />
-                </ImgFrame>
+                {sortedInformation.map((user, index) => (
+                    <RankBox key={index}>
+                        {session.streamManagers.map((sub, i) =>
+                            sub.stream.connection.data === user.username ? (
+                                <React.Fragment key={i}>
+                                    <AnswerItem>
+                                        <RankUserFrame>
+                                            <RankItem>
+                                                <RankColor>
+                                                    <MidText>
+                                                        {index + 1}
+                                                    </MidText>
+                                                </RankColor>
+                                            </RankItem>
+                                            <VideoComponent
+                                                width="220px"
+                                                height="200px"
+                                                streamManager={sub}
+                                            />
+                                        </RankUserFrame>
+                                        <NameItem>
+                                            <SubText>{user.username}</SubText>
+                                        </NameItem>
+                                    </AnswerItem>
+                                </React.Fragment>
+                            ) : null,
+                        )}
+                        <RankItemFrame>
+                            <ScoreItem>
+                                <ScoreText>{user.score} 점</ScoreText>
+                            </ScoreItem>
+                        </RankItemFrame>
+                    </RankBox>
+                ))}
             </RankBoxFrame>
+            <NotificationContainer show={showNotification}>
+                <ModalMainText>라이어 : {liar}</ModalMainText>
+            </NotificationContainer>
         </Container>
     );
 };

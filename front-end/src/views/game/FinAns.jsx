@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Box, ColBox, ImgBox, InputBox } from "../../components/layout/finAns";
 import Button from "../../components/Button";
 import { finalAnswer } from "../../api/game";
+import { Videobox, VideoUserName } from "../../components/layout/waiting";
 
 const FinAns = () => {
     const [ans, setAns] = useState("");
@@ -75,7 +76,6 @@ const FinAns = () => {
 
     return (
         <Container>
-            <Timer />
             <AnswerBox>
                 {streams &&
                     streams.map((user, i) => (
@@ -130,14 +130,16 @@ const FinAns = () => {
                         <React.Fragment key={i}>
                             {user.stream.connection.data !== answerer && (
                                 <OtherUsers>
-                                    <SmallText>
-                                        {user.stream.connection.data}
-                                    </SmallText>
-                                    <VideoComponent
-                                        width="232px"
-                                        height="235px"
-                                        streamManager={user}
-                                    />
+                                    <Videobox>
+                                        <VideoComponent
+                                            width="232px"
+                                            height="235px"
+                                            streamManager={user}
+                                        />
+                                        <VideoUserName>
+                                            {user.stream.connection.data}
+                                        </VideoUserName>
+                                    </Videobox>
                                 </OtherUsers>
                             )}
                         </React.Fragment>

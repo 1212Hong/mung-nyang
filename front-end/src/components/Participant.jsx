@@ -2,6 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import Button from "./Button";
 import { useSelector } from "react-redux";
+import { SubText } from "./layout/common";
 
 const Container = styled.div`
     /* width: 250px; */
@@ -18,14 +19,23 @@ const UserItem = styled.div`
     grid-template-columns: 200px 20px;
     margin: 5px 0px;
 `;
-const UserName = styled.div``;
 
-function Participant({ publisher, subscribers }) {
+function Participant({ publisher }) {
     const openvidu = useSelector((state) => state.openvidu);
-    const { owner } = openvidu;
+    const { owner, session, subscribers } = openvidu;
+
     console.log(owner);
     console.log(publisher);
     console.log(subscribers);
+
+    const dropUser = (userName) => {
+        session.signal({
+            data: userName,
+            to: [],
+            type: "dropUser",
+        });
+    };
+
     return (
         <Container>
             <div className="header">
@@ -34,18 +44,26 @@ function Participant({ publisher, subscribers }) {
             <br />
             <div className="container-body">
                 <UserItem>
-                    <UserName>{publisher.stream.connection.data}</UserName>
+                    <SubText>{publisher.stream.connection.data}</SubText>
                 </UserItem>
                 {subscribers.map((item, key) => (
                     <UserItem key={key}>
-                        <UserName>{item.stream.connection.data}</UserName>
-                        {owner ? (
-                            <Button width="20px" height="20px">
-                                x
+                        <SubText>{item.stream.connection.data}</SubText>{" "}
+                        {/* {owner ? (
+                            <Button
+                                width="25px"
+                                height="22px"
+                                type="icon"
+                                shadow="none"
+                                onClick={() =>
+                                    dropUser(item.stream.connection.data)
+                                }
+                            >
+                                X
                             </Button>
                         ) : (
                             ""
-                        )}
+                        )} */}
                     </UserItem>
                 ))}
             </div>

@@ -29,6 +29,7 @@ const Input = forwardRef((props, ref) => {
         id,
         value,
         disabled,
+        onKeyPress,
         required,
     } = props;
 
@@ -45,6 +46,7 @@ const Input = forwardRef((props, ref) => {
             value={value}
             disabled={disabled}
             ref={ref}
+            onKeyPress={onKeyPress}
             required={required}
         />
     );
