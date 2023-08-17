@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import { MidText, SubText, MainText } from "../../components/layout/common";
+import { Overlay } from "../../components/layout/selectAnswer";
 
 const DupLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -206,6 +207,7 @@ const DupLiar = () => {
                         return null;
                     })}
             </Box>
+            <Overlay show={showNotification} />
             <NotificationContainer show={showNotification}>
                 {text}
             </NotificationContainer>

@@ -88,11 +88,9 @@ const SelectAnswer = () => {
                 ))}
             </Line>
             <Overlay show={showNotification} />
-            <ModalContainer>
-                <NotificationContainer show={showNotification}>
-                    <MainText>{text}</MainText>
-                </NotificationContainer>
-            </ModalContainer>
+            <NotificationContainer show={showNotification}>
+                <MainText>{text}</MainText>
+            </NotificationContainer>
         </Container>
     );
 };

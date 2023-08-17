@@ -89,9 +89,9 @@ const OpenLiar = () => {
                             )}
                         </React.Fragment>
                     ))}
-                <MidText>
+                <MainText>
                     <Card description={selectedAnswer} />
-                </MidText>
+                </MainText>
             </AnswerBox>
             <UserBox>
                 {session.streamManagers &&
