@@ -38,6 +38,7 @@ export const NotificationContainer = styled.div`
     font-size: 72px;
     color: var(--brown-dark);
     padding: 20px;
+    opacity: 0.9;
 `;
 
 export const ImageOverlay = styled.div`
