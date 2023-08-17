@@ -133,12 +133,12 @@ function WordDescription() {
     useEffect(() => {
         if (myUserName !== answerer) {
             session.on("publisherStartSpeaking", (event) => {
-                publisher.publishAudio(false);
+                if (phase === "Desc") publisher.publishAudio(false);
                 if (audioRef.current) audioRef.current.play();
             });
             session.on("publisherStopSpeaking", (e) => {
                 if (audioRef.current) audioRef.current.pause();
-                publisher.publishAudio(true);
+                if (phase === "Desc") publisher.publishAudio(true);
             });
         }
         if (myUserName === answerer) {
