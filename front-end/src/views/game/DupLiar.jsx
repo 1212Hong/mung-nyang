@@ -143,6 +143,23 @@ const DupLiar = () => {
             <Box>
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
+                        if (subscriber.stream.connection.data === answerer) {
+                            return (
+                                <React.Fragment key={i}>
+                                    <ExItem>
+                                        <SubText>정답자 : {answerer}</SubText>
+                                        <VideoComponent
+                                            width="350px"
+                                            height="300px"
+                                            streamManager={subscriber}
+                                        />
+                                    </ExItem>
+                                </React.Fragment>
+                            );
+                        }
+                    })}
+                {session.streamManagers &&
+                    session.streamManagers.map((subscriber, i) => {
                         const nickname = subscriber.stream.connection.data;
                         const isDisplayed = updatedDupLiars.includes(nickname);
 
@@ -172,7 +189,7 @@ const DupLiar = () => {
                                         </SubText>
                                         <VideoComponent
                                             width="350px"
-                                            height="320px"
+                                            height="300px"
                                             streamManager={subscriber}
                                         />
                                     </Item>
@@ -188,23 +205,30 @@ const DupLiar = () => {
                         const isDisplayed = updatedDupLiars.includes(nickname);
 
                         if (!isDisplayed) {
-                            return (
-                                <React.Fragment key={i}>
-                                    <ExItem>
-                                        <SubText>
-                                            {subscriber.stream.connection.data}
-                                        </SubText>
-                                        <VideoComponent
-                                            width="350px"
-                                            height="320px"
-                                            streamManager={subscriber}
-                                        />
-                                    </ExItem>
-                                </React.Fragment>
-                            );
-                        }
+                            if (
+                                subscriber.stream.connection.data !== answerer
+                            ) {
+                                return (
+                                    <React.Fragment key={i}>
+                                        <ExItem>
+                                            <SubText>
+                                                {
+                                                    subscriber.stream.connection
+                                                        .data
+                                                }
+                                            </SubText>
+                                            <VideoComponent
+                                                width="350px"
+                                                height="300px"
+                                                streamManager={subscriber}
+                                            />
+                                        </ExItem>
+                                    </React.Fragment>
+                                );
+                            }
 
-                        return null;
+                            return null;
+                        }
                     })}
             </Box>
             <Overlay show={showNotification} />
