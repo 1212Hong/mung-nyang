@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import VideoComponent from "../../components/VideoComponent";
 import Card from "../../components/Card";
 import clockImg from "../../assets/img/clock.png";
@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Box, ColBox, ImgBox, InputBox } from "../../components/layout/finAns";
 import Button from "../../components/Button";
 import { finalAnswer } from "../../api/game";
-import { Videobox, VideoUserName } from "../../components/layout/waiting";
 
 const FinAns = () => {
     const [ans, setAns] = useState("");
@@ -33,7 +32,7 @@ const FinAns = () => {
     const game = useSelector((state) => state.game);
     const { answerer, setId } = game;
     const streams = session.streamManagers;
-
+    const userInput = useRef();
     const handleChange = (e) => {
         setAns(e.target.value);
     };
@@ -46,8 +45,8 @@ const FinAns = () => {
         });
     };
 
-    const submitAnswer = async (ans) => {
-        await finalAnswer(setId, mySessionId, ans)
+    const submitAnswer = async () => {
+        await finalAnswer(setId, mySessionId, userInput.current.value)
             .then((res) => {
                 console.log(res); // 올바른 반환값 : resultReturn, gameProcessType 담긴 객체
                 setResReturn(res.data.resReturn);
@@ -76,6 +75,7 @@ const FinAns = () => {
 
     return (
         <Container>
+            <Timer />
             <AnswerBox>
                 {streams &&
                     streams.map((user, i) => (
@@ -106,9 +106,13 @@ const FinAns = () => {
                             />
                         </ImgBox>
                         <InputBox>
-                            <Input value={ans} onChange={handleChange} />
+                            <Input
+                                value={ans}
+                                ref={userInput}
+                                onChange={handleChange}
+                            />
                             <Button
-                                onClick={() => submitAnswer(ans)}
+                                onClick={() => submitAnswer()}
                                 width="155px"
                                 height="40px"
                             >
@@ -126,16 +130,14 @@ const FinAns = () => {
                         <React.Fragment key={i}>
                             {user.stream.connection.data !== answerer && (
                                 <OtherUsers>
-                                    <Videobox>
-                                        <VideoComponent
-                                            width="232px"
-                                            height="235px"
-                                            streamManager={user}
-                                        />
-                                        <VideoUserName>
-                                            {user.stream.connection.data}
-                                        </VideoUserName>
-                                    </Videobox>
+                                    <SmallText>
+                                        {user.stream.connection.data}
+                                    </SmallText>
+                                    <VideoComponent
+                                        width="232px"
+                                        height="235px"
+                                        streamManager={user}
+                                    />
                                 </OtherUsers>
                             )}
                         </React.Fragment>

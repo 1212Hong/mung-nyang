@@ -193,13 +193,8 @@ const DupLiar = () => {
                                             />
                                         </ImageOverlay>
                                         <SubText>
-                                            <RedColor>
-                                                투표 대상자:{" "}
-                                                {
-                                                    subscriber.stream.connection
-                                                        .data
-                                                }
-                                            </RedColor>
+                                            투표 대상자:{" "}
+                                            {subscriber.stream.connection.data}
                                         </SubText>
                                         <VideoComponent
                                             width="350px"
