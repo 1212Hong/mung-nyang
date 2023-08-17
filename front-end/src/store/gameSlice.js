@@ -17,7 +17,8 @@ const initialState = {
     category: "",
     dupLiars: [],
     penaltyUser: "",
-    passCnt: 0, // 벌칙에서 pass를 누른 인원수
+    passCnt: 0, // 벌칙에서 pass를 누른 인원수m
+    emgSignal: false,
     liarName: "",
     videoId: "",
 };
@@ -80,8 +81,11 @@ export const gameSlice = createSlice({
         updateCurSetCnt: (state, action) => {
             state.curSetCnt = action.payload;
         },
-        updateLiarName: (state, action) => {
-            state.liarName = action.payload;
+        updateEmgSignal: (state, action) => {
+            state.emgSignal = action.payload;
+        },
+        updateEmgSignal: (state, action) => {
+            state.emgSignal = action.payload;
         },
         updateVideoId: (state, action) => {
             state.videoId = action.payload;

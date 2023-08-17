@@ -102,20 +102,14 @@ const PHASE_COMPONENTS = [
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const {
-        publisher,
-        subscribers,
-        myUserName,
-        token,
-        mySessionId,
-        playerId,
-        owner,
-    } = openvidu;
+    const { subscribers, myUserName, token, mySessionId, playerId, owner } =
+        openvidu;
     const { gameVoteCnt } = game;
     // State 업데이트를 더 잘 다루기 위해 여러 useState를 사용합니다.
     const [OV, setOV] = useState(new OpenVidu());
     const [session, setSession] = useState(OV.initSession());
-    const [newPublisher, setPublisher] = useState(null);
+    const [mainStreamManager, setMainStreamManager] = useState(null);
+    const [publisher, setPublisher] = useState(null);
     const [subscribersList, setSubscribersList] = useState([]);
 
     const phaseType = useSelector((state) => state.phase.phaseType);
@@ -164,29 +158,6 @@ const Game = () => {
                 console.log(publisher);
                 newSession.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
-
-                newSession.on("signal:dropUser", (e) => {
-                    console.log(e.data);
-                    console.log(newSession.streamManagers);
-                    const dropUser = newSession.streamManagers.find(
-                        (user) => user.stream.connection.data === e.data,
-                    );
-                    console.log(dropUser);
-                    deleteSubscriber(dropUser);
-
-                    if (myUserName === e.data) {
-                        dispatch(
-                            openModal({
-                                modalType: "DropUserModal",
-                                isOpen: true,
-                            }),
-                        );
-                        setTimeout(() => {
-                            dispatch(closeModal());
-                            navigate("/");
-                        }, 5000);
-                    }
-                });
 
                 newSession.on("signal:startGameVote", () => {
                     dispatch(
@@ -268,13 +239,11 @@ const Game = () => {
 
                         dispatch(changePhase("DupLiar"));
                     });
-
                 newSession.on("signal:noLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.updateResult(event.data));
                     dispatch(changePhase("MidScore"));
                 });
-
                 !owner &&
                     newSession.on("signal:getresult", (event) => {
                         console.log(event.data);
@@ -285,8 +254,8 @@ const Game = () => {
                         } else if (event.data === "LiarWin_NotLiar") {
                             dispatch(gameActions.updateResult("라이어 승리"));
                         }
+                        dispatch(changePhase("MidScore"));
                     });
-
                 newSession.on("signal:VotedLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.saveLiar(event.data));
@@ -337,6 +306,7 @@ const Game = () => {
 
                 setPublisher(publisher);
 
+                session.signal({});
                 console.log(currentVideoDevice);
                 console.log("success connect to the session");
 
@@ -345,6 +315,12 @@ const Game = () => {
                     const userMessage = event.data;
                     const messageData = { userName, userMessage };
                     dispatch(ovActions.updateMessage(messageData));
+                });
+                session.on("signal:emgAnswered", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.updateEmgSignal(true));
+                    dispatch(gameActions.saveResult(event.data));
+                    dispatch(changePhase("MidScore"));
                 });
             } catch (error) {
                 console.log(
@@ -378,15 +354,15 @@ const Game = () => {
         // componentWillUnmount
         return () => {
             console.log("willunmount");
-            window.removeEventListener("beforeunload", leaveSession);
+            window.removeEventListener("beforeunload", onbeforeunload);
         };
     }, []);
 
     const deleteSubscriber = async (streamManager) => {
         console.log("delete 호출");
         console.log(streamManager);
-        console.log(subscribers);
-        const updatedSubscribers = subscribers.filter(
+        console.log(subscribersList);
+        const updatedSubscribers = subscribersList.filter(
             (sub) => sub.stream.streamId !== streamManager.stream.streamId,
         );
         console.log(updatedSubscribers);
@@ -406,6 +382,7 @@ const Game = () => {
         // 모든 state 업데이트 초기화
         setOV(null);
         setSession(undefined);
+        setMainStreamManager(undefined);
         setPublisher(undefined);
         setSubscribersList([]);
         dispatch(ovActions.leaveSession());

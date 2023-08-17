@@ -52,16 +52,18 @@ function WordDescription() {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { myUserName, session, owner, mainStreamManager } = openvidu;
-    const { gameId, result, answerer, setId, playerId, lastRound } = game;
+    const phase = useSelector((state) => state.phase);
+    const { myUserName, session, owner, mainStreamManager, publisher } =
+        openvidu;
+    const { gameId, result, answerer, setId, playerId, lastRound, emgSignal } =
+        game;
+    const { phaseType } = phase;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
-    const [descUser, setDescUser] = useState();
     const [descIndex, setDescIndex] = useState(0);
     const [curIndex, setCurIndex] = useState(0);
     const [streamKey, setStreamKey] = useState(0);
     const streams = session.streamManagers;
-
     console.log(streams);
 
     console.log("세션");
@@ -98,16 +100,15 @@ function WordDescription() {
             console.log(myUserName);
             console.log(playerId);
             //setId 때문에 404 오류 생길 수 있음.
-
-            await getUserWord(setId, myUserName).then((response) => {
-                console.log(response);
-                myUserName !== answerer && setWord(response.data.playerWord);
-                dispatch(gameActions.updateLiarName(response.data.liarName));
-            });
+            myUserName !== answerer &&
+                (await getUserWord(setId, myUserName).then((response) => {
+                    setWord(response.data.playerWord);
+                    console.log(response);
+                }));
         };
 
         getFunc();
-
+        // 제시어 설명 시 시민 음소거
         if (myUserName === answerer)
             newOtherStreams.map((item) => {
                 item.subscribeToAudio(false);
@@ -120,37 +121,18 @@ function WordDescription() {
     const getNextDescIndex = () => {
         if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
-            // newOtherStreams.map((item) => {
-            //     item.stream.connection.data === sortedArr[descIndex]
-            //         ? setCurIndex(indexOf(item))
-            //         : setCurIndex(curIndex);
-            // });
-            console.log(mainStreamManager);
-        } else dispatch(changePhase("QnA"));
+        } else {
+            dispatch(changePhase("QnA"));
+        }
     };
 
     useEffect(() => {
-        const rotateStream = otherUserStreams.find(
-            (streamManager) =>
-                streamManager.stream.connection.data === sortedArr[descIndex],
+        let index = streams.findIndex(
+            (item) => item.stream.connection.data === sortedArr[descIndex],
         );
-        dispatch(ovActions.saveMainStreamManager(rotateStream));
+        setCurIndex(index);
         setStreamKey((prev) => prev + 1);
-        console.log(mainStreamManager);
     }, [descIndex]);
-
-    // useEffect(() => {
-    //     console.log(mainStreamManager);
-    // }, [mainStreamManager]);
-    // useEffect(() => {}, [timerKey]);
-
-    useEffect(() => {
-        // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
-        session.on("signal:emgAnswered", (e) => {
-            console.log(e.data);
-            dispatch(gameActions.saveResult(e.data));
-        });
-    });
 
     return (
         <Container>
@@ -164,11 +146,10 @@ function WordDescription() {
                                 <VideoComponent
                                     key={streamKey}
                                     streamManager={
-                                        session.streamManagers[descIndex]
+                                        session.streamManagers[curIndex]
                                     }
                                     width={"80%"}
                                     height={"80%"}
-                                    volumn={-100}
                                 />
                             }
                         </>

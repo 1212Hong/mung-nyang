@@ -8,14 +8,14 @@ import {
     AnswerItem,
     UserBox,
     Center,
+    NickName,
+    Notification,
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Result, deleteLiar } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import { SubText } from "../../components/layout/common";
-import { Overlay } from "../../components/layout/selectAnswer";
-import { NotificationContainer } from "../../components/layout/selectLiar";
 
 const OpenLiar = () => {
     const roomId = useSelector((state) => state.openvidu.mySessionId);
@@ -139,18 +139,23 @@ const OpenLiar = () => {
                                 <OtherUsers>
                                     <VideoComponent
                                         width="232px"
-                                        height="235px"
+                                        height="200px"
                                         streamManager={sub}
                                     />
+                                    <NickName>
+                                        <SubText>
+                                            {sub.stream.connection.data}
+                                        </SubText>
+                                    </NickName>
                                 </OtherUsers>
                             )}
                         </React.Fragment>
                     ))}
             </UserBox>
-            <Overlay show={showNotification} />
-            <NotificationContainer show={showNotification}>
+            {/* <Overlay show={showNotification} /> */}
+            <Notification show={showNotification}>
                 잠시후 라이어가 공개됩니다.
-            </NotificationContainer>
+            </Notification>
         </Container>
     );
 };
