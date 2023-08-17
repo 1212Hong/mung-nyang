@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import WaitingRoom from "./game/WaitingRoom";
 import TopBottomVideo from "./game/TopBottomVideo";
 import Dance from "./game/Dance";
@@ -20,6 +20,8 @@ import DupLiar from "./game/DupLiar";
 import QnAPage from "./game/QnAPage";
 import { changePhase } from "../store/phaseSlice";
 import FinAns from "./game/FinAns";
+
+// const TestSound = require("../assets/audio/test_sound.mp3");
 
 const PHASES = {
     // Test: "Test", // 테스트단계에서는 세션아이디는 받아오지만 실제 방에 들어가진 않도록 함
@@ -102,7 +104,6 @@ const PHASE_COMPONENTS = [
 
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const game = useSelector((state) => state.game);
     const {
         publisher,
         subscribers,
@@ -112,12 +113,12 @@ const Game = () => {
         playerId,
         owner,
     } = openvidu;
-    const { gameVoteCnt } = game;
     // State 업데이트를 더 잘 다루기 위해 여러 useState를 사용합니다.
     const [OV, setOV] = useState(new OpenVidu());
     const [session, setSession] = useState(OV.initSession());
     const [newPublisher, setPublisher] = useState(null);
     const [subscribersList, setSubscribersList] = useState([]);
+    // const audioRef = useRef(null);
 
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
@@ -165,6 +166,18 @@ const Game = () => {
                 console.log(publisher);
                 newSession.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
+
+                // newSession.on("publisherStartSpeaking", (event) => {
+                //     console.log(
+                //         "User " +
+                //             event.connection.connectionId +
+                //             " start speaking",
+                //     );
+                //     audioRef.current.play();
+                //     setTimeout(() => {
+                //         audioRef.current.pause();
+                //     }, 3000);
+                // });
 
                 newSession.on("signal:dropUser", (e) => {
                     console.log(e.data);
@@ -424,7 +437,12 @@ const Game = () => {
         return <>{findPhase.component}</>;
     };
 
-    return <>{renderPhase()}</>;
+    return (
+        <>
+            {/* <audio ref={audioRef} src={TestSound} loop={false} /> */}
+            {renderPhase()}
+        </>
+    );
 };
 
 export default Game;
