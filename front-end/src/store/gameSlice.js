@@ -84,8 +84,8 @@ export const gameSlice = createSlice({
         updateEmgSignal: (state, action) => {
             state.emgSignal = action.payload;
         },
-        updateEmgSignal: (state, action) => {
-            state.emgSignal = action.payload;
+        updateLiarName: (state, action) => {
+            state.liarName = action.payload;
         },
         updateVideoId: (state, action) => {
             state.videoId = action.payload;
