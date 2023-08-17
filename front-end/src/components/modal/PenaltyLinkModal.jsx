@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { closeModal } from "../../store/modalSlice";
-import { changePhase } from "../../store/phaseSlice";
 import Button from "../Button";
 import { getPenaltyLink } from "../../api/game";
+
 const LinkContainer = styled.div`
     position: fixed;
     top: 0;
@@ -91,7 +91,7 @@ const PenaltyLinkModal = () => {
                               <>
                                   <LinkContentDesc>게임</LinkContentDesc>
                                   <LinkContentUrl>
-                                      {item.length > 48
+                                      {item && item.length > 48
                                           ? item.slice(0, 48) + "..."
                                           : item}
                                   </LinkContentUrl>
