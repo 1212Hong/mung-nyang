@@ -129,6 +129,9 @@ function WordDescription() {
                 setTimeout(() => {
                     audioRef.current.pause();
                 }, 3000);
+                newOtherStreams.map((item) => {
+                    item.subscribeToAudio(true);
+                });
             });
         }
     }, [audioRef]);
@@ -172,7 +175,7 @@ function WordDescription() {
         <Container>
             <audio ref={audioRef} src={TestSound} loop={false} />
             <Timer
-                time={300}
+                time={15}
                 key={descIndex}
                 onTimerEnd={() => getNextDescIndex()}
             />
