@@ -88,7 +88,9 @@ const OpenLiar = () => {
 
     return (
         <Container>
-            <Timer time={5} onTimerEnd={() => setAnswered(true)} />
+            {!showNotification && (
+                <Timer time={5} onTimerEnd={() => setAnswered(true)} />
+            )}
             <AnswerBox>
                 {session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
