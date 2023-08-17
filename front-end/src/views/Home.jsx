@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
     ButtonBox,
     FormBox,
@@ -22,7 +22,10 @@ const Home = () => {
         roomId: "",
         roomPw: "",
     });
+    const [inputChecker, setInputChecker] = useState(false);
     const { roomId, roomPw } = roomInfo;
+    const roomIdCheck = useRef();
+    const roomPwCheck = useRef();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -31,27 +34,46 @@ const Home = () => {
             ...roomInfo,
             [e.target.id]: e.target.value,
         });
+        console.log(
+            roomIdCheck.current.value + " " + roomPwCheck.current.value,
+        );
+        if (
+            roomIdCheck.current.value !== "" &&
+            roomPwCheck.current.value !== ""
+        )
+            setInputChecker(true);
+        else setInputChecker(false);
     };
 
     const changeView = () => {
         setRoomInfo({ roomId: "", roomPw: "" });
         setView(!view);
-        console.log(roomInfo);
     };
 
     const handleMakeRoom = async () => {
+        if (!inputChecker) {
+            return false;
+        }
         await makeRoom(roomInfo).catch((err) => navigate("/error"));
         dispatch(ovActions.saveSessionPw(roomPw));
         navigate("/test");
     };
 
     const handleJoinRoom = async () => {
+        if (!inputChecker) {
+            return false;
+        }
         const joinRoomResponse = await enterRoom(roomInfo);
         joinRoomResponse && joinRoomResponse.error
             ? console.log("Error:", joinRoomResponse.error)
             : navigate("/test");
     };
-
+    const roomInfoCheck = () => {
+        if (!roomInfo.roomId || !roomInfo.roomPw) {
+            alert("맞음?");
+            setInputChecker(false);
+        }
+    };
     return (
         <HomeContainer>
             <audio autoPlay loop>
@@ -75,6 +97,7 @@ const Home = () => {
                         placeholder="방제목"
                         value={roomId}
                         onChange={handleChange}
+                        ref={roomIdCheck}
                     />
                     <Input
                         id="roomPw"
@@ -82,7 +105,15 @@ const Home = () => {
                         type="password"
                         value={roomPw}
                         onChange={handleChange}
+                        ref={roomPwCheck}
                     />
+                    {inputChecker ? (
+                        ""
+                    ) : (
+                        <p style={{ color: "rgba(255,0,0, 0.5)" }}>
+                            방 제목과 비밀번호를 입력해주세요.
+                        </p>
+                    )}
                 </FormBox>
                 <ButtonBox>
                     {view ? (
