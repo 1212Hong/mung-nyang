@@ -143,11 +143,11 @@ const ScoreTotal = () => {
                         <SubText>모든 세트가 종료되었습니다. </SubText>
                     ) : (
                         <div>
-                            <div>
+                            {/* <div>
                                 <SubText>
                                     세트 : {set} / {setCnt}
                                 </SubText>
-                            </div>
+                            </div> */}
                             <SubText>{setCnt - set} 세트 남았습니다.</SubText>
                         </div>
                     )}
