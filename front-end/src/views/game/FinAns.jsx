@@ -70,7 +70,7 @@ const FinAns = () => {
         return () => {
             clearTimeout(timer);
         };
-    }, []);
+    });
 
     return (
         <Container>
