@@ -148,7 +148,7 @@ const LiarVote = () => {
                                         <SubText>정답자 : {answerer}</SubText>
                                         <VideoComponent
                                             width="350px"
-                                            height="320px"
+                                            height="300px"
                                             streamManager={subscriber}
                                         />
                                     </ExItem>
@@ -190,7 +190,7 @@ const LiarVote = () => {
                                         </SubText>
                                         <VideoComponent
                                             width="350px"
-                                            height="320px"
+                                            height="300px"
                                             streamManager={subscriber}
                                         />
                                     </Item>
