@@ -139,7 +139,9 @@ const DupLiar = () => {
 
     return (
         <Container>
-            <Timer time={10} onTimerEnd={() => setAnswered(true)} />
+            {!showNotification && (
+                <Timer time={10} onTimerEnd={() => setAnswered(true)} />
+            )}
             <Box>
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
