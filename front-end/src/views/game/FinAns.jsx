@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Box, ColBox, ImgBox, InputBox } from "../../components/layout/finAns";
 import Button from "../../components/Button";
 import { finalAnswer } from "../../api/game";
+import { gameActions } from "../../store/gameSlice";
 
 const FinAns = () => {
     const [ans, setAns] = useState("");
@@ -55,6 +56,18 @@ const FinAns = () => {
 
                 signalFinAns(res.data.resultReturn, "MidScore"); // 비동기에러 생각해서 우선 데이터 받기 성공하면 시그널 전송
                 // signalFinAns(resReturn, nextPhase);
+                dispatch(gameActions.saveResult(res.data.resultReturn)); // "LiarLose_Final"
+                if (res.data.resultReturn === "LiarLose_Final") {
+                    dispatch(gameActions.updateResult("강아지 승리"));
+                }
+                const signalResult = async () => {
+                    session.signal({
+                        data: res.data.resultReturn,
+                        to: [],
+                        type: "getresult",
+                    });
+                };
+                signalResult();
                 dispatch(changePhase("MidScore"));
                 console.log(resReturn);
             })
