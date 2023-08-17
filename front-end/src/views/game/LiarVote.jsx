@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import { MidText, SubText, MainText } from "../../components/layout/common";
+import { ModalContainer } from "../../components/layout/modal";
 
 const LiarVote = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -197,12 +198,16 @@ const LiarVote = () => {
                         }
                     })}
             </Box>
-            <NotificationContainer show={showNotification}>
-                {text}
-            </NotificationContainer>
-            <NotificationContainer show={showLoading}>
-                집계중 입니다. 잠시만 기다려 주세요.
-            </NotificationContainer>
+            <ModalContainer>
+                <NotificationContainer show={showNotification}>
+                    {text}
+                </NotificationContainer>
+            </ModalContainer>
+            <ModalContainer>
+                <NotificationContainer show={showLoading}>
+                    집계중 입니다. 잠시만 기다려 주세요.
+                </NotificationContainer>
+            </ModalContainer>
         </Container>
     );
 };
