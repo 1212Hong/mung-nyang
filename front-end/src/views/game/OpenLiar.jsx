@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Result, deleteLiar } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import { MidText, SubText, MainText } from "../../components/layout/common";
+import { Overlay } from "../../components/layout/selectAnswer";
+import { NotificationContainer } from "../../components/layout/selectLiar";
 
 const OpenLiar = () => {
     const setId = useSelector((state) => state.game.setId);
@@ -25,6 +27,8 @@ const OpenLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { session, owner } = openvidu;
     const [answered, setAnswered] = useState(false);
+    const [note, setNote] = useState(false);
+    const [showNotification, setShowNotification] = useState(true);
 
     useEffect(() => {
         const getRes = async () => {
@@ -64,12 +68,23 @@ const OpenLiar = () => {
 
     useEffect(() => {
         const handlescore = () => {
-            dispatch(changePhase("MidScore"));
+            setShowNotification(true);
+            setNote(true);
         };
         if (answered) {
             handlescore();
         }
     }, [answered]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            dispatch(changePhase("MidScore"));
+        }, 3000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [note]);
 
     return (
         <Container>
@@ -109,6 +124,10 @@ const OpenLiar = () => {
                         </React.Fragment>
                     ))}
             </UserBox>
+            <Overlay show={showNotification} />
+            <NotificationContainer show={showNotification}>
+                잠시후 라이어가 공개됩니다.
+            </NotificationContainer>
         </Container>
     );
 };
