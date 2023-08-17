@@ -17,7 +17,7 @@ import { gameActions } from "../../store/gameSlice";
 import { MidText, SubText, MainText } from "../../components/layout/common";
 
 const OtherView = () => {
-    const text = "지목된 사람이 정답을 선택 중입니다.";
+    const text = "의심받은 강아지가 정답을 선택 중입니다.";
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const { session } = openvidu;
@@ -46,7 +46,7 @@ const OtherView = () => {
                             {sub.stream.connection.data === pickedLiar && (
                                 <Center>
                                     <SubText>
-                                        지목된 사람 : {pickedLiar}
+                                        의심받은 강아지 : {pickedLiar}
                                     </SubText>
                                     <VideoComponent
                                         width="500px"

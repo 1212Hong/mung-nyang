@@ -23,7 +23,7 @@ const LiarVote = () => {
     const { session, owner, myUserName, subscribers, publisher } = openvidu;
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
-    const text = "라이어를 선택하세요.";
+    const text = "고양이라고 의심되는 강아지를 선택하세요.";
     const imgSrc = foot;
     const dispatch = useDispatch();
     const roomId = useSelector((state) => state.openvidu.mySessionId);
@@ -57,7 +57,7 @@ const LiarVote = () => {
 
     const signalNoLiar = async () => {
         session.signal({
-            data: "라이어 승리",
+            data: "고양이 승리",
             to: [],
             type: "noLiar",
         });
@@ -105,7 +105,7 @@ const LiarVote = () => {
                 } else {
                     const response = await Result(setId, roomId, "", "");
                     console.log(response);
-                    dispatch(gameActions.updateResult("라이어 승리"));
+                    dispatch(gameActions.updateResult("고양이 승리"));
                     signalNoLiar();
                     dispatch(changePhase("MidScore"));
                 }
@@ -151,7 +151,7 @@ const LiarVote = () => {
                 {publisher.stream.connection.data !== answerer && (
                     <ExItem>
                         <SubText>
-                            본인 : {publisher.stream.connection.data}
+                            나 : {publisher.stream.connection.data}
                         </SubText>
                         <VideoComponent
                             width="350px"
@@ -166,7 +166,9 @@ const LiarVote = () => {
                             return (
                                 <React.Fragment key={i}>
                                     <ExItem>
-                                        <SubText>정답자 : {answerer}</SubText>
+                                        <SubText>
+                                            탐정 강아지 : {answerer}
+                                        </SubText>
                                         <VideoComponent
                                             width="350px"
                                             height="300px"
