@@ -17,11 +17,10 @@ export const RankBoxFrame = styled.div`
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 export const RankBox = styled.div`
-    border: 1px solid #ccc;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
     background-color: var(--macciato);
     height: 230px;
     padding: 20px;
@@ -35,7 +34,7 @@ export const RankItem = styled.div`
     border: 1px solid var(--brown-dark);
     height: 30px;
     width: 30px;
-    background-color: var(--macciato);
+    background-color: var(--white);
     border-radius: 8px;
 `;
 
@@ -48,7 +47,6 @@ export const RankItemFrame = styled.div`
 
 export const AnswerItem = styled.div`
     justify-content: center;
-    box-shadow: 1px 1px 1px var(--gray);
 `;
 
 export const NameItem = styled.div`
@@ -56,8 +54,8 @@ export const NameItem = styled.div`
     padding-left: 45px;
 `;
 
-export const ScoreText = styled.div`
-    font-size: 48px;
+export const ScoreText = styled.span`
+    font-size: 36px;
     color: var(--white);
 `;
 
