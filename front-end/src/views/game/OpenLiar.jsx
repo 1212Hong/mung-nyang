@@ -26,7 +26,7 @@ const OpenLiar = () => {
     console.log(liarName);
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
-    const { session, owner } = openvidu;
+    const { session, owner, subscribers, publisher } = openvidu;
     const [answered, setAnswered] = useState(false);
     const [note, setNote] = useState(false);
     const [showNotification, setShowNotification] = useState(true);
@@ -66,9 +66,10 @@ const OpenLiar = () => {
         };
         owner && getRes();
 
-        session.streamManagers.map((item) => {
+        subscribers.map((item) => {
             item.subscribeToAudio(true);
         });
+        publisher.publishAudio(true);
     }, []);
 
     useEffect(() => {
