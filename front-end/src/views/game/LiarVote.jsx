@@ -119,7 +119,7 @@ const LiarVote = () => {
             if (owner) {
                 setTimeout(() => {
                     handleResult();
-                }, 3000);
+                }, 2000);
             }
         };
 
@@ -131,7 +131,7 @@ const LiarVote = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowNotification(false);
-        }, 3000);
+        }, 2000);
 
         return () => {
             clearTimeout(timer);
@@ -141,7 +141,7 @@ const LiarVote = () => {
     return (
         <Container>
             {!showNotification && (
-                <Timer time={10} onTimerEnd={() => setAnswered(true)} />
+                <Timer time={8} onTimerEnd={() => setAnswered(true)} />
             )}
             <Box>
                 {publisher.stream.connection.data !== answerer && (
