@@ -22,7 +22,12 @@ import {
 import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import VideoComponent from "../../components/VideoComponent";
-import { MidText, SubText, MainText } from "../../components/layout/common";
+import {
+    MidText,
+    SubText,
+    MainText,
+    ModalMainText,
+} from "../../components/layout/common";
 import { NotificationContainer } from "../../components/layout/selectLiar";
 
 const ScoreTotal = () => {
@@ -178,7 +183,7 @@ const ScoreTotal = () => {
                 ))}
             </RankBoxFrame>
             <NotificationContainer show={showNotification}>
-                라이어 : {liar}
+                <ModalMainText>라이어 : {liar}</ModalMainText>
             </NotificationContainer>
         </Container>
     );
