@@ -153,7 +153,7 @@ function WordDescription() {
                     newOtherStreams.map((item) => {
                         item.subscribeToAudio(true);
                     });
-                }, 1000);
+                }, 100);
             });
             // publisher.on("streamAudioVolumeChange", (event) => {
             //     newOtherStreams.map((item) => {
