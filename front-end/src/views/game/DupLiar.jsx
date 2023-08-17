@@ -20,7 +20,7 @@ import { Overlay } from "../../components/layout/selectAnswer";
 
 const DupLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
-    const { session, publisher, owner } = openvidu;
+    const { session, publisher, owner, subscribers } = openvidu;
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
     const text = "중복 투표가 나왔습니다. 라이어를 다시 선택하세요.";
@@ -143,6 +143,18 @@ const DupLiar = () => {
                 <Timer time={10} onTimerEnd={() => setAnswered(true)} />
             )}
             <Box>
+                {publisher.stream.connection.data !== answerer && (
+                    <ExItem>
+                        <SubText>
+                            본인 : {publisher.stream.connection.data}
+                        </SubText>
+                        <VideoComponent
+                            width="350px"
+                            height="300px"
+                            streamManager={publisher}
+                        />
+                    </ExItem>
+                )}
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
                         if (subscriber.stream.connection.data === answerer) {
@@ -160,8 +172,8 @@ const DupLiar = () => {
                             );
                         }
                     })}
-                {session.streamManagers &&
-                    session.streamManagers.map((subscriber, i) => {
+                {subscribers &&
+                    subscribers.map((subscriber, i) => {
                         const nickname = subscriber.stream.connection.data;
                         const isDisplayed = updatedDupLiars.includes(nickname);
 
@@ -181,13 +193,8 @@ const DupLiar = () => {
                                             />
                                         </ImageOverlay>
                                         <SubText>
-                                            <RedColor>
-                                                투표 대상자:{" "}
-                                                {
-                                                    subscriber.stream.connection
-                                                        .data
-                                                }
-                                            </RedColor>
+                                            투표 대상자:{" "}
+                                            {subscriber.stream.connection.data}
                                         </SubText>
                                         <VideoComponent
                                             width="350px"
@@ -201,8 +208,8 @@ const DupLiar = () => {
 
                         return null;
                     })}
-                {session.streamManagers &&
-                    session.streamManagers.map((subscriber, i) => {
+                {subscribers &&
+                    subscribers.map((subscriber, i) => {
                         const nickname = subscriber.stream.connection.data;
                         const isDisplayed = updatedDupLiars.includes(nickname);
 

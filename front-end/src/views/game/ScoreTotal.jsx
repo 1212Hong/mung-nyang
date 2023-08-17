@@ -15,33 +15,23 @@ import {
     RankItemFrame,
     RankUserFrame,
     ScoreText,
-    ColorWhite,
     RankColor,
     AnswerItem,
 } from "../../components/layout/scoreTotal";
 import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import VideoComponent from "../../components/VideoComponent";
-import {
-    MidText,
-    SubText,
-    MainText,
-    ModalMainText,
-} from "../../components/layout/common";
-import { NotificationContainer } from "../../components/layout/selectLiar";
+import { MidText, SubText, MainText } from "../../components/layout/common";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
     const result = useSelector((state) => state.game.result);
-    const liar = useSelector((state) => state.game.selectedLiar);
     const setCnt = useSelector((state) => state.game.setCnt);
     const set = useSelector((state) => state.game.curSetCnt);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const [scoreData, setScoreData] = useState({});
     const openvidu = useSelector((state) => state.openvidu);
     const { session, owner } = openvidu;
-    const [showNotification, setShowNotification] = useState(true);
-    console.log(result);
 
     const userlist = [];
     for (let i = 0; i < session.streamManagers.length; i++) {
@@ -113,16 +103,6 @@ const ScoreTotal = () => {
         }
     };
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowNotification(false);
-        }, 3000);
-
-        return () => {
-            clearTimeout(timer);
-        };
-    }, []);
-
     return (
         <Container>
             <TitleBox>
@@ -134,22 +114,20 @@ const ScoreTotal = () => {
                                 fontSize="32px"
                                 fontColor="var(--brown-dark)"
                                 onClick={Next}
+                                width="130px"
                             >
                                 다음
                             </Button>
                         )}
                     </BtnBox>
                     {set >= setCnt ? (
-                        <SubText>모든 세트가 종료되었습니다. </SubText>
+                        <BtnBox>
+                            <SubText>모든 세트가 종료되었습니다. </SubText>
+                        </BtnBox>
                     ) : (
-                        <div>
-                            {/* <div>
-                                <SubText>
-                                    세트 : {set} / {setCnt}
-                                </SubText>
-                            </div> */}
+                        <BtnBox>
                             <SubText>{setCnt - set} 세트 남았습니다.</SubText>
-                        </div>
+                        </BtnBox>
                     )}
                 </Frame>
             </TitleBox>
@@ -189,9 +167,6 @@ const ScoreTotal = () => {
                     </RankBox>
                 ))}
             </RankBoxFrame>
-            <NotificationContainer show={showNotification}>
-                <ModalMainText>라이어 : {liar}</ModalMainText>
-            </NotificationContainer>
         </Container>
     );
 };
