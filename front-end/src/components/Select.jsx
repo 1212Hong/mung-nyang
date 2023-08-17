@@ -39,14 +39,14 @@ const Select = (props) => {
     const { title } = props;
     const list = [
         "과일",
-        "과일",
-        "과일",
-        "과일",
-        "과일",
-        "과일",
-        "과일",
-        "과일",
-        "과일",
+        "음식",
+        "직업",
+        "동물",
+        "물건",
+        "스포츠",
+        "배우",
+        "가수",
+        "게임",
     ];
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
