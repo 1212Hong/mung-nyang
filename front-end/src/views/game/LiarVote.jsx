@@ -16,6 +16,7 @@ import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import { MidText, SubText, MainText } from "../../components/layout/common";
 import { ModalContainer } from "../../components/layout/modal";
+import { Overlay } from "../../components/layout/selectAnswer";
 
 const LiarVote = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -198,16 +199,14 @@ const LiarVote = () => {
                         }
                     })}
             </Box>
-            <ModalContainer>
-                <NotificationContainer show={showNotification}>
-                    {text}
-                </NotificationContainer>
-            </ModalContainer>
-            <ModalContainer>
-                <NotificationContainer show={showLoading}>
-                    집계중 입니다. 잠시만 기다려 주세요.
-                </NotificationContainer>
-            </ModalContainer>
+            <Overlay show={showNotification} />
+            <NotificationContainer show={showNotification}>
+                {text}
+            </NotificationContainer>
+            <Overlay show={showLoading} />
+            <NotificationContainer show={showLoading}>
+                집계중 입니다. 잠시만 기다려 주세요.
+            </NotificationContainer>
         </Container>
     );
 };
