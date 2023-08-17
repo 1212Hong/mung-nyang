@@ -16,7 +16,7 @@ export const getPenaltyUser = async (roomId) => {
     try {
         const penaltyUser = await PenaltyUser(roomId);
         console.log(penaltyUser);
-        store.dispatch(gameActions.updatePenaltyUser(penaltyUser));
+
         return penaltyUser;
     } catch (error) {
         console.log(error);

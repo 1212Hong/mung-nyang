@@ -27,3 +27,14 @@ export const SmallText = styled.span`
 export const ModalMainText = styled.span`
     font-size: 64px;
 `;
+export const MainTextBox = styled.div`
+    margin: 15px 0px;
+`;
+export const MarginDiv = styled.div`
+    margin-top: 20px;
+`;
+export const DescDiv = styled.div`
+    margin-top: 25px;
+    width: 650px;
+    height: 365px;
+`;

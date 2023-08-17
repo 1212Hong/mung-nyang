@@ -75,7 +75,12 @@ const FinAns = () => {
 
     return (
         <Container>
-            <Timer />
+            <Timer
+                time={10}
+                onTimerEnd={() => {
+                    dispatch(changePhase("LiarVote"));
+                }}
+            />
             <AnswerBox>
                 {streams &&
                     streams.map((user, i) => (
