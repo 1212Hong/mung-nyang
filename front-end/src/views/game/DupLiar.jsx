@@ -143,10 +143,24 @@ const DupLiar = () => {
                 <Timer time={10} onTimerEnd={() => setAnswered(true)} />
             )}
             <Box>
-                {publisher.stream.connection.data !== answerer && (
+                {publisher.stream.connection.data !== answerer &&
+                updatedDupLiars.includes(publisher.stream.connection.data) ? (
                     <ExItem>
                         <SubText>
-                            본인 : {publisher.stream.connection.data}
+                            <RedColor>
+                                본인 : {publisher.stream.connection.data}
+                            </RedColor>{" "}
+                        </SubText>
+                        <VideoComponent
+                            width="350px"
+                            height="300px"
+                            streamManager={publisher}
+                        />
+                    </ExItem>
+                ) : (
+                    <ExItem>
+                        <SubText>
+                            본인 : {publisher.stream.connection.data}{" "}
                         </SubText>
                         <VideoComponent
                             width="350px"
@@ -193,8 +207,13 @@ const DupLiar = () => {
                                             />
                                         </ImageOverlay>
                                         <SubText>
-                                            투표 대상자:{" "}
-                                            {subscriber.stream.connection.data}
+                                            <RedColor>
+                                                투표 대상자:{" "}
+                                                {
+                                                    subscriber.stream.connection
+                                                        .data
+                                                }
+                                            </RedColor>
                                         </SubText>
                                         <VideoComponent
                                             width="350px"
