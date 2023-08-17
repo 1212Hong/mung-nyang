@@ -96,7 +96,12 @@ const FinAns = () => {
 
     return (
         <Container>
-            <Timer time={10} />
+            <Timer
+                time={10}
+                onTimerEnd={() => {
+                    dispatch(changePhase("LiarVote"));
+                }}
+            />
             <AnswerBox>
                 {streams &&
                     streams.map((user, i) => (
