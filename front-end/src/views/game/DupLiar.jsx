@@ -158,16 +158,18 @@ const DupLiar = () => {
                         />
                     </ExItem>
                 ) : (
-                    <ExItem>
-                        <SubText>
-                            본인 : {publisher.stream.connection.data}
-                        </SubText>
-                        <VideoComponent
-                            width="350px"
-                            height="300px"
-                            streamManager={publisher}
-                        />
-                    </ExItem>
+                    publisher.stream.connection.data !== answerer && (
+                        <ExItem>
+                            <SubText>
+                                본인 : {publisher.stream.connection.data}
+                            </SubText>
+                            <VideoComponent
+                                width="350px"
+                                height="300px"
+                                streamManager={publisher}
+                            />
+                        </ExItem>
+                    )
                 )}
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {

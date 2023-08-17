@@ -89,7 +89,7 @@ const OpenLiar = () => {
 
     return (
         <Container>
-            <Timer time={5} onTimerEnd={() => setAnswered(true)} />
+            <Timer time={7} onTimerEnd={() => setAnswered(true)} />
 
             <AnswerBox>
                 {session.streamManagers &&
@@ -152,7 +152,6 @@ const OpenLiar = () => {
                         </React.Fragment>
                     ))}
             </UserBox>
-            {/* <Overlay show={showNotification} /> */}
             <Notification show={showNotification}>
                 잠시후 라이어가 공개됩니다.
             </Notification>
