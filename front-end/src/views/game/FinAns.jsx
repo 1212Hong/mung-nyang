@@ -52,9 +52,9 @@ const FinAns = () => {
                 setResReturn(res.data.resReturn);
                 setNextPhase(res.data.gameProcessType);
 
-                signalFinAns(res.data.resultReturn, res.data.gameProcessType); // 비동기에러 생각해서 우선 데이터 받기 성공하면 시그널 전송
+                signalFinAns(res.data.resultReturn, "MidScore"); // 비동기에러 생각해서 우선 데이터 받기 성공하면 시그널 전송
                 // signalFinAns(resReturn, nextPhase);
-                dispatch(changePhase(res.data.gameProcessType));
+                dispatch(changePhase("MidScore"));
                 console.log(resReturn);
             })
             .catch((err) => console.log(err));
