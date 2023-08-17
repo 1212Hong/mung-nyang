@@ -86,23 +86,27 @@ const PenaltyLinkModal = () => {
             <LinkBox>
                 <LinkTitleBox> 벌칙 영상 </LinkTitleBox>
                 <LinkContentBox>
-                    {penaltyLinkList.length > 0
-                        ? penaltyLinkList.map((item) => (
-                              <>
-                                  <LinkContentDesc>게임</LinkContentDesc>
-                                  <LinkContentUrl>
-                                      {item && item.length > 48
-                                          ? item.slice(0, 48) + "..."
-                                          : item}
-                                  </LinkContentUrl>
-                                  <LinkContentCopy
-                                      onClick={() => copyLink(item)}
-                                  >
-                                      복사
-                                  </LinkContentCopy>
-                              </>
-                          ))
-                        : "아직 링크가 없어요!"}
+                    {penaltyLinkList.length > 0 ? (
+                        penaltyLinkList.map((item, index) =>
+                            item != null ? (
+                                <React.Fragment key={index}>
+                                    <LinkContentDesc>게임</LinkContentDesc>
+                                    <LinkContentUrl>
+                                        {item && item.length > 48
+                                            ? item.slice(0, 48) + "..."
+                                            : item}
+                                    </LinkContentUrl>
+                                    <LinkContentCopy
+                                        onClick={() => copyLink(item)}
+                                    >
+                                        복사
+                                    </LinkContentCopy>
+                                </React.Fragment>
+                            ) : null,
+                        )
+                    ) : (
+                        <span>아직 링크가 없어요!</span>
+                    )}
                 </LinkContentBox>
                 <LinkButtonBox>
                     <Button onClick={() => dispatch(closeModal())}>
