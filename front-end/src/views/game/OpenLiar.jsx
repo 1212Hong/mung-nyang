@@ -112,7 +112,9 @@ const OpenLiar = () => {
                         </React.Fragment>
                     ))}
                 {showNotification ? (
-                    <Card description={selectedAnswer} />
+                    <Card
+                        description={`지목된 사람이 고른 정답은 ${selectedAnswer}입니다`}
+                    />
                 ) : (
                     session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
