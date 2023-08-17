@@ -23,7 +23,7 @@ const DupLiar = () => {
     const { session, publisher, owner, subscribers } = openvidu;
     const setId = useSelector((state) => state.game.setId);
     const [showNotification, setShowNotification] = useState(true);
-    const text = "중복 투표가 나왔습니다. 라이어를 다시 선택하세요.";
+    const text = "중복 투표가 나왔습니다. 고양이를 다시 선택하세요.";
     const imgSrc = foot;
     const dispatch = useDispatch();
     const roomId = useSelector((state) => state.openvidu.mySessionId);
@@ -107,10 +107,10 @@ const DupLiar = () => {
                 } else {
                     const response = await Result(setId, roomId, "", "");
                     console.log(response);
-                    dispatch(gameActions.updateResult("라이어 승리"));
+                    dispatch(gameActions.updateResult("고양이 승리"));
                     const signalNoLiar = async () => {
                         session.signal({
-                            data: "라이어 승리",
+                            data: "고양이 승리",
                             to: [],
                             type: "noLiar",
                         });
@@ -148,7 +148,7 @@ const DupLiar = () => {
                     <ExItem>
                         <SubText>
                             <RedColor>
-                                본인 : {publisher.stream.connection.data}
+                                나 : {publisher.stream.connection.data}
                             </RedColor>
                         </SubText>
                         <VideoComponent
@@ -161,7 +161,7 @@ const DupLiar = () => {
                     publisher.stream.connection.data !== answerer && (
                         <ExItem>
                             <SubText>
-                                본인 : {publisher.stream.connection.data}
+                                나 : {publisher.stream.connection.data}
                             </SubText>
                             <VideoComponent
                                 width="350px"
@@ -177,7 +177,9 @@ const DupLiar = () => {
                             return (
                                 <React.Fragment key={i}>
                                     <ExItem>
-                                        <SubText>정답자 : {answerer}</SubText>
+                                        <SubText>
+                                            탐정 강아지 : {answerer}
+                                        </SubText>
                                         <VideoComponent
                                             width="350px"
                                             height="300px"
