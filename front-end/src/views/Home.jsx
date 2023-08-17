@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     ButtonBox,
     FormBox,
@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { ovActions } from "../store/openviduSlice";
 import { useDispatch } from "react-redux";
 import mainBgm from "../assets/audio/mainBgm.wav";
+import BackgroundImg from "../assets/img/mungnyangImg.png";
 
 const Home = () => {
     const [view, setView] = useState(false);
@@ -31,6 +32,12 @@ const Home = () => {
             ...roomInfo,
             [e.target.id]: e.target.value,
         });
+    };
+
+    const handleOnKeyPress = (e) => {
+        if (e.key === "Enter") {
+            view ? handleMakeRoom() : handleJoinRoom();
+        }
     };
 
     const changeView = () => {
@@ -52,9 +59,17 @@ const Home = () => {
             : navigate("/test");
     };
 
+    useEffect(() => {
+        const audioElement = document.getElementById("bgm");
+        if (audioElement) {
+            audioElement.volume = 0.07; // 음량 조절
+            audioElement.play(); // 재생
+        }
+    }, []);
+
     return (
         <HomeContainer>
-            <audio autoPlay loop>
+            <audio id="bgm" autoPlay loop>
                 <source src={mainBgm} type="audio/wav" />
             </audio>
             <LeftBox className="leftbox">
@@ -82,6 +97,7 @@ const Home = () => {
                         type="password"
                         value={roomPw}
                         onChange={handleChange}
+                        onKeyPress={handleOnKeyPress}
                     />
                 </FormBox>
                 <ButtonBox>
@@ -116,7 +132,14 @@ const Home = () => {
                     />
                 </ButtonBox>
             </LeftBox>
-            <RightBox className="rightbox" />
+            <RightBox className="rightbox">
+                <img
+                    src={BackgroundImg}
+                    width="840px"
+                    height="720px"
+                    alt="홈배경"
+                />
+            </RightBox>
         </HomeContainer>
     );
 };
