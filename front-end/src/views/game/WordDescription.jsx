@@ -133,46 +133,34 @@ function WordDescription() {
     useEffect(() => {
         if (myUserName !== answerer) {
             session.on("publisherStartSpeaking", (event) => {
-                if (phase === ("Desc" || "QnA" || "FinAns"))
+                if (phase === "Desc" || phase === "QnA" || phase === "FinAns")
                     publisher.publishAudio(false);
-                if (audioRef.current)
-                    audioRef.current.play().then(() => {
-                        audioRef.current.pause();
-                        publisher.publishAudio(true);
-                    });
+                if (audioRef.current && audioRef.paused)
+                    audioRef.current.play();
             });
-            // session.on("publisherStopSpeaking", (e) => {
-            //     if (audioRef.current) audioRef.current.pause();
-            //     if (phase === ("Desc" || "QnA" || "FinAns"))
-            //         publisher.publishAudio(true);
-            // });
+            session.on("publisherStopSpeaking", (e) => {
+                if (audioRef.current && !audioRef.paused)
+                    audioRef.current.pause();
+                if (phase === "Desc" || phase === "QnA" || phase === "FinAns")
+                    publisher.publishAudio(true);
+            });
         }
         if (myUserName === answerer) {
             publisher.on("streamAudioVolumeChange", (event) => {
                 newOtherStreams.map((item) => {
                     item.subscribeToAudio(false);
                 });
-                if (audioRef.current)
-                    audioRef.current.play().then(() => {
-                        audioRef.current.pause();
-                        newOtherStreams.map((item) => {
-                            item.subscribeToAudio(true);
-                        });
-                    });
-            });
-            // publisher.on("streamAudioVolumeChange", (event) => {
-            //     newOtherStreams.map((item) => {
-            //         item.subscribeToAudio(false);
-            //     });
-            //     if (audioRef) audioRef.current.play();
+                if (audioRef.current && audioRef.paused)
+                    audioRef.current.play();
 
-            //     setTimeout(() => {
-            //         if (audioRef) audioRef.current.pause();
-            //         newOtherStreams.map((item) => {
-            //             item.subscribeToAudio(true);
-            //         });
-            //     }, 1000);
-            // });
+                setTimeout(() => {
+                    if (audioRef.current && !audioRef.paused)
+                        audioRef.current.pause();
+                    newOtherStreams.map((item) => {
+                        item.subscribeToAudio(true);
+                    });
+                }, 500);
+            });
         }
     }, [audioRef]);
 
