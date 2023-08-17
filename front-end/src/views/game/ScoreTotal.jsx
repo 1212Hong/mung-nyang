@@ -23,16 +23,19 @@ import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import VideoComponent from "../../components/VideoComponent";
 import { MidText, SubText, MainText } from "../../components/layout/common";
+import { NotificationContainer } from "../../components/layout/selectLiar";
 
 const ScoreTotal = () => {
     const dispatch = useDispatch();
     const result = useSelector((state) => state.game.result);
+    const liar = useSelector((state) => state.game.selectedLiar);
     const setCnt = useSelector((state) => state.game.setCnt);
     const set = useSelector((state) => state.game.curSetCnt);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const [scoreData, setScoreData] = useState({});
     const openvidu = useSelector((state) => state.openvidu);
     const { session, owner } = openvidu;
+    const [showNotification, setShowNotification] = useState(true);
     console.log(result);
 
     const userlist = [];
@@ -105,6 +108,16 @@ const ScoreTotal = () => {
         }
     };
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowNotification(false);
+        }, 3000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
+
     return (
         <Container>
             <TitleBox>
@@ -169,6 +182,9 @@ const ScoreTotal = () => {
                     </RankBox>
                 ))}
             </RankBoxFrame>
+            <NotificationContainer show={showNotification}>
+                라이어 : {liar}
+            </NotificationContainer>
         </Container>
     );
 };
