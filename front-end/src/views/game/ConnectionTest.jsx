@@ -30,6 +30,7 @@ import { ovActions } from "../../store/openviduSlice";
 import { enterGameRoom } from "../../hooks/testView";
 import Loading from "../Loading";
 import { ReactComponent as RefreshIconO } from "../../assets/img/icon _refresh_circle_.svg";
+import { ReactComponent as RightImg } from "../../assets/img/cat-travel-bag-svgrepo-com 1.svg";
 
 const TestSound = require("../../assets/audio/test_sound.mp3");
 
@@ -208,18 +209,12 @@ function ConnectionTest() {
                             <Switch isOn={isOn} onToggle={handleToggle} />
                         </LeftBox>
                         <RightBox className="RgihtBox">
-                            <RightItem>
-                                <MidText>마이크 선택</MidText>
-                                <MicBox />
-                            </RightItem>
+                            <RightImg />
                             <RightItem>
                                 <MidText>입력확인</MidText>
                                 <MicBar volume={micVolumeValue / 100} />
                             </RightItem>
-                            <RightItem>
-                                <MidText>스피커</MidText>
-                                <MicBox />
-                            </RightItem>
+
                             <RightItem>
                                 <MidText>
                                     출력조절 : {outputVolumeValue}
@@ -242,7 +237,7 @@ function ConnectionTest() {
                             </RightItem>
                             <FlexRowBox>
                                 <DescBox>
-                                    <MidText>소리변조 테스트</MidText>
+                                    <MidText>소리 출력 테스트</MidText>
                                 </DescBox>
                                 <Button
                                     text="테스트"
