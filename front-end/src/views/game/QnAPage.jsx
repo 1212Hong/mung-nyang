@@ -55,10 +55,13 @@ const DescBox = styled.div`
 function QnAPage() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { session } = openvidu;
-    const { lastRound } = game;
+    const { session, myUserName } = openvidu;
+    const { lastRound, answerer } = game;
     console.log(session.streamManagers);
     const streams = session.streamManagers;
+    const newOtherStreams = streams.filter(
+        (streamManager) => streamManager.stream.connection.data !== answerer,
+    );
     const dispatch = useDispatch();
 
     const upside =
@@ -72,6 +75,10 @@ function QnAPage() {
     console.log(downside_list);
 
     useEffect(() => {
+        if (myUserName === answerer)
+            newOtherStreams.map((item) => {
+                item.subscribeToAudio(false);
+            });
         console.log(lastRound);
         if (!lastRound) {
             dispatch(gameActions.updateLastRound());

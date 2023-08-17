@@ -86,11 +86,12 @@ const Home = () => {
 
     function toggleVolume() {
         if (audioElement) {
+            audioElement.volume = 0.07;
             if (isMuted) {
+                audioElement.muted = false;
+            } else {
                 audioElement.volume = 0.07;
                 audioElement.muted = true;
-            } else {
-                audioElement.muted = false;
             }
         }
         setIsMuted((prevState) => !prevState);

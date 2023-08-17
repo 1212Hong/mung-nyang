@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { openModal } from "../../store/modalSlice";
@@ -12,6 +12,8 @@ import { changePhase } from "../../store/phaseSlice";
 import { SmallText, SubText } from "../../components/layout/common";
 import { ModalBackdrop, ModalViewDescDiv } from "../../components/layout/modal";
 import { ovActions } from "../../store/openviduSlice";
+
+const TestSound = require("../../assets/audio/test_sound.mp3");
 
 const Container = styled.div`
     margin: 0;
@@ -63,11 +65,9 @@ function WordDescription() {
     const [descIndex, setDescIndex] = useState(0);
     const [curIndex, setCurIndex] = useState(0);
     const [streamKey, setStreamKey] = useState(0);
+    const audioRef = useRef(null);
     const streams = session.streamManagers;
-    console.log(streams);
 
-    console.log("세션");
-    console.log(session);
     // 사용자 닉네임 리스트
     const nicknameArr = [];
     session.streamManagers.map((item) => {
@@ -100,23 +100,55 @@ function WordDescription() {
             console.log(myUserName);
             console.log(playerId);
             //setId 때문에 404 오류 생길 수 있음.
-            myUserName !== answerer &&
-                (await getUserWord(setId, myUserName).then((response) => {
-                    setWord(response.data.playerWord);
-                    console.log(response);
-                }));
+            await getUserWord(setId, myUserName).then((response) => {
+                console.log(response);
+                myUserName !== answerer && setWord(response.data.playerWord);
+                gameActions.updateLiarName(response.data.liarName);
+            });
         };
 
         getFunc();
-        // 제시어 설명 시 시민 음소거
-        if (myUserName === answerer)
-            newOtherStreams.map((item) => {
-                item.subscribeToAudio(false);
-            });
+        // // 제시어 설명 시 시민 음소거
+        // if (myUserName === answerer)
+        //     newOtherStreams.map((item) => {
+        //         item.subscribeToAudio(false);
+        //     });
         setOtherUserStreams(newOtherStreams);
         console.log(newOtherStreams);
         console.log(otherUserStreams);
     }, []);
+
+    useEffect(() => {
+        if (myUserName !== answerer) {
+            session.on("publisherStartSpeaking", (event) => {
+                console.log(
+                    "User " + event.connection.connectionId + " start speaking",
+                );
+                publisher.publishAudio(false);
+                audioRef && audioRef.current.play();
+
+                setTimeout(() => {
+                    audioRef && audioRef.current.pause();
+                    publisher.publishAudio(true);
+                }, 1000);
+            });
+        }
+        if (myUserName === answerer) {
+            publisher.on("streamAudioVolumeChange", (event) => {
+                newOtherStreams.map((item) => {
+                    item.subscribeToAudio(false);
+                });
+                audioRef && audioRef.current.play();
+
+                setTimeout(() => {
+                    audioRef && audioRef.current.pause();
+                    newOtherStreams.map((item) => {
+                        item.subscribeToAudio(true);
+                    });
+                }, 1000);
+            });
+        }
+    }, [audioRef]);
 
     const getNextDescIndex = () => {
         if (descIndex < sortedArr.length - 1) {
@@ -136,6 +168,7 @@ function WordDescription() {
 
     return (
         <Container>
+            <audio ref={audioRef} src={TestSound} loop={false} />
             <Timer key={descIndex} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
                 <CurParticipants width={"100%"}>
