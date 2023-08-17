@@ -205,11 +205,6 @@ function WordDescription() {
                                     onClick={() => openAnswerModal()}
                                 ></Button>
                             </CurSubBtn>
-                            <CurSubBtn>
-                                <Button>
-                                    <img alt="camera" src={CameraIcon}></img>
-                                </Button>
-                            </CurSubBtn>
                         </CurSubFunction>
                     </CurFunction>
                 </CurParticipants>
