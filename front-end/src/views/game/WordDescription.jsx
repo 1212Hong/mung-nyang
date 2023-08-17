@@ -52,15 +52,17 @@ function WordDescription() {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
+    const phase = useSelector((state) => state.phase);
     const { myUserName, session, owner, mainStreamManager } = openvidu;
-    const { gameId, result, answerer, setId, playerId, lastRound } = game;
+    const { gameId, result, answerer, setId, playerId, lastRound, emgSignal } =
+        game;
+    const { phaseType } = phase;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
     const [descIndex, setDescIndex] = useState(0);
     const [curIndex, setCurIndex] = useState(0);
     const [streamKey, setStreamKey] = useState(0);
     const streams = session.streamManagers;
-
     console.log(streams);
 
     console.log("세션");
@@ -118,7 +120,9 @@ function WordDescription() {
     const getNextDescIndex = () => {
         if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
-        } else dispatch(changePhase("QnA"));
+        } else {
+            dispatch(changePhase("QnA"));
+        }
     };
 
     useEffect(() => {
@@ -128,14 +132,6 @@ function WordDescription() {
         setCurIndex(index);
         setStreamKey((prev) => prev + 1);
     }, [descIndex]);
-
-    useEffect(() => {
-        // 비상정답 신호 받아서 resultReturn으로 승패 알아차리고 해당 gameProcessType으로 이동
-        session.on("signal:emgAnswered", (e) => {
-            console.log(e.data);
-            dispatch(gameActions.saveResult(e.data));
-        });
-    });
 
     return (
         <Container>
@@ -153,7 +149,6 @@ function WordDescription() {
                                     }
                                     width={"80%"}
                                     height={"80%"}
-                                    volumn={-100}
                                 />
                             }
                         </>
