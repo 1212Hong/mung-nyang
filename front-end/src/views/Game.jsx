@@ -255,6 +255,12 @@ const Game = () => {
                             dispatch(gameActions.updateResult("고양이 승리"));
                         }
                     });
+                !owner &&
+                    newSession.on("signal:getresult", (event) => {
+                        console.log(event.data);
+                        if (event.data === "LiarLose_Final")
+                            dispatch(gameActions.updateResult("강아지 승리"));
+                    });
                 newSession.on("signal:VotedLiar", (event) => {
                     console.log(event.data);
                     dispatch(gameActions.saveLiar(event.data));
