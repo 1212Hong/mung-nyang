@@ -18,6 +18,8 @@ import {
     Video,
     Buttons,
     UsersBox,
+    VideoBox,
+    NameBox,
 } from "../../components/layout/dance";
 import { getPenaltyUser, getDanceUrl } from "../../hooks/dance";
 import { gameActions } from "../../store/gameSlice";
@@ -198,18 +200,18 @@ function Dance() {
             </PenaltyBox>
             <UsersBox>
                 {nonPenaltyUsers.map((user, i) => (
-                    <OtherUsers key={user.stream.connection.data}>
-                        <Videobox>
-                            <VideoComponent
-                                width="230"
-                                height="200"
-                                streamManager={user}
-                            />
+                    <VideoBox key={user.stream.connection.data}>
+                        <VideoComponent
+                            width="230"
+                            height="200"
+                            streamManager={user}
+                        />
+                        <NameBox>
                             <VideoUserName>
                                 {user.stream.connection.data}
                             </VideoUserName>
-                        </Videobox>
-                    </OtherUsers>
+                        </NameBox>
+                    </VideoBox>
                 ))}
             </UsersBox>
             <Overlay show={showNotification} />
