@@ -13,7 +13,6 @@ import SelectAnswer from "../views/game/SelectAnswer";
 import OtherView from "../views/game/OtherView";
 import OpenLiar from "../views/game/OpenLiar";
 import { outRoom } from "../api/room";
-import Loading from "./Loading";
 import { gameActions } from "../store/gameSlice";
 import { closeModal, openModal } from "../store/modalSlice";
 import DupLiar from "./game/DupLiar";
