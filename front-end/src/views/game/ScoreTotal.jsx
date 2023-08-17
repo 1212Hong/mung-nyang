@@ -139,9 +139,18 @@ const ScoreTotal = () => {
                             </Button>
                         )}
                     </BtnBox>
-                    <SubText>
-                        세트 : {set} / {setCnt}
-                    </SubText>
+                    {set >= setCnt ? (
+                        <SubText>모든 세트가 종료되었습니다. </SubText>
+                    ) : (
+                        <div>
+                            <div>
+                                <SubText>
+                                    세트 : {set} / {setCnt}
+                                </SubText>
+                            </div>
+                            <SubText>{setCnt - set} 세트 남았습니다.</SubText>
+                        </div>
+                    )}
                 </Frame>
             </TitleBox>
             <RankBoxFrame>
@@ -174,9 +183,7 @@ const ScoreTotal = () => {
                         )}
                         <RankItemFrame>
                             <ScoreItem>
-                                <MidText>
-                                    <ScoreText>{user.score} 점</ScoreText>
-                                </MidText>
+                                <ScoreText>{user.score} 점</ScoreText>
                             </ScoreItem>
                         </RankItemFrame>
                     </RankBox>
