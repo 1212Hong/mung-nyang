@@ -85,8 +85,20 @@ function Dance() {
 
         const fetchPenaltyUser = async (roomId) => {
             await getPenaltyUser(roomId);
+            owner &&
+                session.signal({
+                    data: penaltyUser.data,
+                    to: [],
+                    type: "penaltyUser",
+                });
         };
-        fetchPenaltyUser(roomId);
+        owner && fetchPenaltyUser(roomId);
+        console.log(penaltyUser);
+
+        session.on("signal:penaltyUser", (e) => {
+            console.log(e.data);
+            dispatch(gameActions.updatePenaltyUser(e.data));
+        });
         const startRecord = async (roomId, gameId) => {
             await RecordStart(roomId, gameId);
         };
@@ -121,6 +133,7 @@ function Dance() {
         return user.stream.connection.data === penaltyUser.data;
     });
     console.log(penaltyUser.data);
+
     console.log(penaltyStreamer);
     return (
         <Container>

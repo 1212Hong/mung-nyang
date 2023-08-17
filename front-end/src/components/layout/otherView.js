@@ -12,3 +12,8 @@ export const AnswerItem = styled.div`
 `;
 
 export const UserBox = styled.div``;
+
+export const Center = styled.div`
+    justify-content: center;
+    margin-left: 70px;
+`;
