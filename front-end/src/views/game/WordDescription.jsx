@@ -124,10 +124,10 @@ function WordDescription() {
                     "User " + event.connection.connectionId + " start speaking",
                 );
                 publisher.publishAudio(false);
-                audioRef.current.play();
+                audioRef && audioRef.current.play();
 
                 setTimeout(() => {
-                    audioRef.current.pause();
+                    audioRef && audioRef.current.pause();
                     publisher.publishAudio(true);
                 }, 1000);
             });
@@ -137,10 +137,10 @@ function WordDescription() {
                 newOtherStreams.map((item) => {
                     item.subscribeToAudio(false);
                 });
-                audioRef.current.play();
+                audioRef && audioRef.current.play();
 
                 setTimeout(() => {
-                    audioRef.current.pause();
+                    audioRef && audioRef.current.pause();
                     newOtherStreams.map((item) => {
                         item.subscribeToAudio(true);
                     });
