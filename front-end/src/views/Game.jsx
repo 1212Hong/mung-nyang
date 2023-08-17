@@ -104,7 +104,7 @@ const Game = () => {
     const game = useSelector((state) => state.game);
     const { subscribers, myUserName, token, mySessionId, playerId, owner } =
         openvidu;
-    const { gameVoteCnt } = game;
+    const { gameVoteCnt, answerer } = game;
     // State 업데이트를 더 잘 다루기 위해 여러 useState를 사용합니다.
     const [OV, setOV] = useState(new OpenVidu());
     const [session, setSession] = useState(OV.initSession());
@@ -255,7 +255,7 @@ const Game = () => {
                             dispatch(gameActions.updateResult("고양이 승리"));
                         }
                     });
-                !owner &&
+                myUserName !== answerer &&
                     newSession.on("signal:getresult", (event) => {
                         console.log(event.data);
                         if (event.data === "LiarLose_Final")
