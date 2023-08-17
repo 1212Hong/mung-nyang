@@ -54,7 +54,8 @@ function WordDescription() {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { myUserName, session, owner, mainStreamManager } = openvidu;
+    const { myUserName, session, owner, mainStreamManager, publisher } =
+        openvidu;
     const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
@@ -117,18 +118,33 @@ function WordDescription() {
     }, []);
 
     useEffect(() => {
-        if (myUserName === answerer) {
+        if (myUserName !== answerer) {
             session.on("publisherStartSpeaking", (event) => {
                 console.log(
                     "User " + event.connection.connectionId + " start speaking",
                 );
-                audioRef.current.play();
+                publisher.publishAudio(false);
+                audioRef && audioRef.current.play();
+
+                setTimeout(() => {
+                    audioRef && audioRef.current.pause();
+                    publisher.publishAudio(true);
+                }, 1000);
+            });
+        }
+        if (myUserName === answerer) {
+            publisher.on("streamAudioVolumeChange", (event) => {
                 newOtherStreams.map((item) => {
                     item.subscribeToAudio(false);
                 });
+                audioRef && audioRef.current.play();
+
                 setTimeout(() => {
-                    audioRef.current.pause();
-                }, 3000);
+                    audioRef && audioRef.current.pause();
+                    newOtherStreams.map((item) => {
+                        item.subscribeToAudio(true);
+                    });
+                }, 1000);
             });
         }
     }, [audioRef]);
@@ -172,7 +188,7 @@ function WordDescription() {
         <Container>
             <audio ref={audioRef} src={TestSound} loop={false} />
             <Timer
-                time={300}
+                time={15}
                 key={descIndex}
                 onTimerEnd={() => getNextDescIndex()}
             />
