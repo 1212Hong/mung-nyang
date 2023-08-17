@@ -7,4 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class QuizPlayersWordRes {
     private String playerWord;
+    private String liarName;
 }
