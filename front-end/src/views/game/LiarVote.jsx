@@ -131,7 +131,7 @@ const LiarVote = () => {
     useEffect(() => {
         if (myUserName === answerer)
             newOtherStreams.map((item) => {
-                item.subscribeToAudio(false);
+                item.subscribeToAudio(true);
             });
         const timer = setTimeout(() => {
             setShowNotification(false);
