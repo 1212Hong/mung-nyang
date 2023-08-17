@@ -367,7 +367,8 @@ const Game = () => {
         console.log(updatedSubscribers);
         setSubscribersList(updatedSubscribers);
         dispatch(ovActions.saveSubscribers(updatedSubscribers));
-
+        owner &&
+            (await outRoom(mySessionId, streamManager.stream.connection.data));
         console.log(subscribersList);
     };
     const leaveSession = async () => {
@@ -377,7 +378,6 @@ const Game = () => {
             mySession.disconnect();
         }
 
-        await outRoom(mySessionId, myUserName);
         // 모든 state 업데이트 초기화
         setOV(null);
         setSession(undefined);
