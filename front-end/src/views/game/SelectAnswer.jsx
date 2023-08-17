@@ -14,6 +14,8 @@ import { liarAnswer } from "../../api/game";
 import { useDispatch, useSelector } from "react-redux";
 import { gameActions } from "../../store/gameSlice";
 import { changePhase } from "../../store/phaseSlice";
+import { ModalContainer } from "../../components/layout/modal";
+import { MainText } from "../../components/layout/common";
 
 const SelectAnswer = () => {
     const [activeBox, setActiveBox] = useState(null);
@@ -86,9 +88,11 @@ const SelectAnswer = () => {
                 ))}
             </Line>
             <Overlay show={showNotification} />
-            <NotificationContainer show={showNotification}>
-                {text}
-            </NotificationContainer>
+            <ModalContainer>
+                <NotificationContainer show={showNotification}>
+                    <MainText>{text}</MainText>
+                </NotificationContainer>
+            </ModalContainer>
         </Container>
     );
 };
