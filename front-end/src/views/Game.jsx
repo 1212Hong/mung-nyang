@@ -248,11 +248,11 @@ const Game = () => {
                     newSession.on("signal:getresult", (event) => {
                         console.log(event.data);
                         if (event.data === "LiarWin_Success") {
-                            dispatch(gameActions.updateResult("라이어 승리"));
+                            dispatch(gameActions.updateResult("고양이 승리"));
                         } else if (event.data === "LiarLose_Fail") {
-                            dispatch(gameActions.updateResult("시민 승리"));
+                            dispatch(gameActions.updateResult("강아지 승리"));
                         } else if (event.data === "LiarWin_NotLiar") {
-                            dispatch(gameActions.updateResult("라이어 승리"));
+                            dispatch(gameActions.updateResult("고양이 승리"));
                         }
                     });
                 newSession.on("signal:VotedLiar", (event) => {

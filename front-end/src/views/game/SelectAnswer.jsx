@@ -20,7 +20,7 @@ const SelectAnswer = () => {
     const [activeBox, setActiveBox] = useState(null);
     const [showNotification, setShowNotification] = useState(true);
     const title = "아래 단어들 중 정답을 골라주세요.";
-    const text = "라이어로 지목되었습니다. ";
+    const text = "고양이로 의심 받았습니다. ";
     const imgSrc = foot2;
     const [answerList, setAnswerList] = useState([]);
     const dispatch = useDispatch();
