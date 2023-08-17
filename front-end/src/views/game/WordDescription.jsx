@@ -131,15 +131,16 @@ function WordDescription() {
     }, []);
 
     useEffect(() => {
+        console.log(audioRef);
         if (myUserName !== answerer) {
             session.on("publisherStartSpeaking", (event) => {
                 if (phase === "Desc" || phase === "QnA" || phase === "FinAns")
                     publisher.publishAudio(false);
-                if (audioRef.current && audioRef.paused)
+                if (audioRef.current && audioRef.current.paused)
                     audioRef.current.play();
             });
             session.on("publisherStopSpeaking", (e) => {
-                if (audioRef.current && !audioRef.paused)
+                if (audioRef.current && !audioRef.current.paused)
                     audioRef.current.pause();
                 if (phase === "Desc" || phase === "QnA" || phase === "FinAns")
                     publisher.publishAudio(true);
@@ -150,11 +151,11 @@ function WordDescription() {
                 newOtherStreams.map((item) => {
                     item.subscribeToAudio(false);
                 });
-                if (audioRef.current && audioRef.paused)
+                if (audioRef.current && audioRef.current.paused)
                     audioRef.current.play();
 
                 setTimeout(() => {
-                    if (audioRef.current && !audioRef.paused)
+                    if (audioRef.current && !audioRef.current.paused)
                         audioRef.current.pause();
                     newOtherStreams.map((item) => {
                         item.subscribeToAudio(true);
