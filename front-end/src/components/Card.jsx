@@ -30,12 +30,14 @@ const Icon = styled.div`
         }
     }
 `;
-const Text = styled.div`
+const TextBox = styled.div`
     font-size: 32px;
     color: ${`var(--black)`};
     margin-left: 70px;
     margin-right: 70px;
 `;
+const DescText = styled.span``;
+
 const Card = (props) => {
     const { imageSrc, description } = props;
     return (
@@ -43,7 +45,9 @@ const Card = (props) => {
             <Icon>
                 <img src={imageSrc} alt="" />
             </Icon>
-            <Text>{description}</Text>
+            <TextBox>
+                <DescText>{description}</DescText>
+            </TextBox>
         </Box>
     );
 };
