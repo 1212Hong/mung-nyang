@@ -52,7 +52,7 @@ const Quiz = (props) => {
 
     return (
         <Container>
-            <Timer time={8} onTimerEnd={() => setAnswered(true)} />
+            <Timer time={7} onTimerEnd={() => setAnswered(true)} />
             <Title>{title}</Title>
             <FlexBox>
                 <Content

@@ -84,14 +84,14 @@ function QnAPage() {
             dispatch(gameActions.updateLastRound());
             const timer = setTimeout(() => {
                 dispatch(changePhase("FinAns"));
-            }, 10000);
+            }, 7000);
             return () => {
                 clearTimeout(timer);
             };
         } else {
             const timer = setTimeout(() => {
                 dispatch(changePhase("FinAns"));
-            }, 10000);
+            }, 7000);
             return () => {
                 clearTimeout(timer);
             };
@@ -100,7 +100,7 @@ function QnAPage() {
 
     return (
         <Container>
-            <Timer />
+            <Timer time={7} />
             <VideoContainer>
                 {upside_list.map((user, index) => (
                     <VideoBox key={index}>

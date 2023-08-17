@@ -85,7 +85,7 @@ const OpenLiar = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             dispatch(changePhase("MidScore"));
-        }, 8000);
+        }, 6000);
 
         return () => {
             clearTimeout(timer);
@@ -94,7 +94,7 @@ const OpenLiar = () => {
 
     return (
         <Container>
-            <Timer time={7} onTimerEnd={() => setAnswered(true)} />
+            <Timer time={5} onTimerEnd={() => setAnswered(true)} />
 
             <AnswerBox>
                 {session.streamManagers &&
