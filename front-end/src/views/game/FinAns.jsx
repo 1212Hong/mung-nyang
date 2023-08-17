@@ -56,6 +56,8 @@ const FinAns = () => {
 
                 // 비동기에러 생각해서 우선 데이터 받기 성공하면 시그널 전송
 
+                // signalFinAns(resReturn, nextPhase);
+
                 // "LiarLose_Final"
                 if (res.data.resultReturn === "LiarLose_Final") {
                     signalFinAns(res.data.resultReturn, "MidScore");
@@ -70,11 +72,12 @@ const FinAns = () => {
                     signalResult();
                     dispatch(changePhase("MidScore"));
                 } else {
-                    signalFinAns(resReturn, nextPhase);
-                    dispatch(gameActions.saveResult(res.data.resultReturn));
+                    signalFinAns(
+                        res.data.resultReturn,
+                        res.data.gameProcessType,
+                    );
+                    dispatch(changePhase(res.data.gameProcessType));
                 }
-
-                console.log(resReturn);
             })
             .catch((err) => console.log(err));
     };
