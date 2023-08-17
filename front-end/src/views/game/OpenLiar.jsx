@@ -12,6 +12,7 @@ import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Result, deleteLiar } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
+import { MidText, SubText, MainText } from "../../components/layout/common";
 
 const OpenLiar = () => {
     const setId = useSelector((state) => state.game.setId);
@@ -23,6 +24,7 @@ const OpenLiar = () => {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const { session, owner } = openvidu;
+    const [answered, setAnswered] = useState(false);
 
     useEffect(() => {
         const getRes = async () => {
@@ -61,19 +63,17 @@ const OpenLiar = () => {
     }, []);
 
     useEffect(() => {
-        const timer = setTimeout(async () => {
-            try {
-                dispatch(changePhase("MidScore"));
-            } catch (error) {
-                console.error(error);
-            }
-        }, 5000);
-        return () => clearTimeout(timer);
-    }, []);
+        const handlescore = () => {
+            dispatch(changePhase("MidScore"));
+        };
+        if (answered) {
+            handlescore();
+        }
+    }, [answered]);
 
     return (
         <Container>
-            <Timer />
+            <Timer time={5} onTimerEnd={() => setAnswered(true)} />
             <AnswerBox>
                 {session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
@@ -89,7 +89,9 @@ const OpenLiar = () => {
                             )}
                         </React.Fragment>
                     ))}
-                <Card description={selectedAnswer} />
+                <MidText>
+                    <Card description={selectedAnswer} />
+                </MidText>
             </AnswerBox>
             <UserBox>
                 {session.streamManagers &&

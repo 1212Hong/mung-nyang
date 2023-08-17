@@ -52,11 +52,11 @@ const ScoreTotal = () => {
             });
         session.on("signal:startDance", (event) => {
             console.log(event.data);
-            dispatch(changePhase(event.data));
+            dispatch(changePhase("Dance"));
         });
         session.on("signal:startQuiz", (event) => {
             console.log(event.data);
-            dispatch(changePhase(event.data));
+            dispatch(changePhase("Quiz"));
         });
     }, []);
     const information = [];

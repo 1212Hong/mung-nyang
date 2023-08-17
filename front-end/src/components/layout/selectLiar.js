@@ -17,17 +17,27 @@ export const Item = styled.div`
     }
 `;
 
+export const RedColor = styled.div`
+    color: red;
+`;
+
+export const ExItem = styled.div`
+    margin-top: 15px;
+    position: relative;
+`;
+
 export const NotificationContainer = styled.div`
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: var(--yellow);
     border-radius: 5px;
     display: ${(props) => (props.show ? "block" : "none")};
     transition: display 0.2s;
     font-size: 72px;
-    color: var(--white);
+    color: var(--brown-dark);
+    padding: 20px;
 `;
 
 export const ImageOverlay = styled.div`

@@ -8,11 +8,14 @@ import {
     Item,
     NotificationContainer,
     ImageOverlay,
+    ExItem,
+    RedColor,
 } from "../../components/layout/selectLiar";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
+import { MidText, SubText, MainText } from "../../components/layout/common";
 
 const DupLiar = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -135,7 +138,7 @@ const DupLiar = () => {
 
     return (
         <Container>
-            <Timer onTimerEnd={() => setAnswered(true)} />
+            <Timer time={10} onTimerEnd={() => setAnswered(true)} />
             <Box>
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
@@ -157,6 +160,15 @@ const DupLiar = () => {
                                                 width="100%"
                                             />
                                         </ImageOverlay>
+                                        <SubText>
+                                            <RedColor>
+                                                투표 대상자:{" "}
+                                                {
+                                                    subscriber.stream.connection
+                                                        .data
+                                                }
+                                            </RedColor>
+                                        </SubText>
                                         <VideoComponent
                                             width="350px"
                                             height="320px"
@@ -177,13 +189,16 @@ const DupLiar = () => {
                         if (!isDisplayed) {
                             return (
                                 <React.Fragment key={i}>
-                                    <Item>
+                                    <ExItem>
+                                        <SubText>
+                                            {subscriber.stream.connection.data}
+                                        </SubText>
                                         <VideoComponent
                                             width="350px"
                                             height="320px"
                                             streamManager={subscriber}
                                         />
-                                    </Item>
+                                    </ExItem>
                                 </React.Fragment>
                             );
                         }
