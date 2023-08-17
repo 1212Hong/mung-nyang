@@ -134,22 +134,20 @@ const ScoreTotal = () => {
                                 fontSize="32px"
                                 fontColor="var(--brown-dark)"
                                 onClick={Next}
+                                width="130px"
                             >
                                 다음
                             </Button>
                         )}
                     </BtnBox>
                     {set >= setCnt ? (
-                        <SubText>모든 세트가 종료되었습니다. </SubText>
+                        <BtnBox>
+                            <SubText>모든 세트가 종료되었습니다. </SubText>
+                        </BtnBox>
                     ) : (
-                        <div>
-                            <div>
-                                <SubText>
-                                    세트 : {set} / {setCnt}
-                                </SubText>
-                            </div>
+                        <BtnBox>
                             <SubText>{setCnt - set} 세트 남았습니다.</SubText>
-                        </div>
+                        </BtnBox>
                     )}
                 </Frame>
             </TitleBox>
