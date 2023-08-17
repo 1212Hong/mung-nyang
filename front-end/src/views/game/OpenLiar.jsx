@@ -12,17 +12,23 @@ import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Result, deleteLiar } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
+import { MidText, SubText, MainText } from "../../components/layout/common";
+import { Overlay } from "../../components/layout/selectAnswer";
+import { NotificationContainer } from "../../components/layout/selectLiar";
 
 const OpenLiar = () => {
-    const setId = useSelector((state) => state.game.setId);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const pickedLiar = useSelector((state) => state.game.selectedLiar);
+    const game = useSelector((state) => state.game);
+    const { setId, liarName, selectedAnswer } = game;
     console.log(pickedLiar);
-    const selectedAnswer = useSelector((state) => state.game.selectedAnswer);
     console.log(selectedAnswer);
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const { session, owner } = openvidu;
+    const [answered, setAnswered] = useState(false);
+    const [note, setNote] = useState(false);
+    const [showNotification, setShowNotification] = useState(true);
 
     useEffect(() => {
         const getRes = async () => {
@@ -61,19 +67,30 @@ const OpenLiar = () => {
     }, []);
 
     useEffect(() => {
-        const timer = setTimeout(async () => {
-            try {
-                dispatch(changePhase("MidScore"));
-            } catch (error) {
-                console.error(error);
-            }
-        }, 5000);
-        return () => clearTimeout(timer);
-    }, []);
+        const handlescore = () => {
+            setShowNotification(true);
+            setNote(true);
+        };
+        if (answered) {
+            handlescore();
+        }
+    }, [answered]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            dispatch(changePhase("MidScore"));
+        }, 3000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [note]);
 
     return (
         <Container>
-            <Timer />
+            {!showNotification && (
+                <Timer time={8} onTimerEnd={() => setAnswered(true)} />
+            )}
             <AnswerBox>
                 {session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
@@ -89,13 +106,30 @@ const OpenLiar = () => {
                             )}
                         </React.Fragment>
                     ))}
-                <Card description={selectedAnswer} />
+                {showNotification ? (
+                    <Card description={selectedAnswer} />
+                ) : (
+                    session.streamManagers &&
+                    session.streamManagers.map((sub, i) => (
+                        <React.Fragment key={i}>
+                            {sub.stream.connection.data === pickedLiar && (
+                                <OtherUsers>
+                                    <VideoComponent
+                                        width="232px"
+                                        height="235px"
+                                        streamManager={sub}
+                                    />
+                                </OtherUsers>
+                            )}
+                        </React.Fragment>
+                    ))
+                )}
             </AnswerBox>
             <UserBox>
                 {session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
-                            {sub.stream.connection.data !== pickedLiar && (
+                            {sub.stream.connection.data === liarName && (
                                 <OtherUsers>
                                     <VideoComponent
                                         width="232px"
@@ -107,6 +141,10 @@ const OpenLiar = () => {
                         </React.Fragment>
                     ))}
             </UserBox>
+            <Overlay show={showNotification} />
+            <NotificationContainer show={showNotification}>
+                잠시후 라이어가 공개됩니다.
+            </NotificationContainer>
         </Container>
     );
 };

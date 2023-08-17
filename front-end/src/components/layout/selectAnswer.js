@@ -56,13 +56,13 @@ export const NotificationContainer = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: var(--yellow);
     padding: 30px 40px;
     border-radius: 5px;
     display: ${(props) => (props.show ? "block" : "none")};
     transition: display 5s;
     font-size: 48px;
-    color: var(--white);
+    color: var(--brown-dark);
 `;
 
 export const Overlay = styled.div`

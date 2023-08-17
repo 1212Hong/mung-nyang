@@ -1,5 +1,4 @@
 import { styled } from "styled-components";
-import BackgroundImg from "../../assets/img/mungnyangImg.png";
 
 export const HomeContainer = styled.div`
     display: flex;
@@ -17,12 +16,11 @@ export const LeftBox = styled.div`
 `;
 
 export const RightBox = styled.div`
-    background: url(${BackgroundImg});
     background-position: "center"; // 이미지 위치
     background-size: cover;
     background-repeat: "no-repeat"; // 이미지 반복 지정
     min-width: 840px;
-    min-height: 720px;
+    height: 100%;
 `;
 
 export const HeaderBox = styled.div`

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { closeModal } from "../../store/modalSlice";
 import { changePhase } from "../../store/phaseSlice";
+import { MainText } from "../layout/common";
 
 const ChooseContainer = styled.div`
     position: fixed;
@@ -18,7 +19,7 @@ const ChooseContainer = styled.div`
 `;
 
 const ChooseContent = styled.div`
-    background-color: white;
+    background-color: rgba(244, 244, 244, 0.7);
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
@@ -32,7 +33,7 @@ const ChooseModal = () => {
     return (
         <ChooseContainer>
             <ChooseContent>
-                <h2>{`정답자 ${answerer}이 선정되었습니다.`}</h2>
+                <MainText>{`정답자 ${answerer}이 선정되었습니다.`}</MainText>
             </ChooseContent>
         </ChooseContainer>
     );

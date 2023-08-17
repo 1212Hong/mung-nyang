@@ -2,17 +2,21 @@ import React, { useState, useEffect } from "react";
 import VideoComponent from "../../components/VideoComponent";
 import foot from "../../assets/img/foot.png";
 import Timer from "../../components/Timer";
-import { Container } from "../../components/layout/common";
+import { Container, ModalMainText } from "../../components/layout/common";
 import {
     Box,
     Item,
     NotificationContainer,
     ImageOverlay,
+    ExItem,
 } from "../../components/layout/selectLiar";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLiar, selectedLiar, Result } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
+import { MidText, SubText, MainText } from "../../components/layout/common";
+import { ModalContainer } from "../../components/layout/modal";
+import { Overlay } from "../../components/layout/selectAnswer";
 
 const LiarVote = () => {
     const openvidu = useSelector((state) => state.openvidu);
@@ -140,21 +144,23 @@ const LiarVote = () => {
 
     return (
         <Container>
-            <Timer time={10} onTimerEnd={() => setAnswered(true)} />
+            {!showNotification && (
+                <Timer time={10} onTimerEnd={() => setAnswered(true)} />
+            )}
             <Box>
                 {session.streamManagers &&
                     session.streamManagers.map((subscriber, i) => {
                         if (subscriber.stream.connection.data === answerer) {
                             return (
                                 <React.Fragment key={i}>
-                                    <Item>
-                                        정답자 : {answerer}
+                                    <ExItem>
+                                        <SubText>정답자 : {answerer}</SubText>
                                         <VideoComponent
                                             width="350px"
-                                            height="320px"
+                                            height="300px"
                                             streamManager={subscriber}
                                         />
-                                    </Item>
+                                    </ExItem>
                                 </React.Fragment>
                             );
                         }
@@ -188,10 +194,12 @@ const LiarVote = () => {
                                                 width="100%"
                                             />
                                         </ImageOverlay>
-                                        {subscriber.stream.connection.data}
+                                        <SubText>
+                                            {subscriber.stream.connection.data}
+                                        </SubText>
                                         <VideoComponent
                                             width="350px"
-                                            height="320px"
+                                            height="300px"
                                             streamManager={subscriber}
                                         />
                                     </Item>
@@ -200,9 +208,11 @@ const LiarVote = () => {
                         }
                     })}
             </Box>
+            <Overlay show={showNotification} />
             <NotificationContainer show={showNotification}>
                 {text}
             </NotificationContainer>
+            <Overlay show={showLoading} />
             <NotificationContainer show={showLoading}>
                 집계중 입니다. 잠시만 기다려 주세요.
             </NotificationContainer>

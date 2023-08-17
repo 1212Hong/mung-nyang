@@ -7,7 +7,7 @@ import { closeModal } from "../store/modalSlice";
 
 const Timer = (props) => {
     const {
-        time = typeof props.time === "undefined" ? 5 : props.time,
+        time = typeof props.time === "undefined" ? 2 : props.time,
         width = typeof props.width === "undefined" ? "100%" : props.width,
         height = typeof props.height === "undefined" ? "20px" : props.height,
         text,
