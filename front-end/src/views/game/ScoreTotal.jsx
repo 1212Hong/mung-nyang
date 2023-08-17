@@ -148,11 +148,11 @@ const ScoreTotal = () => {
                                     <AnswerItem>
                                         <RankUserFrame>
                                             <RankItem>
-                                                <MidText>
-                                                    <RankColor>
+                                                <RankColor>
+                                                    <MidText>
                                                         {index + 1}
-                                                    </RankColor>
-                                                </MidText>
+                                                    </MidText>
+                                                </RankColor>
                                             </RankItem>
                                             <VideoComponent
                                                 width="220px"
