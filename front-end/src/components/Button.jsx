@@ -38,7 +38,7 @@ const StyledButton = styled(motion.button)`
                 : `var(--macciato)`};
     }
     box-shadow: ${(props) =>
-        props.shadow ? `2px 2px 2px var(--black)` : null};
+        props.shadow !== "none" ? `2px 2px 2px var(--gray)` : null};
     transition-duration: 0.3s;
     &:active {
         margin-left: 15px;

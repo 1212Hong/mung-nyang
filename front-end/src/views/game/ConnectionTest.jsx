@@ -246,6 +246,7 @@ function ConnectionTest() {
                                 </DescBox>
                                 <Button
                                     text="테스트"
+                                    shadow="none"
                                     width="100px"
                                     onClick={handleTestButtonClick}
                                     className="testBtn"
@@ -267,6 +268,7 @@ function ConnectionTest() {
                                     width="45px"
                                     type="icon"
                                     background="dusty-pink-white"
+                                    shadow="none"
                                 >
                                     {/* 리롤버튼 css안깨지는거로 수정 필요 */}
                                     <RefreshIconO width="45" height="45" />

@@ -18,6 +18,7 @@ const Leftbox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 7px 7px 5px rgb(0, 0, 0, 0.2);
 `;
 
 const Rightbox = styled.div`
@@ -25,6 +26,7 @@ const Rightbox = styled.div`
     height: 700px;
     background-color: var(--beige);
     border-radius: 20px;
+    box-shadow: 7px 7px 5px rgb(0, 0, 0, 0.2);
 `;
 
 const Videobox = styled.div`
@@ -67,7 +69,7 @@ const ChattingBox = styled.div`
     }
 `;
 const ChatBox = styled.div`
-    padding: 5px;
+    /* padding: 5px; */
     overflow: auto;
     height: 100%;
 `;
@@ -130,11 +132,10 @@ const StartnSetBox = styled.div`
 const VideoUserName = styled.div`
     font-size: 14px;
     font-weight: bold;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--brown);
     padding: 5px;
     border-radius: 4px;
     color: white;
-    z-index: 1;
 `;
 
 export {
