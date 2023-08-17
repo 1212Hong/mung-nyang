@@ -25,6 +25,7 @@ const FinAns = () => {
     const [ans, setAns] = useState("");
     const [resReturn, setResReturn] = useState("");
     const [nextPhase, setNextPhase] = useState("");
+    const timer = useRef(null);
     const text = "정답자가 정답을 입력중입니다.";
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
@@ -61,25 +62,20 @@ const FinAns = () => {
     };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
+        timer.current = setTimeout(() => {
             session.on("signal:startFinAns", (event) => {
                 dispatch(changePhase("LiarVote"));
             });
         }, 10000);
 
         return () => {
-            clearTimeout(timer);
+            clearTimeout(timer.current);
         };
     });
 
     return (
         <Container>
-            <Timer
-                time={10}
-                onTimerEnd={() => {
-                    dispatch(changePhase("LiarVote"));
-                }}
-            />
+            <Timer time={10} />
             <AnswerBox>
                 {streams &&
                     streams.map((user, i) => (
