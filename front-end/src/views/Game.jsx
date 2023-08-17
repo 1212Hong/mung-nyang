@@ -254,7 +254,6 @@ const Game = () => {
                         } else if (event.data === "LiarWin_NotLiar") {
                             dispatch(gameActions.updateResult("라이어 승리"));
                         }
-                        dispatch(changePhase("MidScore"));
                     });
                 newSession.on("signal:VotedLiar", (event) => {
                     console.log(event.data);
