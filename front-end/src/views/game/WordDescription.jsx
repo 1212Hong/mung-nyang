@@ -125,28 +125,38 @@ function WordDescription() {
                     "User " + event.connection.connectionId + " start speaking",
                 );
                 publisher.publishAudio(false);
-                audioRef ?? audioRef.current.play();
-
-                setTimeout(() => {
-                    audioRef ?? audioRef.current.pause();
-                    publisher.publishAudio(true);
-                }, 1000);
+                if (audioRef) audioRef.current.play();
+            });
+            session.on("publisherStopSpeaking", (e) => {
+                if (audioRef) audioRef.current.pause();
+                publisher.publishAudio(true);
             });
         }
         if (myUserName === answerer) {
-            publisher.on("streamAudioVolumeChange", (event) => {
-                newOtherStreams.map((item) => {
-                    item.subscribeToAudio(false);
-                });
-                audioRef ?? audioRef.current.play();
-
-                setTimeout(() => {
-                    audioRef ?? audioRef.current.pause();
-                    newOtherStreams.map((item) => {
-                        item.subscribeToAudio(true);
-                    });
-                }, 1000);
+            session.on("publisherStartSpeaking", (event) => {
+                console.log(
+                    "User " + event.connection.connectionId + " start speaking",
+                );
+                publisher.publishAudio(false);
+                if (audioRef) audioRef.current.play();
             });
+            session.on("publisherStopSpeaking", (e) => {
+                if (audioRef) audioRef.current.pause();
+                publisher.publishAudio(true);
+            });
+            // publisher.on("streamAudioVolumeChange", (event) => {
+            //     newOtherStreams.map((item) => {
+            //         item.subscribeToAudio(false);
+            //     });
+            //     if (audioRef) audioRef.current.play();
+
+            //     setTimeout(() => {
+            //         if (audioRef) audioRef.current.pause();
+            //         newOtherStreams.map((item) => {
+            //             item.subscribeToAudio(true);
+            //         });
+            //     }, 1000);
+            // });
         }
     }, [audioRef]);
 
