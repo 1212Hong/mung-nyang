@@ -23,3 +23,7 @@ export const SubText = styled.span`
 export const SmallText = styled.span`
     font-size: 16px;
 `;
+// 모달 텍스트
+export const ModalMainText = styled.span`
+    font-size: 64px;
+`;
