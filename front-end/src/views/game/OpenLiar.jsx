@@ -65,6 +65,10 @@ const OpenLiar = () => {
             }
         };
         owner && getRes();
+
+        session.streamManagers.map((item) => {
+            item.subscribeToAudio(true);
+        });
     }, []);
 
     useEffect(() => {

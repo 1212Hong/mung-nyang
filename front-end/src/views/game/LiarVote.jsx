@@ -129,10 +129,6 @@ const LiarVote = () => {
     }, [answered, activeBox]);
 
     useEffect(() => {
-        if (myUserName === answerer)
-            newOtherStreams.map((item) => {
-                item.subscribeToAudio(true);
-            });
         const timer = setTimeout(() => {
             setShowNotification(false);
         }, 3000);
