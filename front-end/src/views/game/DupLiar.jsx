@@ -149,7 +149,7 @@ const DupLiar = () => {
                         <SubText>
                             <RedColor>
                                 본인 : {publisher.stream.connection.data}
-                            </RedColor>{" "}
+                            </RedColor>
                         </SubText>
                         <VideoComponent
                             width="350px"
@@ -160,7 +160,7 @@ const DupLiar = () => {
                 ) : (
                     <ExItem>
                         <SubText>
-                            본인 : {publisher.stream.connection.data}{" "}
+                            본인 : {publisher.stream.connection.data}
                         </SubText>
                         <VideoComponent
                             width="350px"
