@@ -82,4 +82,7 @@ export const Frame = styled.div`
 
 export const BtnBox = styled.div`
     margin-right: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
