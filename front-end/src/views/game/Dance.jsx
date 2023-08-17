@@ -23,15 +23,16 @@ import { getPenaltyUser, getDanceUrl } from "../../hooks/dance";
 import { gameActions } from "../../store/gameSlice";
 import { changePhase } from "../../store/phaseSlice";
 import { InitializedData, RecordStart, RecordStop } from "../../api/game";
+import { Videobox, VideoUserName } from "../../components/layout/waiting";
 
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { penaltyUser, passCnt, gameId } = game;
+    const { penaltyUser, passCnt, gameId, videoId } = game;
     const { session, owner, mySessionId, myUserName } = openvidu;
     const roomId = mySessionId;
     const [showNotification, setShowNotification] = useState(true);
-    const [videoId, setVideoId] = useState("");
+    // const [videoId, setVideoId] = useState("");
     const [complete, setComplete] = useState(false);
     const dispatch = useDispatch();
     const streams = session.streamManagers;
@@ -75,35 +76,39 @@ function Dance() {
             const info = await getDanceUrl();
             console.log(info);
             const newVideoId = info.danceUrl.split("/shorts/")[1];
-            sendVideoId(newVideoId);
+            await sendVideoId(newVideoId);
         };
 
         owner && fetchDanceUrl();
-        session.on("signal:videoData", (event) => {
-            setVideoId(event.data);
-        });
 
         const fetchPenaltyUser = async (roomId) => {
-            await getPenaltyUser(roomId);
-            owner &&
-                session.signal({
-                    data: penaltyUser.data,
-                    to: [],
-                    type: "penaltyUser",
-                });
+            const pUser = await getPenaltyUser(roomId);
+            console.log(pUser);
+            dispatch(gameActions.updatePenaltyUser(pUser.data));
+            await session.signal({
+                data: pUser.data,
+                to: [],
+                type: "penaltyUser",
+            });
         };
         owner && fetchPenaltyUser(roomId);
         console.log(penaltyUser);
 
-        session.on("signal:penaltyUser", (e) => {
-            console.log(e.data);
-            dispatch(gameActions.updatePenaltyUser(e.data));
-        });
         const startRecord = async (roomId, gameId) => {
             await RecordStart(roomId, gameId);
         };
         owner && startRecord(roomId, gameId);
     }, []);
+
+    useEffect(() => {
+        session.on("signal:videoData", (event) => {
+            dispatch(gameActions.updateVideoId(event.data));
+        });
+        session.on("signal:penaltyUser", (e) => {
+            console.log(e.data);
+            dispatch(gameActions.updatePenaltyUser(e.data));
+        });
+    }, [videoId]);
 
     useEffect(() => {
         console.log("비교 :", streams.length - 1, passCnt);
@@ -127,12 +132,12 @@ function Dance() {
         };
     }, []);
     const nonPenaltyUsers = streams.filter((user) => {
-        return user.stream.connection.data !== penaltyUser.data;
+        return user.stream.connection.data !== penaltyUser;
     });
     const penaltyStreamer = streams.find((user) => {
-        return user.stream.connection.data === penaltyUser.data;
+        return user.stream.connection.data === penaltyUser;
     });
-    console.log(penaltyUser.data);
+    console.log(penaltyUser);
 
     console.log(penaltyStreamer);
     return (
@@ -154,7 +159,7 @@ function Dance() {
                 <RightItem>
                     {penaltyUser && (
                         <>
-                            <SmallText>{penaltyUser.data}</SmallText>
+                            <SmallText>{penaltyUser}</SmallText>
                             <VideoComponent
                                 width="800px"
                                 height="450px"
@@ -169,7 +174,7 @@ function Dance() {
                         height="150px"
                         color="black"
                         fontSize="32px"
-                        disabled={myUserName === penaltyUser.data || complete}
+                        disabled={myUserName === penaltyUser || complete}
                         onClick={async () => {
                             if (myUserName !== penaltyUser && !complete) {
                                 setComplete(true);
@@ -194,17 +199,22 @@ function Dance() {
             <UsersBox>
                 {nonPenaltyUsers.map((user, i) => (
                     <OtherUsers key={user.stream.connection.data}>
-                        <VideoComponent
-                            width="230"
-                            height="200"
-                            streamManager={user}
-                        />
+                        <Videobox>
+                            <VideoComponent
+                                width="230"
+                                height="200"
+                                streamManager={user}
+                            />
+                            <VideoUserName>
+                                {user.stream.connection.data}
+                            </VideoUserName>
+                        </Videobox>
                     </OtherUsers>
                 ))}
             </UsersBox>
             <Overlay show={showNotification} />
             <NotificationContainer show={showNotification}>
-                벌칙자 : {penaltyUser.data}
+                벌칙자 : {penaltyUser}
             </NotificationContainer>
         </Container>
     );
