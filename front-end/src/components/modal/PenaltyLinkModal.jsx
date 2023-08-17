@@ -73,8 +73,9 @@ const PenaltyLinkModal = () => {
     const { mySessionId } = openvidu;
     const [penaltyLinkList, setPenaltyLinkList] = useState([]);
     const copyLink = async (link) => {
-        alert("링크 복사 완료!");
-        await navigator.clipboard.writeText(link);
+        await navigator.clipboard
+            .writeText(link)
+            .then((res) => alert("링크 복사 완료!"));
     };
     useEffect(() => {
         getPenaltyLink(mySessionId).then((response) =>
