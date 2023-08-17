@@ -129,18 +129,11 @@ function WordDescription() {
                 setTimeout(() => {
                     audioRef.current.pause();
                     publisher.publishAudio(true);
-                }, 5000);
+                }, 1000);
             });
         }
         if (myUserName === answerer) {
             publisher.on("streamAudioVolumeChange", (event) => {
-                console.log(
-                    "Publisher audio volume change from " +
-                        event.value.oldValue +
-                        " to" +
-                        event.value.newValue,
-                );
-
                 newOtherStreams.map((item) => {
                     item.subscribeToAudio(false);
                 });
@@ -151,7 +144,7 @@ function WordDescription() {
                     newOtherStreams.map((item) => {
                         item.subscribeToAudio(true);
                     });
-                }, 5000);
+                }, 1000);
             });
         }
     }, [audioRef]);
