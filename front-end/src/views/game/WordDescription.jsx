@@ -53,7 +53,8 @@ function WordDescription() {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
     const phase = useSelector((state) => state.phase);
-    const { myUserName, session, owner, mainStreamManager } = openvidu;
+    const { myUserName, session, owner, mainStreamManager, publisher } =
+        openvidu;
     const { gameId, result, answerer, setId, playerId, lastRound, emgSignal } =
         game;
     const { phaseType } = phase;

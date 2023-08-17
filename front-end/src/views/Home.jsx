@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import { ovActions } from "../store/openviduSlice";
 import { useDispatch } from "react-redux";
 import mainBgm from "../assets/audio/mainBgm.wav";
-import BackgroundImg from "../assets/img/mungnyangImg.png";
 
 const Home = () => {
     const [view, setView] = useState(false);
@@ -52,7 +51,6 @@ const Home = () => {
     const changeView = () => {
         setRoomInfo({ roomId: "", roomPw: "" });
         setView(!view);
-        console.log(roomInfo);
     };
 
     const handleMakeRoom = async () => {
@@ -89,7 +87,7 @@ const Home = () => {
     };
     return (
         <HomeContainer>
-            <audio id="bgm" autoPlay loop>
+            <audio autoPlay loop>
                 <source src={mainBgm} type="audio/wav" />
             </audio>
             <LeftBox className="leftbox">
@@ -121,13 +119,6 @@ const Home = () => {
                         onKeyPress={handleOnKeyPress}
                         ref={roomPwCheck}
                     />
-                    {inputChecker ? (
-                        ""
-                    ) : (
-                        <p style={{ color: "rgba(255,0,0,0.5)" }}>
-                            방 제목과 비밀번호를 입력해주세요.
-                        </p>
-                    )}
                 </FormBox>
                 <ButtonBox>
                     {view ? (
@@ -161,14 +152,7 @@ const Home = () => {
                     />
                 </ButtonBox>
             </LeftBox>
-            <RightBox className="rightbox">
-                <img
-                    src={BackgroundImg}
-                    width="840px"
-                    height="720px"
-                    alt="홈배경"
-                />
-            </RightBox>
+            <RightBox className="rightbox" />
         </HomeContainer>
     );
 };

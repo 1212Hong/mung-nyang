@@ -19,6 +19,7 @@ const initialState = {
     penaltyUser: "",
     passCnt: 0, // 벌칙에서 pass를 누른 인원수m
     emgSignal: false,
+    liarName: "",
 };
 
 export const gameSlice = createSlice({
@@ -78,6 +79,9 @@ export const gameSlice = createSlice({
         },
         updateCurSetCnt: (state, action) => {
             state.curSetCnt = action.payload;
+        },
+        updateEmgSignal: (state, action) => {
+            state.emgSignal = action.payload;
         },
         updateEmgSignal: (state, action) => {
             state.emgSignal = action.payload;
