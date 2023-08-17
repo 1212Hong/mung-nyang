@@ -49,7 +49,7 @@ function Participant({ publisher }) {
                 {subscribers.map((item, key) => (
                     <UserItem key={key}>
                         <SubText>{item.stream.connection.data}</SubText>{" "}
-                        {owner ? (
+                        {/* {owner ? (
                             <Button
                                 width="25px"
                                 height="22px"
@@ -63,7 +63,7 @@ function Participant({ publisher }) {
                             </Button>
                         ) : (
                             ""
-                        )}
+                        )} */}
                     </UserItem>
                 ))}
             </div>

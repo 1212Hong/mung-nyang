@@ -17,11 +17,11 @@ import { Overlay } from "../../components/layout/selectAnswer";
 import { NotificationContainer } from "../../components/layout/selectLiar";
 
 const OpenLiar = () => {
-    const setId = useSelector((state) => state.game.setId);
     const roomId = useSelector((state) => state.openvidu.mySessionId);
     const pickedLiar = useSelector((state) => state.game.selectedLiar);
+    const game = useSelector((state) => state.game);
+    const { setId, liarName, selectedAnswer } = game;
     console.log(pickedLiar);
-    const selectedAnswer = useSelector((state) => state.game.selectedAnswer);
     console.log(selectedAnswer);
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
@@ -89,7 +89,7 @@ const OpenLiar = () => {
     return (
         <Container>
             {!showNotification && (
-                <Timer time={5} onTimerEnd={() => setAnswered(true)} />
+                <Timer time={8} onTimerEnd={() => setAnswered(true)} />
             )}
             <AnswerBox>
                 {session.streamManagers &&
@@ -106,15 +106,30 @@ const OpenLiar = () => {
                             )}
                         </React.Fragment>
                     ))}
-                <MainText>
+                {showNotification ? (
                     <Card description={selectedAnswer} />
-                </MainText>
+                ) : (
+                    session.streamManagers &&
+                    session.streamManagers.map((sub, i) => (
+                        <React.Fragment key={i}>
+                            {sub.stream.connection.data === pickedLiar && (
+                                <OtherUsers>
+                                    <VideoComponent
+                                        width="232px"
+                                        height="235px"
+                                        streamManager={sub}
+                                    />
+                                </OtherUsers>
+                            )}
+                        </React.Fragment>
+                    ))
+                )}
             </AnswerBox>
             <UserBox>
                 {session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
-                            {sub.stream.connection.data !== pickedLiar && (
+                            {sub.stream.connection.data === liarName && (
                                 <OtherUsers>
                                     <VideoComponent
                                         width="232px"
