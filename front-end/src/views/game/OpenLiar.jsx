@@ -7,14 +7,15 @@ import {
     AnswerBox,
     AnswerItem,
     UserBox,
+    Center,
+    NickName,
+    Notification,
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Result, deleteLiar } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
-import { MidText, SubText, MainText } from "../../components/layout/common";
-import { Overlay } from "../../components/layout/selectAnswer";
-import { NotificationContainer } from "../../components/layout/selectLiar";
+import { SubText } from "../../components/layout/common";
 
 const OpenLiar = () => {
     const roomId = useSelector((state) => state.openvidu.mySessionId);
@@ -22,7 +23,7 @@ const OpenLiar = () => {
     const game = useSelector((state) => state.game);
     const { setId, liarName, selectedAnswer } = game;
     console.log(pickedLiar);
-    console.log(selectedAnswer);
+    console.log(liarName);
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const { session, owner } = openvidu;
@@ -68,7 +69,7 @@ const OpenLiar = () => {
 
     useEffect(() => {
         const handlescore = () => {
-            setShowNotification(true);
+            setShowNotification(false);
             setNote(true);
         };
         if (answered) {
@@ -79,7 +80,7 @@ const OpenLiar = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             dispatch(changePhase("MidScore"));
-        }, 3000);
+        }, 8000);
 
         return () => {
             clearTimeout(timer);
@@ -88,20 +89,24 @@ const OpenLiar = () => {
 
     return (
         <Container>
-            {!showNotification && (
-                <Timer time={8} onTimerEnd={() => setAnswered(true)} />
-            )}
+            <Timer time={5} onTimerEnd={() => setAnswered(true)} />
+
             <AnswerBox>
                 {session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
                             {sub.stream.connection.data === pickedLiar && (
                                 <AnswerItem>
-                                    <VideoComponent
-                                        width="500px"
-                                        height="400px"
-                                        streamManager={sub}
-                                    />
+                                    <Center>
+                                        <SubText>
+                                            지목된 사람 : {pickedLiar}
+                                        </SubText>
+                                        <VideoComponent
+                                            width="500px"
+                                            height="400px"
+                                            streamManager={sub}
+                                        />
+                                    </Center>
                                 </AnswerItem>
                             )}
                         </React.Fragment>
@@ -112,11 +117,12 @@ const OpenLiar = () => {
                     session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
-                            {sub.stream.connection.data === pickedLiar && (
+                            {sub.stream.connection.data === liarName && (
                                 <OtherUsers>
+                                    <SubText>라이어 : {liarName}</SubText>
                                     <VideoComponent
-                                        width="232px"
-                                        height="235px"
+                                        width="500px"
+                                        height="400px"
                                         streamManager={sub}
                                     />
                                 </OtherUsers>
@@ -129,22 +135,27 @@ const OpenLiar = () => {
                 {session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
                         <React.Fragment key={i}>
-                            {sub.stream.connection.data === liarName && (
+                            {sub.stream.connection.data !== pickedLiar && (
                                 <OtherUsers>
                                     <VideoComponent
                                         width="232px"
-                                        height="235px"
+                                        height="200px"
                                         streamManager={sub}
                                     />
+                                    <NickName>
+                                        <SubText>
+                                            {sub.stream.connection.data}
+                                        </SubText>
+                                    </NickName>
                                 </OtherUsers>
                             )}
                         </React.Fragment>
                     ))}
             </UserBox>
-            <Overlay show={showNotification} />
-            <NotificationContainer show={showNotification}>
+            {/* <Overlay show={showNotification} /> */}
+            <Notification show={showNotification}>
                 잠시후 라이어가 공개됩니다.
-            </NotificationContainer>
+            </Notification>
         </Container>
     );
 };
