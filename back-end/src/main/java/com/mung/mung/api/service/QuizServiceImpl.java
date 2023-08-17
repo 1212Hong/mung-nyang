@@ -196,11 +196,12 @@ public class QuizServiceImpl implements QuizService {
         if (curSet == null) {
             throw new SetNotExistException();
         }
+        String liarName = curSet.getLiar();
         // 라이어일 경우
-        if (playerNick.equals(curSet.getLiar())) {
-            return new QuizPlayersWordRes(curSet.getWrongAnswer());
+        if (playerNick.equals(liarName)) {
+            return new QuizPlayersWordRes(curSet.getWrongAnswer(), liarName);
         } else {
-            return new QuizPlayersWordRes(curSet.getAnswer());
+            return new QuizPlayersWordRes(curSet.getAnswer(), liarName);
 
         }
     }
