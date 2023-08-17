@@ -37,6 +37,14 @@ const StyledButton = styled(motion.button)`
                 ? `var(--${props.hoverbgcolor})`
                 : `var(--macciato)`};
     }
+    box-shadow: ${(props) =>
+        props.shadow !== "none" ? `2px 2px 2px var(--gray)` : null};
+    transition-duration: 0.3s;
+    &:active {
+        margin-left: 15px;
+        margin-right: 15px;
+        box-shadow: none;
+    }
 `;
 
 const Button = (props) => {
@@ -56,8 +64,8 @@ const Button = (props) => {
         children,
         type,
         text,
-        // audioURL,
-        // -> url props로는 못줄거같고 특정 사운드 후보들 미리 저장해두고 바꿔쓰기는 가능
+        shadow,
+        clickactive,
         padding,
         margin,
         volume = 0.5,
@@ -86,6 +94,8 @@ const Button = (props) => {
             padding={padding}
             margin={margin}
             disabled={disabled}
+            shadow={shadow}
+            clickactive={clickactive}
         >
             {text}
             {children}

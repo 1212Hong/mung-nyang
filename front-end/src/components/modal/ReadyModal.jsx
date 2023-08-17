@@ -136,7 +136,7 @@ const ReadyModal = () => {
 
     return (
         <ReadyModalView onClick={(e) => e.stopPropagation()}>
-            <Timer width={"80%"} time={7.1}></Timer>
+            <Timer width={"80%"} time={7.1} />
             <ModalViewDescDiv>게임 시작 투표</ModalViewDescDiv>
 
             <ModalViewResultDiv className="vote-res-div">
@@ -150,6 +150,8 @@ const ReadyModal = () => {
                 ) : (
                     <>
                         <Button
+                            shadow="none"
+                            width="100px"
                             onClick={async () => {
                                 // api 코드 작성할 곳.
                                 setComplete(true);
@@ -164,6 +166,8 @@ const ReadyModal = () => {
                             O
                         </Button>
                         <Button
+                            shadow="none"
+                            width="100px"
                             onClick={async () => {
                                 // api 코드 작성할 곳.
                                 setComplete(true);
