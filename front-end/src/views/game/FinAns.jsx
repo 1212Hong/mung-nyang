@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import VideoComponent from "../../components/VideoComponent";
 import Card from "../../components/Card";
 import clockImg from "../../assets/img/clock.png";
@@ -32,7 +32,7 @@ const FinAns = () => {
     const game = useSelector((state) => state.game);
     const { answerer, setId } = game;
     const streams = session.streamManagers;
-
+    const userInput = useRef();
     const handleChange = (e) => {
         setAns(e.target.value);
     };
@@ -45,8 +45,8 @@ const FinAns = () => {
         });
     };
 
-    const submitAnswer = async (ans) => {
-        await finalAnswer(setId, mySessionId, ans)
+    const submitAnswer = async () => {
+        await finalAnswer(setId, mySessionId, userInput.current.value)
             .then((res) => {
                 console.log(res); // 올바른 반환값 : resultReturn, gameProcessType 담긴 객체
                 setResReturn(res.data.resReturn);
@@ -106,9 +106,13 @@ const FinAns = () => {
                             />
                         </ImgBox>
                         <InputBox>
-                            <Input value={ans} onChange={handleChange} />
+                            <Input
+                                value={ans}
+                                ref={userInput}
+                                onChange={handleChange}
+                            />
                             <Button
-                                onClick={() => submitAnswer(ans)}
+                                onClick={() => submitAnswer()}
                                 width="155px"
                                 height="40px"
                             >
