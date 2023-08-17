@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import store from "../../store";
 import { useSelector, useDispatch } from "react-redux";
 import Button from "../../components/Button";
 import VideoComponent from "../../components/VideoComponent";
-import { OtherUsers, Container } from "../../components/layout/common";
+import {
+    OtherUsers,
+    Container,
+    SmallText,
+} from "../../components/layout/common";
 import {
     NotificationContainer,
     Overlay,
@@ -62,7 +65,7 @@ function Dance() {
             dispatch(changePhase("Wait"));
         });
     };
-    const addCount = async (passCnt) => {
+    const addCount = async () => {
         session.on("signal:addPassCnt", (event) => {
             dispatch(gameActions.updatePassCnt(event.data));
         });
@@ -99,7 +102,7 @@ function Dance() {
             owner && stopRecord(roomId, gameId);
             passVoteEnd();
         }
-        addCount(passCnt);
+        addCount();
     }, [passCnt]);
 
     useEffect(() => {
@@ -112,12 +115,13 @@ function Dance() {
         };
     }, []);
     const nonPenaltyUsers = streams.filter((user) => {
-        return user.stream.connection.data !== penaltyUser;
+        return user.stream.connection.data !== penaltyUser.data;
     });
     const penaltyStreamer = streams.find((user) => {
-        return user.stream.connection.data === penaltyUser;
+        return user.stream.connection.data === penaltyUser.data;
     });
-    console.log(nonPenaltyUsers);
+    console.log(penaltyUser.data);
+    console.log(penaltyStreamer);
     return (
         <Container>
             <PenaltyBox>
@@ -136,11 +140,14 @@ function Dance() {
                 </LeftItem>
                 <RightItem>
                     {penaltyUser && (
-                        <VideoComponent
-                            width="800px"
-                            height="450px"
-                            streamManager={penaltyStreamer}
-                        />
+                        <>
+                            <SmallText>{penaltyUser.data}</SmallText>
+                            <VideoComponent
+                                width="800px"
+                                height="450px"
+                                streamManager={penaltyStreamer}
+                            />
+                        </>
                     )}
                 </RightItem>
                 <Buttons>
@@ -149,7 +156,7 @@ function Dance() {
                         height="150px"
                         color="black"
                         fontSize="32px"
-                        disabled={myUserName === penaltyUser || complete}
+                        disabled={myUserName === penaltyUser.data || complete}
                         onClick={async () => {
                             if (myUserName !== penaltyUser && !complete) {
                                 setComplete(true);
@@ -172,15 +179,19 @@ function Dance() {
                 </Buttons>
             </PenaltyBox>
             <UsersBox>
-                {nonPenaltyUsers.map((user) => (
+                {nonPenaltyUsers.map((user, i) => (
                     <OtherUsers key={user.stream.connection.data}>
-                        <VideoComponent width="230" height="200" />
+                        <VideoComponent
+                            width="230"
+                            height="200"
+                            streamManager={user}
+                        />
                     </OtherUsers>
                 ))}
             </UsersBox>
             <Overlay show={showNotification} />
             <NotificationContainer show={showNotification}>
-                벌칙자 : {penaltyUser}
+                벌칙자 : {penaltyUser.data}
             </NotificationContainer>
         </Container>
     );
