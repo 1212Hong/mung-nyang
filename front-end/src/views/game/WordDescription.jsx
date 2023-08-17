@@ -134,11 +134,7 @@ function WordDescription() {
         console.log(audioRef);
         if (myUserName !== answerer) {
             session.on("publisherStartSpeaking", (event) => {
-                if (
-                    phaseType === "Desc" ||
-                    phaseType === "QnA" ||
-                    phaseType === "FinAns"
-                )
+                if (phaseType === "Desc" || "QnA" || "FinAns")
                     publisher.publishAudio(false);
                 if (audioRef.current && audioRef.current.paused)
                     audioRef.current.play();
@@ -146,11 +142,7 @@ function WordDescription() {
             session.on("publisherStopSpeaking", (e) => {
                 if (audioRef.current && !audioRef.current.paused)
                     audioRef.current.pause();
-                if (
-                    phaseType === "Desc" ||
-                    phaseType === "QnA" ||
-                    phaseType === "FinAns"
-                )
+                if (phaseType === "Desc" || "QnA" || "FinAns")
                     publisher.publishAudio(true);
             });
         }
