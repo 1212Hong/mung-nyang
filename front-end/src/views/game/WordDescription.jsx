@@ -54,7 +54,8 @@ function WordDescription() {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { myUserName, session, owner, mainStreamManager } = openvidu;
+    const { myUserName, session, owner, mainStreamManager, publisher } =
+        openvidu;
     const { gameId, result, answerer, setId, playerId, lastRound } = game;
     const [word, setWord] = useState("");
     const [otherUserStreams, setOtherUserStreams] = useState([]);
@@ -117,7 +118,7 @@ function WordDescription() {
     }, []);
 
     useEffect(() => {
-        if (myUserName === answerer) {
+        if (myUserName !== answerer) {
             session.on("publisherStartSpeaking", (event) => {
                 console.log(
                     "User " + event.connection.connectionId + " start speaking",
@@ -128,12 +129,30 @@ function WordDescription() {
                 });
                 setTimeout(() => {
                     audioRef.current.pause();
+                    newOtherStreams.map((item) => {
+                        item.subscribeToAudio(true);
+                    });
                 }, 3000);
+            });
+        }
+        publisher.on("streamAudioVolumeChange", (event) => {
+            console.log(
+                "Publisher audio volume change from " +
+                    event.value.oldValue +
+                    " to" +
+                    event.value.newValue,
+            );
+            audioRef.current.play();
+            newOtherStreams.map((item) => {
+                item.subscribeToAudio(false);
+            });
+            setTimeout(() => {
+                audioRef.current.pause();
                 newOtherStreams.map((item) => {
                     item.subscribeToAudio(true);
                 });
-            });
-        }
+            }, 3000);
+        });
     }, [audioRef]);
 
     const getNextDescIndex = () => {
