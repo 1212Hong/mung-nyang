@@ -103,7 +103,7 @@ function WordDescription() {
             await getUserWord(setId, myUserName).then((response) => {
                 console.log(response);
                 myUserName !== answerer && setWord(response.data.playerWord);
-                gameActions.updateLiarName(response.data.liarName);
+                dispatch(gameActions.updateLiarName(response.data.liarName));
             });
         };
 
@@ -121,9 +121,6 @@ function WordDescription() {
     useEffect(() => {
         if (myUserName !== answerer) {
             session.on("publisherStartSpeaking", (event) => {
-                console.log(
-                    "User " + event.connection.connectionId + " start speaking",
-                );
                 publisher.publishAudio(false);
                 if (audioRef.current) audioRef.current.play();
             });
@@ -133,16 +130,18 @@ function WordDescription() {
             });
         }
         if (myUserName === answerer) {
-            session.on("publisherStartSpeaking", (event) => {
-                console.log(
-                    "User " + event.connection.connectionId + " start speaking",
-                );
-                publisher.publishAudio(false);
+            publisher.on("streamAudioVolumeChange", (event) => {
+                newOtherStreams.map((item) => {
+                    item.subscribeToAudio(false);
+                });
                 if (audioRef.current) audioRef.current.play();
-            });
-            session.on("publisherStopSpeaking", (e) => {
-                if (audioRef.current) audioRef.current.pause();
-                publisher.publishAudio(true);
+
+                setTimeout(() => {
+                    if (audioRef.current) audioRef.current.pause();
+                    newOtherStreams.map((item) => {
+                        item.subscribeToAudio(true);
+                    });
+                }, 1000);
             });
             // publisher.on("streamAudioVolumeChange", (event) => {
             //     newOtherStreams.map((item) => {

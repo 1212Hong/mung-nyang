@@ -282,9 +282,7 @@ function WaitingRoom() {
                     >
                         <LinkIcon width="23" />
                     </Button>
-                    <Button width="45px" height="40px" type="icon">
-                        <CaptureIcon width="23" />
-                    </Button>
+
                     {isMuted ? (
                         <Button
                             key="mute"
