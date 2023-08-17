@@ -360,6 +360,12 @@ const Game = () => {
                     const messageData = { userName, userMessage };
                     dispatch(ovActions.updateMessage(messageData));
                 });
+                session.on("signal:emgAnswered", (event) => {
+                    console.log(event.data);
+                    dispatch(gameActions.updateEmgSignal(true));
+                    dispatch(gameActions.saveResult(event.data));
+                    dispatch(changePhase("MidScore"));
+                });
             } catch (error) {
                 console.log(
                     "There was an error connecting to the session:",
