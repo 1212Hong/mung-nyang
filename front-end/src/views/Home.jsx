@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     ButtonBox,
     FormBox,
@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import { ovActions } from "../store/openviduSlice";
 import { useDispatch } from "react-redux";
 import mainBgm from "../assets/audio/mainBgm.wav";
-import BackgroundImg from "../assets/img/mungnyangImg.png";
 
 const Home = () => {
     const [view, setView] = useState(false);
@@ -23,7 +22,10 @@ const Home = () => {
         roomId: "",
         roomPw: "",
     });
+    const [inputChecker, setInputChecker] = useState(false);
     const { roomId, roomPw } = roomInfo;
+    const roomIdCheck = useRef();
+    const roomPwCheck = useRef();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -32,6 +34,12 @@ const Home = () => {
             ...roomInfo,
             [e.target.id]: e.target.value,
         });
+        if (
+            roomIdCheck.current.value !== "" &&
+            roomPwCheck.current.value !== ""
+        )
+            setInputChecker(true);
+        else setInputChecker(false);
     };
 
     const handleOnKeyPress = (e) => {
@@ -43,16 +51,21 @@ const Home = () => {
     const changeView = () => {
         setRoomInfo({ roomId: "", roomPw: "" });
         setView(!view);
-        console.log(roomInfo);
     };
 
     const handleMakeRoom = async () => {
+        if (!inputChecker) {
+            return false;
+        }
         await makeRoom(roomInfo).catch((err) => navigate("/error"));
         dispatch(ovActions.saveSessionPw(roomPw));
         navigate("/test");
     };
 
     const handleJoinRoom = async () => {
+        if (!inputChecker) {
+            return false;
+        }
         const joinRoomResponse = await enterRoom(roomInfo);
         joinRoomResponse && joinRoomResponse.error
             ? console.log("Error:", joinRoomResponse.error)
@@ -66,10 +79,15 @@ const Home = () => {
             audioElement.play(); // 재생
         }
     }, []);
-
+    const roomInfoCheck = () => {
+        if (!roomInfo.roomId || !roomInfo.roomPw) {
+            alert("맞음?");
+            setInputChecker(false);
+        }
+    };
     return (
         <HomeContainer>
-            <audio id="bgm" autoPlay loop>
+            <audio autoPlay loop>
                 <source src={mainBgm} type="audio/wav" />
             </audio>
             <LeftBox className="leftbox">
@@ -90,6 +108,7 @@ const Home = () => {
                         placeholder="방제목"
                         value={roomId}
                         onChange={handleChange}
+                        ref={roomIdCheck}
                     />
                     <Input
                         id="roomPw"
@@ -98,6 +117,7 @@ const Home = () => {
                         value={roomPw}
                         onChange={handleChange}
                         onKeyPress={handleOnKeyPress}
+                        ref={roomPwCheck}
                     />
                 </FormBox>
                 <ButtonBox>
@@ -132,14 +152,7 @@ const Home = () => {
                     />
                 </ButtonBox>
             </LeftBox>
-            <RightBox className="rightbox">
-                <img
-                    src={BackgroundImg}
-                    width="840px"
-                    height="720px"
-                    alt="홈배경"
-                />
-            </RightBox>
+            <RightBox className="rightbox" />
         </HomeContainer>
     );
 };
