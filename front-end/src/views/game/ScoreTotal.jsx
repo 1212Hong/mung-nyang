@@ -22,7 +22,12 @@ import {
 import { score } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
 import VideoComponent from "../../components/VideoComponent";
-import { MidText, SubText, MainText } from "../../components/layout/common";
+import {
+    MidText,
+    SubText,
+    MainText,
+    ModalMainText,
+} from "../../components/layout/common";
 import { NotificationContainer } from "../../components/layout/selectLiar";
 
 const ScoreTotal = () => {
@@ -148,11 +153,11 @@ const ScoreTotal = () => {
                                     <AnswerItem>
                                         <RankUserFrame>
                                             <RankItem>
-                                                <MidText>
-                                                    <RankColor>
+                                                <RankColor>
+                                                    <MidText>
                                                         {index + 1}
-                                                    </RankColor>
-                                                </MidText>
+                                                    </MidText>
+                                                </RankColor>
                                             </RankItem>
                                             <VideoComponent
                                                 width="220px"
@@ -170,12 +175,7 @@ const ScoreTotal = () => {
                         <RankItemFrame>
                             <ScoreItem>
                                 <MidText>
-                                    <ColorWhite>Score:</ColorWhite>
-                                </MidText>
-                            </ScoreItem>
-                            <ScoreItem>
-                                <MidText>
-                                    <ScoreText>{user.score}</ScoreText>
+                                    <ScoreText>{user.score} 점</ScoreText>
                                 </MidText>
                             </ScoreItem>
                         </RankItemFrame>
@@ -183,7 +183,7 @@ const ScoreTotal = () => {
                 ))}
             </RankBoxFrame>
             <NotificationContainer show={showNotification}>
-                라이어 : {liar}
+                <ModalMainText>라이어 : {liar}</ModalMainText>
             </NotificationContainer>
         </Container>
     );

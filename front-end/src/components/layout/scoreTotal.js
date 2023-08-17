@@ -32,11 +32,11 @@ export const RankBox = styled.div`
 
 export const RankItem = styled.div`
     margin-right: 10px;
-    border: 2px solid var(--brown-dark);
+    border: 1px solid var(--brown-dark);
     height: 30px;
     width: 30px;
-    background-color: var(--dusty-pink-light);
-    border-radius: 10px;
+    background-color: var(--macciato);
+    border-radius: 8px;
 `;
 
 export const RankItemFrame = styled.div`
@@ -48,6 +48,7 @@ export const RankItemFrame = styled.div`
 
 export const AnswerItem = styled.div`
     justify-content: center;
+    box-shadow: 1px 1px 1px var(--gray);
 `;
 
 export const NameItem = styled.div`
@@ -74,7 +75,7 @@ export const ColorWhite = styled.div`
 `;
 
 export const RankColor = styled.div`
-    color: var(--brown-dark);
+    color: var(--dusty-pink-white);
 `;
 
 export const Frame = styled.div`

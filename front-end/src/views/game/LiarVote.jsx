@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import VideoComponent from "../../components/VideoComponent";
 import foot from "../../assets/img/foot.png";
 import Timer from "../../components/Timer";
-import { Container } from "../../components/layout/common";
+import { Container, ModalMainText } from "../../components/layout/common";
 import {
     Box,
     Item,
