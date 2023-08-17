@@ -281,7 +281,7 @@ const Game = () => {
                     dispatch(changePhase(e.data)); // 최종정답 api의 결과에 따라 페이즈 이동
                     // 필요하다면 게임 결과도 저장해야함
                 });
-                session.on("signal:LiarLose", (e) => {
+                session.on("signal:LiarLose_Final", (e) => {
                     console.log(e.data);
                     dispatch(changePhase(e.data));
                 });
