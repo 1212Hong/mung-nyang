@@ -12,6 +12,9 @@ import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Result, deleteLiar } from "../../api/game";
 import { gameActions } from "../../store/gameSlice";
+import { MidText, SubText, MainText } from "../../components/layout/common";
+import { Overlay } from "../../components/layout/selectAnswer";
+import { NotificationContainer } from "../../components/layout/selectLiar";
 
 const OpenLiar = () => {
     const setId = useSelector((state) => state.game.setId);
@@ -23,6 +26,9 @@ const OpenLiar = () => {
     const dispatch = useDispatch();
     const openvidu = useSelector((state) => state.openvidu);
     const { session, owner } = openvidu;
+    const [answered, setAnswered] = useState(false);
+    const [note, setNote] = useState(false);
+    const [showNotification, setShowNotification] = useState(true);
 
     useEffect(() => {
         const getRes = async () => {
@@ -61,19 +67,30 @@ const OpenLiar = () => {
     }, []);
 
     useEffect(() => {
-        const timer = setTimeout(async () => {
-            try {
-                dispatch(changePhase("MidScore"));
-            } catch (error) {
-                console.error(error);
-            }
-        }, 5000);
-        return () => clearTimeout(timer);
-    }, []);
+        const handlescore = () => {
+            setShowNotification(true);
+            setNote(true);
+        };
+        if (answered) {
+            handlescore();
+        }
+    }, [answered]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            dispatch(changePhase("MidScore"));
+        }, 3000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [note]);
 
     return (
         <Container>
-            <Timer />
+            {!showNotification && (
+                <Timer time={5} onTimerEnd={() => setAnswered(true)} />
+            )}
             <AnswerBox>
                 {session.streamManagers &&
                     session.streamManagers.map((sub, i) => (
@@ -89,7 +106,9 @@ const OpenLiar = () => {
                             )}
                         </React.Fragment>
                     ))}
-                <Card description={selectedAnswer} />
+                <MainText>
+                    <Card description={selectedAnswer} />
+                </MainText>
             </AnswerBox>
             <UserBox>
                 {session.streamManagers &&
@@ -107,6 +126,10 @@ const OpenLiar = () => {
                         </React.Fragment>
                     ))}
             </UserBox>
+            <Overlay show={showNotification} />
+            <NotificationContainer show={showNotification}>
+                잠시후 라이어가 공개됩니다.
+            </NotificationContainer>
         </Container>
     );
 };
