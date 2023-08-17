@@ -134,16 +134,18 @@ function WordDescription() {
         console.log(audioRef);
         if (myUserName !== answerer) {
             session.on("publisherStartSpeaking", (event) => {
-                if (phase === "Desc" || phase === "QnA" || phase === "FinAns")
-                    publisher.publishAudio(false);
+                if (phase === "Desc") publisher.publishAudio(false);
+                else if (phase === "QnA") publisher.publishAudio(false);
+                else if (phase === "FinAns") publisher.publishAudio(false);
                 if (audioRef.current && audioRef.current.paused)
                     audioRef.current.play();
             });
             session.on("publisherStopSpeaking", (e) => {
                 if (audioRef.current && !audioRef.current.paused)
                     audioRef.current.pause();
-                if (phase === "Desc" || phase === "QnA" || phase === "FinAns")
-                    publisher.publishAudio(true);
+                if (phase === "Desc") publisher.publishAudio(true);
+                else if (phase === "QnA") publisher.publishAudio(true);
+                else if (phase === "FinAns") publisher.publishAudio(true);
             });
         }
         if (myUserName === answerer) {
