@@ -10,6 +10,7 @@ import {
     ImageOverlay,
     ExItem,
     RedColor,
+    ExRedText,
 } from "../../components/layout/selectLiar";
 import { changePhase } from "../../store/phaseSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -146,11 +147,9 @@ const DupLiar = () => {
                 {publisher.stream.connection.data !== answerer &&
                 updatedDupLiars.includes(publisher.stream.connection.data) ? (
                     <ExItem>
-                        <SubText>
-                            <RedColor>
-                                나 : {publisher.stream.connection.data}
-                            </RedColor>
-                        </SubText>
+                        <ExRedText>
+                            나 : {publisher.stream.connection.data}
+                        </ExRedText>
                         <VideoComponent
                             width="350px"
                             height="300px"
@@ -210,15 +209,10 @@ const DupLiar = () => {
                                                 width="100%"
                                             />
                                         </ImageOverlay>
-                                        <SubText>
-                                            <RedColor>
-                                                투표 대상자:{" "}
-                                                {
-                                                    subscriber.stream.connection
-                                                        .data
-                                                }
-                                            </RedColor>
-                                        </SubText>
+                                        <ExRedText>
+                                            투표 대상자:
+                                            {subscriber.stream.connection.data}
+                                        </ExRedText>
                                         <VideoComponent
                                             width="350px"
                                             height="300px"
