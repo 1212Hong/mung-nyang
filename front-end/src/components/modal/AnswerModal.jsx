@@ -61,6 +61,12 @@ const AnswerModal = (type) => {
                 to: [],
                 type: "emgAnswered", // 비상 정답 누르면 신호 보냄 -> 받는 거 체크 필요
             });
+            session.on("signal:emgAnswered", (event) => {
+                console.log(event.data);
+                dispatch(gameActions.updateEmgSignal(true));
+                dispatch(gameActions.saveResult(event.data));
+                dispatch(changePhase("MidScore"));
+            });
         });
     };
     return (
