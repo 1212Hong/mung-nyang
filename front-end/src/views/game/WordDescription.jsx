@@ -184,7 +184,11 @@ function WordDescription() {
     return (
         <Container>
             <audio ref={audioRef} src={TestSound} loop={false} preload="" />
-            <Timer key={descIndex} onTimerEnd={() => getNextDescIndex()} />
+            <Timer
+                key={descIndex}
+                onTimerEnd={() => getNextDescIndex()}
+                flag={emgSignal}
+            />
             <Participants>
                 <CurParticipants
                     width={"100%"}

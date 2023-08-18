@@ -54,8 +54,9 @@ const AnswerModal = (type) => {
             }
             console.log(returnResult);
             dispatch(gameActions.saveResult(returnResult));
-            dispatch(changePhase("FinScore"));
+            dispatch(changePhase("MidScore"));
             dispatch(closeModal());
+            dispatch(gameActions.updateEmgSignal(true));
             session.signal({
                 data: returnResult,
                 to: [],
