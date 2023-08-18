@@ -6,6 +6,7 @@ import {
     OtherUsers,
     Container,
     SmallText,
+    SubText,
 } from "../../components/layout/common";
 import {
     NotificationContainer,
@@ -26,6 +27,7 @@ import { gameActions } from "../../store/gameSlice";
 import { changePhase } from "../../store/phaseSlice";
 import { InitializedData, RecordStart, RecordStop } from "../../api/game";
 import { Videobox, VideoUserName } from "../../components/layout/waiting";
+import { NickName } from "../../components/layout/otherView";
 
 function Dance() {
     const openvidu = useSelector((state) => state.openvidu);
@@ -160,14 +162,16 @@ function Dance() {
                 </LeftItem>
                 <RightItem>
                     {penaltyUser && (
-                        <>
-                            <SmallText>{penaltyUser}</SmallText>
+                        <OtherUsers>
+                            <NickName>
+                                <SubText>{penaltyUser}</SubText>
+                            </NickName>
                             <VideoComponent
                                 width="800px"
-                                height="450px"
+                                height="425px"
                                 streamManager={penaltyStreamer}
                             />
-                        </>
+                        </OtherUsers>
                     )}
                 </RightItem>
                 <Buttons>
