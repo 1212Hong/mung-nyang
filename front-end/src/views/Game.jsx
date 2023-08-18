@@ -356,11 +356,12 @@ const Game = () => {
     }, [OV, token]);
 
     useEffect(() => {
-        session.signal({
-            data: mySessionPw,
-            to: [],
-            type: "savePw",
-        });
+        session &&
+            session.signal({
+                data: mySessionPw,
+                to: [],
+                type: "savePw",
+            });
     }, [token]);
 
     useEffect(() => {
