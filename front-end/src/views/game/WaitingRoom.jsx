@@ -46,6 +46,7 @@ function WaitingRoom() {
         myUserName,
         mySessionPw,
     } = openvidu;
+    const gameVoteCnt = useSelector((state) => state.game.gameVoteCnt);
 
     console.log(subscribers);
     console.log(openvidu.messageList);
@@ -112,6 +113,10 @@ function WaitingRoom() {
             sendMessage();
         }
     };
+
+    useEffect(() => {
+        dispatch(gameActions.saveGameVoteCnt(0));
+    }, []);
 
     // 카카오톡공유 코드시작
     useEffect(() => {
