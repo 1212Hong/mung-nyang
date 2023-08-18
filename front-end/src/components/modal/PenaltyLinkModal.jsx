@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { closeModal } from "../../store/modalSlice";
@@ -92,6 +92,7 @@ const PenaltyLinkModal = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const { mySessionId } = openvidu;
     const [penaltyLinkList, setPenaltyLinkList] = useState([]);
+    const linkEndRef = useRef();
     const copyLink = async (link) => {
         await navigator.clipboard
             .writeText(link)
@@ -102,34 +103,19 @@ const PenaltyLinkModal = () => {
             setPenaltyLinkList(response.data),
         );
     });
+    useEffect(() => {
+        scrollToBottom();
+    }, [openvidu.messageList]);
+    const scrollToBottom = () => {
+        if (linkEndRef.current) {
+            linkEndRef.current.scrollTop = linkEndRef.current.scrollHeight;
+        }
+    };
     return (
         <LinkContainer>
             <LinkBox>
                 <LinkTitleBox> 벌칙 영상 </LinkTitleBox>
-                <LinkContentBox>
-                    {penaltyLinkList.length > 0 ? (
-                        penaltyLinkList.map((item, index) =>
-                            item != null ? (
-                                <React.Fragment key={index}>
-                                    <LinkItem>
-                                        <LinkContentDesc>게임</LinkContentDesc>
-                                        <LinkContentUrl>
-                                            {item && item.length > 48
-                                                ? item.slice(0, 48) + "..."
-                                                : item}
-                                        </LinkContentUrl>
-                                        <LinkContentCopy
-                                            onClick={() => copyLink(item)}
-                                        >
-                                            복사
-                                        </LinkContentCopy>
-                                    </LinkItem>
-                                </React.Fragment>
-                            ) : null,
-                        )
-                    ) : (
-                        <span>아직 링크가 없어요!</span>
-                    )}
+                <LinkContentBox ref={linkEndRef}>
                     {penaltyLinkList.length > 0 ? (
                         penaltyLinkList.map((item, index) =>
                             item != null ? (
