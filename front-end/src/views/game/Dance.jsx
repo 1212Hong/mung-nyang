@@ -193,12 +193,13 @@ function Dance() {
                     </Button>
                     <Button
                         width="100px"
-                        height="150px"
+                        height="200px"
                         color="black"
-                        fontSize="32px"
+                        fontSize="20px"
                         disabled
+                        shadow="none"
                     >
-                        찬성 {passCnt} / {streams.length - 1}
+                        찬성 {passCnt} <br /> 잔여 {streams.length - 1}
                     </Button>
                 </Buttons>
             </PenaltyBox>
