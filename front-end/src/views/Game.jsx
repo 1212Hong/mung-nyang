@@ -124,14 +124,6 @@ const Game = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        session.signal({
-            data: mySessionPw,
-            to: [],
-            type: "savePw",
-        });
-    }, [token]);
-
-    useEffect(() => {
         const initializeSession = async () => {
             const newSession = session;
 
@@ -362,6 +354,14 @@ const Game = () => {
 
         initializeSession();
     }, [OV, token]);
+
+    useEffect(() => {
+        session.signal({
+            data: mySessionPw,
+            to: [],
+            type: "savePw",
+        });
+    }, [token]);
 
     useEffect(() => {
         // componentDidMount
