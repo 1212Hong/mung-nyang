@@ -169,7 +169,7 @@ function WordDescription() {
         if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
         } else {
-            dispatch(changePhase("QnA"));
+            // dispatch(changePhase("QnA"));
         }
     };
 
@@ -186,10 +186,16 @@ function WordDescription() {
             <audio ref={audioRef} src={TestSound} loop={false} preload="" />
             <Timer key={descIndex} onTimerEnd={() => getNextDescIndex()} />
             <Participants>
-                <CurParticipants width={"100%"}>
+                <CurParticipants
+                    width={"100%"}
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        flexDirection: "column",
+                    }}
+                >
                     {sortedArr[descIndex] ? (
                         <>
-                            <SmallText>{sortedArr[descIndex]}</SmallText>
                             {
                                 <VideoComponent
                                     key={streamKey}
@@ -200,6 +206,7 @@ function WordDescription() {
                                     height={"80%"}
                                 />
                             }
+                            <SmallText>{sortedArr[descIndex]}</SmallText>
                         </>
                     ) : (
                         <ModalBackdrop>
@@ -219,7 +226,13 @@ function WordDescription() {
                     )}
                 </CurParticipants>
                 <CurParticipants width={"40%"}>
-                    <CurFunction>
+                    <CurFunction
+                        style={{
+                            display: "flex",
+                            flexDirection: "column-reverse",
+                            alignItems: "center",
+                        }}
+                    >
                         <SmallText>{answerer}</SmallText>
                         <VideoComponent
                             width="380px"
