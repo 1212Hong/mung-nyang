@@ -174,7 +174,6 @@ const Game = () => {
                 newSession.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
 
-                navigate("/test");
                 newSession.on("signal:savePw", (e) => {
                     dispatch(ovActions.saveSessionPw(e.data));
                 });
