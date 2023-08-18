@@ -44,5 +44,5 @@ export const VideoBox = styled.div`
 `;
 
 export const NameBox = styled.div`
-    max-width: 150px;
+    max-width: 170px;
 `;
