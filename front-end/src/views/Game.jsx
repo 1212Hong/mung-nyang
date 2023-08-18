@@ -356,15 +356,6 @@ const Game = () => {
     }, [OV, token]);
 
     useEffect(() => {
-        session &&
-            session.signal({
-                data: mySessionPw,
-                to: [],
-                type: "savePw",
-            });
-    }, [token]);
-
-    useEffect(() => {
         // componentDidMount
         console.log("didmount");
 
