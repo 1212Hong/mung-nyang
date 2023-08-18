@@ -29,6 +29,19 @@ const LinkBox = styled.div`
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
     text-align: center;
+    ::-webkit-scrollbar {
+        width: 10px;
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+        height: 20%;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+    }
 `;
 const LinkTitleBox = styled.div`
     padding: 10px;
@@ -38,7 +51,10 @@ const LinkTitleBox = styled.div`
 `;
 const LinkContentBox = styled.div`
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+    margin-bottom: 10px;
 `;
 const LinkContentDesc = styled.div`
     width: 20%;
@@ -59,6 +75,10 @@ const LinkContentCopy = styled.div`
     &:hover {
         cursor: pointer;
     }
+`;
+const LinkItem = styled.div`
+    display: flex;
+    margin-bottom: 8px;
 `;
 const LinkButtonBox = styled.div`
     width: 100%;
@@ -91,17 +111,42 @@ const PenaltyLinkModal = () => {
                         penaltyLinkList.map((item, index) =>
                             item != null ? (
                                 <React.Fragment key={index}>
-                                    <LinkContentDesc>게임</LinkContentDesc>
-                                    <LinkContentUrl>
-                                        {item && item.length > 48
-                                            ? item.slice(0, 48) + "..."
-                                            : item}
-                                    </LinkContentUrl>
-                                    <LinkContentCopy
-                                        onClick={() => copyLink(item)}
-                                    >
-                                        복사
-                                    </LinkContentCopy>
+                                    <LinkItem>
+                                        <LinkContentDesc>게임</LinkContentDesc>
+                                        <LinkContentUrl>
+                                            {item && item.length > 48
+                                                ? item.slice(0, 48) + "..."
+                                                : item}
+                                        </LinkContentUrl>
+                                        <LinkContentCopy
+                                            onClick={() => copyLink(item)}
+                                        >
+                                            복사
+                                        </LinkContentCopy>
+                                    </LinkItem>
+                                </React.Fragment>
+                            ) : null,
+                        )
+                    ) : (
+                        <span>아직 링크가 없어요!</span>
+                    )}
+                    {penaltyLinkList.length > 0 ? (
+                        penaltyLinkList.map((item, index) =>
+                            item != null ? (
+                                <React.Fragment key={index}>
+                                    <LinkItem>
+                                        <LinkContentDesc>게임</LinkContentDesc>
+                                        <LinkContentUrl>
+                                            {item && item.length > 48
+                                                ? item.slice(0, 48) + "..."
+                                                : item}
+                                        </LinkContentUrl>
+                                        <LinkContentCopy
+                                            onClick={() => copyLink(item)}
+                                        >
+                                            복사
+                                        </LinkContentCopy>
+                                    </LinkItem>
                                 </React.Fragment>
                             ) : null,
                         )
