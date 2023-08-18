@@ -12,6 +12,7 @@ const Timer = (props) => {
         height = typeof props.height === "undefined" ? "20px" : props.height,
         text,
         onTimerEnd,
+        flag,
     } = props;
     const [initialTime, setInitialTime] = useState(time);
     const decreaseRatio = 10 / initialTime;
@@ -25,7 +26,7 @@ const Timer = (props) => {
         setTimeout(() => {
             clearInterval(timer);
             dispatch(closeModal());
-            if (onTimerEnd) {
+            if (onTimerEnd && !flag) {
                 onTimerEnd();
             }
         }, time * 1000);
