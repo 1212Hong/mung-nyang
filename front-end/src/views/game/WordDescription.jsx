@@ -169,7 +169,7 @@ function WordDescription() {
         if (descIndex < sortedArr.length - 1) {
             setDescIndex(descIndex + 1);
         } else {
-            // dispatch(changePhase("QnA"));
+            dispatch(changePhase("QnA"));
         }
     };
 
