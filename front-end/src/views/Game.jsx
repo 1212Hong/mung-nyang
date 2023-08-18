@@ -129,7 +129,7 @@ const Game = () => {
             to: [],
             type: "savePw",
         });
-    }, []);
+    }, [token]);
 
     useEffect(() => {
         const initializeSession = async () => {
