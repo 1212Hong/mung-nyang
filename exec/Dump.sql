@@ -8,7 +8,7 @@ INSERT INTO mung_game.quiz VALUES(6, "안 예쁜 빤스 입고 바지 안 터지
 
 ### Dance
 INSERT INTO mung_game.dance VALUES (1, 'https://www.youtube.com/shorts/Ge5xGTF-v5k', '중'),
-(2, 'https://www.youtube.com/watch?v=fjVVn6AvGfU', '상');
+(2, 'https://www.youtube.com/shorts/4G_btYVArmU', '상');
 
 ### Word
 INSERT INTO mung_game.word (word_id, category, title) VALUES
