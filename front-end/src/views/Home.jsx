@@ -66,6 +66,7 @@ const Home = () => {
         await makeRoom(roomInfo).catch((err) => navigate("/error"));
 
         dispatch(ovActions.saveSessionPw(roomPw));
+        navigate("/test");
     };
 
     const handleJoinRoom = async () => {
