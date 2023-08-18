@@ -77,6 +77,14 @@ const Home = () => {
         joinRoomResponse && joinRoomResponse.error
             ? console.log("Error:", joinRoomResponse.error)
             : navigate("/test");
+
+        dispatch(ovActions.saveSessionPw(roomInfo.roomPw));
+        session &&
+            session.signal({
+                data: mySessionPw,
+                to: [],
+                type: "savePw",
+            });
     };
 
     const audioElement = document.getElementById("bgm");
