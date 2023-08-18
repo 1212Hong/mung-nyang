@@ -100,6 +100,7 @@ function WaitingRoom() {
     };
 
     const sendMessage = async () => {
+        if (!userMessage.current.value) return;
         session.signal({
             data: userMessage.current.value,
             to: [],
@@ -183,6 +184,16 @@ function WaitingRoom() {
     }
     console.log(openvidu.messageList.length);
 
+    useEffect(() => {
+        scrollToBottom();
+    }, [openvidu.messageList]);
+    const scrollToBottom = () => {
+        if (messageEndRef.current) {
+            messageEndRef.current.scrollTop =
+                messageEndRef.current.scrollHeight;
+        }
+    };
+
     return (
         <Container className="waiting-container">
             <audio ref={audioRef} autoPlay loop>
@@ -225,7 +236,7 @@ function WaitingRoom() {
                 )}
 
                 <ChattingBox>
-                    <ChatBox>
+                    <ChatBox ref={messageEndRef}>
                         {openvidu.messageList.map((item, index) =>
                             item.userName === myUserName ? (
                                 <ChatItem key={index} align={"right"}>
