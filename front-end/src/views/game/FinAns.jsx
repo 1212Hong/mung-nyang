@@ -9,10 +9,12 @@ import {
     Container,
     OtherUsers,
     SmallText,
+    SubText,
 } from "../../components/layout/common";
 import {
     AnswerBox,
     AnswerItem,
+    NickName,
     UserBox,
 } from "../../components/layout/otherView";
 import { changePhase } from "../../store/phaseSlice";
@@ -156,14 +158,16 @@ const FinAns = () => {
                         <React.Fragment key={i}>
                             {user.stream.connection.data !== answerer && (
                                 <OtherUsers>
-                                    <SmallText>
-                                        {user.stream.connection.data}
-                                    </SmallText>
                                     <VideoComponent
                                         width="232px"
-                                        height="235px"
+                                        height="200px"
                                         streamManager={user}
                                     />
+                                    <NickName>
+                                        <SubText>
+                                            {user.stream.connection.data}
+                                        </SubText>
+                                    </NickName>
                                 </OtherUsers>
                             )}
                         </React.Fragment>
