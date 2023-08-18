@@ -26,6 +26,11 @@ export const ExItem = styled.div`
     position: relative;
 `;
 
+export const ExRedText = styled.span`
+    color: red;
+    font-size: 24px;
+`;
+
 export const NotificationContainer = styled.div`
     position: fixed;
     top: 50%;
