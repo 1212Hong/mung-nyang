@@ -13,7 +13,7 @@ import Input from "../components/Input";
 import { makeRoom, enterRoom } from "../hooks/home";
 import { useNavigate } from "react-router-dom";
 import { ovActions } from "../store/openviduSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import mainBgm from "../assets/audio/mainBgm.wav";
 import BackgroundImg from "../assets/img/mungnyangImg.png";
 import { ReactComponent as VolumeOnIcon } from "../assets/img/volume_on.svg";
@@ -32,6 +32,8 @@ const Home = () => {
     const roomPwCheck = useRef();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const openvidu = useSelector((state) => state.openvidu);
+    const { session, mySessionPw } = openvidu;
 
     const handleChange = (e) => {
         setRoomInfo({
@@ -62,8 +64,8 @@ const Home = () => {
             return false;
         }
         await makeRoom(roomInfo).catch((err) => navigate("/error"));
+
         dispatch(ovActions.saveSessionPw(roomPw));
-        navigate("/test");
     };
 
     const handleJoinRoom = async () => {

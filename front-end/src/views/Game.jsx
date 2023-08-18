@@ -102,8 +102,15 @@ const PHASE_COMPONENTS = [
 const Game = () => {
     const openvidu = useSelector((state) => state.openvidu);
     const game = useSelector((state) => state.game);
-    const { subscribers, myUserName, token, mySessionId, playerId, owner } =
-        openvidu;
+    const {
+        subscribers,
+        myUserName,
+        token,
+        mySessionId,
+        mySessionPw,
+        playerId,
+        owner,
+    } = openvidu;
     const { gameVoteCnt, answerer } = game;
     // State 업데이트를 더 잘 다루기 위해 여러 useState를 사용합니다.
     const [OV, setOV] = useState(new OpenVidu());
@@ -115,6 +122,14 @@ const Game = () => {
     const phaseType = useSelector((state) => state.phase.phaseType);
     const dispatch = useDispatch(); //dispatch로 reducer에 선언된 changePhase 불러와서 사용하면됨
     const navigate = useNavigate();
+
+    useEffect(() => {
+        session.signal({
+            data: mySessionPw,
+            to: [],
+            type: "savePw",
+        });
+    }, []);
 
     useEffect(() => {
         const initializeSession = async () => {
@@ -159,6 +174,10 @@ const Game = () => {
                 newSession.publish(publisher);
                 dispatch(ovActions.savePublisher(publisher)); // Save the publisher to the state
 
+                navigate("/test");
+                newSession.on("signal:savePw", (e) => {
+                    dispatch(ovActions.saveSessionPw(e.data));
+                });
                 newSession.on("signal:startGameVote", () => {
                     dispatch(
                         openModal({
