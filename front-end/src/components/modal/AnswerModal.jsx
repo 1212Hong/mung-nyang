@@ -61,8 +61,6 @@ const AnswerModal = (type) => {
                 to: [],
                 type: "emgAnswered", // 비상 정답 누르면 신호 보냄 -> 받는 거 체크 필요
             });
-
-            dispatch(gameActions.updateEmgSignal(true));
         });
     };
     return (
