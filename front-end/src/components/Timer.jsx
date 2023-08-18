@@ -4,6 +4,7 @@ import { ProgressBar } from "react-step-progress-bar";
 import "../css/style/timer.css";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../store/modalSlice";
+import { changePhase } from "../store/phaseSlice";
 
 const Timer = (props) => {
     const {
@@ -30,6 +31,9 @@ const Timer = (props) => {
                 onTimerEnd();
             }
         }, time * 1000);
+        return () => {
+            if (flag) dispatch(changePhase("QnA"));
+        };
     }, [time, decreaseRatio, dispatch]);
 
     return (
