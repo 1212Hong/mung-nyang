@@ -2,7 +2,8 @@
 
 ## 멍 & 냥 소개 영상 및 시나리오
 
-- 영상 업로드 예정
+- [홍보용 UCC 링크](https://www.youtube.com/watch?v=OB3aP5_KCRA)
+- [게임 규칙 UCC 링크](https://www.youtube.com/watch?v=8tiCJVqR1Gk)
 
 시연 시나리오는 [여기](https://lab.ssafy.com/s09-webmobile1-sub2/S09P12C209/-/blob/develop/exec/4.%20%EC%8B%9C%EC%97%B0%20%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4.md)에서 더 자세히 보실 수 있습니다.
 
